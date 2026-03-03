@@ -63,23 +63,25 @@ export default Promise.all([
 
     tinyMCE.PluginManager.add(pluginName, (editor) => {
 
-        // FIX: Usando async/await para evitar aninhamento de Promises (promise/no-nesting)
+        // CORRIGIDO: Estrutura segura usando a API Nativa de Modais do Moodle.
         const openStudioModal = async() => {
             try {
                 const modal = await ModalFactory.create({
+                    type: ModalFactory.types.DEFAULT,
                     title: modalTitle,
                     body: modalBodyHtml,
-                    large: true
+                    large: true // Moodle Bootstrap .modal-lg
                 });
 
-                modal.show();
                 modal.getRoot().on(ModalEvents.hidden, () => {
                     modal.destroy();
                 });
 
+                modal.show();
                 initStudioApp(editor, modal);
+
             } catch (error) {
-                Notification.exception(error); // FIX: Tratando erro vazio (promise/valid-params)
+                Notification.exception(error);
             }
         };
 

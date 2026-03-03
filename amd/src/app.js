@@ -77,11 +77,11 @@ const toggleView = (viewName) => {
     }
 
     if (viewName === 'library') {
-        viewLibrary.style.display = 'flex';
+        viewLibrary.style.display = 'block'; // CORRIGIDO: Removido 'flex'
         viewEditor.style.display = 'none';
     } else {
         viewLibrary.style.display = 'none';
-        viewEditor.style.display = 'flex';
+        viewEditor.style.display = 'block'; // CORRIGIDO: Removido 'flex'
     }
 };
 
