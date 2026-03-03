@@ -1,0 +1,104 @@
+/**
+ * Scoped CSS for tiny_studiolms
+ *
+ * @package    tiny_studiolms
+ * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+.tiny-studiolms-wrapper {
+    /* Sem travas de altura! Deixe o Modal do Moodle controlar o fluxo. */
+    background-color: var(--bs-body-bg, #fff);
+    font-family: inherit;
+}
+
+/* Header interno */
+.tiny-studiolms-wrapper .slms-header {
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    background-color: var(--bs-gray-100, #f8f9fa);
+    padding: 0.75rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* =========================================
+   LIBRARY VIEW (GRID)
+   ========================================= */
+.tiny-studiolms-wrapper .slms-library-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+    /* FIX: "start" impede que o card estique verticalmente */
+    align-items: start;
+}
+
+.tiny-studiolms-wrapper .slms-card {
+    background: var(--bs-white, #fff);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    overflow: hidden;
+}
+
+.tiny-studiolms-wrapper .slms-card:hover,
+.tiny-studiolms-wrapper .slms-card:focus {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+    border-color: var(--bs-primary, #0f6cbf);
+    outline: none;
+}
+
+.tiny-studiolms-wrapper .slms-card-thumb-wrapper {
+    height: 130px;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--bs-white, #fff);
+    padding: 15px;
+}
+
+.tiny-studiolms-wrapper .slms-card-thumb-content {
+    transform: scale(0.45);
+    transform-origin: top left;
+    width: 220%;
+    pointer-events: none;
+}
+
+/* =========================================
+   EDITOR VIEW (LIVE PREVIEW)
+   ========================================= */
+
+.tiny-studiolms-wrapper .slms-preview-panel {
+    background-image: radial-gradient(var(--bs-border-color, #dee2e6) 1px, transparent 0);
+    background-size: 20px 20px;
+    background-color: var(--bs-gray-100, #f1f3f5);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+
+    /* MÁGICA: O Preview fica "preso" na tela enquanto o formulário rola */
+    position: sticky;
+    top: 1rem;
+}
+
+.tiny-studiolms-wrapper .slms-config-panel {
+    background-color: var(--bs-white, #fff);
+    border-radius: 0.5rem;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+/* =========================================
+   UX POLISH
+   ========================================= */
+.tiny-studiolms-wrapper .slms-color-picker {
+    width: 48px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.25rem;
+    cursor: pointer;
+    background-color: transparent;
+}

@@ -1,0 +1,48 @@
+{{!
+    @template tiny_studiolms/modal
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    StudioLMS main modal interface (Native Moodle Modal).
+}}
+<div class="tiny-studiolms-wrapper" id="studiolms-app">
+
+    <div id="slms-view-library">
+        <div class="slms-library-grid" id="slms-library-grid">
+            </div>
+    </div>
+
+    <div id="slms-view-editor" style="display: none;">
+
+        <div class="slms-header d-flex justify-content-between align-items-center">
+            <button id="slms-btn-back" class="btn btn-outline-secondary rounded-pill btn-sm">
+                <span aria-hidden="true">&larr;</span> {{#str}} back_to_library, tiny_studiolms {{/str}}
+            </button>
+            <h5 class="m-0 fw-bold text-dark fs-6" id="slms-editor-title">StudioLMS</h5>
+            <button id="slms-btn-insert" class="btn btn-primary px-4 shadow-sm rounded-pill btn-sm">
+                <span aria-hidden="true">🚀</span> {{#str}} insert_moodle, tiny_studiolms {{/str}}
+            </button>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-7">
+                <div class="slms-preview-panel" aria-label="{{#str}} preview, tiny_studiolms {{/str}}">
+                    <div id="slms-live-preview" class="w-100 shadow-sm bg-white rounded p-2">
+                        </div>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="slms-config-panel">
+                    <h6 class="text-uppercase text-muted fw-bold mb-4 small border-bottom pb-2">
+                        <span aria-hidden="true">⚙️</span> {{#str}} configuration, tiny_studiolms {{/str}}
+                    </h6>
+                    <form id="slms-config-form" onsubmit="return false;">
+                        </form>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

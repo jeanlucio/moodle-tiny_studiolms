@@ -1,0 +1,42 @@
+{{!
+    @template tiny_studiolms/block_card
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Advanced Card skeleton injected into the Moodle editor.
+    Example context (json): {
+        "bg": "#ffffff", "text": "#333333", "border": "#0d47a1", "radius": "8", "shadowCss": "0 4px 6px rgba(0,0,0,0.1)",
+        "hasMedia": true, "isImage": true, "mediaUrl": "https://picsum.photos/600/300",
+        "isHorizontal": false, "hasButton": true, "btnText": "Click Here", "btnUrl": "#", "btnBg": "#0d47a1", "btnTextCol": "#fff"
+    }
+}}
+<div class="studiolms-advanced-card" contenteditable="false" style="background-color: {{bg}}; color: {{text}}; border: 1px solid #e2e8f0; border-left: 6px solid {{border}}; border-radius: {{radius}}px; box-shadow: {{shadowCss}}; margin-bottom: 20px; overflow: hidden; display: flex; {{#isHorizontal}}flex-direction: row; align-items: stretch;{{/isHorizontal}}{{^isHorizontal}}flex-direction: column;{{/isHorizontal}}">
+
+    {{#hasMedia}}
+    <div style="{{#isHorizontal}}width: 40%; min-height: 100%; border-right: 1px solid #e2e8f0;{{/isHorizontal}}{{^isHorizontal}}width: 100%; border-bottom: 1px solid #e2e8f0;{{/isHorizontal}} background-color: #f1f5f9; position: relative;">
+        {{#isImage}}
+        <img src="{{mediaUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        {{/isImage}}
+        {{#isVideo}}
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; {{#isHorizontal}}height: 100%; padding-bottom: 0;{{/isHorizontal}}">
+            <iframe src="{{mediaUrl}}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allowfullscreen title="Video"></iframe>
+        </div>
+        {{/isVideo}}
+    </div>
+    {{/hasMedia}}
+
+    <div style="flex: 1; padding: 24px; display: flex; flex-direction: column;">
+        <div contenteditable="true" style="outline: none; flex: 1;">
+            <h3 style="color: {{border}}; margin-top: 0; margin-bottom: 15px;"><strong>{{#str}} default_card_title, tiny_studiolms {{/str}}</strong></h3>
+            <p style="margin-bottom: 0;">{{#str}} default_card_text, tiny_studiolms {{/str}}</p>
+        </div>
+
+        {{#hasButton}}
+        <div style="margin-top: 20px;">
+            <a href="{{btnUrl}}" style="display: inline-block; background-color: {{btnBg}}; color: {{btnTextCol}}; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                {{btnText}}
+            </a>
+        </div>
+        {{/hasButton}}
+    </div>
+</div>
+<p><br></p>

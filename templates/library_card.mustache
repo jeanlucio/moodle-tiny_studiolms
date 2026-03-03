@@ -1,0 +1,18 @@
+{{!
+    @template tiny_studiolms/library_card
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Thumbnail card for the library grid.
+    Example context (json): {
+        "title": "Card Title",
+        "thumbHtml": "<div>Preview</div>"
+    }
+}}
+<div class="slms-card-thumb-wrapper" aria-hidden="true">
+    <div class="slms-card-thumb-content">
+        {{{thumbHtml}}}
+    </div>
+</div>
+<div class="p-2 text-center text-dark small border-top bg-light">
+    {{title}}
+</div>

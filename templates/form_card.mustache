@@ -1,0 +1,95 @@
+{{!
+    @template tiny_studiolms/form_card
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Configuration form for the Advanced Card.
+    Example context (json): {
+        "bg": "#f8f9fa", "text": "#212529", "border": "#0d47a1", "radius": "8",
+        "shadow": "md", "mediaType": "none", "mediaUrl": "", "layout": "vertical",
+        "btnText": "", "btnUrl": "", "btnBg": "#0d47a1", "btnTextCol": "#ffffff"
+    }
+}}
+
+<div class="mb-4">
+    <h6 class="fw-bold border-bottom pb-2 mb-3 text-dark"><span aria-hidden="true" class="me-2">🎨</span> {{#str}} appearance, tiny_studiolms {{/str}}</h6>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <label for="cfg_bg" class="form-label m-0 small fw-bold text-muted">{{#str}} bg_color, tiny_studiolms {{/str}}</label>
+        <input type="color" class="slms-color-picker" id="cfg_bg" value="{{bg}}">
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <label for="cfg_text" class="form-label m-0 small fw-bold text-muted">{{#str}} text_color, tiny_studiolms {{/str}}</label>
+        <input type="color" class="slms-color-picker" id="cfg_text" value="{{text}}">
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <label for="cfg_border" class="form-label m-0 small fw-bold text-muted">{{#str}} border_color, tiny_studiolms {{/str}}</label>
+        <input type="color" class="slms-color-picker" id="cfg_border" value="{{border}}">
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <label for="cfg_radius" class="form-label m-0 small fw-bold text-muted">{{#str}} border_radius, tiny_studiolms {{/str}}</label>
+        <input type="number" class="form-control form-control-sm w-auto text-center" id="cfg_radius" value="{{radius}}" min="0" max="50" style="max-width: 70px;">
+    </div>
+
+    <div class="mb-3">
+        <label for="cfg_shadow" class="form-label small fw-bold text-muted">{{#str}} shadow, tiny_studiolms {{/str}}</label>
+        <select class="form-select form-select-sm" id="cfg_shadow">
+            <option value="none" {{#shadow_none}}selected{{/shadow_none}}>{{#str}} shadow_none, tiny_studiolms {{/str}}</option>
+            <option value="sm" {{#shadow_sm}}selected{{/shadow_sm}}>{{#str}} shadow_sm, tiny_studiolms {{/str}}</option>
+            <option value="md" {{#shadow_md}}selected{{/shadow_md}}>{{#str}} shadow_md, tiny_studiolms {{/str}}</option>
+            <option value="lg" {{#shadow_lg}}selected{{/shadow_lg}}>{{#str}} shadow_lg, tiny_studiolms {{/str}}</option>
+        </select>
+    </div>
+</div>
+
+<div class="mb-4">
+    <h6 class="fw-bold border-bottom pb-2 mb-3 text-dark"><span aria-hidden="true" class="me-2">🖼️</span> {{#str}} media, tiny_studiolms {{/str}}</h6>
+
+    <div class="mb-3">
+        <label for="cfg_media_type" class="form-label small fw-bold text-muted">{{#str}} media_type, tiny_studiolms {{/str}}</label>
+        <select class="form-select form-select-sm" id="cfg_media_type">
+            <option value="none" {{#media_none}}selected{{/media_none}}>{{#str}} media_none, tiny_studiolms {{/str}}</option>
+            <option value="image" {{#media_image}}selected{{/media_image}}>{{#str}} media_image, tiny_studiolms {{/str}}</option>
+            <option value="video" {{#media_video}}selected{{/media_video}}>{{#str}} media_video, tiny_studiolms {{/str}}</option>
+        </select>
+    </div>
+
+    <div class="mb-3 {{#media_none}}d-none{{/media_none}}" id="cfg_media_url_wrapper">
+        <label for="cfg_media_url" class="form-label small fw-bold text-muted">{{#str}} media_url, tiny_studiolms {{/str}}</label>
+        <input type="text" class="form-control form-control-sm" id="cfg_media_url" value="{{mediaUrl}}" placeholder="https://...">
+    </div>
+
+    <div class="mb-3 {{#media_none}}d-none{{/media_none}}" id="cfg_layout_wrapper">
+        <label for="cfg_layout" class="form-label small fw-bold text-muted">{{#str}} layout, tiny_studiolms {{/str}}</label>
+        <select class="form-select form-select-sm" id="cfg_layout">
+            <option value="vertical" {{#layout_vertical}}selected{{/layout_vertical}}>{{#str}} layout_vertical, tiny_studiolms {{/str}}</option>
+            <option value="horizontal" {{#layout_horizontal}}selected{{/layout_horizontal}}>{{#str}} layout_horizontal, tiny_studiolms {{/str}}</option>
+        </select>
+    </div>
+</div>
+
+<div class="mb-2">
+    <h6 class="fw-bold border-bottom pb-2 mb-3 text-dark"><span aria-hidden="true" class="me-2">🖱️</span> {{#str}} button_cta, tiny_studiolms {{/str}}</h6>
+
+    <div class="mb-3">
+        <label for="cfg_btn_text" class="form-label small fw-bold text-muted">{{#str}} button_text, tiny_studiolms {{/str}}</label>
+        <input type="text" class="form-control form-control-sm" id="cfg_btn_text" value="{{btnText}}" placeholder="Ex: Clique Aqui">
+    </div>
+
+    <div class="mb-3">
+        <label for="cfg_btn_url" class="form-label small fw-bold text-muted">{{#str}} button_url, tiny_studiolms {{/str}}</label>
+        <input type="text" class="form-control form-control-sm" id="cfg_btn_url" value="{{btnUrl}}" placeholder="https://...">
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <label for="cfg_btn_bg" class="form-label m-0 small fw-bold text-muted">{{#str}} button_bg, tiny_studiolms {{/str}}</label>
+        <input type="color" class="slms-color-picker" id="cfg_btn_bg" value="{{btnBg}}">
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <label for="cfg_btn_text_col" class="form-label m-0 small fw-bold text-muted">{{#str}} text_color, tiny_studiolms {{/str}}</label>
+        <input type="color" class="slms-color-picker" id="cfg_btn_text_col" value="{{btnTextCol}}">
+    </div>
+</div>
