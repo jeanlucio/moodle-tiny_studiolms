@@ -63,17 +63,24 @@ export default Promise.all([
 
     tinyMCE.PluginManager.add(pluginName, (editor) => {
 
-        // CORRIGIDO: Estrutura segura usando a API Nativa de Modais do Moodle.
-        const openStudioModal = async() => {
+const openStudioModal = async() => {
             try {
                 const modal = await ModalFactory.create({
                     type: ModalFactory.types.DEFAULT,
                     title: modalTitle,
                     body: modalBodyHtml,
-                    large: true // Moodle Bootstrap .modal-lg
+                    large: true // Mantemos como base
                 });
 
-                modal.getRoot().on(ModalEvents.hidden, () => {
+                // Acessa o contêiner do Modal nativo via jQuery (Padrão da API do Moodle)
+                const modalRoot = modal.getRoot();
+
+                // Remove o limite Large e aplica o Extra Large + nossa classe customizada
+                modalRoot.find('.modal-dialog')
+                    .removeClass('modal-lg')
+                    .addClass('modal-xl studiolms-modal-dialog');
+
+                modalRoot.on(ModalEvents.hidden, () => {
                     modal.destroy();
                 });
 

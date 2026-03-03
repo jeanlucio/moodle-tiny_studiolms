@@ -102,3 +102,23 @@
     cursor: pointer;
     background-color: transparent;
 }
+/* =========================================
+   MODAL NATIVE OVERRIDES
+   ========================================= */
+
+/* Força o modal do StudioLMS a ser mais largo que o padrão do Moodle */
+.studiolms-modal-dialog {
+    max-width: 92vw; /* Ocupa 92% da largura da tela */
+}
+
+/* Em telas muito grandes (Full HD+), limita elegantemente para não distorcer */
+@media (min-width: 1400px) {
+    .studiolms-modal-dialog {
+        max-width: 1320px;
+    }
+}
+
+/* (Opcional) Garante que a área principal tenha uma altura mínima agradável */
+.tiny-studiolms-wrapper .row {
+    min-height: 60vh;
+}
