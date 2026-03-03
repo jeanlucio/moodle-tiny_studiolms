@@ -24,9 +24,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['acc_color'] = 'Header Background Color';
+$string['acc_icon'] = 'Decorative Icon';
+$string['acc_open'] = 'Start Open?';
+$string['acc_title'] = 'Topic Title';
 $string['appearance'] = 'Appearance';
 $string['back_to_library'] = 'Back to Library';
 $string['bg_color'] = 'Background Color';
+$string['block_accordion_title'] = 'Accordion (Topic)';
 $string['block_card_title'] = 'Customizable Card';
 $string['border_color'] = 'Border Color';
 $string['border_radius'] = 'Border Radius (px)';
@@ -38,7 +43,8 @@ $string['button_url'] = 'Button URL';
 $string['card_design'] = 'Card Design';
 $string['close_button'] = 'Close';
 $string['configuration'] = 'Configuration';
-$string['default_card_text'] = 'Write your content here. Use Moodle\'s native tools to format this text!';
+$string['default_accordion_text'] = 'Write the expandable content here. You can use images, lists, and Moodle’s native formatting tools.';
+$string['default_card_text'] = 'Write your content here. Use Moodle’s native tools to format this text!';
 $string['default_card_title'] = 'Card Title';
 $string['insert_moodle'] = 'Insert into Moodle';
 $string['layout'] = 'Layout';

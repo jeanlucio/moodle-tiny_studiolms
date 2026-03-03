@@ -129,5 +129,53 @@ export const Blocks = {
 
             return Templates.render('tiny_studiolms/block_card', templateData);
         }
+    },
+
+    acordeao: {
+        id: 'acordeao',
+        titleString: 'block_accordion_title',
+        icon: '🔽',
+        defaultData: {
+            title: 'Tópico Expansível',
+            icon: '▼',
+            color: '#f0f9ff',
+            isOpen: false
+        },
+        buildConfigForm: (container, data, onUpdate) => {
+            Templates.render('tiny_studiolms/form_accordion', data).then((html, js) => {
+                Templates.replaceNodeContents(container, html, js);
+
+                const titleInp = container.querySelector('#cfg_acc_title');
+                const iconSel = container.querySelector('#cfg_acc_icon');
+                const colorInp = container.querySelector('#cfg_acc_color');
+                const openChk = container.querySelector('#cfg_acc_open');
+
+                // Define the initial value of the select via JS to keep the template clean.
+                if (iconSel) {
+                    iconSel.value = data.icon;
+                }
+
+                const bindUpdate = (el, prop, isCheck = false) => {
+                    if (el) {
+                        el.addEventListener(isCheck ? 'change' : 'input', (e) => {
+                            data[prop] = isCheck ? e.target.checked : e.target.value;
+                            onUpdate(data);
+                        });
+                    }
+                };
+
+                bindUpdate(titleInp, 'title');
+                bindUpdate(iconSel, 'icon');
+                bindUpdate(colorInp, 'color');
+                bindUpdate(openChk, 'isOpen', true);
+
+                return true;
+            }).catch(() => {
+                container.innerHTML = '<div class="alert alert-danger">Error loading form.</div>';
+            });
+        },
+        renderHtml: (data) => {
+            return Templates.render('tiny_studiolms/block_accordion', data);
+        }
     }
 };

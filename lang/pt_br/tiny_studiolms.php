@@ -24,9 +24,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['acc_color'] = 'Cor de Fundo (Cabeçalho)';
+$string['acc_icon'] = 'Ícone Decorativo';
+$string['acc_open'] = 'Iniciar Aberto?';
+$string['acc_title'] = 'Título do Tópico';
 $string['appearance'] = 'Aparência';
 $string['back_to_library'] = 'Voltar para a Biblioteca';
 $string['bg_color'] = 'Cor de Fundo';
+$string['block_accordion_title'] = 'Acordeão (Tópico)';
 $string['block_card_title'] = 'Card Personalizável';
 $string['border_color'] = 'Cor da Borda';
 $string['border_radius'] = 'Raio da Borda (px)';
@@ -38,6 +43,7 @@ $string['button_url'] = 'URL do Botão';
 $string['card_design'] = 'Design do Card';
 $string['close_button'] = 'Fechar';
 $string['configuration'] = 'Configuração';
+$string['default_accordion_text'] = 'Escreva o conteúdo expansível aqui. Você pode usar imagens, listas e formatação nativa do Moodle.';
 $string['default_card_text'] = 'Escreva seu conteúdo aqui. Use as ferramentas nativas do Moodle para formatar este texto!';
 $string['default_card_title'] = 'Título do Card';
 $string['insert_moodle'] = 'Inserir no Moodle';
