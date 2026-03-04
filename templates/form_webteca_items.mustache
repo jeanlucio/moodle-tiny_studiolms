@@ -1,0 +1,41 @@
+{{!
+    @template tiny_studiolms/form_webteca_items
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+}}
+{{#items}}
+<div class="border border-light-subtle rounded p-2 bg-white shadow-sm mb-2">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="badge bg-secondary">Item {{num}}</span>
+        <button type="button" class="btn-close btn-sm slms-del-item" data-idx="{{idx}}" aria-label="Remover"></button>
+    </div>
+    <div class="d-flex gap-2 mb-2">
+        <div style="flex: 0 0 35%;">
+            <select class="form-select form-select-sm i-type" data-idx="{{idx}}">
+                <option value="pdf" {{#isPdf}}selected{{/isPdf}}>PDF 📄</option>
+                <option value="video" {{#isVideo}}selected{{/isVideo}}>Vídeo 🎬</option>
+                <option value="link" {{#isLink}}selected{{/isLink}}>Link 🔗</option>
+                <option value="podcast" {{#isPodcast}}selected{{/isPodcast}}>Áudio 🎧</option>
+                <option value="file" {{#isFile}}selected{{/isFile}}>Arq 📁</option>
+            </select>
+        </div>
+        <div style="flex: 1;">
+            <input type="text" class="form-control form-control-sm i-title" value="{{title}}" data-idx="{{idx}}" placeholder="Título">
+        </div>
+    </div>
+    <div class="mb-2">
+        <input type="text" class="form-control form-control-sm i-url" value="{{url}}" data-idx="{{idx}}" placeholder="https://...">
+    </div>
+    <div class="d-flex gap-2">
+        <div style="flex: 1;">
+            <input type="text" class="form-control form-control-sm i-desc" value="{{desc}}" data-idx="{{idx}}" placeholder="Descrição curta">
+        </div>
+        <div style="flex: 0 0 35%;">
+            <select class="form-select form-select-sm i-target" data-idx="{{idx}}">
+                <option value="_blank" {{#isTargetBlank}}selected{{/isTargetBlank}}>Nova</option>
+                <option value="_self" {{#isTargetSelf}}selected{{/isTargetSelf}}>Mesma</option>
+                <option value="popup" {{#isTargetPopup}}selected{{/isTargetPopup}}>Popup</option>
+            </select>
+        </div>
+    </div>
+</div>
+{{/items}}

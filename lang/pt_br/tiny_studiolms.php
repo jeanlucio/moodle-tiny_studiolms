@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['acc_color'] = 'Cor de Fundo (Cabeçalho)';
+$string['acc_color'] = 'Cor de Fundo do Cabeçalho';
 $string['acc_icon'] = 'Ícone Decorativo';
 $string['acc_open'] = 'Iniciar Aberto?';
 $string['acc_title'] = 'Título do Tópico';
@@ -33,6 +33,7 @@ $string['back_to_library'] = 'Voltar para a Biblioteca';
 $string['bg_color'] = 'Cor de Fundo';
 $string['block_accordion_title'] = 'Acordeão (Tópico)';
 $string['block_card_title'] = 'Card Personalizável';
+$string['block_webteca_title'] = 'Webteca (Recursos)';
 $string['border_color'] = 'Cor da Borda';
 $string['border_radius'] = 'Raio da Borda (px)';
 $string['button_bg'] = 'Fundo do Botão';
@@ -67,3 +68,15 @@ $string['shadow_md'] = 'Média';
 $string['shadow_none'] = 'Nenhuma';
 $string['shadow_sm'] = 'Pequena';
 $string['text_color'] = 'Cor do Texto';
+$string['wt_add_item'] = 'Adicionar Recurso';
+$string['wt_btn_text'] = 'Botão';
+$string['wt_desc'] = 'Descrição Curta';
+$string['wt_general'] = 'Cabeçalho e Layout';
+$string['wt_items'] = 'Lista de Recursos';
+$string['wt_layout_grid'] = 'Grade (Lado a lado)';
+$string['wt_layout_list'] = 'Lista (Um abaixo do outro)';
+$string['wt_target'] = 'Abertura do Link';
+$string['wt_target_blank'] = 'Nova Guia';
+$string['wt_target_self'] = 'Mesma Guia';
+$string['wt_title'] = 'Título';
+$string['wt_type'] = 'Tipo do Arquivo';

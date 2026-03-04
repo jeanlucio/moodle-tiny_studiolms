@@ -122,3 +122,43 @@
 .tiny-studiolms-wrapper .row {
     min-height: 60vh;
 }
+/* =========================================
+   WEBTECA EFEITOS (SEM JAVASCRIPT)
+   ========================================= */
+
+/* Animação da setinha do Acordeão */
+.wt-details summary {
+    list-style: none;
+    outline: none;
+}
+.wt-details summary::-webkit-details-marker {
+    display: none;
+}
+.wt-details .wt-icon-main {
+    transition: transform 0.3s ease;
+    display: inline-block;
+    transform-origin: center;
+}
+/* O Segredo: Quando a tag <details> recebe o atributo 'open', giramos o ícone via CSS! */
+.wt-details[open] summary .wt-icon-main {
+    transform: rotate(90deg);
+}
+
+/* Efeito Hover nos Cards da Webteca */
+a.slms-wt-item {
+    transition: all 0.2s ease;
+}
+a.slms-wt-item:hover,
+a.slms-wt-item:focus {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+/* Efeito no botão interno do card */
+a.slms-wt-item .slms-wt-btn {
+    transition: background-color 0.2s;
+}
+a.slms-wt-item:hover .slms-wt-btn,
+a.slms-wt-item:focus .slms-wt-btn {
+    background-color: rgba(0, 0, 0, 0.05); /* Escurece suavemente o fundo do botão no hover */
+}

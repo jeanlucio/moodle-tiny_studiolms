@@ -27,17 +27,17 @@ export const Blocks = {
             btnBg: '#0d47a1',
             btnTextCol: '#ffffff'
         },
-        buildConfigForm: (container, data, onUpdate) => {
-            // Helpers for the mustache dropdowns logic.
+        buildConfigForm: async(container, data, onUpdate) => {
             const tplData = Object.assign({}, data);
             tplData[`shadow_${data.shadow}`] = true;
             tplData[`media_${data.mediaType}`] = true;
             tplData[`layout_${data.layout}`] = true;
 
-            Templates.render('tiny_studiolms/form_card', tplData).then((html, js) => {
+            try {
+                // Solução Moodle: async/await com renderForPromise
+                const {html, js} = await Templates.renderForPromise('tiny_studiolms/form_card', tplData);
                 Templates.replaceNodeContents(container, html, js);
 
-                // Helper to map inputs to data.
                 const bindInput = (id, prop) => {
                     const el = container.querySelector(`#${id}`);
                     if (el) {
@@ -59,7 +59,6 @@ export const Blocks = {
                 bindInput('cfg_btn_text_col', 'btnTextCol');
                 bindInput('cfg_media_url', 'mediaUrl');
 
-                // Toggle visibility of Media URL and Layout based on Media Type.
                 const typeSelect = container.querySelector('#cfg_media_type');
                 const layoutSelect = container.querySelector('#cfg_layout');
                 const urlWrapper = container.querySelector('#cfg_media_url_wrapper');
@@ -86,15 +85,13 @@ export const Blocks = {
                     });
                 }
 
-                return true;
-            }).catch(() => {
+            } catch (error) {
                 container.innerHTML = '<div class="alert alert-danger">Error loading form.</div>';
-            });
+            }
         },
         renderHtml: (data) => {
             const templateData = Object.assign({}, data);
 
-            // Process shadow CSS.
             const shadowMap = {
                 'none': 'none',
                 'sm': '0 1px 3px rgba(0,0,0,0.1)',
@@ -103,14 +100,10 @@ export const Blocks = {
             };
             templateData.shadowCss = shadowMap[data.shadow] || shadowMap.md;
 
-            // Process Media.
             templateData.hasMedia = data.mediaType !== 'none' && data.mediaUrl.trim() !== '';
             templateData.isImage = data.mediaType === 'image';
 
-            // Basic YouTube URL to embed URL converter.
             if (data.mediaType === 'video' && data.mediaUrl) {
-                // Built using RegExp string concatenation to bypass strict 132 max-len rule.
-                // Removed useless escapes (\& and \?) to comply with ESLint.
                 const ytPattern = '^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/)|' +
                     '(?:(?:watch)?\\?v(?:i)?=|&v(?:i)?=))([^#&?]*).*';
                 const regExp = new RegExp(ytPattern);
@@ -120,7 +113,7 @@ export const Blocks = {
                     templateData.mediaUrl = `https://www.youtube.com/embed/${match[1]}`;
                     templateData.isVideo = true;
                 } else {
-                    templateData.hasMedia = false; // Invalid youtube link.
+                    templateData.hasMedia = false;
                 }
             }
 
@@ -141,8 +134,9 @@ export const Blocks = {
             color: '#f0f9ff',
             isOpen: false
         },
-        buildConfigForm: (container, data, onUpdate) => {
-            Templates.render('tiny_studiolms/form_accordion', data).then((html, js) => {
+        buildConfigForm: async(container, data, onUpdate) => {
+            try {
+                const {html, js} = await Templates.renderForPromise('tiny_studiolms/form_accordion', data);
                 Templates.replaceNodeContents(container, html, js);
 
                 const titleInp = container.querySelector('#cfg_acc_title');
@@ -150,7 +144,6 @@ export const Blocks = {
                 const colorInp = container.querySelector('#cfg_acc_color');
                 const openChk = container.querySelector('#cfg_acc_open');
 
-                // Define the initial value of the select via JS to keep the template clean.
                 if (iconSel) {
                     iconSel.value = data.icon;
                 }
@@ -168,14 +161,237 @@ export const Blocks = {
                 bindUpdate(iconSel, 'icon');
                 bindUpdate(colorInp, 'color');
                 bindUpdate(openChk, 'isOpen', true);
-
-                return true;
-            }).catch(() => {
+            } catch (error) {
                 container.innerHTML = '<div class="alert alert-danger">Error loading form.</div>';
-            });
+            }
         },
         renderHtml: (data) => {
             return Templates.render('tiny_studiolms/block_accordion', data);
+        }
+    },
+
+    webteca: {
+        id: 'webteca',
+        titleString: 'block_webteca_title',
+        icon: '📚',
+        defaultData: {
+            title: '📚 Materiais de Apoio',
+            description: 'Recursos complementares para estudo.',
+            titleColor: '#1e293b',
+            descColor: '#64748b',
+            layout: 'list',
+            isAccordion: true,
+            accIcon: '▶',
+            accHeaderBg: '#f8fafc',
+            enableHover: true,
+            enableSoundHover: false,
+            soundHoverUrl: '',
+            enableSoundClick: false,
+            soundClickUrl: '',
+            items: [
+                {type: 'pdf', title: 'Guia de Estudos', desc: 'PDF - 2MB', url: '#', btnText: '', target: '_blank'},
+                {type: 'link', title: 'Artigo Complementar', desc: 'Leitura Online', url: '#', btnText: '', target: '_blank'}
+            ]
+        },
+        buildConfigForm: async(container, data, onUpdate) => {
+            const tplData = Object.assign({}, data);
+            tplData.isGrid = data.layout === 'grid';
+
+            try {
+                const {html, js} = await Templates.renderForPromise('tiny_studiolms/form_webteca', tplData);
+                Templates.replaceNodeContents(container, html, js);
+
+                const getEl = (id) => container.querySelector(id);
+
+                const iconSel = getEl('#wt_acc_icon');
+                if (iconSel) {
+                    iconSel.value = data.accIcon || '▶';
+                }
+
+                const updateGlobal = () => {
+                    data.title = getEl('#wt_title').value;
+                    data.description = getEl('#wt_desc').value;
+                    data.layout = getEl('#wt_layout').value;
+                    data.titleColor = getEl('#wt_title_color').value;
+                    data.isAccordion = getEl('#wt_is_acc').checked;
+                    data.accIcon = getEl('#wt_acc_icon').value;
+                    data.enableHover = getEl('#wt_hover').checked;
+                    data.enableSoundHover = getEl('#wt_snd_hover_chk').checked;
+                    data.soundHoverUrl = getEl('#wt_snd_hover_url').value;
+                    data.enableSoundClick = getEl('#wt_snd_click_chk').checked;
+                    data.soundClickUrl = getEl('#wt_snd_click_url').value;
+                    onUpdate(data);
+                };
+
+                const globalInputs = [
+                    '#wt_title', '#wt_desc', '#wt_layout', '#wt_title_color', '#wt_is_acc', '#wt_acc_icon',
+                    '#wt_hover', '#wt_snd_hover_chk', '#wt_snd_hover_url', '#wt_snd_click_chk', '#wt_snd_click_url'
+                ];
+
+                globalInputs.forEach((id) => {
+                    const el = getEl(id);
+                    if (el) {
+                        el.addEventListener('input', updateGlobal);
+                        el.addEventListener('change', updateGlobal);
+                    }
+                });
+
+                const itemsContainer = getEl('#slms-wt-items-container');
+
+                // A sub-renderização agora também utiliza async/await sem aninhar Promises
+                const renderItemsList = async() => {
+                    const itemsData = {
+                        items: data.items.map((item, idx) => ({
+                            idx: idx,
+                            num: idx + 1,
+                            type: item.type,
+                            title: item.title,
+                            url: item.url,
+                            desc: item.desc,
+                            isPdf: item.type === 'pdf',
+                            isVideo: item.type === 'video',
+                            isLink: item.type === 'link',
+                            isPodcast: item.type === 'podcast',
+                            isFile: item.type === 'file',
+                            isTargetBlank: item.target === '_blank',
+                            isTargetSelf: item.target === '_self',
+                            isTargetPopup: item.target === 'popup'
+                        }))
+                    };
+
+                    try {
+                        const {html: itemHtml, js: itemJs} = await Templates.renderForPromise(
+                            'tiny_studiolms/form_webteca_items',
+                            itemsData
+                        );
+                        Templates.replaceNodeContents(itemsContainer, itemHtml, itemJs);
+
+                        const selectors = '.i-type, .i-title, .i-url, .i-desc, .i-target';
+                        itemsContainer.querySelectorAll(selectors).forEach((el) => {
+                            el.addEventListener('input', (e) => {
+                                const idx = e.target.getAttribute('data-idx');
+                                const prop = e.target.className.match(/i-(\w+)/)[1];
+                                data.items[idx][prop] = e.target.value;
+                                onUpdate(data);
+                            });
+                        });
+
+                        itemsContainer.querySelectorAll('.slms-del-item').forEach((btn) => {
+                            btn.addEventListener('click', (e) => {
+                                const idx = e.target.getAttribute('data-idx');
+                                data.items.splice(idx, 1);
+                                renderItemsList();
+                                onUpdate(data);
+                            });
+                        });
+                    } catch (err) {
+                        itemsContainer.innerHTML = '<div class="alert alert-danger">Error loading items.</div>';
+                    }
+                };
+
+                const btnAdd = getEl('#slms-wt-add-item');
+                if (btnAdd) {
+                    btnAdd.addEventListener('click', () => {
+                        data.items.push({
+                            type: 'link',
+                            title: 'Novo Recurso',
+                            desc: '',
+                            url: '#',
+                            btnText: '',
+                            target: '_blank'
+                        });
+                        renderItemsList();
+                        onUpdate(data);
+                    });
+                }
+
+                renderItemsList();
+            } catch (error) {
+                container.innerHTML = '<div class="alert alert-danger">Error loading Webteca form.</div>';
+            }
+        },
+        renderHtml: (data) => {
+            const tplData = Object.assign({}, data);
+            tplData.isGrid = data.layout === 'grid';
+
+            const typeConfig = {
+                'pdf': {color: '#ef4444', icon: '📄', btn: 'Ler Arquivo'},
+                'video': {color: '#f59e0b', icon: '🎬', btn: 'Assistir'},
+                'link': {color: '#3b82f6', icon: '🔗', btn: 'Acessar'},
+                'podcast': {color: '#8b5cf6', icon: '🎧', btn: 'Ouvir'},
+                'file': {color: '#6b7280', icon: '📁', btn: 'Baixar'}
+            };
+
+            tplData.items = (data.items || []).map((item) => {
+                const conf = typeConfig[item.type] || typeConfig.link;
+
+                let containerAttrs = '';
+                if (data.enableHover) {
+                    let enterJs = "this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.1)'; " +
+                                  "this.style.borderColor='" + conf.color + "'; ";
+                    if (data.enableSoundHover && data.soundHoverUrl) {
+                        enterJs += "try{new Audio('" + data.soundHoverUrl + "').play()}catch(e){}; ";
+                    }
+                    const leaveJs = "this.style.transform='none'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.03)'; " +
+                                    "this.style.borderColor='#e2e8f0'; ";
+                    containerAttrs += " tabindex=\"0\" onmouseenter=\"" + enterJs + "\" onmouseleave=\"" + leaveJs +
+                                      "\" onfocus=\"" + enterJs + "\" onblur=\"" + leaveJs + "\"";
+                }
+
+                let linkAttrs = '';
+                let clickSoundJs = '';
+                if (data.enableSoundClick && data.soundClickUrl) {
+                    clickSoundJs = "try{new Audio('" + data.soundClickUrl + "').play()}catch(e){}; ";
+                }
+
+                if (item.target === 'popup') {
+                    const popupJs = "event.preventDefault(); window.open('" + (item.url || '#') +
+                                    "', 'newwindow', 'width=800,height=600,scrollbars=yes,resizable=yes'); return false;";
+                    linkAttrs = " href=\"" + (item.url || '#') + "\" onclick=\"" + clickSoundJs + popupJs + "\"";
+                } else {
+                    linkAttrs = " href=\"" + (item.url || '#') + "\" target=\"" + (item.target || '_blank') + "\"";
+                    if (item.target === '_blank') {
+                        linkAttrs += ' rel="noopener noreferrer"';
+                    }
+                    if (clickSoundJs) {
+                        linkAttrs += " onclick=\"" + clickSoundJs + "\"";
+                    }
+                }
+
+                return Object.assign({}, item, {
+                    icon: conf.icon,
+                    color: conf.color,
+                    btnText: item.btnText || conf.btn,
+                    containerAttrs: containerAttrs,
+                    linkAttrs: linkAttrs
+                });
+            });
+
+            if (data.isAccordion) {
+                tplData.uid = 'acc_' + Math.random().toString(36).substring(2, 11);
+
+
+                tplData.onClickJs = "const det=this.parentElement;const ico=this.querySelector('.wt-icon-main');" +
+                    "const pR={'📂':'📁','📖':'📕','🔓':'🔒','➖':'➕','⤴️':'⤵️','❌':'✅','📤':'📥','☂️':'🌂'," +
+                    "'☀️':'🌥️','🎯':'🕹️','🔋':'🪫','▲':'▼'};const pF={'📁':'📂','📕':'📖','🔒':'🔓','➕':'➖'," +
+                    "'⤵️':'⤴️','✅':'❌','📥':'📤','🌂':'☂️','🌥️':'☀️','🕹️':'🎯','🪫':'🔋','▼':'▲'};" +
+                    "if(det.open){event.preventDefault();det.classList.add('closing');const txt=ico.innerText.trim();" +
+                    "if(pR[txt])ico.innerText=pR[txt];else if(txt==='▶'||txt==='▼')ico.style.transform='rotate(0deg)';" +
+                    "setTimeout(()=>{det.removeAttribute('open');det.classList.remove('closing')},300)}else{" +
+                    "setTimeout(()=>{const txt=ico.innerText.trim();if(pF[txt])ico.innerText=pF[txt];" +
+                    "else if(txt==='▶')ico.style.transform='rotate(90deg)';" +
+                    "else if(txt==='▼')ico.style.transform='rotate(180deg)'},10)}";
+
+
+                tplData.styleBlock = "<style>#" + tplData.uid + " summary{list-style:none;outline:none}#" +
+                    tplData.uid + " summary::-webkit-details-marker{display:none}#" + tplData.uid +
+                    " .wt-content-wrapper{display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.3s ease-out}#" +
+                    tplData.uid + "[open] .wt-content-wrapper{grid-template-rows:1fr}#" + tplData.uid +
+                    ".closing .wt-content-wrapper{grid-template-rows:0fr !important}#" + tplData.uid +
+                    " .wt-inner-content{overflow:hidden}</style>";
+            }
+
+            return Templates.render('tiny_studiolms/block_webteca', tplData);
         }
     }
 };
