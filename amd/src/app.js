@@ -16,16 +16,20 @@ let currentConfig = null;
 let currentBlockType = null;
 let tinyEditorInstance = null;
 let moodleModalInstance = null;
+let initialSelectedText = ''; // Nova variável de estado
 
 /**
  * Initializes the application inside the modal.
  *
  * @param {object} editor The TinyMCE editor instance.
  * @param {object} modal The Moodle Modal instance.
+ * @param {string} selectedText Text selected in the editor prior to opening.
  */
-export const initStudioApp = (editor, modal) => {
+export const initStudioApp = (editor, modal, selectedText = '') => {
     tinyEditorInstance = editor;
     moodleModalInstance = modal;
+    initialSelectedText = selectedText;
+
     setTimeout(() => {
         setupNavigation();
         renderLibrary();
@@ -110,7 +114,10 @@ const renderLibrary = () => {
                 blockDef.renderHtml(blockDef.defaultData)
             ]);
 
-            card.addEventListener('click', () => openConfigurationPanel(blockDef, translatedTitle));
+            card.addEventListener('click', (e) => {
+                e.preventDefault();
+                openConfigurationPanel(blockDef, translatedTitle);
+            });
             card.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
@@ -151,6 +158,15 @@ const renderLibrary = () => {
 const openConfigurationPanel = (blockDef, translatedTitle) => {
     currentBlockType = blockDef;
     currentConfig = Object.assign({}, blockDef.defaultData);
+
+    // CAMINHO INVERSO: Se houver texto selecionado, tenta injetar no campo principal do bloco
+    if (initialSelectedText !== '') {
+        if (typeof currentConfig.btnText !== 'undefined') {
+            currentConfig.btnText = initialSelectedText;
+        } else if (typeof currentConfig.title !== 'undefined') {
+            currentConfig.title = initialSelectedText;
+        }
+    }
 
     const formContainer = document.getElementById('slms-config-form');
     const headerTitle = document.getElementById('slms-editor-title');

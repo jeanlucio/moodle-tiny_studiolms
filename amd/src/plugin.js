@@ -52,6 +52,9 @@ export default Promise.all([
 
         const openStudioModal = async() => {
             try {
+                // CAPTURA O CAMINHO INVERSO: Pega o texto selecionado (limpo de HTML)
+                const selectedText = editor.selection.getContent({format: 'text'}).trim();
+
                 const modal = await ModalFactory.create({
                     type: ModalFactory.types.DEFAULT,
                     title: modalTitle,
@@ -60,7 +63,6 @@ export default Promise.all([
                 });
 
                 const modalRoot = modal.getRoot();
-
                 modalRoot.find('.modal-dialog')
                     .removeClass('modal-lg')
                     .addClass('modal-xl studiolms-modal-dialog');
@@ -70,7 +72,8 @@ export default Promise.all([
                 });
 
                 modal.show();
-                initStudioApp(editor, modal);
+                // Passamos o selectedText para a inicialização do App
+                initStudioApp(editor, modal, selectedText);
 
             } catch (error) {
                 Notification.exception(error);

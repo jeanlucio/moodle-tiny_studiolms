@@ -1,0 +1,19 @@
+{{!
+    @template tiny_studiolms/block_button
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Example context (json): {
+        "btnUrl": "https://moodle.org",
+        "target": "_blank",
+        "btnBg": "#0d47a1",
+        "btnTextCol": "#ffffff",
+        "radius": 6,
+        "btnText": "Access Course"
+    }
+}}
+<div class="studiolms-btn-wrap" contenteditable="false" style="display: inline-block; margin: 5px 0;">
+    <a href="{{btnUrl}}" target="{{target}}" {{#isTargetBlank}}rel="noopener noreferrer"{{/isTargetBlank}} style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 20px; font-family: inherit; font-weight: 600; font-size: 14px; text-decoration: none !important; border-bottom: 0 !important; border-radius: {{radius}}px; background-color: {{btnBg}}; color: {{btnTextCol}}; border: 1px solid transparent; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.2s ease; cursor: pointer; line-height: 1.2; vertical-align: middle;">
+        {{#btnText}}{{btnText}}{{/btnText}}{{^btnText}}{{#str}} button_text, tiny_studiolms {{/str}}{{/btnText}}
+    </a>
+</div>
+&nbsp;

@@ -10,6 +10,71 @@ import Templates from 'core/templates';
 import {getString} from 'core/str';
 
 export const Blocks = {
+    botaoCta: {
+        id: 'botaoCta',
+        titleString: 'button_cta',
+        icon: '🔘',
+        defaultData: {
+            btnText: '',
+            btnUrl: '#',
+            btnBg: '#0d47a1',
+            btnTextCol: '#ffffff',
+            radius: 6,
+            target: '_blank'
+        },
+        buildConfigForm: async(container, data, onUpdate) => {
+            try {
+                const {html, js} = await Templates.renderForPromise('tiny_studiolms/form_button', data);
+                Templates.replaceNodeContents(container, html, js);
+
+                // Array quebrado em várias linhas para respeitar o limite de 132 caracteres
+                const inputs = [
+                    '#cfg_btn_text',
+                    '#cfg_btn_url',
+                    '#cfg_btn_bg',
+                    '#cfg_btn_text_col',
+                    '#cfg_btn_radius',
+                    '#cfg_btn_target'
+                ];
+
+                inputs.forEach(selector => {
+                    const el = container.querySelector(selector);
+                    if (el) {
+                        el.addEventListener('input', (e) => {
+                            const prop = selector.replace('#cfg_btn_', '');
+
+                            // Objeto de mapeamento no lugar de ternários aninhados
+                            const propMap = {
+                                'text_col': 'btnTextCol',
+                                'bg': 'btnBg',
+                                'text': 'btnText',
+                                'url': 'btnUrl'
+                            };
+
+                            const finalProp = propMap[prop] || prop;
+                            data[finalProp] = e.target.value;
+
+                            onUpdate(data);
+                        });
+                    }
+                });
+
+            } catch (error) {
+                const errStr = await getString('error_loading_form', 'tiny_studiolms');
+                // DOM manipulation em vez de string literal para evitar erros de lint (segurança)
+                container.innerHTML = '';
+                const errorNode = document.createElement('div');
+                errorNode.className = 'alert alert-danger';
+                errorNode.textContent = errStr;
+                container.appendChild(errorNode);
+            }
+        },
+        renderHtml: (data) => {
+            const templateData = Object.assign({}, data);
+            templateData.isTargetBlank = data.target === '_blank';
+            return Templates.render('tiny_studiolms/block_button', templateData);
+        }
+    },
     cardAvancado: {
         id: 'cardAvancado',
         titleString: 'block_card_title',
@@ -313,7 +378,7 @@ export const Blocks = {
                 container.innerHTML = `<div class="alert alert-danger">${errStr}</div>`;
             }
         },
-        renderHtml: (data) => {
+        renderHtml: async(data) => {
             const tplData = Object.assign({}, data);
             tplData.isGrid = data.layout === 'grid';
 
@@ -325,7 +390,8 @@ export const Blocks = {
                 'file': {color: '#6b7280', icon: '📁', btnStr: 'webteca_btn_download'}
             };
 
-            tplData.items = (data.items || []).map((item) => {
+            // Processa de forma assíncrona para buscar as strings no Moodle
+            tplData.items = await Promise.all((data.items || []).map(async(item) => {
                 const conf = typeConfig[item.type] || typeConfig.link;
 
                 let containerAttrs = '';
@@ -355,7 +421,8 @@ export const Blocks = {
 
                 if (item.target === 'popup') {
                     const popupJs = "event.preventDefault(); window.open('" + (item.url || '#') +
-                                    "', 'newwindow', 'width=800,height=600,scrollbars=yes,resizable=yes'); return false;";
+                                    "', 'newwindow', 'width=800,height=600,scrollbars=yes,resizable=yes'); " +
+                                    "return false;";
                     linkAttrs = " href=\"" + (item.url || '#') + "\" onclick=\"" + clickSoundJs + popupJs + "\"";
                 } else {
                     linkAttrs = " href=\"" + (item.url || '#') + "\" target=\"" + (item.target || '_blank') + "\"";
@@ -367,14 +434,20 @@ export const Blocks = {
                     }
                 }
 
+                // Busca a string no PHP apenas se o botão não tiver texto escrito
+                let finalBtnText = item.btnText;
+                if (!finalBtnText || finalBtnText.trim() === '') {
+                    finalBtnText = await getString(conf.btnStr, 'tiny_studiolms');
+                }
+
                 return Object.assign({}, item, {
                     icon: conf.icon,
                     color: conf.color,
-                    btnStrKey: conf.btnStr,
+                    btnText: finalBtnText,
                     containerAttrs: containerAttrs,
                     linkAttrs: linkAttrs
                 });
-            });
+            }));
 
             if (data.isAccordion) {
                 tplData.uid = 'acc_' + Math.random().toString(36).substring(2, 11);
@@ -393,7 +466,7 @@ export const Blocks = {
                     tplData.uid + " summary::-webkit-details-marker{display:none}#" + tplData.uid +
                     " .wt-content-wrapper{display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.3s ease-out}#" +
                     tplData.uid + "[open] .wt-content-wrapper{grid-template-rows:1fr}#" + tplData.uid +
-                    ".closing .wt-content-wrapper{grid-template-rows:0fr}#" + tplData.uid +
+                    ".closing .wt-content-wrapper{grid-template-rows:0fr !important}#" + tplData.uid +
                     " .wt-inner-content{overflow:hidden}</style>";
             }
 

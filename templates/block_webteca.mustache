@@ -52,7 +52,7 @@
                 </span>
 
                 <span style="display: inline-flex; align-items: center; justify-content: center; padding: 6px 12px; font-size: 12px; font-weight: bold; color: {{color}}; border: 1px solid {{color}}40; border-radius: 6px; background: #fff; width: {{#isGrid}}100%{{/isGrid}}{{^isGrid}}auto{{/isGrid}}; margin-top: auto; transition: background 0.2s;" onmouseover="this.style.background='{{color}}10'" onmouseout="this.style.background='#fff'">
-                    {{#btnText}}{{btnText}}{{/btnText}}{{^btnText}}{{#str}}{{btnStrKey}}, tiny_studiolms{{/str}}{{/btnText}} {{^isGrid}}<span aria-hidden="true" style="margin-left: 4px;">&rarr;</span>{{/isGrid}}
+                    {{btnText}} {{^isGrid}}<span aria-hidden="true" style="margin-left: 4px;">&rarr;</span>{{/isGrid}}
                 </span>
             </a>
             {{/items}}
