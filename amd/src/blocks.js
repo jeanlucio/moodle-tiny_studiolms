@@ -7,6 +7,7 @@
  */
 
 import Templates from 'core/templates';
+import {getString} from 'core/str';
 
 export const Blocks = {
     cardAvancado: {
@@ -34,7 +35,6 @@ export const Blocks = {
             tplData[`layout_${data.layout}`] = true;
 
             try {
-                // Solução Moodle: async/await com renderForPromise
                 const {html, js} = await Templates.renderForPromise('tiny_studiolms/form_card', tplData);
                 Templates.replaceNodeContents(container, html, js);
 
@@ -84,19 +84,18 @@ export const Blocks = {
                         onUpdate(data);
                     });
                 }
-
             } catch (error) {
-                container.innerHTML = '<div class="alert alert-danger">Error loading form.</div>';
+                const errorStr = await getString('error_loading_form', 'tiny_studiolms');
+                container.innerHTML = `<div class="alert alert-danger">${errorStr}</div>`;
             }
         },
         renderHtml: (data) => {
             const templateData = Object.assign({}, data);
-
             const shadowMap = {
                 'none': 'none',
-                'sm': '0 1px 3px rgba(0,0,0,0.1)',
-                'md': '0 4px 6px -1px rgba(0,0,0,0.1)',
-                'lg': '0 10px 15px -3px rgba(0,0,0,0.1)'
+                'sm': '0 1px 3px rgba(0, 0, 0, 0.1)',
+                'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
             };
             templateData.shadowCss = shadowMap[data.shadow] || shadowMap.md;
 
@@ -107,8 +106,8 @@ export const Blocks = {
                 const ytPattern = '^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/)|' +
                     '(?:(?:watch)?\\?v(?:i)?=|&v(?:i)?=))([^#&?]*).*';
                 const regExp = new RegExp(ytPattern);
-
                 const match = data.mediaUrl.match(regExp);
+
                 if (match && match[1]) {
                     templateData.mediaUrl = `https://www.youtube.com/embed/${match[1]}`;
                     templateData.isVideo = true;
@@ -129,7 +128,7 @@ export const Blocks = {
         titleString: 'block_accordion_title',
         icon: '🔽',
         defaultData: {
-            title: 'Tópico Expansível',
+            title: '',
             icon: '▼',
             color: '#f0f9ff',
             isOpen: false
@@ -162,7 +161,8 @@ export const Blocks = {
                 bindUpdate(colorInp, 'color');
                 bindUpdate(openChk, 'isOpen', true);
             } catch (error) {
-                container.innerHTML = '<div class="alert alert-danger">Error loading form.</div>';
+                const errorStr = await getString('error_loading_form', 'tiny_studiolms');
+                container.innerHTML = `<div class="alert alert-danger">${errorStr}</div>`;
             }
         },
         renderHtml: (data) => {
@@ -175,8 +175,8 @@ export const Blocks = {
         titleString: 'block_webteca_title',
         icon: '📚',
         defaultData: {
-            title: '📚 Materiais de Apoio',
-            description: 'Recursos complementares para estudo.',
+            title: '',
+            description: '',
             titleColor: '#1e293b',
             descColor: '#64748b',
             layout: 'list',
@@ -189,8 +189,8 @@ export const Blocks = {
             enableSoundClick: false,
             soundClickUrl: '',
             items: [
-                {type: 'pdf', title: 'Guia de Estudos', desc: 'PDF - 2MB', url: '#', btnText: '', target: '_blank'},
-                {type: 'link', title: 'Artigo Complementar', desc: 'Leitura Online', url: '#', btnText: '', target: '_blank'}
+                {type: 'pdf', title: '', desc: '', url: '#', btnText: '', target: '_blank'},
+                {type: 'link', title: '', desc: '', url: '#', btnText: '', target: '_blank'}
             ]
         },
         buildConfigForm: async(container, data, onUpdate) => {
@@ -202,8 +202,8 @@ export const Blocks = {
                 Templates.replaceNodeContents(container, html, js);
 
                 const getEl = (id) => container.querySelector(id);
-
                 const iconSel = getEl('#wt_acc_icon');
+
                 if (iconSel) {
                     iconSel.value = data.accIcon || '▶';
                 }
@@ -215,6 +215,7 @@ export const Blocks = {
                     data.titleColor = getEl('#wt_title_color').value;
                     data.isAccordion = getEl('#wt_is_acc').checked;
                     data.accIcon = getEl('#wt_acc_icon').value;
+                    data.accHeaderBg = getEl('#wt_header_bg') ? getEl('#wt_header_bg').value : '#f8fafc';
                     data.enableHover = getEl('#wt_hover').checked;
                     data.enableSoundHover = getEl('#wt_snd_hover_chk').checked;
                     data.soundHoverUrl = getEl('#wt_snd_hover_url').value;
@@ -225,7 +226,8 @@ export const Blocks = {
 
                 const globalInputs = [
                     '#wt_title', '#wt_desc', '#wt_layout', '#wt_title_color', '#wt_is_acc', '#wt_acc_icon',
-                    '#wt_hover', '#wt_snd_hover_chk', '#wt_snd_hover_url', '#wt_snd_click_chk', '#wt_snd_click_url'
+                    '#wt_header_bg', '#wt_hover', '#wt_snd_hover_chk', '#wt_snd_hover_url',
+                    '#wt_snd_click_chk', '#wt_snd_click_url'
                 ];
 
                 globalInputs.forEach((id) => {
@@ -238,7 +240,6 @@ export const Blocks = {
 
                 const itemsContainer = getEl('#slms-wt-items-container');
 
-                // A sub-renderização agora também utiliza async/await sem aninhar Promises
                 const renderItemsList = async() => {
                     const itemsData = {
                         items: data.items.map((item, idx) => ({
@@ -285,7 +286,8 @@ export const Blocks = {
                             });
                         });
                     } catch (err) {
-                        itemsContainer.innerHTML = '<div class="alert alert-danger">Error loading items.</div>';
+                        const errStr = await getString('error_loading_form', 'tiny_studiolms');
+                        itemsContainer.innerHTML = `<div class="alert alert-danger">${errStr}</div>`;
                     }
                 };
 
@@ -294,7 +296,7 @@ export const Blocks = {
                     btnAdd.addEventListener('click', () => {
                         data.items.push({
                             type: 'link',
-                            title: 'Novo Recurso',
+                            title: '',
                             desc: '',
                             url: '#',
                             btnText: '',
@@ -307,7 +309,8 @@ export const Blocks = {
 
                 renderItemsList();
             } catch (error) {
-                container.innerHTML = '<div class="alert alert-danger">Error loading Webteca form.</div>';
+                const errStr = await getString('error_loading_form', 'tiny_studiolms');
+                container.innerHTML = `<div class="alert alert-danger">${errStr}</div>`;
             }
         },
         renderHtml: (data) => {
@@ -315,11 +318,11 @@ export const Blocks = {
             tplData.isGrid = data.layout === 'grid';
 
             const typeConfig = {
-                'pdf': {color: '#ef4444', icon: '📄', btn: 'Ler Arquivo'},
-                'video': {color: '#f59e0b', icon: '🎬', btn: 'Assistir'},
-                'link': {color: '#3b82f6', icon: '🔗', btn: 'Acessar'},
-                'podcast': {color: '#8b5cf6', icon: '🎧', btn: 'Ouvir'},
-                'file': {color: '#6b7280', icon: '📁', btn: 'Baixar'}
+                'pdf': {color: '#ef4444', icon: '📄', btnStr: 'webteca_btn_read'},
+                'video': {color: '#f59e0b', icon: '🎬', btnStr: 'webteca_btn_watch'},
+                'link': {color: '#3b82f6', icon: '🔗', btnStr: 'webteca_btn_access'},
+                'podcast': {color: '#8b5cf6', icon: '🎧', btnStr: 'webteca_btn_listen'},
+                'file': {color: '#6b7280', icon: '📁', btnStr: 'webteca_btn_download'}
             };
 
             tplData.items = (data.items || []).map((item) => {
@@ -327,15 +330,21 @@ export const Blocks = {
 
                 let containerAttrs = '';
                 if (data.enableHover) {
-                    let enterJs = "this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.1)'; " +
-                                  "this.style.borderColor='" + conf.color + "'; ";
+                    let enterJs = "this.style.transform='translateY(-3px)'; " +
+                        "this.style.boxShadow='0 8px 16px rgba(0, 0, 0, 0.1)'; " +
+                        "this.style.borderColor='" + conf.color + "'; ";
+
                     if (data.enableSoundHover && data.soundHoverUrl) {
                         enterJs += "try{new Audio('" + data.soundHoverUrl + "').play()}catch(e){}; ";
                     }
-                    const leaveJs = "this.style.transform='none'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.03)'; " +
-                                    "this.style.borderColor='#e2e8f0'; ";
-                    containerAttrs += " tabindex=\"0\" onmouseenter=\"" + enterJs + "\" onmouseleave=\"" + leaveJs +
-                                      "\" onfocus=\"" + enterJs + "\" onblur=\"" + leaveJs + "\"";
+
+                    const leaveJs = "this.style.transform='none'; " +
+                        "this.style.boxShadow='0 2px 4px rgba(0, 0, 0, 0.03)'; " +
+                        "this.style.borderColor='#e2e8f0'; ";
+
+                    containerAttrs += " tabindex=\"0\" onmouseenter=\"" + enterJs +
+                        "\" onmouseleave=\"" + leaveJs + "\" onfocus=\"" + enterJs +
+                        "\" onblur=\"" + leaveJs + "\"";
                 }
 
                 let linkAttrs = '';
@@ -361,7 +370,7 @@ export const Blocks = {
                 return Object.assign({}, item, {
                     icon: conf.icon,
                     color: conf.color,
-                    btnText: item.btnText || conf.btn,
+                    btnStrKey: conf.btnStr,
                     containerAttrs: containerAttrs,
                     linkAttrs: linkAttrs
                 });
@@ -369,8 +378,6 @@ export const Blocks = {
 
             if (data.isAccordion) {
                 tplData.uid = 'acc_' + Math.random().toString(36).substring(2, 11);
-
-
                 tplData.onClickJs = "const det=this.parentElement;const ico=this.querySelector('.wt-icon-main');" +
                     "const pR={'📂':'📁','📖':'📕','🔓':'🔒','➖':'➕','⤴️':'⤵️','❌':'✅','📤':'📥','☂️':'🌂'," +
                     "'☀️':'🌥️','🎯':'🕹️','🔋':'🪫','▲':'▼'};const pF={'📁':'📂','📕':'📖','🔒':'🔓','➕':'➖'," +
@@ -382,12 +389,11 @@ export const Blocks = {
                     "else if(txt==='▶')ico.style.transform='rotate(90deg)';" +
                     "else if(txt==='▼')ico.style.transform='rotate(180deg)'},10)}";
 
-
                 tplData.styleBlock = "<style>#" + tplData.uid + " summary{list-style:none;outline:none}#" +
                     tplData.uid + " summary::-webkit-details-marker{display:none}#" + tplData.uid +
                     " .wt-content-wrapper{display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.3s ease-out}#" +
                     tplData.uid + "[open] .wt-content-wrapper{grid-template-rows:1fr}#" + tplData.uid +
-                    ".closing .wt-content-wrapper{grid-template-rows:0fr !important}#" + tplData.uid +
+                    ".closing .wt-content-wrapper{grid-template-rows:0fr}#" + tplData.uid +
                     " .wt-inner-content{overflow:hidden}</style>";
             }
 

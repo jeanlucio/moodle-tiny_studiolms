@@ -26,7 +26,6 @@ let moodleModalInstance = null;
 export const initStudioApp = (editor, modal) => {
     tinyEditorInstance = editor;
     moodleModalInstance = modal;
-
     setTimeout(() => {
         setupNavigation();
         renderLibrary();
@@ -47,24 +46,26 @@ const setupNavigation = () => {
     }
 
     if (btnInsert) {
-        btnInsert.addEventListener('click', () => {
+        btnInsert.addEventListener('click', async() => {
             if (!currentBlockType || !currentConfig) {
                 return;
             }
 
-            currentBlockType.renderHtml(currentConfig).then((finalHtml) => {
+            try {
+                const finalHtml = await currentBlockType.renderHtml(currentConfig);
                 tinyEditorInstance.insertContent(finalHtml);
                 if (moodleModalInstance) {
                     moodleModalInstance.hide();
                 }
-                return true;
-            }).catch(Notification.exception); // FIX: Usa o Notification para tratar o erro
+            } catch (error) {
+                Notification.exception(error);
+            }
         });
     }
 };
 
 /**
- * Toggles between Library grid and Editor view.
+ * Toggles between Library grid and Editor view utilizing Bootstrap 5 classes.
  *
  * @param {string} viewName 'library' or 'editor'.
  */
@@ -77,11 +78,11 @@ const toggleView = (viewName) => {
     }
 
     if (viewName === 'library') {
-        viewLibrary.style.display = 'block'; // CORRIGIDO: Removido 'flex'
-        viewEditor.style.display = 'none';
+        viewLibrary.classList.remove('d-none');
+        viewEditor.classList.add('d-none');
     } else {
-        viewLibrary.style.display = 'none';
-        viewEditor.style.display = 'block'; // CORRIGIDO: Removido 'flex'
+        viewLibrary.classList.add('d-none');
+        viewEditor.classList.remove('d-none');
     }
 };
 
@@ -95,7 +96,7 @@ const renderLibrary = () => {
     }
     grid.innerHTML = '';
 
-    Object.values(Blocks).forEach((blockDef) => {
+    Object.values(Blocks).forEach(async(blockDef) => {
         const card = document.createElement('div');
         card.className = 'slms-card';
         card.tabIndex = 0;
@@ -103,10 +104,11 @@ const renderLibrary = () => {
 
         grid.appendChild(card);
 
-        Promise.all([
-            getString(blockDef.titleString, 'tiny_studiolms'),
-            blockDef.renderHtml(blockDef.defaultData)
-        ]).then(([translatedTitle, thumbHtml]) => {
+        try {
+            const [translatedTitle, thumbHtml] = await Promise.all([
+                getString(blockDef.titleString, 'tiny_studiolms'),
+                blockDef.renderHtml(blockDef.defaultData)
+            ]);
 
             card.addEventListener('click', () => openConfigurationPanel(blockDef, translatedTitle));
             card.addEventListener('keydown', (e) => {
@@ -121,14 +123,22 @@ const renderLibrary = () => {
                 thumbHtml: thumbHtml
             };
 
-            return Templates.render('tiny_studiolms/library_card', templateData);
-
-        }).then((html) => {
+            const html = await Templates.render('tiny_studiolms/library_card', templateData);
             card.innerHTML = html;
-            return true;
-        }).catch(() => {
-            card.innerHTML = '<div class="p-4 text-center text-danger">Preview Error</div>';
-        });
+
+        } catch (error) {
+            card.innerHTML = '';
+            const errorNode = document.createElement('div');
+            errorNode.className = 'p-4 text-center text-danger';
+
+            try {
+                errorNode.textContent = await getString('error_preview', 'tiny_studiolms');
+            } catch (strError) {
+                errorNode.textContent = await getString('error', 'core');
+            }
+
+            card.appendChild(errorNode);
+        }
     });
 };
 
@@ -162,16 +172,27 @@ const openConfigurationPanel = (blockDef, translatedTitle) => {
 /**
  * Re-renders the block template and injects into the preview box.
  */
-const updateLivePreview = () => {
+const updateLivePreview = async() => {
     const previewContainer = document.getElementById('slms-live-preview');
     if (!previewContainer || !currentBlockType) {
         return;
     }
 
-    currentBlockType.renderHtml(currentConfig).then((html) => {
+    try {
+        const html = await currentBlockType.renderHtml(currentConfig);
         previewContainer.innerHTML = html;
-        return true;
-    }).catch(() => {
-        previewContainer.innerHTML = '<div class="alert alert-warning">Preview failed.</div>';
-    });
+    } catch (error) {
+        previewContainer.innerHTML = '';
+
+        const alertNode = document.createElement('div');
+        alertNode.className = 'alert alert-warning';
+
+        try {
+            alertNode.textContent = await getString('error_preview_failed', 'tiny_studiolms');
+        } catch (strError) {
+            alertNode.textContent = await getString('error', 'core');
+        }
+
+        previewContainer.appendChild(alertNode);
+    }
 };

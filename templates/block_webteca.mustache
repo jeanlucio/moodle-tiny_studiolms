@@ -3,19 +3,15 @@
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
 
     Example context (json): {
-        "title": "Materiais de Apoio",
-        "description": "Recursos complementares para estudo.",
         "titleColor": "#1e293b",
         "descColor": "#64748b",
         "isAccordion": false,
         "isGrid": false,
         "items": [
             {
-                "title": "Guia de Estudos",
-                "desc": "PDF - 2MB",
                 "color": "#ef4444",
                 "icon": "📄",
-                "btnText": "Ler Arquivo",
+                "btnStrKey": "webteca_btn_read",
                 "linkAttrs": "href=\"#\" target=\"_blank\"",
                 "containerAttrs": "tabindex=\"0\""
             }
@@ -29,8 +25,8 @@
         <summary onclick="{{{onClickJs}}}" style="padding: 15px 20px; cursor: pointer; background-color: {{accHeaderBg}}; outline: none; list-style: none; white-space: nowrap;">
             <span class="wt-icon-main" aria-hidden="true" style="font-size: 20px; color: {{titleColor}}; transition: transform 0.3s ease; display: inline-block; vertical-align: middle; min-width: 32px; text-align: center;">{{accIcon}}</span>
             <span style="display: inline-block; vertical-align: middle; width: calc(100% - 40px); white-space: normal; line-height: 1.3;">
-                <strong style="font-size: 16px; color: {{titleColor}};">{{title}}</strong><br>
-                <span style="font-size: 13px; color: {{descColor}};">{{description}}</span>
+                <strong style="font-size: 16px; color: {{titleColor}};">{{#title}}{{title}}{{/title}}{{^title}}{{#str}} webteca_default_title, tiny_studiolms {{/str}}{{/title}}</strong><br>
+                <span style="font-size: 13px; color: {{descColor}};">{{#description}}{{description}}{{/description}}{{^description}}{{#str}} webteca_default_desc, tiny_studiolms {{/str}}{{/description}}</span>
             </span>
         </summary>
         <div class="wt-content-wrapper"><div class="wt-inner-content"><div style="padding: 20px; border-top: 1px solid #eef2f6;">
@@ -38,25 +34,25 @@
     {{^isAccordion}}
     <div style="background-color: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0;">
         <div style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-            <h3 style="margin: 0; color: {{titleColor}}; font-size: 18px; font-weight: bold;">{{title}}</h3>
-            <div style="font-size: 13px; color: {{descColor}}; margin-top: 4px;">{{description}}</div>
+            <h3 style="margin: 0; color: {{titleColor}}; font-size: 18px; font-weight: bold;">{{#title}}{{title}}{{/title}}{{^title}}{{#str}} webteca_default_title, tiny_studiolms {{/str}}{{/title}}</h3>
+            <div style="font-size: 13px; color: {{descColor}}; margin-top: 4px;">{{#description}}{{description}}{{/description}}{{^description}}{{#str}} webteca_default_desc, tiny_studiolms {{/str}}{{/description}}</div>
         </div>
     {{/isAccordion}}
 
         <div style="display: {{#isGrid}}grid{{/isGrid}}{{^isGrid}}flex{{/isGrid}}; {{#isGrid}}grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));{{/isGrid}}{{^isGrid}}flex-direction: column;{{/isGrid}} gap: 15px;">
 
             {{#items}}
-            <a {{{linkAttrs}}} style="text-decoration: none; display: flex; {{#isGrid}}flex-direction: column; align-items: center; text-align: center;{{/isGrid}}{{^isGrid}}align-items: center; text-align: left;{{/isGrid}} background: #fff; border: 1px solid #e2e8f0; border-{{#isGrid}}top{{/isGrid}}{{^isGrid}}left{{/isGrid}}: 5px solid {{color}}; border-radius: 8px; padding: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); transition: all 0.2s ease; color: inherit; outline: none;" {{{containerAttrs}}}>
+            <a {{{linkAttrs}}} style="text-decoration: none; display: flex; {{#isGrid}}flex-direction: column; align-items: center; text-align: center;{{/isGrid}}{{^isGrid}}align-items: center; text-align: left;{{/isGrid}} background: #fff; border: 1px solid #e2e8f0; border-{{#isGrid}}top{{/isGrid}}{{^isGrid}}left{{/isGrid}}: 5px solid {{color}}; border-radius: 8px; padding: 16px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03); transition: all 0.2s ease; color: inherit; outline: none;" {{{containerAttrs}}}>
 
                 <span style="width: {{#isGrid}}60px{{/isGrid}}{{^isGrid}}42px{{/isGrid}}; height: {{#isGrid}}60px{{/isGrid}}{{^isGrid}}42px{{/isGrid}}; font-size: {{#isGrid}}28px{{/isGrid}}{{^isGrid}}20px{{/isGrid}}; border-radius: 50%; background: {{color}}15; color: {{color}}; display: flex; align-items: center; justify-content: center; {{#isGrid}}margin-bottom: 12px;{{/isGrid}}{{^isGrid}}flex-shrink: 0;{{/isGrid}}" aria-hidden="true">{{icon}}</span>
 
                 <span style="flex: 1; min-width: 0; {{#isGrid}}margin-bottom: 16px; width: 100%;{{/isGrid}}{{^isGrid}}margin-left: 14px; margin-right: 14px;{{/isGrid}} display: block;">
-                    <strong style="color: #334155; font-size: 15px; margin-bottom: 2px; line-height: 1.3; display: block;">{{title}}</strong>
-                    <span style="font-size: 13px; color: #64748b; line-height: 1.3; display: block;">{{desc}}</span>
+                    <strong style="color: #334155; font-size: 15px; margin-bottom: 2px; line-height: 1.3; display: block;">{{#title}}{{title}}{{/title}}{{^title}}{{#str}} webteca_default_item_title, tiny_studiolms {{/str}}{{/title}}</strong>
+                    <span style="font-size: 13px; color: #64748b; line-height: 1.3; display: block;">{{#desc}}{{desc}}{{/desc}}{{^desc}}{{#str}} webteca_default_item_desc, tiny_studiolms {{/str}}{{/desc}}</span>
                 </span>
 
                 <span style="display: inline-flex; align-items: center; justify-content: center; padding: 6px 12px; font-size: 12px; font-weight: bold; color: {{color}}; border: 1px solid {{color}}40; border-radius: 6px; background: #fff; width: {{#isGrid}}100%{{/isGrid}}{{^isGrid}}auto{{/isGrid}}; margin-top: auto; transition: background 0.2s;" onmouseover="this.style.background='{{color}}10'" onmouseout="this.style.background='#fff'">
-                    {{btnText}} {{^isGrid}}<span aria-hidden="true" style="margin-left: 4px;">&rarr;</span>{{/isGrid}}
+                    {{#btnText}}{{btnText}}{{/btnText}}{{^btnText}}{{#str}}{{btnStrKey}}, tiny_studiolms{{/str}}{{/btnText}} {{^isGrid}}<span aria-hidden="true" style="margin-left: 4px;">&rarr;</span>{{/isGrid}}
                 </span>
             </a>
             {{/items}}

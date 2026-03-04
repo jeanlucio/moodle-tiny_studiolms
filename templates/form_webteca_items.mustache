@@ -7,11 +7,8 @@
             {
                 "idx": 0,
                 "num": 1,
-                "title": "Guia de Estudos",
-                "url": "https://moodle.org",
-                "desc": "PDF - 2MB",
-                "isPdf": true,
-                "isTargetBlank": true
+                "title": "Guia",
+                "isPdf": true
             }
         ]
     }
@@ -19,35 +16,40 @@
 {{#items}}
 <div class="border border-light-subtle rounded p-2 bg-white shadow-sm mb-2">
     <div class="d-flex justify-content-between align-items-center mb-2">
-        <span class="badge bg-secondary">Item {{num}}</span>
-        <button type="button" class="btn-close btn-sm slms-del-item" data-idx="{{idx}}" aria-label="Remover"></button>
+        <span class="badge bg-secondary">{{#str}} item_num, tiny_studiolms, {{num}} {{/str}}</span>
+        <button type="button" class="btn-close btn-sm slms-del-item" data-idx="{{idx}}" aria-label="{{#str}} remove, tiny_studiolms {{/str}}"></button>
     </div>
     <div class="d-flex gap-2 mb-2">
         <div style="flex: 0 0 35%;">
-            <select class="form-select form-select-sm i-type" data-idx="{{idx}}">
-                <option value="pdf" {{#isPdf}}selected{{/isPdf}}>PDF 📄</option>
-                <option value="video" {{#isVideo}}selected{{/isVideo}}>Vídeo 🎬</option>
-                <option value="link" {{#isLink}}selected{{/isLink}}>Link 🔗</option>
-                <option value="podcast" {{#isPodcast}}selected{{/isPodcast}}>Áudio 🎧</option>
-                <option value="file" {{#isFile}}selected{{/isFile}}>Arq 📁</option>
+            <label for="wt_type_{{idx}}" class="visually-hidden">{{#str}} wt_type, tiny_studiolms {{/str}}</label>
+            <select id="wt_type_{{idx}}" class="form-select form-select-sm i-type" data-idx="{{idx}}">
+                <option value="pdf" {{#isPdf}}selected{{/isPdf}}>📄 {{#str}} pdf_file, tiny_studiolms {{/str}}</option>
+                <option value="video" {{#isVideo}}selected{{/isVideo}}>🎬 {{#str}} video_file, tiny_studiolms {{/str}}</option>
+                <option value="link" {{#isLink}}selected{{/isLink}}>🔗 {{#str}} link_file, tiny_studiolms {{/str}}</option>
+                <option value="podcast" {{#isPodcast}}selected{{/isPodcast}}>🎧 {{#str}} audio_file, tiny_studiolms {{/str}}</option>
+                <option value="file" {{#isFile}}selected{{/isFile}}>📁 {{#str}} generic_file, tiny_studiolms {{/str}}</option>
             </select>
         </div>
-        <div style="flex: 1;">
-            <input type="text" class="form-control form-control-sm i-title" value="{{title}}" data-idx="{{idx}}" placeholder="Título">
+        <div class="flex-grow-1">
+            <label for="wt_title_{{idx}}" class="visually-hidden">{{#str}} title, tiny_studiolms {{/str}}</label>
+            <input id="wt_title_{{idx}}" type="text" class="form-control form-control-sm i-title" value="{{title}}" data-idx="{{idx}}" placeholder="{{#str}} title, tiny_studiolms {{/str}}">
         </div>
     </div>
     <div class="mb-2">
-        <input type="text" class="form-control form-control-sm i-url" value="{{url}}" data-idx="{{idx}}" placeholder="https://...">
+        <label for="wt_url_{{idx}}" class="visually-hidden">URL</label>
+        <input id="wt_url_{{idx}}" type="text" class="form-control form-control-sm i-url" value="{{url}}" data-idx="{{idx}}" placeholder="https://...">
     </div>
     <div class="d-flex gap-2">
-        <div style="flex: 1;">
-            <input type="text" class="form-control form-control-sm i-desc" value="{{desc}}" data-idx="{{idx}}" placeholder="Descrição curta">
+        <div class="flex-grow-1">
+            <label for="wt_desc_{{idx}}" class="visually-hidden">{{#str}} short_desc, tiny_studiolms {{/str}}</label>
+            <input id="wt_desc_{{idx}}" type="text" class="form-control form-control-sm i-desc" value="{{desc}}" data-idx="{{idx}}" placeholder="{{#str}} short_desc, tiny_studiolms {{/str}}">
         </div>
         <div style="flex: 0 0 35%;">
-            <select class="form-select form-select-sm i-target" data-idx="{{idx}}">
-                <option value="_blank" {{#isTargetBlank}}selected{{/isTargetBlank}}>Nova</option>
-                <option value="_self" {{#isTargetSelf}}selected{{/isTargetSelf}}>Mesma</option>
-                <option value="popup" {{#isTargetPopup}}selected{{/isTargetPopup}}>Popup</option>
+            <label for="wt_target_{{idx}}" class="visually-hidden">{{#str}} wt_target, tiny_studiolms {{/str}}</label>
+            <select id="wt_target_{{idx}}" class="form-select form-select-sm i-target" data-idx="{{idx}}">
+                <option value="_blank" {{#isTargetBlank}}selected{{/isTargetBlank}}>{{#str}} target_new, tiny_studiolms {{/str}}</option>
+                <option value="_self" {{#isTargetSelf}}selected{{/isTargetSelf}}>{{#str}} target_self, tiny_studiolms {{/str}}</option>
+                <option value="popup" {{#isTargetPopup}}selected{{/isTargetPopup}}>{{#str}} target_popup, tiny_studiolms {{/str}}</option>
             </select>
         </div>
     </div>

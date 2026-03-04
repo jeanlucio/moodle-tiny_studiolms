@@ -1,18 +1,3 @@
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
  * Tiny StudioLMS plugin.
  *
@@ -52,30 +37,30 @@ export default Promise.all([
     getPluginMetadata(component, pluginName),
     getString('button_tooltip', component),
     getString('modal_title', component),
+    getString('pluginname', component),
     Templates.render(`${component}/modal`, {})
 ]).then(([
     tinyMCE,
     pluginMetadata,
     tooltip,
     modalTitle,
+    pluginNameStr,
     modalBodyHtml
 ]) => {
 
     tinyMCE.PluginManager.add(pluginName, (editor) => {
 
-const openStudioModal = async() => {
+        const openStudioModal = async() => {
             try {
                 const modal = await ModalFactory.create({
                     type: ModalFactory.types.DEFAULT,
                     title: modalTitle,
                     body: modalBodyHtml,
-                    large: true // Mantemos como base
+                    large: true
                 });
 
-                // Acessa o contêiner do Modal nativo via jQuery (Padrão da API do Moodle)
                 const modalRoot = modal.getRoot();
 
-                // Remove o limite Large e aplica o Extra Large + nossa classe customizada
                 modalRoot.find('.modal-dialog')
                     .removeClass('modal-lg')
                     .addClass('modal-xl studiolms-modal-dialog');
@@ -93,14 +78,16 @@ const openStudioModal = async() => {
         };
 
         editor.ui.registry.addIcon(buttonName, brushIcon);
+
         editor.ui.registry.addButton(buttonName, {
             icon: buttonName,
             tooltip: tooltip,
             onAction: openStudioModal
         });
+
         editor.ui.registry.addMenuItem(buttonName, {
             icon: buttonName,
-            text: 'StudioLMS',
+            text: pluginNameStr,
             onAction: openStudioModal
         });
 

@@ -30,7 +30,7 @@
     </div>
 
     <div class="d-flex gap-2 mb-3">
-        <div style="flex: 1;">
+        <div class="flex-grow-1">
             <label for="wt_layout" class="form-label small fw-bold text-muted mb-1">{{#str}} layout, tiny_studiolms {{/str}}</label>
             <select class="form-select form-select-sm" id="wt_layout">
                 <option value="list" {{^isGrid}}selected{{/isGrid}}>{{#str}} wt_layout_list, tiny_studiolms {{/str}}</option>
@@ -46,44 +46,54 @@
     <div class="border rounded p-2 bg-light mb-2">
         <div class="form-check form-switch mb-2">
             <input class="form-check-input ms-1" type="checkbox" id="wt_is_acc" {{#isAccordion}}checked{{/isAccordion}}>
-            <label class="form-check-label small fw-bold text-dark ms-2" for="wt_is_acc">Usar formato Acordeão</label>
+            <label class="form-check-label small fw-bold text-dark ms-2" for="wt_is_acc">{{#str}} use_accordion, tiny_studiolms {{/str}}</label>
         </div>
 
         <div class="mt-2 pt-2 border-top">
-            <label for="wt_acc_icon" class="form-label small fw-bold text-muted mb-1">{{#str}} acc_icon, tiny_studiolms {{/str}}</label>
-            <select class="form-select form-select-sm" id="wt_acc_icon">
-                <option value="▶">▶ Seta (Gira para baixo)</option>
-                <option value="▼">▼ Seta (Gira para cima)</option>
-                <option value="➕">➕ Expandir (Vira Menos)</option>
-                <option value="📁">📁 Pasta (Abre/Fecha)</option>
-                <option value="📕">📕 Livro (Abre/Fecha)</option>
-                <option value="🔒">🔒 Cadeado (Abre/Fecha)</option>
-                <option value="📥">📥 Caixa (Abre/Fecha)</option>
-            </select>
+            <div class="d-flex gap-2">
+                <div class="flex-grow-1">
+                    <label for="wt_acc_icon" class="form-label small fw-bold text-muted mb-1">{{#str}} acc_icon, tiny_studiolms {{/str}}</label>
+                    <select class="form-select form-select-sm" id="wt_acc_icon">
+                        <option value="▶">▶ {{#str}} icon_arrow_down, tiny_studiolms {{/str}}</option>
+                        <option value="▼">▼ {{#str}} icon_arrow_up, tiny_studiolms {{/str}}</option>
+                        <option value="➕">➕ {{#str}} icon_expand, tiny_studiolms {{/str}}</option>
+                        <option value="📁">📁 {{#str}} icon_folder_open, tiny_studiolms {{/str}}</option>
+                        <option value="📕">📕 {{#str}} icon_book_open, tiny_studiolms {{/str}}</option>
+                        <option value="🔒">🔒 {{#str}} icon_lock_open, tiny_studiolms {{/str}}</option>
+                        <option value="📥">📥 {{#str}} icon_box_open, tiny_studiolms {{/str}}</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="wt_header_bg" class="form-label small fw-bold text-muted mb-1">{{#str}} acc_color, tiny_studiolms {{/str}}</label>
+                    <input type="color" class="slms-color-picker d-block" id="wt_header_bg" value="{{accHeaderBg}}">
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <div class="mb-3 p-3 bg-light border rounded">
-    <h6 class="small fw-bold text-primary mb-2">⚡ Interatividade & Sons</h6>
+    <h6 class="small fw-bold text-primary mb-2"><span aria-hidden="true">⚡</span> {{#str}} interactivity_sounds, tiny_studiolms {{/str}}</h6>
     <div class="form-check mb-2">
         <input class="form-check-input" type="checkbox" id="wt_hover" {{#enableHover}}checked{{/enableHover}}>
-        <label class="form-check-label small" for="wt_hover">Efeito Hover (Zoom e Cor)</label>
+        <label class="form-check-label small" for="wt_hover">{{#str}} hover_effect, tiny_studiolms {{/str}}</label>
     </div>
     <div class="d-flex gap-2 mb-2">
-        <div style="flex: 1;">
+        <div class="flex-grow-1">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="wt_snd_hover_chk" {{#enableSoundHover}}checked{{/enableSoundHover}}>
-                <label class="form-check-label small" for="wt_snd_hover_chk">Som (Mouse)</label>
+                <label class="form-check-label small" for="wt_snd_hover_chk">{{#str}} sound_hover, tiny_studiolms {{/str}}</label>
             </div>
-            <input type="text" class="form-control form-control-sm mt-1" id="wt_snd_hover_url" value="{{soundHoverUrl}}" placeholder="URL do MP3">
+            <label for="wt_snd_hover_url" class="visually-hidden">{{#str}} mp3_url, tiny_studiolms {{/str}}</label>
+            <input type="text" class="form-control form-control-sm mt-1" id="wt_snd_hover_url" value="{{soundHoverUrl}}" placeholder="URL (.mp3)">
         </div>
-        <div style="flex: 1;">
+        <div class="flex-grow-1">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="wt_snd_click_chk" {{#enableSoundClick}}checked{{/enableSoundClick}}>
-                <label class="form-check-label small" for="wt_snd_click_chk">Som (Clique)</label>
+                <label class="form-check-label small" for="wt_snd_click_chk">{{#str}} sound_click, tiny_studiolms {{/str}}</label>
             </div>
-            <input type="text" class="form-control form-control-sm mt-1" id="wt_snd_click_url" value="{{soundClickUrl}}" placeholder="URL do MP3">
+            <label for="wt_snd_click_url" class="visually-hidden">{{#str}} mp3_url, tiny_studiolms {{/str}}</label>
+            <input type="text" class="form-control form-control-sm mt-1" id="wt_snd_click_url" value="{{soundClickUrl}}" placeholder="URL (.mp3)">
         </div>
     </div>
 </div>

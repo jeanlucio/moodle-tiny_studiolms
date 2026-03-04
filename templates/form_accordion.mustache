@@ -2,8 +2,6 @@
     @template tiny_studiolms/form_accordion
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
 
-    Configuration form for the Accordion block.
-
     Example context (json): {
         "title": "Tópico Expansível",
         "icon": "▼",
@@ -24,12 +22,12 @@
     <div class="mb-3">
         <label for="cfg_acc_icon" class="form-label small fw-bold text-muted">{{#str}} acc_icon, tiny_studiolms {{/str}}</label>
         <select class="form-select form-select-sm" id="cfg_acc_icon">
-            <option value="▼">▼ Seta para baixo</option>
-            <option value="▶">▶ Seta lateral</option>
-            <option value="➕">➕ Sinal de Mais</option>
-            <option value="📂">📂 Pasta</option>
-            <option value="💡">💡 Ideia</option>
-            <option value="📌">📌 Alfinete</option>
+            <option value="▼">▼ {{#str}} icon_down, tiny_studiolms {{/str}}</option>
+            <option value="▶">▶ {{#str}} icon_right, tiny_studiolms {{/str}}</option>
+            <option value="➕">➕ {{#str}} icon_plus, tiny_studiolms {{/str}}</option>
+            <option value="📂">📂 {{#str}} icon_folder, tiny_studiolms {{/str}}</option>
+            <option value="💡">💡 {{#str}} icon_idea, tiny_studiolms {{/str}}</option>
+            <option value="📌">📌 {{#str}} icon_pin, tiny_studiolms {{/str}}</option>
         </select>
     </div>
 
