@@ -1,6 +1,20 @@
 {{!
     @template tiny_studiolms/form_webteca_items
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Example context (json): {
+        "items": [
+            {
+                "idx": 0,
+                "num": 1,
+                "title": "Guia de Estudos",
+                "url": "https://moodle.org",
+                "desc": "PDF - 2MB",
+                "isPdf": true,
+                "isTargetBlank": true
+            }
+        ]
+    }
 }}
 {{#items}}
 <div class="border border-light-subtle rounded p-2 bg-white shadow-sm mb-2">

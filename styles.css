@@ -87,7 +87,7 @@
     border-radius: 0.5rem;
     border: 1px solid var(--bs-border-color, #dee2e6);
     padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 /* =========================================
@@ -151,7 +151,7 @@ a.slms-wt-item {
 a.slms-wt-item:hover,
 a.slms-wt-item:focus {
     transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 /* Efeito no botão interno do card */

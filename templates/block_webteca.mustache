@@ -1,6 +1,26 @@
 {{!
     @template tiny_studiolms/block_webteca
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Example context (json): {
+        "title": "Materiais de Apoio",
+        "description": "Recursos complementares para estudo.",
+        "titleColor": "#1e293b",
+        "descColor": "#64748b",
+        "isAccordion": false,
+        "isGrid": false,
+        "items": [
+            {
+                "title": "Guia de Estudos",
+                "desc": "PDF - 2MB",
+                "color": "#ef4444",
+                "icon": "📄",
+                "btnText": "Ler Arquivo",
+                "linkAttrs": "href=\"#\" target=\"_blank\"",
+                "containerAttrs": "tabindex=\"0\""
+            }
+        ]
+    }
 }}
 <div class="studiolms-webteca-wrap" contenteditable="false" style="margin-bottom: 20px;">
     {{{styleBlock}}}

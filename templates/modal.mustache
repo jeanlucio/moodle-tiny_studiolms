@@ -3,6 +3,8 @@
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
 
     StudioLMS main modal interface (Native Moodle Modal).
+
+    Example context (json): {}
 }}
 <div class="tiny-studiolms-wrapper container-fluid px-0" id="studiolms-app">
 
@@ -25,7 +27,7 @@
 
         <div class="row g-4">
             <div class="col-md-7">
-                <div class="slms-preview-panel" aria-label="{{#str}} preview, tiny_studiolms {{/str}}">
+                <div class="slms-preview-panel" role="region" aria-label="{{#str}} preview, tiny_studiolms {{/str}}">
                     <div id="slms-live-preview" class="w-100 shadow-sm bg-white rounded p-2">
                         </div>
                 </div>
