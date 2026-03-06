@@ -1,70 +1,45 @@
 {{!
     @template tiny_studiolms/block_webteca
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
-
-    Example context (json): {
-        "titleColor": "#1e293b",
-        "descColor": "#64748b",
-        "isAccordion": false,
-        "isGrid": false,
-        "items": [
-            {
-                "color": "#ef4444",
-                "icon": "📄",
-                "btnStrKey": "webteca_btn_read",
-                "linkAttrs": "href=\"#\" target=\"_blank\"",
-                "containerAttrs": "tabindex=\"0\""
-            }
-        ]
-    }
 }}
-<div class="studiolms-webteca-wrap" contenteditable="false" style="margin-bottom: 20px;">
-    {{{styleBlock}}}
-    {{#isAccordion}}
-    <details id="{{uid}}" class="wt-details" style="border: 1px solid #dce6f0; border-radius: 8px; background-color: #ffffff; overflow: hidden;" open>
-        <summary onclick="{{{onClickJs}}}" style="padding: 15px 20px; cursor: pointer; background-color: {{accHeaderBg}}; outline: none; list-style: none; white-space: nowrap;">
-            <span class="wt-icon-main" aria-hidden="true" style="font-size: 20px; color: {{titleColor}}; transition: transform 0.3s ease; display: inline-block; vertical-align: middle; min-width: 32px; text-align: center;">{{accIcon}}</span>
-            <span style="display: inline-block; vertical-align: middle; width: calc(100% - 40px); white-space: normal; line-height: 1.3;">
-                <strong style="font-size: 16px; color: {{titleColor}};">{{#title}}{{title}}{{/title}}{{^title}}{{#str}} webteca_default_title, tiny_studiolms {{/str}}{{/title}}</strong><br>
-                <span style="font-size: 13px; color: {{descColor}};">{{#description}}{{description}}{{/description}}{{^description}}{{#str}} webteca_default_desc, tiny_studiolms {{/str}}{{/description}}</span>
+<div class="studiolms-webteca-wrap" style="margin: 1.5rem 0; width: 100%; max-width: 900px;">
+
+    <details class="studiolms-webteca" open style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background-color: {{bg}}; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+
+        <summary style="display: block; list-style: none; outline: none; cursor: pointer; margin: 0; padding: 0; background-color: {{headerBg}}; border-bottom: 1px solid #e2e8f0;">
+            <span style="padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                <span style="display: flex; flex-direction: column; gap: 4px;">
+                    <span style="color: {{color}}; font-weight: bold; font-size: 1.2rem;">
+                        <span style="margin-right: 8px;">📚</span>{{title}}
+                    </span>
+                    <span style="color: #495057; font-size: 0.9rem;">{{desc}}</span>
+                </span>
+                <span contenteditable="false" style="font-size: 1rem; color: {{color}}; user-select: none; margin-left: 15px;">▼</span>
             </span>
         </summary>
-        <div class="wt-content-wrapper"><div class="wt-inner-content"><div style="padding: 20px; border-top: 1px solid #eef2f6;">
-    {{/isAccordion}}
-    {{^isAccordion}}
-    <div style="background-color: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0;">
-        <div style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-            <h3 style="margin: 0; color: {{titleColor}}; font-size: 18px; font-weight: bold;">{{#title}}{{title}}{{/title}}{{^title}}{{#str}} webteca_default_title, tiny_studiolms {{/str}}{{/title}}</h3>
-            <div style="font-size: 13px; color: {{descColor}}; margin-top: 4px;">{{#description}}{{description}}{{/description}}{{^description}}{{#str}} webteca_default_desc, tiny_studiolms {{/str}}{{/description}}</div>
-        </div>
-    {{/isAccordion}}
 
-        <div style="display: {{#isGrid}}grid{{/isGrid}}{{^isGrid}}flex{{/isGrid}}; {{#isGrid}}grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));{{/isGrid}}{{^isGrid}}flex-direction: column;{{/isGrid}} gap: 15px;">
+        <div contenteditable="false" style="padding: 1.5rem;">
+            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: {{listFlexDirection}}; flex-wrap: {{listFlexWrap}}; gap: 0.75rem;">
 
-            {{#items}}
-            <a {{{linkAttrs}}} style="text-decoration: none; display: flex; {{#isGrid}}flex-direction: column; align-items: center; text-align: center;{{/isGrid}}{{^isGrid}}align-items: center; text-align: left;{{/isGrid}} background: #fff; border: 1px solid #e2e8f0; border-{{#isGrid}}top{{/isGrid}}{{^isGrid}}left{{/isGrid}}: 5px solid {{color}}; border-radius: 8px; padding: 16px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03); transition: all 0.2s ease; color: inherit; outline: none;" {{{containerAttrs}}}>
+                {{#mappedResources}}
+                <li style="{{#isGrid}}flex: 1 1 calc(50% - 0.75rem); min-width: 250px;{{/isGrid}}">
+                    <a href="{{url}}" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; padding: 0.75rem 1rem; background: #ffffff; border: 1px solid #dee2e6; border-left: 4px solid {{typeColor}}; border-radius: 6px; text-decoration: none !important; color: #212529; font-weight: 500; transition: transform 0.2s ease, box-shadow 0.2s ease; height: 100%;">
+                        <span style="margin-right: 12px; font-size: 1.25rem;" aria-hidden="true">{{icon}}</span>
+                        <span style="flex-grow: 1;">{{title}}</span>
+                        <span style="color: {{typeColor}}; font-size: 0.8rem; font-weight: bold; padding: 4px 8px; background: rgba(0,0,0,0.03); border-radius: 4px;">Acessar ➔</span>
+                    </a>
+                </li>
+                {{/mappedResources}}
 
-                <span style="width: {{#isGrid}}60px{{/isGrid}}{{^isGrid}}42px{{/isGrid}}; height: {{#isGrid}}60px{{/isGrid}}{{^isGrid}}42px{{/isGrid}}; font-size: {{#isGrid}}28px{{/isGrid}}{{^isGrid}}20px{{/isGrid}}; border-radius: 50%; background: {{color}}15; color: {{color}}; display: flex; align-items: center; justify-content: center; {{#isGrid}}margin-bottom: 12px;{{/isGrid}}{{^isGrid}}flex-shrink: 0;{{/isGrid}}" aria-hidden="true">{{icon}}</span>
+                {{^mappedResources}}
+                <li style="padding: 1rem; text-align: center; color: #6c757d; font-style: italic; background: #ffffff; border-radius: 6px; border: 1px dashed #dee2e6; width: 100%;">
+                    {{#str}} no_resources, tiny_studiolms {{/str}}
+                </li>
+                {{/mappedResources}}
 
-                <span style="flex: 1; min-width: 0; {{#isGrid}}margin-bottom: 16px; width: 100%;{{/isGrid}}{{^isGrid}}margin-left: 14px; margin-right: 14px;{{/isGrid}} display: block;">
-                    <strong style="color: #334155; font-size: 15px; margin-bottom: 2px; line-height: 1.3; display: block;">{{#title}}{{title}}{{/title}}{{^title}}{{#str}} webteca_default_item_title, tiny_studiolms {{/str}}{{/title}}</strong>
-                    <span style="font-size: 13px; color: #64748b; line-height: 1.3; display: block;">{{#desc}}{{desc}}{{/desc}}{{^desc}}{{#str}} webteca_default_item_desc, tiny_studiolms {{/str}}{{/desc}}</span>
-                </span>
-
-                <span style="display: inline-flex; align-items: center; justify-content: center; padding: 6px 12px; font-size: 12px; font-weight: bold; color: {{color}}; border: 1px solid {{color}}40; border-radius: 6px; background: #fff; width: {{#isGrid}}100%{{/isGrid}}{{^isGrid}}auto{{/isGrid}}; margin-top: auto; transition: background 0.2s;" onmouseover="this.style.background='{{color}}10'" onmouseout="this.style.background='#fff'">
-                    {{btnText}} {{^isGrid}}<span aria-hidden="true" style="margin-left: 4px;">&rarr;</span>{{/isGrid}}
-                </span>
-            </a>
-            {{/items}}
-
+            </ul>
         </div>
 
-    {{#isAccordion}}
-        </div></div></div>
     </details>
-    {{/isAccordion}}
-    {{^isAccordion}}
-    </div>
-    {{/isAccordion}}
 </div>
 <p><br></p>

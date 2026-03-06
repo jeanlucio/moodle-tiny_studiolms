@@ -2,7 +2,7 @@
     @template tiny_studiolms/modal
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
 
-    StudioLMS main modal interface (Native Moodle Modal).
+    StudioLMS main modal interface (Native Moodle Modal) - Canva Style.
 
     Example context (json): {}
 }}
@@ -13,7 +13,7 @@
             </div>
     </div>
 
-    <div id="slms-view-editor" class="d-none">
+    <div id="slms-view-editor" class="d-none position-relative">
 
         <div class="slms-header d-flex justify-content-between align-items-center">
             <button id="slms-btn-back" class="btn btn-outline-secondary rounded-pill btn-sm">
@@ -25,24 +25,23 @@
             </button>
         </div>
 
-        <div class="row g-4">
-            <div class="col-md-7">
-                <div class="slms-preview-panel" role="region" aria-label="{{#str}} preview, tiny_studiolms {{/str}}">
-                    <div id="slms-live-preview" class="w-100 shadow-sm bg-white rounded p-2">
-                        </div>
-                </div>
+        <div id="slms-top-toolbar" class="slms-toolbar d-flex align-items-center gap-2 mb-3" role="toolbar" aria-label="{{#str}} configuration, tiny_studiolms {{/str}}">
             </div>
 
-            <div class="col-md-5">
-                <div class="slms-config-panel">
-                    <h6 class="text-uppercase text-muted fw-bold mb-4 small border-bottom pb-2">
-                        <span aria-hidden="true">⚙️</span> {{#str}} configuration, tiny_studiolms {{/str}}
-                    </h6>
-                    <form id="slms-config-form" onsubmit="return false;">
-                        </form>
-                </div>
+        <div class="slms-canvas-area position-relative">
+            <div class="slms-preview-panel" role="region" aria-label="{{#str}} preview, tiny_studiolms {{/str}}">
+                <div id="slms-live-preview" class="w-100 shadow-sm bg-white rounded p-4" style="transform-origin: top center; transition: transform 0.2s ease-out;">
+                    </div>
+            </div>
+
+            <div class="slms-zoom-controls shadow-sm" aria-hidden="true">
+                <button type="button" id="slms-zoom-out" title="Zoom Out">−</button>
+                <span id="slms-zoom-level">100%</span>
+                <button type="button" id="slms-zoom-in" title="Zoom In">+</button>
             </div>
         </div>
+
+        <div id="slms-popup-anchor" class="d-none" aria-hidden="true"></div>
 
     </div>
 </div>

@@ -1,0 +1,39 @@
+{{!
+	This file is part of Moodle - http://moodle.org/
+
+	Moodle is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Moodle is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_studiolms/popup_webteca_general
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+}}
+<div class="mb-3 pb-3 border-bottom">
+    <label for="pop_web_layout" class="form-label small fw-bold text-muted">{{#str}} layout, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_web_layout">
+        <option value="list" {{#isList}}selected{{/isList}}>{{#str}} layout_list, tiny_studiolms {{/str}}</option>
+        <option value="grid" {{#isGrid}}selected{{/isGrid}}>{{#str}} layout_grid, tiny_studiolms {{/str}}</option>
+    </select>
+</div>
+<div class="mb-3">
+    <label for="pop_web_title" class="form-label small fw-bold text-muted">{{#str}} webteca_title, tiny_studiolms {{/str}}</label>
+    <input type="text" class="form-control form-control-sm" id="pop_web_title" value="{{title}}">
+</div>
+<div class="mb-3">
+    <label for="pop_web_desc" class="form-label small fw-bold text-muted">{{#str}} webteca_desc, tiny_studiolms {{/str}}</label>
+    <textarea class="form-control form-control-sm" id="pop_web_desc" rows="2">{{desc}}</textarea>
+</div>
+<div class="d-flex justify-content-between align-items-center">
+    <label for="pop_web_bg" class="form-label m-0 small fw-bold text-muted">{{#str}} bg_color, tiny_studiolms {{/str}}</label>
+    <input type="color" class="slms-color-picker" id="pop_web_bg" value="{{bg}}">
+</div>

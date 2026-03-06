@@ -1,0 +1,29 @@
+{{!
+    @template tiny_studiolms/popup_card_button
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+}}
+<div class="mb-3 pb-3 border-bottom">
+    <label for="pop_card_btnAlign" class="form-label small fw-bold text-muted">{{#str}} alignment, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_card_btnAlign">
+        <option value="left" {{#isAlignLeft}}selected{{/isAlignLeft}}>{{#str}} align_left, tiny_studiolms {{/str}}</option>
+        <option value="center" {{#isAlignCenter}}selected{{/isAlignCenter}}>{{#str}} align_center, tiny_studiolms {{/str}}</option>
+        <option value="right" {{#isAlignRight}}selected{{/isAlignRight}}>{{#str}} align_right, tiny_studiolms {{/str}}</option>
+        <option value="full" {{#isAlignFull}}selected{{/isAlignFull}}>{{#str}} align_full, tiny_studiolms {{/str}}</option>
+    </select>
+</div>
+<div class="mb-3">
+    <label for="pop_card_btnText" class="form-label small fw-bold text-muted">{{#str}} button_text, tiny_studiolms {{/str}}</label>
+    <input type="text" class="form-control form-control-sm" id="pop_card_btnText" value="{{btnText}}" placeholder="Ex: Clique Aqui">
+</div>
+<div class="mb-3">
+    <label for="pop_card_btnUrl" class="form-label small fw-bold text-muted">{{#str}} button_url, tiny_studiolms {{/str}}</label>
+    <input type="text" class="form-control form-control-sm" id="pop_card_btnUrl" value="{{btnUrl}}" placeholder="https://...">
+</div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <label for="pop_card_btnBg" class="form-label m-0 small fw-bold text-muted">{{#str}} button_bg, tiny_studiolms {{/str}}</label>
+    <input type="color" class="slms-color-picker" id="pop_card_btnBg" value="{{btnBg}}">
+</div>
+<div class="d-flex justify-content-between align-items-center">
+    <label for="pop_card_btnTextCol" class="form-label m-0 small fw-bold text-muted">{{#str}} text_color, tiny_studiolms {{/str}}</label>
+    <input type="color" class="slms-color-picker" id="pop_card_btnTextCol" value="{{btnTextCol}}">
+</div>

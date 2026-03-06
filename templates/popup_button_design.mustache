@@ -1,0 +1,32 @@
+{{!
+    @template tiny_studiolms/popup_button_design
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Example context (json): {
+        "btnBg": "#0d47a1",
+        "btnTextCol": "#ffffff",
+        "radius": 6
+    }
+}}
+<div class="mb-3 pb-3 border-bottom">
+    <label for="pop_btn_align" class="form-label small fw-bold text-muted">{{#str}} alignment, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_btn_align">
+        <option value="left" {{#isAlignLeft}}selected{{/isAlignLeft}}>{{#str}} align_left, tiny_studiolms {{/str}}</option>
+        <option value="center" {{#isAlignCenter}}selected{{/isAlignCenter}}>{{#str}} align_center, tiny_studiolms {{/str}}</option>
+        <option value="right" {{#isAlignRight}}selected{{/isAlignRight}}>{{#str}} align_right, tiny_studiolms {{/str}}</option>
+        <option value="full" {{#isAlignFull}}selected{{/isAlignFull}}>{{#str}} align_full, tiny_studiolms {{/str}}</option>
+    </select>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <label for="pop_btn_bg" class="form-label m-0 small fw-bold text-muted">{{#str}} button_bg, tiny_studiolms {{/str}}</label>
+    <input type="color" class="slms-color-picker" id="pop_btn_bg" value="{{btnBg}}">
+</div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <label for="pop_btn_text_col" class="form-label m-0 small fw-bold text-muted">{{#str}} text_color, tiny_studiolms {{/str}}</label>
+    <input type="color" class="slms-color-picker" id="pop_btn_text_col" value="{{btnTextCol}}">
+</div>
+<div class="d-flex justify-content-between align-items-center">
+    <label for="pop_btn_radius" class="form-label m-0 small fw-bold text-muted">{{#str}} border_radius, tiny_studiolms {{/str}}</label>
+    <input type="number" class="form-control form-control-sm slms-input-number" id="pop_btn_radius" value="{{radius}}" min="0" max="50">
+</div>

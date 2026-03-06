@@ -1,0 +1,21 @@
+{{!
+    @template tiny_studiolms/popup_accordion_design
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+}}
+<div class="mb-3">
+    <label for="pop_acc_icon" class="form-label small fw-bold text-muted">{{#str}} icon_pair, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_acc_icon">
+        <option value="▼ / ▲" {{#icon_arrow}}selected{{/icon_arrow}}>▼ / ▲ Setas</option>
+        <option value="➕ / ➖" {{#icon_plus}}selected{{/icon_plus}}>➕ / ➖ Mais/Menos</option>
+        <option value="📁 / 📂" {{#icon_folder}}selected{{/icon_folder}}>📁 / 📂 Pasta</option>
+        <option value="▶ / ▼" {{#icon_triangle}}selected{{/icon_triangle}}>▶ / ▼ Triângulo</option>
+    </select>
+</div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <label for="pop_acc_color" class="form-label m-0 small fw-bold text-muted">{{#str}} main_color, tiny_studiolms {{/str}}</label>
+    <input type="color" class="slms-color-picker" id="pop_acc_color" value="{{color}}">
+</div>
+<div class="d-flex justify-content-between align-items-center">
+    <label for="pop_acc_bg" class="form-label m-0 small fw-bold text-muted">{{#str}} bg_color, tiny_studiolms {{/str}}</label>
+    <input type="color" class="slms-color-picker" id="pop_acc_bg" value="{{bg}}">
+</div>

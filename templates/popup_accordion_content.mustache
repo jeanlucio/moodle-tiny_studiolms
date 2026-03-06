@@ -1,0 +1,15 @@
+{{!
+    @template tiny_studiolms/popup_accordion_content
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+}}
+<div class="mb-3">
+    <label for="pop_acc_title" class="form-label small fw-bold text-muted">{{#str}} title, tiny_studiolms {{/str}}</label>
+    <input type="text" class="form-control form-control-sm" id="pop_acc_title" value="{{title}}">
+</div>
+<div class="mb-1">
+    <label for="pop_acc_state" class="form-label small fw-bold text-muted">{{#str}} initial_state, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_acc_state">
+        <option value="closed" {{#isClosed}}selected{{/isClosed}}>{{#str}} state_closed, tiny_studiolms {{/str}}</option>
+        <option value="open" {{#isOpen}}selected{{/isOpen}}>{{#str}} state_open, tiny_studiolms {{/str}}</option>
+    </select>
+</div>

@@ -1,0 +1,24 @@
+{{!
+    @template tiny_studiolms/popup_button_content
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Example context (json): {
+        "btnText": "Click",
+        "btnUrl": "#"
+    }
+}}
+<div class="mb-2">
+    <label for="pop_btn_text" class="form-label small fw-bold text-muted mb-1">{{#str}} button_text, tiny_studiolms {{/str}}</label>
+    <input type="text" class="form-control form-control-sm" id="pop_btn_text" value="{{btnText}}">
+</div>
+<div class="mb-2">
+    <label for="pop_btn_url" class="form-label small fw-bold text-muted mb-1">{{#str}} button_url, tiny_studiolms {{/str}}</label>
+    <input type="text" class="form-control form-control-sm" id="pop_btn_url" value="{{btnUrl}}" placeholder="https://...">
+</div>
+<div>
+    <label for="pop_btn_target" class="form-label small fw-bold text-muted mb-1">{{#str}} wt_target, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_btn_target">
+        <option value="_blank" {{#isTargetBlank}}selected{{/isTargetBlank}}>{{#str}} wt_target_blank, tiny_studiolms {{/str}}</option>
+        <option value="_self" {{^isTargetBlank}}selected{{/isTargetBlank}}>{{#str}} wt_target_self, tiny_studiolms {{/str}}</option>
+    </select>
+</div>

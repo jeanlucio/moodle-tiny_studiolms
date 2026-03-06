@@ -9,19 +9,21 @@
 .tiny_studiolms {
     background-color: var(--bs-body-bg, #fff);
     font-family: inherit;
+    position: relative;
 }
 
-/* Internal header */
+/* -----------------------------------------
+   HEADER & LIBRARY
+   ----------------------------------------- */
 .tiny_studiolms .slms-header {
     border: 1px solid var(--bs-border-color, #dee2e6);
     background-color: var(--bs-gray-100, #f8f9fa);
     padding: 0.75rem 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-/* Library View (Grid) */
 .tiny_studiolms .slms-library-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -61,39 +63,163 @@
     pointer-events: none;
 }
 
-/* Editor View */
-.tiny_studiolms .slms-preview-panel {
+/* -----------------------------------------
+   NEW: CANVA-STYLE EDITOR & TOOLBAR
+   ----------------------------------------- */
+
+/* Top Toolbar */
+.tiny_studiolms .slms-toolbar {
+    background-color: var(--bs-white, #fff);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    flex-wrap: wrap;
+}
+
+/* Toolbar Buttons */
+.tiny_studiolms .slms-toolbar-btn {
+    background: var(--bs-gray-100, #f8f9fa);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--bs-gray-700, #495057);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.tiny_studiolms .slms-toolbar-btn:hover,
+.tiny_studiolms .slms-toolbar-btn.active {
+    background: var(--bs-gray-200, #e9ecef);
+    border-color: var(--bs-gray-400, #ced4da);
+    color: var(--bs-gray-900, #212529);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+/* Canvas Area (Where the preview lives) */
+.tiny_studiolms .slms-canvas-area {
     background-image: radial-gradient(var(--bs-border-color, #dee2e6) 1px, transparent 0);
     background-size: 20px 20px;
     background-color: var(--bs-gray-100, #f1f3f5);
-    padding: 1.5rem;
+    /* O SEGREDO: 5rem no topo cria a "Safe Zone" para os popups! */
+    padding: 10rem 2rem 2rem 2rem;
     border-radius: 0.5rem;
     border: 1px solid var(--bs-border-color, #dee2e6);
-    position: sticky;
-    top: 1rem;
+    min-height: 55vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-y: auto;
 }
 
-.tiny_studiolms .slms-config-panel {
-    background-color: var(--bs-white, #fff);
-    border-radius: 0.5rem;
+.tiny_studiolms .slms-preview-panel {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* -----------------------------------------
+   ZOOM CONTROLS (CANVA STYLE)
+   ----------------------------------------- */
+.tiny_studiolms .slms-zoom-controls {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 2rem;
+    background: var(--bs-white, #fff);
     border: 1px solid var(--bs-border-color, #dee2e6);
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    border-radius: 2rem;
+    display: flex;
+    align-items: center;
+    padding: 0.25rem;
+    z-index: 1050;
 }
 
+.tiny_studiolms .slms-zoom-controls button {
+    background: transparent;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--bs-gray-700, #495057);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.tiny_studiolms .slms-zoom-controls button:hover {
+    background: var(--bs-gray-200, #e9ecef);
+}
+
+.tiny_studiolms .slms-zoom-controls span {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--bs-gray-700, #495057);
+    min-width: 45px;
+    text-align: center;
+    user-select: none;
+}
+
+/* -----------------------------------------
+   FLOATING POPUPS
+   ----------------------------------------- */
+.tiny_studiolms .slms-popup-container {
+    position: absolute;
+    background: var(--bs-white, #fff);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    padding: 1.25rem;
+    z-index: 1060; /* Above modal native */
+    min-width: 280px;
+    max-width: 360px;
+    animation: slms-fade-in 0.15s ease-out;
+}
+
+/* NOVO: A setinha (caret) que aponta para o botão na Toolbar */
+.tiny_studiolms .slms-popup-container::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 24px;
+    width: 12px;
+    height: 12px;
+    background: var(--bs-white, #fff);
+    border-top: 1px solid var(--bs-border-color, #dee2e6);
+    border-left: 1px solid var(--bs-border-color, #dee2e6);
+    transform: rotate(45deg);
+}
+
+@keyframes slms-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* -----------------------------------------
+   GENERAL UTILITIES & INJECTED STYLES
+   ----------------------------------------- */
 .tiny_studiolms .slms-color-picker {
-    width: 48px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     padding: 0;
     border: 1px solid var(--bs-border-color, #dee2e6);
     border-radius: 0.25rem;
     cursor: pointer;
     background-color: transparent;
-}
-
-.tiny_studiolms .slms-input-number {
-    max-width: 70px;
-    text-align: center;
 }
 
 /* Modal Native Overrides */
@@ -107,40 +233,29 @@
     }
 }
 
-.tiny_studiolms .row {
-    min-height: 60vh;
-}
-
-/* Webteca Core Effects (Injected into editor view) */
+/* Webteca Component Styles */
 details.wt-details summary {
     list-style: none;
     outline: none;
 }
+
 details.wt-details summary::-webkit-details-marker {
     display: none;
 }
+
 details.wt-details .wt-icon-main {
     transition: transform 0.3s ease;
     display: inline-block;
     transform-origin: center;
 }
+
 details.wt-details[open] summary .wt-icon-main {
     transform: rotate(90deg);
 }
-
-a.slms-wt-item {
-    transition: all 0.2s ease;
+/* Classes para o Popup da Webteca (Substituindo o CSS Inline do JS) */
+.tiny_studiolms .slms-webteca-select {
+    max-width: 130px;
 }
-a.slms-wt-item:hover,
-a.slms-wt-item:focus {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-a.slms-wt-item .slms-wt-btn {
-    transition: background-color 0.2s;
-}
-a.slms-wt-item:hover .slms-wt-btn,
-a.slms-wt-item:focus .slms-wt-btn {
-    background-color: rgba(0, 0, 0, 0.05);
+.tiny_studiolms .slms-btn-fit {
+    height: fit-content;
 }

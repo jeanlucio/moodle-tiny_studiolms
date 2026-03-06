@@ -8,12 +8,14 @@
         "btnBg": "#0d47a1",
         "btnTextCol": "#ffffff",
         "radius": 6,
-        "btnText": "Access Course"
+        "textAlign": "center",
+        "displayMode": "inline-flex",
+        "isFullWidth": false
     }
 }}
-<div class="studiolms-btn-wrap" contenteditable="false" style="display: inline-block; margin: 5px 0;">
-    <a href="{{btnUrl}}" target="{{target}}" {{#isTargetBlank}}rel="noopener noreferrer"{{/isTargetBlank}} style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 20px; font-family: inherit; font-weight: 600; font-size: 14px; text-decoration: none !important; border-bottom: 0 !important; border-radius: {{radius}}px; background-color: {{btnBg}}; color: {{btnTextCol}}; border: 1px solid transparent; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.2s ease; cursor: pointer; line-height: 1.2; vertical-align: middle;">
+<div class="studiolms-btn-wrap" contenteditable="false" style="margin: 15px 0; text-align: {{textAlign}};">
+    <a href="{{btnUrl}}" target="{{target}}" {{#isTargetBlank}}rel="noopener noreferrer"{{/isTargetBlank}} style="display: {{displayMode}}; {{#isFullWidth}}width: 100%; box-sizing: border-box;{{/isFullWidth}} align-items: center; justify-content: center; gap: 6px; padding: 12px 24px; font-family: inherit; font-weight: 600; font-size: 15px; text-decoration: none !important; border-bottom: 0 !important; border-radius: {{radius}}px; background-color: {{btnBg}}; color: {{btnTextCol}}; border: 1px solid transparent; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.2s ease; cursor: pointer; line-height: 1.2;">
         {{#btnText}}{{btnText}}{{/btnText}}{{^btnText}}{{#str}} button_text, tiny_studiolms {{/str}}{{/btnText}}
     </a>
 </div>
-&nbsp;
+<p><br></p>

@@ -1,0 +1,27 @@
+{{!
+    @template tiny_studiolms/popup_card_media
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Example context (json): {
+        "mediaUrl": ""
+    }
+}}
+<div class="mb-3">
+    <label for="pop_card_mediaType" class="form-label small fw-bold text-muted">{{#str}} media_type, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_card_mediaType">
+        <option value="none" {{#media_none}}selected{{/media_none}}>{{#str}} media_none, tiny_studiolms {{/str}}</option>
+        <option value="image" {{#media_image}}selected{{/media_image}}>{{#str}} media_image, tiny_studiolms {{/str}}</option>
+        <option value="video" {{#media_video}}selected{{/media_video}}>{{#str}} media_video, tiny_studiolms {{/str}}</option>
+    </select>
+</div>
+<div class="mb-3">
+    <label for="pop_card_mediaUrl" class="form-label small fw-bold text-muted">{{#str}} media_url, tiny_studiolms {{/str}}</label>
+    <input type="text" class="form-control form-control-sm" id="pop_card_mediaUrl" value="{{mediaUrl}}" placeholder="https://...">
+</div>
+<div class="mb-1">
+    <label for="pop_card_layout" class="form-label small fw-bold text-muted">{{#str}} layout, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_card_layout">
+        <option value="vertical" {{#layout_vertical}}selected{{/layout_vertical}}>{{#str}} layout_vertical, tiny_studiolms {{/str}}</option>
+        <option value="horizontal" {{#layout_horizontal}}selected{{/layout_horizontal}}>{{#str}} layout_horizontal, tiny_studiolms {{/str}}</option>
+    </select>
+</div>

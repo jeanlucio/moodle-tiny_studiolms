@@ -1,20 +1,24 @@
 {{!
     @template tiny_studiolms/block_accordion
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
-
-    Example context (json): {
-        "title": "Topic 1", "icon": "▼", "color": "#e0f2fe", "isOpen": false
-    }
 }}
-<div class="studiolms-accordion-wrap" contenteditable="false" style="margin-bottom: 15px;">
-    <details style="border: 1px solid #dce6f0; border-radius: 8px; background-color: #ffffff; overflow: hidden;" {{#isOpen}}open{{/isOpen}}>
-        <summary style="padding: 12px 16px; cursor: pointer; font-weight: bold; background-color: {{color}}; color: #111827; display: flex; align-items: center; gap: 10px; outline: none;">
-            <span aria-hidden="true" style="min-width: 24px; text-align: center; font-size: 1.1em;">{{icon}}</span>
-            <span style="flex: 1;">{{#title}}{{title}}{{/title}}{{^title}}{{#str}} accordion_default_title, tiny_studiolms {{/str}}{{/title}}</span>
+<div class="studiolms-accordion-wrap" style="margin: 1.5rem 0; max-width: 900px; width: 100%;">
+
+    <details class="studiolms-accordion" data-initial-state="{{state}}" open style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background-color: {{bg}};">
+
+        <summary style="display: block; list-style: none; outline: none; cursor: pointer; margin: 0; padding: 0;">
+
+            <span style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; font-weight: bold; font-size: 1.1rem; color: {{color}};">
+                <span style="flex-grow: 1;">{{title}}</span>
+                <span contenteditable="false" style="font-size: 0.9em; user-select: none; margin-left: 15px;">{{iconFirst}}</span>
+            </span>
+
         </summary>
-        <div contenteditable="true" style="padding: 20px; border-top: 1px solid #eef2f6; color: #334155; outline: none; min-height: 60px;">
-            <p style="margin-top: 0;">{{#str}} default_accordion_text, tiny_studiolms {{/str}}</p>
+
+        <div class="studiolms-editable-area" style="padding: 1.5rem; border-top: 1px solid #e2e8f0; background: transparent; font-weight: normal; color: #212529;">
+            <p style="margin-top: 0;">Escreva o conteúdo do tópico aqui. Pode usar as ferramentas do Moodle para adicionar imagens, listas e links.</p>
         </div>
+
     </details>
 </div>
 <p><br></p>

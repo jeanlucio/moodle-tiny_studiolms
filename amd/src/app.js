@@ -1,5 +1,5 @@
 /**
- * Core application logic for StudioLMS with Live Preview.
+ * Core application logic for StudioLMS with Live Preview and Canva-style Toolbar.
  *
  * @module     tiny_studiolms/app
  * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
@@ -16,7 +16,8 @@ let currentConfig = null;
 let currentBlockType = null;
 let tinyEditorInstance = null;
 let moodleModalInstance = null;
-let initialSelectedText = ''; // Nova variável de estado
+let initialSelectedText = '';
+let currentZoom = 1;
 
 /**
  * Initializes the application inside the modal.
@@ -29,11 +30,66 @@ export const initStudioApp = (editor, modal, selectedText = '') => {
     tinyEditorInstance = editor;
     moodleModalInstance = modal;
     initialSelectedText = selectedText;
+    currentZoom = 1; // Garante que começa a 100%
 
     setTimeout(() => {
         setupNavigation();
+        setupZoomControls(); // Inicializa o Zoom
         renderLibrary();
     }, 100);
+};
+
+/**
+ * Sets up the Zoom controls for the Canvas area.
+ */
+const setupZoomControls = () => {
+    const btnIn = document.getElementById('slms-zoom-in');
+    const btnOut = document.getElementById('slms-zoom-out');
+    const lblZoom = document.getElementById('slms-zoom-level');
+    const previewPanel = document.getElementById('slms-live-preview');
+
+    // Capturamos a área inteira do Canvas para detetar o scroll
+    const canvasArea = document.querySelector('.slms-canvas-area');
+
+    if (!btnIn || !btnOut || !lblZoom || !previewPanel) {
+        return;
+    }
+
+    const updateZoom = (newZoom) => {
+        // Limita o zoom entre 50% e 150%
+        currentZoom = Math.max(0.5, Math.min(newZoom, 1.5));
+        lblZoom.textContent = `${Math.round(currentZoom * 100)}%`;
+        previewPanel.style.transform = `scale(${currentZoom})`;
+    };
+
+    btnIn.addEventListener('click', () => updateZoom(currentZoom + 0.1));
+    btnOut.addEventListener('click', () => updateZoom(currentZoom - 0.1));
+
+    // Reseta o zoom para 100% ao clicar no número
+    lblZoom.addEventListener('click', () => {
+        if (currentZoom !== 1) {
+            updateZoom(1);
+        }
+    });
+    lblZoom.style.cursor = 'pointer';
+
+    // NOVO: Atalho CTRL + Scroll do Rato (Estilo Canva/Figma)
+    if (canvasArea) {
+        canvasArea.addEventListener('wheel', (e) => {
+            // Verifica se o CTRL (Windows) ou CMD (Mac) está pressionado
+            if (e.ctrlKey || e.metaKey) {
+                e.preventDefault(); // Impede o zoom nativo da página inteira do navegador
+
+                // e.deltaY > 0 significa scroll para baixo (afastar)
+                // Usamos 0.05 para um zoom mais suave e contínuo com a rodinha
+                if (e.deltaY > 0) {
+                    updateZoom(currentZoom - 0.05);
+                } else if (e.deltaY < 0) {
+                    updateZoom(currentZoom + 0.05);
+                }
+            }
+        }, {passive: false}); // O passive: false é obrigatório para o preventDefault funcionar no 'wheel'
+    }
 };
 
 /**
@@ -45,6 +101,7 @@ const setupNavigation = () => {
 
     if (btnBack) {
         btnBack.addEventListener('click', () => {
+            PopupManager.closeAll();
             toggleView('library');
         });
     }
@@ -91,6 +148,106 @@ const toggleView = (viewName) => {
 };
 
 /**
+ * Global Popup Manager for contextual menus.
+ */
+export const PopupManager = {
+    closeAll: () => {
+        const anchor = document.getElementById('slms-popup-anchor');
+        if (anchor) {
+            anchor.innerHTML = '';
+            anchor.classList.add('d-none');
+        }
+    },
+
+    open: async(btnElement, templateName, templateData, setupListeners) => {
+        const anchor = document.getElementById('slms-popup-anchor');
+        if (!anchor) {
+            return;
+        }
+
+        PopupManager.closeAll();
+
+        // NOVO: Tira um Snapshot do estado atual para o botão Cancelar
+        const snapshot = JSON.parse(JSON.stringify(currentConfig));
+
+        try {
+            const {html, js} = await Templates.renderForPromise(templateName, templateData);
+
+            // Busca as strings de tradução do Moodle
+            const strCancel = await getString('cancel', 'core');
+            const strOk = await getString('ok', 'core');
+
+            // Constrói o rodapé com os botões
+            const footerHtml = `
+                <div class="d-flex justify-content-end gap-2 mt-3 pt-3 border-top slms-popup-footer">
+                    <button type="button" class="btn btn-sm btn-outline-secondary slms-btn-cancel">${strCancel}</button>
+                    <button type="button" class="btn btn-sm btn-primary slms-btn-ok px-3">${strOk}</button>
+                </div>
+            `;
+
+            Templates.replaceNodeContents(anchor, html, js);
+
+            // Injeta o rodapé no final do popup
+            const footerContainer = document.createElement('div');
+            footerContainer.innerHTML = footerHtml;
+            anchor.appendChild(footerContainer.firstElementChild);
+
+            anchor.classList.remove('d-none');
+            anchor.classList.add('slms-popup-container');
+
+            // Posicionamento do popup
+            const btnRect = btnElement.getBoundingClientRect();
+            const editorCont = document.getElementById('slms-view-editor');
+            const editorRect = editorCont.getBoundingClientRect();
+
+            let topPos = (btnRect.bottom - editorRect.top) + 8;
+            let leftPos = btnRect.left - editorRect.left;
+
+            if (leftPos + 320 > editorRect.width) {
+                leftPos = editorRect.width - 340;
+            }
+
+            anchor.style.top = `${topPos}px`;
+            anchor.style.left = `${Math.max(10, leftPos)}px`;
+
+            if (setupListeners) {
+                setupListeners(anchor);
+            }
+
+            // NOVO: Listeners dos botões OK e Cancelar
+            const btnCancel = anchor.querySelector('.slms-btn-cancel');
+            const btnOk = anchor.querySelector('.slms-btn-ok');
+
+            btnCancel.addEventListener('click', () => {
+                // Limpa o objeto atual e restaura a "fotografia"
+                Object.keys(currentConfig).forEach(k => delete currentConfig[k]);
+                Object.assign(currentConfig, snapshot);
+                updateLivePreview();
+                PopupManager.closeAll();
+            });
+
+            btnOk.addEventListener('click', () => {
+                PopupManager.closeAll(); // Apenas fecha, a edição já foi salva no currentConfig
+            });
+
+            // Clique fora do popup agora salva automaticamente (comportamento Canva mantido)
+            setTimeout(() => {
+                const outsideClickListener = (e) => {
+                    if (!anchor.contains(e.target) && !btnElement.contains(e.target)) {
+                        PopupManager.closeAll();
+                        document.removeEventListener('click', outsideClickListener);
+                    }
+                };
+                document.addEventListener('click', outsideClickListener);
+            }, 50);
+
+        } catch (error) {
+            Notification.exception(error);
+        }
+    }
+};
+
+/**
  * Renders the library cards with dynamic thumbnails.
  */
 const renderLibrary = () => {
@@ -118,6 +275,7 @@ const renderLibrary = () => {
                 e.preventDefault();
                 openConfigurationPanel(blockDef, translatedTitle);
             });
+
             card.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
@@ -143,7 +301,6 @@ const renderLibrary = () => {
             } catch (strError) {
                 errorNode.textContent = await getString('error', 'core');
             }
-
             card.appendChild(errorNode);
         }
     });
@@ -159,7 +316,6 @@ const openConfigurationPanel = (blockDef, translatedTitle) => {
     currentBlockType = blockDef;
     currentConfig = Object.assign({}, blockDef.defaultData);
 
-    // CAMINHO INVERSO: Se houver texto selecionado, tenta injetar no campo principal do bloco
     if (initialSelectedText !== '') {
         if (typeof currentConfig.btnText !== 'undefined') {
             currentConfig.btnText = initialSelectedText;
@@ -168,19 +324,25 @@ const openConfigurationPanel = (blockDef, translatedTitle) => {
         }
     }
 
-    const formContainer = document.getElementById('slms-config-form');
     const headerTitle = document.getElementById('slms-editor-title');
-
     if (headerTitle) {
         headerTitle.textContent = translatedTitle;
     }
 
     toggleView('editor');
 
-    blockDef.buildConfigForm(formContainer, currentConfig, (updatedData) => {
-        currentConfig = updatedData;
-        updateLivePreview();
-    });
+    const toolbarContainer = document.getElementById('slms-top-toolbar');
+    if (toolbarContainer) {
+        toolbarContainer.innerHTML = '';
+
+        // NOVO: Renderiza a barra superior contextual do bloco
+        if (blockDef.buildToolbar) {
+            blockDef.buildToolbar(toolbarContainer, currentConfig, (updatedData) => {
+                currentConfig = updatedData;
+                updateLivePreview();
+            }, PopupManager);
+        }
+    }
 
     updateLivePreview();
 };
@@ -199,7 +361,6 @@ const updateLivePreview = async() => {
         previewContainer.innerHTML = html;
     } catch (error) {
         previewContainer.innerHTML = '';
-
         const alertNode = document.createElement('div');
         alertNode.className = 'alert alert-warning';
 
@@ -208,7 +369,6 @@ const updateLivePreview = async() => {
         } catch (strError) {
             alertNode.textContent = await getString('error', 'core');
         }
-
         previewContainer.appendChild(alertNode);
     }
 };
