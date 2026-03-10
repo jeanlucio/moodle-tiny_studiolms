@@ -23,14 +23,14 @@
     {{#isH3}}
     <h3 style="background-color: {{bgColor}}; color: {{textColor}}; padding: 8px; border-radius: 6px; margin: 0; font-size: 1.5rem; display: flex; align-items: center;">
         <span contenteditable="false" style="user-select: none; margin-right: 8px;" aria-hidden="true">{{icon}}</span>
-        <span class="slms-heading-text" style="flex-grow: 1;">{{{text}}}</span>
+        <span class="slms-heading-text" contenteditable="true" style="flex-grow: 1; outline: none;">{{{text}}}</span>
     </h3>
     {{/isH3}}
 
     {{#isH4}}
     <h4 style="background-color: {{bgColor}}; border-left: 6px solid {{textColor}}; padding: 8px; margin: 0; font-size: 1.25rem; color: #333; display: flex; align-items: center;">
         <span contenteditable="false" style="user-select: none; margin-right: 8px;" aria-hidden="true">{{icon}}</span>
-        <span class="slms-heading-text" style="flex-grow: 1;">{{{text}}}</span>
+        <span class="slms-heading-text" contenteditable="true" style="flex-grow: 1; outline: none;">{{{text}}}</span>
     </h4>
     {{/isH4}}
 

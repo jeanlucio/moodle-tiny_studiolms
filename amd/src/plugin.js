@@ -52,8 +52,21 @@ export default Promise.all([
 
         const openStudioModal = async() => {
             try {
-                // CAPTURA O CAMINHO INVERSO: Pega o texto selecionado (limpo de HTML)
-                const selectedText = editor.selection.getContent({format: 'text'}).trim();
+                const selectedNode = editor.selection.getNode();
+                // Procura a tag superior que contém o nosso bloco
+                let slmsBlock = selectedNode.closest('[data-slms-block-type]');
+                if (!slmsBlock && selectedNode.hasAttribute('data-slms-block-type')) {
+                    slmsBlock = selectedNode;
+                }
+
+                let editData = null;
+                if (slmsBlock) {
+                    editData = {
+                        node: slmsBlock,
+                        type: slmsBlock.getAttribute('data-slms-block-type'),
+                        state: slmsBlock.getAttribute('data-slms-state')
+                    };
+                }
 
                 const modal = await ModalFactory.create({
                     type: ModalFactory.types.DEFAULT,
@@ -63,18 +76,12 @@ export default Promise.all([
                 });
 
                 const modalRoot = modal.getRoot();
-                modalRoot.find('.modal-dialog')
-                    .removeClass('modal-lg')
-                    .addClass('modal-xl studiolms-modal-dialog');
+                modalRoot.find('.modal-dialog').removeClass('modal-lg').addClass('modal-xl studiolms-modal-dialog');
 
-                modalRoot.on(ModalEvents.hidden, () => {
-                    modal.destroy();
-                });
-
+                modalRoot.on(ModalEvents.hidden, () => modal.destroy());
                 modal.show();
-                // Passamos o selectedText para a inicialização do App
-                initStudioApp(editor, modal, selectedText);
 
+                initStudioApp(editor, modal, editData);
             } catch (error) {
                 Notification.exception(error);
             }
@@ -82,10 +89,21 @@ export default Promise.all([
 
         editor.ui.registry.addIcon(buttonName, brushIcon);
 
-        editor.ui.registry.addButton(buttonName, {
+        // MÁGICA VISUAL: addToggleButton faz o botão acender quando ativo!
+        editor.ui.registry.addToggleButton(buttonName, {
             icon: buttonName,
             tooltip: tooltip,
-            onAction: openStudioModal
+            onAction: openStudioModal,
+            onSetup: (api) => {
+                // Escuta toda vez que o cursor mudar de lugar no Moodle
+                const nodeChangeHandler = (e) => {
+                    const isSlmsBlock = e.element.closest('[data-slms-block-type]') !== null ||
+                        e.element.hasAttribute('data-slms-block-type');
+                    api.setActive(isSlmsBlock);
+                };
+                editor.on('NodeChange', nodeChangeHandler);
+                return () => editor.off('NodeChange', nodeChangeHandler);
+            }
         });
 
         editor.ui.registry.addMenuItem(buttonName, {
@@ -100,6 +118,18 @@ export default Promise.all([
     const configure = (instanceConfig) => {
         instanceConfig.toolbar = addToolbarButton(instanceConfig.toolbar, 'content', buttonName);
         instanceConfig.menu = addMenubarItem(instanceConfig.menu, 'tools', buttonName);
+
+        // MÁGICA DA MEMÓRIA: Proíbe o Moodle/TinyMCE de apagar nossos dados Base64
+        const customAttrs = '*[data-slms-block-type|data-slms-state|contenteditable]';
+
+        if (instanceConfig.extended_valid_elements) {
+            // eslint-disable-next-line camelcase
+            instanceConfig.extended_valid_elements += ',' + customAttrs;
+        } else {
+            // eslint-disable-next-line camelcase
+            instanceConfig.extended_valid_elements = customAttrs;
+        }
+
         return instanceConfig;
     };
 

@@ -1,0 +1,189 @@
+/**
+ * Advanced Card block definition.
+ *
+ * @module     tiny_studiolms/blocks/card
+ * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+import Templates from 'core/templates';
+import {getString} from 'core/str';
+
+export default {
+    id: 'advancedCard',
+    titleString: 'block_card_title',
+    icon: '🃏',
+    defaultData: {
+        bg: '#ffffff',
+        text: '#212529',
+        border: '#0d47a1',
+        radius: 8,
+        shadow: 'md',
+        mediaType: 'none',
+        mediaUrl: '',
+        layout: 'vertical',
+        btnText: '',
+        btnUrl: '#',
+        btnBg: '#0d47a1',
+        btnTextCol: '#ffffff',
+        btnAlign: 'left',
+        content: '<h4 style="margin-top: 0; color: inherit; font-weight: bold;">Título do cartão</h4>' +
+                 '<p style="margin-bottom: 0;">Escreva seu conteúdo aqui.</p>'
+    },
+
+    // Exclude the rich text area from the Base64 state chip.
+    excludeFromState: ['content'],
+
+    // Extract the rich text back from the Moodle DOM node.
+    extractDOM: (node, state) => {
+        const contentNode = node.querySelector('.studiolms-editable-area');
+        if (contentNode) {
+            state.content = contentNode.innerHTML;
+        }
+        // Extract dynamically typed border color if it was overridden by contenteditable.
+        const headerNode = node.querySelector('h4');
+        if (headerNode && headerNode.style.color && headerNode.style.color !== 'inherit') {
+            // Keep the format standard if needed, but usually innerHTML extraction handles it.
+        }
+    },
+
+    buildToolbar: async(container, data, onUpdate, PopupManager) => {
+        try {
+            const {html, js} = await Templates.renderForPromise('tiny_studiolms/toolbar_card', {});
+            Templates.replaceNodeContents(container, html, js);
+
+            const btnDesign = container.querySelector('#tb-card-design');
+            const btnMedia = container.querySelector('#tb-card-media');
+            const btnButton = container.querySelector('#tb-card-button');
+
+            if (btnDesign) {
+                btnDesign.addEventListener('click', () => {
+                    const tplData = Object.assign({}, data);
+                    tplData[`shadow_${data.shadow}`] = true;
+
+                    PopupManager.open(btnDesign, 'tiny_studiolms/popup_card_design', tplData, (popup) => {
+                        // Explicit property mapping.
+                        const propMap = {
+                            '#pop_card_bg': 'bg',
+                            '#pop_card_text': 'text',
+                            '#pop_card_border': 'border',
+                            '#pop_card_radius': 'radius',
+                            '#pop_card_shadow': 'shadow'
+                        };
+                        Object.keys(propMap).forEach(selector => {
+                            const el = popup.querySelector(selector);
+                            if (el) {
+                                el.addEventListener('input', (ev) => {
+                                    data[propMap[selector]] = ev.target.value;
+                                    onUpdate(data);
+                                });
+                            }
+                        });
+                    });
+                });
+            }
+
+            if (btnMedia) {
+                btnMedia.addEventListener('click', () => {
+                    const tplData = Object.assign({}, data);
+                    tplData[`media_${data.mediaType}`] = true;
+                    tplData[`layout_${data.layout}`] = true;
+
+                    PopupManager.open(btnMedia, 'tiny_studiolms/popup_card_media', tplData, (popup) => {
+                        const propMap = {
+                            '#pop_card_mediaType': 'mediaType',
+                            '#pop_card_mediaUrl': 'mediaUrl',
+                            '#pop_card_layout': 'layout'
+                        };
+                        Object.keys(propMap).forEach(selector => {
+                            const el = popup.querySelector(selector);
+                            if (el) {
+                                el.addEventListener('input', (ev) => {
+                                    data[propMap[selector]] = ev.target.value;
+                                    onUpdate(data);
+                                });
+                            }
+                        });
+                    });
+                });
+            }
+
+            if (btnButton) {
+                btnButton.addEventListener('click', () => {
+                    const tplData = Object.assign({}, data);
+                    tplData.isAlignLeft = data.btnAlign === 'left';
+                    tplData.isAlignCenter = data.btnAlign === 'center';
+                    tplData.isAlignRight = data.btnAlign === 'right';
+                    tplData.isAlignFull = data.btnAlign === 'full';
+
+                    PopupManager.open(btnButton, 'tiny_studiolms/popup_card_button', tplData, (popup) => {
+                        const propMap = {
+                            '#pop_card_btnText': 'btnText',
+                            '#pop_card_btnUrl': 'btnUrl',
+                            '#pop_card_btnBg': 'btnBg',
+                            '#pop_card_btnTextCol': 'btnTextCol',
+                            '#pop_card_btnAlign': 'btnAlign'
+                        };
+                        Object.keys(propMap).forEach(selector => {
+                            const el = popup.querySelector(selector);
+                            if (el) {
+                                el.addEventListener('input', (ev) => {
+                                    data[propMap[selector]] = ev.target.value;
+                                    onUpdate(data);
+                                });
+                            }
+                        });
+                    });
+                });
+            }
+
+        } catch (error) {
+            container.innerHTML = '';
+            const errorNode = document.createElement('div');
+            errorNode.className = 'text-danger small';
+            try {
+                errorNode.textContent = await getString('error_loading_form', 'tiny_studiolms');
+            } catch (innerError) {
+                errorNode.textContent = 'Error';
+            }
+            container.appendChild(errorNode);
+        }
+    },
+
+    renderHtml: (data) => {
+        const templateData = Object.assign({}, data);
+        const shadowMap = {
+            'none': 'none',
+            'sm': '0 1px 3px rgba(0, 0, 0, 0.1)',
+            'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+            'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+        };
+        templateData.shadowCss = shadowMap[data.shadow] || shadowMap.md;
+
+        templateData.hasMedia = data.mediaType !== 'none' && data.mediaUrl.trim() !== '';
+        templateData.isImage = data.mediaType === 'image';
+
+        if (data.mediaType === 'video' && data.mediaUrl) {
+            const ytPattern = '^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/)|' +
+                '(?:(?:watch)?\\?v(?:i)?=|&v(?:i)?=))([^#&?]*).*';
+            const regExp = new RegExp(ytPattern);
+            const match = data.mediaUrl.match(regExp);
+
+            if (match && match[1]) {
+                templateData.mediaUrl = `https://www.youtube.com/embed/${match[1]}`;
+                templateData.isVideo = true;
+            } else {
+                templateData.hasMedia = false;
+            }
+        }
+
+        templateData.isHorizontal = data.layout === 'horizontal';
+        templateData.hasButton = data.btnText.trim() !== '';
+
+        templateData.btnTextAlign = (data.btnAlign === 'full') ? 'center' : data.btnAlign;
+        templateData.btnDisplayMode = (data.btnAlign === 'full') ? 'flex' : 'inline-flex';
+        templateData.isBtnFullWidth = data.btnAlign === 'full';
+
+        return Templates.render('tiny_studiolms/block_card', templateData);
+    }
+};

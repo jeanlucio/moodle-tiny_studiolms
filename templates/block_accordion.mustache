@@ -9,14 +9,14 @@
         <summary style="display: block; list-style: none; outline: none; cursor: pointer; margin: 0; padding: 0;">
 
             <span style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; font-weight: bold; font-size: 1.1rem; color: {{color}};">
-                <span style="flex-grow: 1;">{{title}}</span>
+                <span class="slms-acc-title" contenteditable="true" style="flex-grow: 1; outline: none;">{{title}}</span>
                 <span contenteditable="false" style="font-size: 0.9em; user-select: none; margin-left: 15px;">{{iconFirst}}</span>
             </span>
 
         </summary>
 
-        <div class="studiolms-editable-area" style="padding: 1.5rem; border-top: 1px solid #e2e8f0; background: transparent; font-weight: normal; color: #212529;">
-            <p style="margin-top: 0;">Escreva o conteúdo do tópico aqui. Pode usar as ferramentas do Moodle para adicionar imagens, listas e links.</p>
+        <div class="studiolms-editable-area" contenteditable="true" style="padding: 1.5rem; border-top: 1px solid #e2e8f0; background: transparent; font-weight: normal; color: #212529; outline: none;">
+            {{{content}}}
         </div>
 
     </details>

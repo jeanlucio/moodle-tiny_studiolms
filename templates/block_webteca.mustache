@@ -10,9 +10,9 @@
             <span style="padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
                 <span style="display: flex; flex-direction: column; gap: 4px;">
                     <span style="color: {{color}}; font-weight: bold; font-size: 1.2rem;">
-                        <span style="margin-right: 8px;">📚</span>{{title}}
+                        <span style="margin-right: 8px;" aria-hidden="true">📚</span><span class="slms-wt-title">{{title}}</span>
                     </span>
-                    <span style="color: #495057; font-size: 0.9rem;">{{desc}}</span>
+                    <span class="slms-wt-desc" style="color: #495057; font-size: 0.9rem;">{{desc}}</span>
                 </span>
                 <span contenteditable="false" style="font-size: 1rem; color: {{color}}; user-select: none; margin-left: 15px;">▼</span>
             </span>
