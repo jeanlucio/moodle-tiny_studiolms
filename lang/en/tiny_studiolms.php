@@ -41,6 +41,7 @@ $string['back_to_library'] = 'Back to Library';
 $string['bg_color'] = 'Background Color';
 $string['block_accordion_title'] = 'Accordion (Topic)';
 $string['block_card_title'] = 'Customizable Card';
+$string['block_heading_title'] = 'Stylized Headings';
 $string['block_webteca_title'] = 'Web Library (Resources)';
 $string['border_color'] = 'Border Color';
 $string['border_radius'] = 'Border Radius (px)';

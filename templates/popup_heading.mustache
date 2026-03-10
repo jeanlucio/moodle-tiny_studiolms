@@ -1,0 +1,39 @@
+{{!
+	This file is part of Moodle - http://moodle.org/
+
+	Moodle is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Moodle is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_studiolms/popup_heading
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+}}
+<div class="mb-3">
+    <label for="pop_head_level" class="form-label small fw-bold text-muted">{{#str}} heading_level, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_head_level">
+        <option value="h3" {{#isH3}}selected{{/isH3}}>{{#str}} heading_h3, tiny_studiolms {{/str}}</option>
+        <option value="h4" {{#isH4}}selected{{/isH4}}>{{#str}} heading_h4, tiny_studiolms {{/str}}</option>
+    </select>
+</div>
+<div class="mb-3">
+    <label for="pop_head_icon" class="form-label small fw-bold text-muted">{{#str}} heading_icon, tiny_studiolms {{/str}}</label>
+    <input type="text" class="form-control form-control-sm" id="pop_head_icon" value="{{icon}}">
+</div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <label for="pop_head_bg" class="form-label m-0 small fw-bold text-muted">{{#str}} bg_color, tiny_studiolms {{/str}}</label>
+    <input type="color" class="slms-color-picker" id="pop_head_bg" value="{{bgColor}}">
+</div>
+<div class="d-flex justify-content-between align-items-center">
+    <label for="pop_head_color" class="form-label m-0 small fw-bold text-muted">{{#str}} text_color, tiny_studiolms {{/str}}</label>
+    <input type="color" class="slms-color-picker" id="pop_head_color" value="{{textColor}}">
+</div>

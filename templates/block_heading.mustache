@@ -1,0 +1,38 @@
+{{!
+	This file is part of Moodle - http://moodle.org/
+
+	Moodle is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Moodle is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_studiolms/block_heading
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+}}
+<div class="studiolms-heading-wrap" style="margin: 1.5rem 0 1rem 0; width: 100%;">
+
+    {{#isH3}}
+    <h3 style="background-color: {{bgColor}}; color: {{textColor}}; padding: 8px; border-radius: 6px; margin: 0; font-size: 1.5rem; display: flex; align-items: center;">
+        <span contenteditable="false" style="user-select: none; margin-right: 8px;" aria-hidden="true">{{icon}}</span>
+        <span class="slms-heading-text" style="flex-grow: 1;">{{{text}}}</span>
+    </h3>
+    {{/isH3}}
+
+    {{#isH4}}
+    <h4 style="background-color: {{bgColor}}; border-left: 6px solid {{textColor}}; padding: 8px; margin: 0; font-size: 1.25rem; color: #333; display: flex; align-items: center;">
+        <span contenteditable="false" style="user-select: none; margin-right: 8px;" aria-hidden="true">{{icon}}</span>
+        <span class="slms-heading-text" style="flex-grow: 1;">{{{text}}}</span>
+    </h4>
+    {{/isH4}}
+
+</div>
+<p><br></p>
