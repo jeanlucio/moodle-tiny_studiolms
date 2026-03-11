@@ -1,6 +1,31 @@
 {{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
     @template tiny_studiolms/block_gridcards
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Example context (json): {
+        "containerStyle": "background: #fff; border: none; border-radius: 0px; padding: 0px;",
+        "containerTitle": "Grid Title",
+        "containerTitleSize": "24px",
+        "titleColor": "#333",
+        "contentStyle": "display: grid; gap: 20px;",
+        "slotsHtml": "<div class=\"slms-grid-slot\"></div>"
+    }
 }}
 <div class="studiolms-grid-wrap mceNonEditable" style="{{containerStyle}}">
     {{#containerTitle}}

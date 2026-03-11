@@ -1,3 +1,18 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Tiny StudioLMS plugin.
  *
@@ -146,12 +161,12 @@ export default Promise.all([
         // --- MÁGICA CSS NO IFRAME DO TINYMCE ---
         // Injeta o CSS diretamente dentro da área de edição para as caixas tracejadas aparecerem!
         const editorCss = `
-            .mce-content-body .slms-grid-slot {
-                border: 2px dashed #cbd5e1 !important;
-                background-color: rgba(241, 245, 249, 0.4) !important;
-                min-height: 70px !important;
-                border-radius: 8px !important;
-                padding: 8px !important;
+            body.mce-content-body div.slms-grid-slot {
+                border: 2px dashed #cbd5e1;
+                background-color: rgba(241, 245, 249, 0.4);
+                min-height: 70px;
+                border-radius: 8px;
+                padding: 8px;
             }
         `;
 

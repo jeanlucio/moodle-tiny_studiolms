@@ -260,12 +260,12 @@ details.wt-details[open] summary .wt-icon-main {
     height: fit-content;
 }
 /* Mágica UX: As bordas tracejadas do Grid só aparecem no Editor do Moodle, Preview e Biblioteca! */
-.mce-content-body .slms-grid-slot,
-#slms-live-preview .slms-grid-slot,
-.slms-card-thumb-content .slms-grid-slot {
-    border: 2px dashed #cbd5e1 !important;
-    background-color: rgba(241, 245, 249, 0.4) !important;
-    min-height: 70px !important;
-    border-radius: 8px !important;
-    padding: 8px !important;
+body.mce-content-body div.slms-grid-slot,
+.tiny_studiolms div#slms-live-preview div.slms-grid-slot,
+.tiny_studiolms div.slms-card-thumb-content div.slms-grid-slot {
+    border: 2px dashed #cbd5e1;
+    background-color: rgba(241, 245, 249, 0.4);
+    min-height: 70px;
+    border-radius: 8px;
+    padding: 8px;
 }

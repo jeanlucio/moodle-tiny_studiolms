@@ -17,6 +17,12 @@
 {{!
     @template tiny_studiolms/block_table
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Example context (json): {
+        "isStriped": true,
+        "headerCells": [{"headerBg": "#0f172a", "headerText": "#ffffff", "content": "Header"}],
+        "bodyRows": [{"cells": [{"content": "Data"}]}]
+    }
 }}
 <div class="studiolms-table-wrap" style="margin-bottom: 1.5rem; width: 100%;">
     <table class="table {{#isStriped}}table-striped{{/isStriped}} {{^isStriped}}table-bordered{{/isStriped}}"

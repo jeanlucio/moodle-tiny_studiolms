@@ -17,6 +17,17 @@
 {{!
     @template tiny_studiolms/block_callout
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Example context (json): {
+        "backgroundColor": "#fef9c3",
+        "borderLeftWidth": 4,
+        "borderColor": "#eab308",
+        "borderRadius": 6,
+        "hasIcon": true,
+        "icon": "💡",
+        "textColor": "#854d0e",
+        "contentHtml": "<p>Content</p>"
+    }
 }}
 <div class="studiolms-callout-wrap mceNonEditable" style="background-color: {{backgroundColor}}; border-left: {{borderLeftWidth}}px solid {{borderColor}}; border-radius: {{borderRadius}}px; padding: 16px 20px; display: flex; align-items: flex-start; gap: 16px; margin-bottom: 1.5rem; box-sizing: border-box; width: 100%;">
     {{#hasIcon}}
