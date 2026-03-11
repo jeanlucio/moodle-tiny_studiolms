@@ -50,14 +50,30 @@ export default Promise.all([
 
     tinyMCE.PluginManager.add(pluginName, (editor) => {
 
+        // --- RADAR INTELIGENTE ---
+        const getActiveSlmsBlock = () => {
+            const selectedNode = editor.selection.getNode();
+            let slmsBlock = selectedNode.closest('[data-slms-block-type]');
+
+            if (!slmsBlock && selectedNode.hasAttribute('data-slms-block-type')) {
+                slmsBlock = selectedNode;
+            }
+
+            // Se encontrou um Grid, verifica se o clique foi DENTRO da área livre (slot)
+            if (slmsBlock && slmsBlock.getAttribute('data-slms-block-type') === 'gridcards') {
+                const slot = selectedNode.closest('.slms-grid-slot');
+                // Se estiver dentro do slot, o objetivo é inserir um bloco, não editar o grid!
+                if (slot && slmsBlock.contains(slot)) {
+                    slmsBlock = null;
+                }
+            }
+
+            return slmsBlock;
+        };
+
         const openStudioModal = async() => {
             try {
-                const selectedNode = editor.selection.getNode();
-                // Procura a tag superior que contém o nosso bloco
-                let slmsBlock = selectedNode.closest('[data-slms-block-type]');
-                if (!slmsBlock && selectedNode.hasAttribute('data-slms-block-type')) {
-                    slmsBlock = selectedNode;
-                }
+                const slmsBlock = getActiveSlmsBlock();
 
                 let editData = null;
                 if (slmsBlock) {
@@ -89,17 +105,15 @@ export default Promise.all([
 
         editor.ui.registry.addIcon(buttonName, brushIcon);
 
-        // MÁGICA VISUAL: addToggleButton faz o botão acender quando ativo!
         editor.ui.registry.addToggleButton(buttonName, {
             icon: buttonName,
             tooltip: tooltip,
             onAction: openStudioModal,
             onSetup: (api) => {
-                // Escuta toda vez que o cursor mudar de lugar no Moodle
-                const nodeChangeHandler = (e) => {
-                    const isSlmsBlock = e.element.closest('[data-slms-block-type]') !== null ||
-                        e.element.hasAttribute('data-slms-block-type');
-                    api.setActive(isSlmsBlock);
+                const nodeChangeHandler = () => {
+                    const slmsBlock = getActiveSlmsBlock();
+                    // O botão só fica azul se formos editar o bloco em si
+                    api.setActive(slmsBlock !== null);
                 };
                 editor.on('NodeChange', nodeChangeHandler);
                 return () => editor.off('NodeChange', nodeChangeHandler);
@@ -119,7 +133,6 @@ export default Promise.all([
         instanceConfig.toolbar = addToolbarButton(instanceConfig.toolbar, 'content', buttonName);
         instanceConfig.menu = addMenubarItem(instanceConfig.menu, 'tools', buttonName);
 
-        // MÁGICA DA MEMÓRIA: Proíbe o Moodle/TinyMCE de apagar nossos dados Base64
         const customAttrs = '*[data-slms-block-type|data-slms-state|contenteditable]';
 
         if (instanceConfig.extended_valid_elements) {
@@ -128,6 +141,26 @@ export default Promise.all([
         } else {
             // eslint-disable-next-line camelcase
             instanceConfig.extended_valid_elements = customAttrs;
+        }
+
+        // --- MÁGICA CSS NO IFRAME DO TINYMCE ---
+        // Injeta o CSS diretamente dentro da área de edição para as caixas tracejadas aparecerem!
+        const editorCss = `
+            .mce-content-body .slms-grid-slot {
+                border: 2px dashed #cbd5e1 !important;
+                background-color: rgba(241, 245, 249, 0.4) !important;
+                min-height: 70px !important;
+                border-radius: 8px !important;
+                padding: 8px !important;
+            }
+        `;
+
+        if (instanceConfig.content_style) {
+            // eslint-disable-next-line camelcase
+            instanceConfig.content_style += editorCss;
+        } else {
+            // eslint-disable-next-line camelcase
+            instanceConfig.content_style = editorCss;
         }
 
         return instanceConfig;

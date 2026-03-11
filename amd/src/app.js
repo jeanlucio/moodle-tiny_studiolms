@@ -150,7 +150,11 @@ const setupNavigation = () => {
                 if (rootElement) {
                     rootElement.setAttribute('data-slms-block-type', currentBlockType.id);
                     rootElement.setAttribute('data-slms-state', base64State);
-                    rootElement.classList.add('mceNonEditable');
+
+                    // A MÁGICA AQUI: Só adiciona o bloqueio (mceNonEditable) se NÃO for a tabela!
+                    if (currentBlockType.id !== 'table') {
+                        rootElement.classList.add('mceNonEditable');
+                    }
                 }
 
                 tinyEditorInstance.undoManager.transact(() => {

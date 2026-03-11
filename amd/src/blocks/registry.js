@@ -11,11 +11,17 @@ import actionButton from './button';
 import advancedCard from './card';
 import accordion from './accordion';
 import webteca from './webteca';
+import gridcards from './gridcards';
+import callout from './callout';
+import table from './table';
 
 export const Blocks = {
     stylizedHeading,
     actionButton,
     advancedCard,
     accordion,
-    webteca
+    webteca,
+    gridcards,
+    callout,
+    table,
 };

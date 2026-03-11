@@ -1,0 +1,33 @@
+{{!
+	This file is part of Moodle - http://moodle.org/
+
+	Moodle is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Moodle is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_studiolms/popup_gridcards_layout
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+}}
+<div class="mb-3">
+    <label for="pop_grid_cols" class="form-label small fw-bold text-muted">{{#str}} grid_columns, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_grid_cols">
+        <option value="1" {{#col1}}selected{{/col1}}>1 Coluna (Seção / Wrapper)</option>
+        <option value="2" {{#col2}}selected{{/col2}}>2 Colunas</option>
+        <option value="3" {{#col3}}selected{{/col3}}>3 Colunas</option>
+        <option value="4" {{#col4}}selected{{/col4}}>4 Colunas</option>
+    </select>
+</div>
+<div class="mb-1">
+    <label for="pop_grid_gap" class="form-label small fw-bold text-muted">{{#str}} grid_gap, tiny_studiolms {{/str}}</label>
+    <input type="range" class="form-range" id="pop_grid_gap" min="0" max="60" step="5" value="{{gap}}">
+</div>

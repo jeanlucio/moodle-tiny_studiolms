@@ -1,0 +1,40 @@
+{{!
+	This file is part of Moodle - http://moodle.org/
+
+	Moodle is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Moodle is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_studiolms/popup_callout_design
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+}}
+<div class="mb-3 pb-3 border-bottom">
+    <label for="pop_callout_icon" class="form-label small fw-bold text-muted">{{#str}} callout_icon, tiny_studiolms {{/str}}</label>
+    <div class="input-group input-group-sm">
+        <input type="text" class="form-control" id="pop_callout_icon" value="{{icon}}" placeholder="Cole um emoji aqui...">
+        <button class="btn btn-outline-secondary" type="button" id="pop_callout_clear_icon" title="Remover Ícone">❌</button>
+    </div>
+    <div class="form-text" style="font-size: 0.75rem;">Dica: Pressione "Win + ." (Windows) ou "Cmd + Ctrl + Espaço" (Mac) para escolher.</div>
+</div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <label for="pop_callout_bg" class="form-label m-0 small fw-bold text-muted">{{#str}} bg_color, tiny_studiolms {{/str}}</label>
+    <input type="color" class="slms-color-picker" id="pop_callout_bg" value="{{backgroundColor}}">
+</div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <label for="pop_callout_text" class="form-label m-0 small fw-bold text-muted">{{#str}} text_color, tiny_studiolms {{/str}}</label>
+    <input type="color" class="slms-color-picker" id="pop_callout_text" value="{{textColor}}">
+</div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <label for="pop_callout_border" class="form-label m-0 small fw-bold text-muted">{{#str}} border_color, tiny_studiolms {{/str}}</label>
+    <input type="color" class="slms-color-picker" id="pop_callout_border" value="{{borderColor}}">
+</div>
