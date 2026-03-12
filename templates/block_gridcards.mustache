@@ -20,23 +20,18 @@
 
     Example context (json): {
         "containerStyle": "background: #fff; border: none; border-radius: 0px; padding: 0px;",
-        "containerTitle": "Grid Title",
-        "containerTitleSize": "24px",
-        "titleColor": "#333",
-        "contentStyle": "display: grid; gap: 20px;",
-        "slotsHtml": "<div class=\"slms-grid-slot\"></div>"
+        "containerTitle": "Grid Title", "containerTitleSize": "24px", "titleColor": "#333",
+        "columns": "2", "gap": 20, "slotsHtml": "<div class=\"slms-grid-slot\"></div>"
     }
 }}
 <div class="studiolms-grid-wrap mceNonEditable" style="{{containerStyle}}">
     {{#containerTitle}}
-        <h3 class="slms-grid-title mceEditable"
-            style="margin-top: 0; margin-bottom: 20px; font-size: {{containerTitleSize}}; color: {{titleColor}};
-                   font-weight: 700; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 8px; outline: none;">
+        <h3 class="slms-grid-title mceEditable pb-2 mb-3 border-bottom"
+            style="font-size: {{containerTitleSize}}; color: {{titleColor}}; font-weight: 700; outline: none;">
             {{{containerTitle}}}
         </h3>
     {{/containerTitle}}
-
-    <div style="{{contentStyle}}">
+    <div class="studiolms-grid-content" style="--slms-gap: {{gap}}px; --slms-cols: repeat({{columns}}, 1fr);">
         {{{slotsHtml}}}
     </div>
 </div>

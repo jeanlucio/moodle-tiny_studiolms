@@ -19,37 +19,41 @@
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
 
     Example context (json): {
-        "bg": "#ffffff", "text": "#333333", "border": "#0d47a1", "radius": "8", "shadowCss": "0 4px 6px rgba(0,0,0,0.1)",
+        "bg": "#ffffff", "text": "#333333", "border": "#0d47a1", "radius": "8", "shadowCss": "none",
         "hasMedia": true, "isImage": true, "mediaUrl": "https://picsum.photos/600/300",
-        "isHorizontal": false, "hasButton": true,
-        "btnText": "Click Here", "btnUrl": "#", "btnBg": "#0d47a1", "btnTextCol": "#fff",
-        "btnTextAlign": "center", "btnDisplayMode": "inline-flex", "isBtnFullWidth": false
+        "isHorizontal": false, "hasButton": true, "btnText": "Click", "btnUrl": "#",
+        "btnBg": "#0d47a1", "btnTextCol": "#fff", "btnTextAlign": "center", "btnDisplayMode": "inline-flex"
     }
 }}
-<div class="studiolms-card-wrap" contenteditable="false" style="margin: 1.5rem 0;">
-    <div style="display: flex; flex-direction: {{#isHorizontal}}row{{/isHorizontal}}{{^isHorizontal}}column{{/isHorizontal}}; background-color: {{bg}}; color: {{text}}; border: 1px solid #e2e8f0; border-left: 6px solid {{border}}; border-radius: {{radius}}px; box-shadow: {{shadowCss}}; overflow: hidden; width: 100%; max-width: 900px;">
-
+<div class="studiolms-card-wrap" contenteditable="false">
+    <div class="studiolms-card"
+         style="--slms-dir: {{#isHorizontal}}row{{/isHorizontal}}{{^isHorizontal}}column{{/isHorizontal}};
+                --slms-bg: {{bg}}; --slms-color: {{text}}; --slms-border-c: {{border}};
+                --slms-radius: {{radius}}px; --slms-shadow: {{shadowCss}};">
         {{#hasMedia}}
-        <div style="flex: {{#isHorizontal}}0 0 35%{{/isHorizontal}}{{^isHorizontal}}1 1 auto{{/isHorizontal}}; min-height: 200px; border-right: {{#isHorizontal}}1px solid #e2e8f0{{/isHorizontal}}{{^isHorizontal}}none{{/isHorizontal}}; border-bottom: {{^isHorizontal}}1px solid #e2e8f0{{/isHorizontal}}{{#isHorizontal}}none{{/isHorizontal}};">
+        <div class="studiolms-card-media"
+             style="--slms-media-flex: {{#isHorizontal}}0 0 35%{{/isHorizontal}}{{^isHorizontal}}1 1 auto{{/isHorizontal}};
+                    --slms-media-border-r: {{#isHorizontal}}1px solid #e2e8f0{{/isHorizontal}}{{^isHorizontal}}none{{/isHorizontal}};
+                    --slms-media-border-b: {{^isHorizontal}}1px solid #e2e8f0{{/isHorizontal}}{{#isHorizontal}}none{{/isHorizontal}};">
             {{#isImage}}
-                <img src="{{mediaUrl}}" alt="Media" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                <img src="{{mediaUrl}}" alt="" class="w-100 h-100 object-fit-cover d-block">
             {{/isImage}}
             {{#isVideo}}
-                <div style="position: relative; padding-bottom: 56.25%; height: 100%;">
-                    <iframe src="{{mediaUrl}}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allowfullscreen></iframe>
+                <div class="ratio ratio-16x9 h-100">
+                    <iframe src="{{mediaUrl}}" title="Video" allowfullscreen></iframe>
                 </div>
             {{/isVideo}}
         </div>
         {{/hasMedia}}
-
-        <div style="flex: 1 1 auto; padding: 1.5rem; display: flex; flex-direction: column;">
-            <div class="studiolms-editable-area" contenteditable="true" style="flex-grow: 1; outline: none;">
+        <div class="studiolms-card-content">
+            <div class="studiolms-editable-area flex-grow-1" contenteditable="true" style="outline: none;">
                 {{{content}}}
             </div>
-
             {{#hasButton}}
-            <div style="margin-top: 1.5rem; text-align: {{btnTextAlign}};" contenteditable="false">
-                <a href="{{btnUrl}}" target="_blank" rel="noopener noreferrer" style="display: {{btnDisplayMode}}; {{#isBtnFullWidth}}width: 100%; box-sizing: border-box;{{/isBtnFullWidth}} align-items: center; justify-content: center; background-color: {{btnBg}}; color: {{btnTextCol}}; padding: 10px 24px; border-radius: {{radius}}px; text-decoration: none !important; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: opacity 0.2s ease;">
+            <div class="mt-4" style="text-align: {{btnTextAlign}};" contenteditable="false">
+                <a href="{{btnUrl}}" class="studiolms-btn" target="_blank" rel="noopener noreferrer"
+                   style="--slms-display: {{btnDisplayMode}}; --slms-w: {{#isBtnFullWidth}}100%{{/isBtnFullWidth}}{{^isBtnFullWidth}}auto{{/isBtnFullWidth}};
+                          --slms-bg: {{btnBg}}; --slms-color: {{btnTextCol}}; --slms-radius: {{radius}}px;">
                     {{btnText}}
                 </a>
             </div>

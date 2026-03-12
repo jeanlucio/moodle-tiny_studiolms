@@ -19,31 +19,21 @@
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
 
     Example context (json): {
-        "state": "open",
-        "bg": "#ffffff",
-        "color": "#333333",
-        "title": "Topic Title",
-        "iconFirst": "▼",
-        "content": "<p>Content</p>"
+        "state": "open", "bg": "#ffffff", "color": "#3b82f6", "title": "Topic",
+        "iconFirst": "▼", "content": "<p>Content</p>"
     }
 }}
-<div class="studiolms-accordion-wrap" style="margin: 1.5rem 0; max-width: 900px; width: 100%;">
-
-    <details class="studiolms-accordion" data-initial-state="{{state}}" open style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background-color: {{bg}};">
-
-        <summary style="display: block; list-style: none; outline: none; cursor: pointer; margin: 0; padding: 0;">
-
-            <span style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; font-weight: bold; font-size: 1.1rem; color: {{color}};">
-                <span class="slms-acc-title" contenteditable="true" style="flex-grow: 1; outline: none;">{{title}}</span>
-                <span contenteditable="false" style="font-size: 0.9em; user-select: none; margin-left: 15px;">{{iconFirst}}</span>
+<div class="studiolms-accordion-wrap mb-4 w-100">
+    <details class="studiolms-accordion" data-initial-state="{{state}}" open style="--slms-bg: {{bg}};">
+        <summary class="studiolms-accordion-summary">
+            <span class="studiolms-accordion-header" style="--slms-color: {{color}};">
+                <span class="slms-acc-title flex-grow-1" contenteditable="true" style="outline: none;">{{title}}</span>
+                <span contenteditable="false" aria-hidden="true" class="ms-3 user-select-none">{{iconFirst}}</span>
             </span>
-
         </summary>
-
-        <div class="studiolms-editable-area" contenteditable="true" style="padding: 1.5rem; border-top: 1px solid #e2e8f0; background: transparent; font-weight: normal; color: #212529; outline: none;">
+        <div class="studiolms-editable-area studiolms-accordion-content" contenteditable="true">
             {{{content}}}
         </div>
-
     </details>
 </div>
 <p><br></p>

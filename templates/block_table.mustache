@@ -24,13 +24,12 @@
         "bodyRows": [{"cells": [{"content": "Data"}]}]
     }
 }}
-<div class="studiolms-table-wrap" style="margin-bottom: 1.5rem; width: 100%;">
-    <table class="table {{#isStriped}}table-striped{{/isStriped}} {{^isStriped}}table-bordered{{/isStriped}}"
-           style="width: 100%; border-collapse: collapse; margin-bottom: 0; background-color: #ffffff;">
+<div class="studiolms-table-wrap mb-4 w-100">
+    <table class="table studiolms-table {{#isStriped}}table-striped{{/isStriped}}{{^isStriped}}table-bordered{{/isStriped}} bg-white m-0">
         <thead>
             <tr>
                 {{#headerCells}}
-                <th style="background-color: {{headerBg}}; color: {{headerText}}; padding: 12px; border: 1px solid rgba(0,0,0,0.1); font-weight: 600; text-align: left; vertical-align: middle;">
+                <th scope="col" style="--slms-bg: {{headerBg}}; --slms-color: {{headerText}};">
                     {{{content}}}
                 </th>
                 {{/headerCells}}
@@ -40,7 +39,7 @@
             {{#bodyRows}}
             <tr>
                 {{#cells}}
-                <td style="padding: 12px; border: 1px solid rgba(0,0,0,0.1); vertical-align: middle;">
+                <td class="p-3 border align-middle">
                     {{{content}}}
                 </td>
                 {{/cells}}

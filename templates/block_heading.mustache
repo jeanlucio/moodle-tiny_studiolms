@@ -19,29 +19,21 @@
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
 
     Example context (json): {
-        "isH3": true,
-        "isH4": false,
-        "bgColor": "#e3f2fd",
-        "textColor": "#0d47a1",
-        "icon": "🎯",
-        "text": "Heading"
+        "isH3": true, "isH4": false, "bgColor": "#e3f2fd", "textColor": "#0d47a1", "icon": "🎯", "text": "H"
     }
 }}
-<div class="studiolms-heading-wrap" style="margin: 1.5rem 0 1rem 0; width: 100%;">
-
+<div class="studiolms-heading-wrap my-4 w-100">
     {{#isH3}}
-    <h3 style="background-color: {{bgColor}}; color: {{textColor}}; padding: 8px; border-radius: 6px; margin: 0; font-size: 1.5rem; display: flex; align-items: center;">
-        <span contenteditable="false" style="user-select: none; margin-right: 8px;" aria-hidden="true">{{icon}}</span>
-        <span class="slms-heading-text" contenteditable="true" style="flex-grow: 1; outline: none;">{{{text}}}</span>
+    <h3 class="studiolms-heading-h3" style="--slms-bg: {{bgColor}}; --slms-color: {{textColor}};">
+        <span contenteditable="false" aria-hidden="true" class="me-2 user-select-none">{{icon}}</span>
+        <span class="slms-heading-text flex-grow-1" contenteditable="true" style="outline: none;">{{{text}}}</span>
     </h3>
     {{/isH3}}
-
     {{#isH4}}
-    <h4 style="background-color: {{bgColor}}; border-left: 6px solid {{textColor}}; padding: 8px; margin: 0; font-size: 1.25rem; color: #333; display: flex; align-items: center;">
-        <span contenteditable="false" style="user-select: none; margin-right: 8px;" aria-hidden="true">{{icon}}</span>
-        <span class="slms-heading-text" contenteditable="true" style="flex-grow: 1; outline: none;">{{{text}}}</span>
+    <h4 class="studiolms-heading-h4" style="--slms-bg: {{bgColor}}; --slms-color: {{textColor}};">
+        <span contenteditable="false" aria-hidden="true" class="me-2 user-select-none">{{icon}}</span>
+        <span class="slms-heading-text flex-grow-1" contenteditable="true" style="outline: none;">{{{text}}}</span>
     </h4>
     {{/isH4}}
-
 </div>
 <p><br></p>

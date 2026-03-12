@@ -19,23 +19,19 @@
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
 
     Example context (json): {
-        "backgroundColor": "#fef9c3",
-        "borderLeftWidth": 4,
-        "borderColor": "#eab308",
-        "borderRadius": 6,
-        "hasIcon": true,
-        "icon": "💡",
-        "textColor": "#854d0e",
-        "contentHtml": "<p>Content</p>"
+        "backgroundColor": "#fef9c3", "borderLeftWidth": 4, "borderColor": "#eab308",
+        "borderRadius": 6, "hasIcon": true, "icon": "💡", "textColor": "#854d0e", "contentHtml": "<p>Cont</p>"
     }
 }}
-<div class="studiolms-callout-wrap mceNonEditable" style="background-color: {{backgroundColor}}; border-left: {{borderLeftWidth}}px solid {{borderColor}}; border-radius: {{borderRadius}}px; padding: 16px 20px; display: flex; align-items: flex-start; gap: 16px; margin-bottom: 1.5rem; box-sizing: border-box; width: 100%;">
+<div class="studiolms-callout-wrap mceNonEditable"
+     style="--slms-bg: {{backgroundColor}}; --slms-border-w: {{borderLeftWidth}}px;
+            --slms-border-c: {{borderColor}}; --slms-radius: {{borderRadius}}px;">
     {{#hasIcon}}
-    <div class="slms-callout-icon" aria-hidden="true" style="font-size: 24px; line-height: 1; flex-shrink: 0; user-select: none;">
+    <div class="slms-callout-icon" aria-hidden="true">
         {{{icon}}}
     </div>
     {{/hasIcon}}
-    <div class="slms-callout-content mceEditable" style="flex-grow: 1; color: {{textColor}}; font-size: 16px; line-height: 1.5; outline: none; min-width: 0;">
+    <div class="slms-callout-content mceEditable" style="--slms-text: {{textColor}};">
         {{{contentHtml}}}
     </div>
 </div>

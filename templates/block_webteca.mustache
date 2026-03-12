@@ -19,54 +19,40 @@
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
 
     Example context (json): {
-        "bg": "#ffffff",
-        "headerBg": "#f8f9fa",
-        "color": "#0d47a1",
-        "title": "Title",
-        "desc": "Desc",
-        "listFlexDirection": "column",
-        "listFlexWrap": "nowrap",
+        "bg": "#ffffff", "headerBg": "#f8f9fa", "color": "#0d47a1", "title": "Title", "desc": "Desc",
+        "listFlexDirection": "column", "listFlexWrap": "nowrap",
         "mappedResources": [{"url": "#", "typeColor": "#0d6efd", "icon": "🔗", "title": "Resource"}]
     }
 }}
-<div class="studiolms-webteca-wrap" style="margin: 1.5rem 0; width: 100%; max-width: 900px;">
-
-    <details class="studiolms-webteca" open style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background-color: {{bg}}; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
-
-        <summary style="display: block; list-style: none; outline: none; cursor: pointer; margin: 0; padding: 0; background-color: {{headerBg}}; border-bottom: 1px solid #e2e8f0;">
-            <span style="padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
-                <span style="display: flex; flex-direction: column; gap: 4px;">
-                    <span style="color: {{color}}; font-weight: bold; font-size: 1.2rem;">
-                        <span style="margin-right: 8px;" aria-hidden="true">📚</span><span class="slms-wt-title">{{title}}</span>
-                    </span>
-                    <span class="slms-wt-desc" style="color: #495057; font-size: 0.9rem;">{{desc}}</span>
+<div class="studiolms-webteca-wrap my-4 w-100" style="max-width: 900px;">
+    <details class="studiolms-webteca" open style="--slms-bg: {{bg}};">
+        <summary class="studiolms-webteca-summary" style="--slms-header-bg: {{headerBg}};">
+            <span class="d-flex flex-column gap-1">
+                <span class="fw-bold fs-5" style="color: {{color}};">
+                    <span aria-hidden="true" class="me-2">📚</span><span class="slms-wt-title">{{title}}</span>
                 </span>
-                <span contenteditable="false" style="font-size: 1rem; color: {{color}}; user-select: none; margin-left: 15px;">▼</span>
+                <span class="slms-wt-desc text-secondary small">{{desc}}</span>
             </span>
+            <span contenteditable="false" aria-hidden="true" class="ms-3 fs-5 user-select-none" style="color: {{color}};">▼</span>
         </summary>
-
-        <div contenteditable="false" style="padding: 1.5rem;">
-            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: {{listFlexDirection}}; flex-wrap: {{listFlexWrap}}; gap: 0.75rem;">
-
+        <div contenteditable="false" class="p-4">
+            <ul class="studiolms-webteca-list" style="--slms-dir: {{listFlexDirection}}; --slms-wrap: {{listFlexWrap}};">
                 {{#mappedResources}}
                 <li style="{{#isGrid}}flex: 1 1 calc(50% - 0.75rem); min-width: 250px;{{/isGrid}}">
-                    <a href="{{url}}" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; padding: 0.75rem 1rem; background: #ffffff; border: 1px solid #dee2e6; border-left: 4px solid {{typeColor}}; border-radius: 6px; text-decoration: none !important; color: #212529; font-weight: 500; transition: transform 0.2s ease, box-shadow 0.2s ease; height: 100%;">
-                        <span style="margin-right: 12px; font-size: 1.25rem;" aria-hidden="true">{{icon}}</span>
-                        <span style="flex-grow: 1;">{{title}}</span>
-                        <span style="color: {{typeColor}}; font-size: 0.8rem; font-weight: bold; padding: 4px 8px; background: rgba(0,0,0,0.03); border-radius: 4px;">Acessar ➔</span>
+                    <a href="{{url}}" target="_blank" rel="noopener noreferrer" class="studiolms-webteca-item" style="--slms-type-c: {{typeColor}};">
+                        <span aria-hidden="true" class="me-3 fs-5">{{icon}}</span>
+                        <span class="flex-grow-1">{{title}}</span>
+                        <span class="badge bg-light text-dark border">{{#str}} btn_access_arrow, tiny_studiolms {{/str}}</span>
                     </a>
                 </li>
                 {{/mappedResources}}
-
                 {{^mappedResources}}
-                <li style="padding: 1rem; text-align: center; color: #6c757d; font-style: italic; background: #ffffff; border-radius: 6px; border: 1px dashed #dee2e6; width: 100%;">
+                <li class="p-3 text-center text-muted fst-italic bg-white rounded border border-dashed w-100">
                     {{#str}} no_resources, tiny_studiolms {{/str}}
                 </li>
                 {{/mappedResources}}
-
             </ul>
         </div>
-
     </details>
 </div>
 <p><br></p>

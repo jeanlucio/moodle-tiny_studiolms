@@ -166,7 +166,7 @@ const setupNavigation = () => {
                     rootElement.setAttribute('data-slms-block-type', currentBlockType.id);
                     rootElement.setAttribute('data-slms-state', base64State);
 
-                    // A MÁGICA AQUI: Só adiciona o bloqueio (mceNonEditable) se NÃO for a tabela!
+                    // Add mceNonEditable lock except for tables.
                     if (currentBlockType.id !== 'table') {
                         rootElement.classList.add('mceNonEditable');
                     }
@@ -341,7 +341,6 @@ const renderLibrary = () => {
 
 const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig = null) => {
     currentBlockType = blockDef;
-
     if (restoredConfig) {
         currentConfig = restoredConfig;
     } else {
@@ -352,10 +351,17 @@ const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig =
     const btnBack = document.getElementById('slms-btn-back');
     const btnInsert = document.getElementById('slms-btn-insert');
 
+    // Fetch strings dynamically (Limpando o Hardcode)
+    const strEditMode = await getString('mode_edit', 'tiny_studiolms');
+    const strUpdate = await getString('btn_update', 'tiny_studiolms');
+    const strDelete = await getString('btn_delete', 'tiny_studiolms');
+    const strConfirmDel = await getString('confirm_delete', 'tiny_studiolms');
+    const strInsert = await getString('btn_insert', 'tiny_studiolms');
+
     if (headerTitle) {
         if (restoredConfig) {
             headerTitle.innerHTML = `<span class="badge bg-warning text-dark me-2" style="font-size: 0.8em;+
-             vertical-align: middle;">Modo Edição</span> ${translatedTitle}`;
+             vertical-align: middle;">${strEditMode}</span> ${translatedTitle}`;
         } else {
             headerTitle.textContent = translatedTitle;
         }
@@ -365,25 +371,22 @@ const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig =
         btnBack.style.display = restoredConfig ? 'none' : 'inline-flex';
     }
 
-    // --- MÁGICA UX: Agrupamento de Ações no Header ---
+    // --- Header Action Grouping ---
     if (btnInsert) {
         let btnDelete = document.getElementById('slms-btn-delete-block');
-
         if (restoredConfig && targetEditNode) {
-            // 1. Transforma o botão "Inserir" em "Atualizar" (com tom verde)
-            btnInsert.innerHTML = '<span aria-hidden="true">💾</span> Atualizar';
+            btnInsert.innerHTML = `<span aria-hidden="true">💾</span> ${strUpdate}`;
             btnInsert.classList.remove('btn-primary');
             btnInsert.classList.add('btn-success');
 
-            // 2. Cria e posiciona o botão "Excluir" ao lado dele
             if (!btnDelete) {
                 btnDelete = document.createElement('button');
                 btnDelete.id = 'slms-btn-delete-block';
                 btnDelete.className = 'btn btn-danger px-3 shadow-sm rounded-pill btn-sm me-2';
-                btnDelete.innerHTML = '<span aria-hidden="true">🗑️</span> Excluir';
+                btnDelete.innerHTML = `<span aria-hidden="true">🗑️</span> ${strDelete}`;
                 btnDelete.onclick = () => {
                     // eslint-disable-next-line no-alert
-                    if (confirm('Tem certeza que deseja excluir este bloco do Moodle?')) {
+                    if (confirm(strConfirmDel)) {
                         tinyEditorInstance.undoManager.transact(() => {
                             targetEditNode.remove();
                         });
@@ -393,18 +396,14 @@ const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig =
                         }
                     }
                 };
-                // Injeta o botão Excluir exatamente antes do botão Atualizar
                 btnInsert.parentNode.insertBefore(btnDelete, btnInsert);
             }
             btnDelete.style.display = 'inline-flex';
-
         } else {
-            // Se for Inserção Nova, reseta o botão para o Padrão (Azul)
-            btnInsert.innerHTML = '<span aria-hidden="true">🚀</span> Inserir no Moodle';
+            btnInsert.innerHTML = `<span aria-hidden="true">🚀</span> ${strInsert}`;
             btnInsert.classList.remove('btn-success');
             btnInsert.classList.add('btn-primary');
 
-            // Esconde o botão Excluir
             if (btnDelete) {
                 btnDelete.style.display = 'none';
             }
@@ -412,11 +411,9 @@ const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig =
     }
 
     toggleView('editor');
-
     const toolbarContainer = document.getElementById('slms-top-toolbar');
     if (toolbarContainer) {
         toolbarContainer.innerHTML = '';
-
         if (blockDef.buildToolbar) {
             await blockDef.buildToolbar(toolbarContainer, currentConfig, (updatedData) => {
                 currentConfig = updatedData;

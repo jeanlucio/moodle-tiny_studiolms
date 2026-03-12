@@ -23,10 +23,12 @@
 <div class="mb-3 pb-3 border-bottom">
     <label for="pop_callout_icon" class="form-label small fw-bold text-muted">{{#str}} callout_icon, tiny_studiolms {{/str}}</label>
     <div class="input-group input-group-sm">
-        <input type="text" class="form-control" id="pop_callout_icon" value="{{icon}}" placeholder="Cole um emoji aqui...">
-        <button class="btn btn-outline-secondary" type="button" id="pop_callout_clear_icon" title="Remover Ícone">❌</button>
+        <input type="text" class="form-control" id="pop_callout_icon" value="{{icon}}" placeholder="{{#str}} placeholder_emoji, tiny_studiolms {{/str}}">
+        <button class="btn btn-outline-secondary" type="button" id="pop_callout_clear_icon" aria-label="{{#str}} remove, core {{/str}}">
+            <span aria-hidden="true">❌</span>
+        </button>
     </div>
-    <div class="form-text" style="font-size: 0.75rem;">Dica: Pressione "Win + ." (Windows) ou "Cmd + Ctrl + Espaço" (Mac) para escolher.</div>
+    <div class="form-text small">{{#str}} hint_emoji, tiny_studiolms {{/str}}</div>
 </div>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <label for="pop_callout_bg" class="form-label m-0 small fw-bold text-muted">{{#str}} bg_color, tiny_studiolms {{/str}}</label>
