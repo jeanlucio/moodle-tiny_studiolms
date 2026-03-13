@@ -68,8 +68,12 @@ export const initStudioApp = (editor, modal, editData = null) => {
             const blockDef = Blocks[editData.type];
             if (blockDef) {
                 const restoredState = StateManager.decode(editData.state);
+
                 if (restoredState) {
-                    const mergedConfig = Object.assign(JSON.parse(JSON.stringify(blockDef.defaultData)), restoredState);
+                    const mergedConfig = Object.assign(
+                        JSON.parse(JSON.stringify(blockDef.defaultData)),
+                        restoredState
+                    );
 
                     if (blockDef.extractDOM && targetEditNode) {
                         blockDef.extractDOM(targetEditNode, mergedConfig);
@@ -166,7 +170,6 @@ const setupNavigation = () => {
                     rootElement.setAttribute('data-slms-block-type', currentBlockType.id);
                     rootElement.setAttribute('data-slms-state', base64State);
 
-                    // Add mceNonEditable lock except for tables.
                     if (currentBlockType.id !== 'table') {
                         rootElement.classList.add('mceNonEditable');
                     }
@@ -230,18 +233,24 @@ export const PopupManager = {
             const strCancel = await getString('cancel', 'core');
             const strOk = await getString('ok', 'core');
 
-            const footerHtml = `
-                <div class="d-flex justify-content-end gap-2 mt-3 pt-3 border-top slms-popup-footer">
-                    <button type="button" class="btn btn-sm btn-outline-secondary slms-btn-cancel">${strCancel}</button>
-                    <button type="button" class="btn btn-sm btn-primary slms-btn-ok px-3">${strOk}</button>
-                </div>
-            `;
-
             Templates.replaceNodeContents(anchor, html, js);
 
             const footerContainer = document.createElement('div');
-            footerContainer.innerHTML = footerHtml;
-            anchor.appendChild(footerContainer.firstElementChild);
+            footerContainer.className = 'd-flex justify-content-end gap-2 mt-3 pt-3 border-top slms-popup-footer';
+
+            const btnCancel = document.createElement('button');
+            btnCancel.type = 'button';
+            btnCancel.className = 'btn btn-sm btn-outline-secondary slms-btn-cancel';
+            btnCancel.textContent = strCancel;
+
+            const btnOk = document.createElement('button');
+            btnOk.type = 'button';
+            btnOk.className = 'btn btn-sm btn-primary slms-btn-ok px-3';
+            btnOk.textContent = strOk;
+
+            footerContainer.appendChild(btnCancel);
+            footerContainer.appendChild(btnOk);
+            anchor.appendChild(footerContainer);
 
             anchor.classList.remove('d-none');
             anchor.classList.add('slms-popup-container');
@@ -334,13 +343,15 @@ const renderLibrary = () => {
             card.innerHTML = html;
 
         } catch (error) {
-            card.innerHTML = '<div class="p-4 text-center text-danger">Erro</div>';
+            card.remove();
+            window.console.error('StudioLMS: Error rendering block library card', error);
         }
     });
 };
 
 const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig = null) => {
     currentBlockType = blockDef;
+
     if (restoredConfig) {
         currentConfig = restoredConfig;
     } else {
@@ -351,31 +362,40 @@ const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig =
     const btnBack = document.getElementById('slms-btn-back');
     const btnInsert = document.getElementById('slms-btn-insert');
 
-    // Fetch strings dynamically (Limpando o Hardcode)
     const strEditMode = await getString('mode_edit', 'tiny_studiolms');
-    const strUpdate = await getString('btn_update', 'tiny_studiolms');
     const strDelete = await getString('btn_delete', 'tiny_studiolms');
     const strConfirmDel = await getString('confirm_delete', 'tiny_studiolms');
-    const strInsert = await getString('btn_insert', 'tiny_studiolms');
+    const strConfirmTitle = await getString('confirm', 'core');
+    const strYes = await getString('yes', 'core');
+    const strNo = await getString('no', 'core');
 
     if (headerTitle) {
+        headerTitle.textContent = '';
         if (restoredConfig) {
-            headerTitle.innerHTML = `<span class="badge bg-warning text-dark me-2" style="font-size: 0.8em;+
-             vertical-align: middle;">${strEditMode}</span> ${translatedTitle}`;
-        } else {
-            headerTitle.textContent = translatedTitle;
+            const badgeSpan = document.createElement('span');
+            badgeSpan.className = 'badge bg-warning text-dark me-2 small align-middle';
+            badgeSpan.textContent = strEditMode;
+            headerTitle.appendChild(badgeSpan);
         }
+        headerTitle.appendChild(document.createTextNode(translatedTitle));
     }
 
     if (btnBack) {
         btnBack.style.display = restoredConfig ? 'none' : 'inline-flex';
     }
 
-    // --- Header Action Grouping ---
     if (btnInsert) {
+        const stateInsert = btnInsert.querySelector('.slms-state-insert');
+        const stateUpdate = btnInsert.querySelector('.slms-state-update');
         let btnDelete = document.getElementById('slms-btn-delete-block');
+
         if (restoredConfig && targetEditNode) {
-            btnInsert.innerHTML = `<span aria-hidden="true">💾</span> ${strUpdate}`;
+            if (stateInsert) {
+                stateInsert.classList.add('d-none');
+            }
+            if (stateUpdate) {
+                stateUpdate.classList.remove('d-none');
+            }
             btnInsert.classList.remove('btn-primary');
             btnInsert.classList.add('btn-success');
 
@@ -383,24 +403,42 @@ const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig =
                 btnDelete = document.createElement('button');
                 btnDelete.id = 'slms-btn-delete-block';
                 btnDelete.className = 'btn btn-danger px-3 shadow-sm rounded-pill btn-sm me-2';
-                btnDelete.innerHTML = `<span aria-hidden="true">🗑️</span> ${strDelete}`;
-                btnDelete.onclick = () => {
-                    // eslint-disable-next-line no-alert
-                    if (confirm(strConfirmDel)) {
-                        tinyEditorInstance.undoManager.transact(() => {
-                            targetEditNode.remove();
-                        });
-                        PopupManager.closeAll();
-                        if (moodleModalInstance) {
-                            moodleModalInstance.hide();
+
+                const delIcon = document.createElement('span');
+                delIcon.setAttribute('aria-hidden', 'true');
+                delIcon.textContent = '🗑️ ';
+
+                btnDelete.appendChild(delIcon);
+                btnDelete.appendChild(document.createTextNode(strDelete));
+
+                btnDelete.onclick = (e) => {
+                    e.preventDefault();
+                    Notification.confirm(
+                        strConfirmTitle,
+                        strConfirmDel,
+                        strYes,
+                        strNo,
+                        () => {
+                            tinyEditorInstance.undoManager.transact(() => {
+                                targetEditNode.remove();
+                            });
+                            PopupManager.closeAll();
+                            if (moodleModalInstance) {
+                                moodleModalInstance.hide();
+                            }
                         }
-                    }
+                    );
                 };
                 btnInsert.parentNode.insertBefore(btnDelete, btnInsert);
             }
             btnDelete.style.display = 'inline-flex';
         } else {
-            btnInsert.innerHTML = `<span aria-hidden="true">🚀</span> ${strInsert}`;
+            if (stateUpdate) {
+                stateUpdate.classList.add('d-none');
+            }
+            if (stateInsert) {
+                stateInsert.classList.remove('d-none');
+            }
             btnInsert.classList.remove('btn-success');
             btnInsert.classList.add('btn-primary');
 
@@ -411,6 +449,7 @@ const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig =
     }
 
     toggleView('editor');
+
     const toolbarContainer = document.getElementById('slms-top-toolbar');
     if (toolbarContainer) {
         toolbarContainer.innerHTML = '';
@@ -426,6 +465,7 @@ const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig =
 
 const updateLivePreview = async() => {
     const previewContainer = document.getElementById('slms-live-preview');
+
     if (!previewContainer || !currentBlockType) {
         return;
     }
@@ -434,6 +474,7 @@ const updateLivePreview = async() => {
         const html = await currentBlockType.renderHtml(currentConfig);
         previewContainer.innerHTML = html;
     } catch (error) {
-        previewContainer.innerHTML = '<div class="alert alert-warning">Erro no preview.</div>';
+        previewContainer.innerHTML = '';
+        Notification.exception(error);
     }
 };
