@@ -30,6 +30,10 @@ use editor_tiny\plugin_with_menuitems;
 
 /**
  * Plugin info class.
+ *
+ * @package    tiny_studiolms
+ * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class plugininfo extends plugin implements plugin_with_buttons, plugin_with_menuitems {
     /**
@@ -52,7 +56,7 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_menu
      */
     public static function get_available_menuitems(): array {
         return [
-            'tools' => [ // Places the item in the "Tools" (Ferramentas) menu.
+            'tools' => [ // Places the item in the Tools menu.
                 'tiny_studiolms/studiolms',
             ],
         ];

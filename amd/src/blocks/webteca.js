@@ -22,22 +22,23 @@
  */
 
 import Templates from 'core/templates';
+import {getString} from 'core/str';
 
 export default {
     id: 'webteca',
     titleString: 'block_webteca_title',
     icon: '📚',
     defaultData: {
-        title: 'Material Complementar',
-        desc: 'Acesse os recursos abaixo para aprofundar seus conhecimentos.',
+        title: '',
+        desc: '',
         bg: '#ffffff',
         headerBg: '#f8f9fa',
         color: '#0d47a1',
         isOpen: true,
         layout: 'list',
         resources: [
-            {type: 'pdf', title: 'Artigo Científico', url: 'https://scholar.google.com'},
-            {type: 'video', title: 'Vídeo Explicativo', url: 'https://youtube.com'}
+            {type: 'pdf', title: '', url: 'https://scholar.google.com'},
+            {type: 'video', title: '', url: 'https://youtube.com'}
         ]
     },
 
@@ -101,7 +102,6 @@ export default {
                                 const row = document.createElement('div');
                                 row.className = 'd-flex gap-2 mb-2 align-items-center p-2 border rounded bg-light';
 
-                                // HTML quebrado em múltiplas linhas para respeitar o limite de 132 caracteres
                                 row.innerHTML = `
                                 <div class="flex-grow-1">
                                     <div class="input-group input-group-sm mb-1">
@@ -145,8 +145,11 @@ export default {
                         renderList();
 
                         if (btnAdd) {
-                            btnAdd.addEventListener('click', () => {
-                                data.resources.push({type: 'link', title: 'Novo Recurso', url: '#'});
+                            btnAdd.addEventListener('click', async() => {
+                                const defaultTitle = await getString(
+                                    'webteca_default_item_title', 'tiny_studiolms'
+                                );
+                                data.resources.push({type: 'link', title: defaultTitle, url: '#'});
                                 renderList();
                                 onUpdate(data);
                                 listContainer.scrollTop = listContainer.scrollHeight;
@@ -157,34 +160,55 @@ export default {
             }
 
         } catch (error) {
-            container.innerHTML = '<div class="text-danger small">Erro ao carregar toolbar</div>';
+            container.innerHTML = '';
+            const errorNode = document.createElement('div');
+            errorNode.className = 'text-danger small';
+            try {
+                errorNode.textContent = await getString('error_loading_form', 'tiny_studiolms');
+            } catch (innerError) {
+                errorNode.textContent = 'Error';
+            }
+            container.appendChild(errorNode);
         }
     },
 
-    renderHtml: (data) => {
+    renderHtml: async(data) => {
         const templateData = Object.assign({}, data);
         templateData.isGrid = data.layout === 'grid';
         templateData.listFlexDirection = data.layout === 'grid' ? 'row' : 'column';
         templateData.listFlexWrap = data.layout === 'grid' ? 'wrap' : 'nowrap';
 
+        if (!templateData.title || templateData.title.trim() === '') {
+            templateData.title = await getString('webteca_default_title', 'tiny_studiolms');
+        }
+        if (!templateData.desc || templateData.desc.trim() === '') {
+            templateData.desc = await getString('webteca_default_desc', 'tiny_studiolms');
+        }
+
+        const defaultItemTitle = await getString('webteca_default_item_title', 'tiny_studiolms');
         templateData.mappedResources = data.resources.map(r => {
             let icon = '🔗';
             let typeColor = '#6c757d';
 
             if (r.type === 'pdf') {
- icon = '📄'; typeColor = '#dc3545';
-}
+                icon = '📄';
+                typeColor = '#dc3545';
+            }
             if (r.type === 'video') {
- icon = '▶️'; typeColor = '#fd7e14';
-}
+                icon = '▶️';
+                typeColor = '#fd7e14';
+            }
             if (r.type === 'audio') {
- icon = '🎧'; typeColor = '#6f42c1';
-}
+                icon = '🎧';
+                typeColor = '#6f42c1';
+            }
             if (r.type === 'link') {
- icon = '🔗'; typeColor = '#0d6efd';
-}
+                icon = '🔗';
+                typeColor = '#0d6efd';
+            }
 
-            return {...r, icon: icon, typeColor: typeColor};
+            const title = (r.title && r.title.trim()) ? r.title : defaultItemTitle;
+            return {...r, title: title, icon: icon, typeColor: typeColor};
         });
 
         return Templates.render('tiny_studiolms/block_webteca', templateData);

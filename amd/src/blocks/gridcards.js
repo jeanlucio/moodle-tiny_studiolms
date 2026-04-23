@@ -22,6 +22,7 @@
  */
 
 import Templates from 'core/templates';
+import {getString} from 'core/str';
 
 export default {
     id: 'gridcards',
@@ -112,7 +113,15 @@ export default {
             }
 
         } catch (error) {
-            container.innerHTML = '<div class="text-danger small">Erro</div>';
+            container.innerHTML = '';
+            const errorNode = document.createElement('div');
+            errorNode.className = 'text-danger small';
+            try {
+                errorNode.textContent = await getString('error_loading_form', 'tiny_studiolms');
+            } catch (innerError) {
+                errorNode.textContent = 'Error';
+            }
+            container.appendChild(errorNode);
         }
     },
 
@@ -142,7 +151,6 @@ export default {
         for (let i = 0; i < colCount; i++) {
             let content = (data.slots && data.slots[i]) ? data.slots[i] : '';
 
-            // Insere apenas um parágrafo vazio invisível se a caixa estiver limpa
             if (!content || content.trim() === '') {
                 content = '<p><br></p>';
             }

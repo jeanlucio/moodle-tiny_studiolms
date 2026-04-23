@@ -48,7 +48,6 @@ $string['block_table_title'] = 'Styled Table';
 $string['block_webteca_title'] = 'Web Library (Resources)';
 $string['border_color'] = 'Border Color';
 $string['border_radius'] = 'Border Radius (px)';
-$string['btn_access_arrow'] = 'Access (Arrow)';
 $string['btn_delete'] = 'Delete';
 $string['btn_insert'] = 'Insert into Moodle';
 $string['btn_update'] = 'Update';
@@ -72,6 +71,7 @@ $string['default_accordion_text'] = 'Write the expandable content here. You can 
 $string['default_callout_content'] = '<p class="m-0">Write your highlight here...</p>';
 $string['default_card_text'] = 'Write your content here. Use Moodle’s native tools to format this text!';
 $string['default_card_title'] = 'Card Title';
+$string['default_heading_text'] = 'New Heading';
 $string['design_colors'] = 'Design & Colors';
 $string['error_generic'] = 'Error';
 $string['error_loading_form'] = 'Error loading form.';

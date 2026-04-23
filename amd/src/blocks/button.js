@@ -130,8 +130,10 @@ export default {
         const templateData = Object.assign({}, data);
         templateData.isTargetBlank = data.target === '_blank';
 
-        // Translate the "align" property to actual CSS rules.
-        templateData.textAlign = (data.align === 'full') ? 'center' : data.align;
+        templateData.isAlignLeft = data.align === 'left';
+        templateData.isAlignCenter = data.align === 'center';
+        templateData.isAlignRight = data.align === 'right';
+        templateData.isAlignFull = data.align === 'full';
         templateData.displayMode = (data.align === 'full') ? 'flex' : 'inline-flex';
         templateData.isFullWidth = data.align === 'full';
 

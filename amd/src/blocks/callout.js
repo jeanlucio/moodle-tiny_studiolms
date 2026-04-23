@@ -22,6 +22,7 @@
  */
 
 import Templates from 'core/templates';
+import {getString} from 'core/str';
 
 export default {
     id: 'callout',
@@ -29,15 +30,15 @@ export default {
     icon: '💡',
     defaultData: {
         icon: '💡',
-        backgroundColor: '#fef9c3', // Amarelo bem claro
-        textColor: '#854d0e', // Castanho escuro para contraste
-        borderColor: '#eab308', // Amarelo mais forte na lateral
+        backgroundColor: '#fef9c3',
+        textColor: '#854d0e',
+        borderColor: '#eab308',
         borderLeftWidth: 4,
         borderRadius: 6,
         contentHtml: ''
     },
 
-    // O texto é extraído dinamicamente para não pesar o Base64
+    // Rich text is excluded from the Base64 state chip.
     excludeFromState: ['contentHtml'],
 
     extractDOM: (node, state) => {
@@ -86,18 +87,25 @@ export default {
                 });
             }
         } catch (error) {
-            container.innerHTML = '<div class="text-danger small">Erro ao carregar toolbar</div>';
+            container.innerHTML = '';
+            const errorNode = document.createElement('div');
+            errorNode.className = 'text-danger small';
+            try {
+                errorNode.textContent = await getString('error_loading_form', 'tiny_studiolms');
+            } catch (innerError) {
+                errorNode.textContent = 'Error';
+            }
+            container.appendChild(errorNode);
         }
     },
 
-    renderHtml: (data) => {
+    renderHtml: async(data) => {
         const tData = Object.assign({}, data);
 
         tData.hasIcon = data.icon && data.icon.trim() !== '';
 
-        // Se for uma inserção nova (sem texto extraído), coloca o texto de apoio
         if (!tData.contentHtml || tData.contentHtml.trim() === '') {
-            tData.contentHtml = '<p style="margin: 0;">Escreva o seu destaque aqui...</p>';
+            tData.contentHtml = await getString('default_callout_content', 'tiny_studiolms');
         }
 
         return Templates.render('tiny_studiolms/block_callout', tData);

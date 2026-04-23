@@ -22,13 +22,14 @@
  */
 
 import Templates from 'core/templates';
+import {getString} from 'core/str';
 
 export default {
     id: 'stylizedHeading',
     titleString: 'block_heading_title',
     icon: '🔠',
     defaultData: {
-        text: '<strong>Novo Título</strong>',
+        text: '',
         level: 'h3',
         icon: '🎯',
         bgColor: '#e3f2fd',
@@ -78,14 +79,28 @@ export default {
                 });
             }
         } catch (error) {
-            container.innerHTML = '<div class="text-danger small">Erro</div>';
+            container.innerHTML = '';
+            const errorNode = document.createElement('div');
+            errorNode.className = 'text-danger small';
+            try {
+                errorNode.textContent = await getString('error_loading_form', 'tiny_studiolms');
+            } catch (innerError) {
+                errorNode.textContent = 'Error';
+            }
+            container.appendChild(errorNode);
         }
     },
 
-    renderHtml: (data) => {
+    renderHtml: async(data) => {
         const templateData = Object.assign({}, data);
         templateData.isH3 = data.level === 'h3';
         templateData.isH4 = data.level === 'h4';
+
+        if (!templateData.text || templateData.text.trim() === '') {
+            const defaultText = await getString('default_heading_text', 'tiny_studiolms');
+            templateData.text = '<strong>' + defaultText + '</strong>';
+        }
+
         return Templates.render('tiny_studiolms/block_heading', templateData);
     }
 };

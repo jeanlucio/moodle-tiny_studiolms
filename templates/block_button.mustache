@@ -20,10 +20,10 @@
 
     Example context (json): {
         "btnUrl": "#", "target": "_blank", "btnBg": "#0d47a1", "btnTextCol": "#ffffff",
-        "radius": 6, "textAlign": "center", "displayMode": "inline-flex", "isFullWidth": false
+        "radius": 6, "isAlignCenter": true, "displayMode": "inline-flex", "isFullWidth": false
     }
 }}
-<div class="studiolms-btn-wrap my-3" contenteditable="false" style="text-align: {{textAlign}};">
+<div class="studiolms-btn-wrap my-3{{#isAlignLeft}} text-start{{/isAlignLeft}}{{#isAlignCenter}} text-center{{/isAlignCenter}}{{#isAlignRight}} text-end{{/isAlignRight}}" contenteditable="false">
     <a href="{{btnUrl}}" class="studiolms-btn" contenteditable="true" target="{{target}}"
        {{#isTargetBlank}}rel="noopener noreferrer"{{/isTargetBlank}}
        style="--slms-display: {{displayMode}}; --slms-w: {{#isFullWidth}}100%{{/isFullWidth}}{{^isFullWidth}}auto{{/isFullWidth}};

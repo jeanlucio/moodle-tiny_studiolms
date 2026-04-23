@@ -29,12 +29,12 @@ export default {
     titleString: 'block_accordion_title',
     icon: '📑',
     defaultData: {
-        title: 'Tópico expansível',
+        title: '',
         color: '#3b82f6',
         bg: '#ffffff',
         icon: '▼ / ▲',
         state: 'closed',
-        content: '<p style="margin-top: 0;">Escreva o conteúdo do tópico aqui...</p>'
+        content: ''
     },
 
     // Exclude strings and rich text from the Base64 state chip.
@@ -131,11 +131,19 @@ export default {
         }
     },
 
-    renderHtml: (data) => {
+    renderHtml: async(data) => {
         const templateData = Object.assign({}, data);
         templateData.isOpen = data.state === 'open';
         // Gets only the first icon of the pair to display in the closed state.
         templateData.iconFirst = data.icon.split(' / ')[0];
+
+        if (!templateData.title || templateData.title.trim() === '') {
+            templateData.title = await getString('accordion_default_title', 'tiny_studiolms');
+        }
+        if (!templateData.content || templateData.content.trim() === '') {
+            templateData.content = await getString('default_accordion_content', 'tiny_studiolms');
+        }
+
         return Templates.render('tiny_studiolms/block_accordion', templateData);
     }
 };

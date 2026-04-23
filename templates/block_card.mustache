@@ -22,7 +22,7 @@
         "bg": "#ffffff", "text": "#333333", "border": "#0d47a1", "radius": "8", "shadowCss": "none",
         "hasMedia": true, "isImage": true, "mediaUrl": "https://picsum.photos/600/300",
         "isHorizontal": false, "hasButton": true, "btnText": "Click", "btnUrl": "#",
-        "btnBg": "#0d47a1", "btnTextCol": "#fff", "btnTextAlign": "center", "btnDisplayMode": "inline-flex"
+        "btnBg": "#0d47a1", "btnTextCol": "#fff", "isAlignCenter": true, "btnDisplayMode": "inline-flex"
     }
 }}
 <div class="studiolms-card-wrap" contenteditable="false">
@@ -46,11 +46,11 @@
         </div>
         {{/hasMedia}}
         <div class="studiolms-card-content">
-            <div class="studiolms-editable-area flex-grow-1" contenteditable="true" style="outline: none;">
+            <div class="studiolms-editable-area flex-grow-1" contenteditable="true">
                 {{{content}}}
             </div>
             {{#hasButton}}
-            <div class="mt-4" style="text-align: {{btnTextAlign}};" contenteditable="false">
+            <div class="mt-4{{#isAlignLeft}} text-start{{/isAlignLeft}}{{#isAlignCenter}} text-center{{/isAlignCenter}}{{#isAlignRight}} text-end{{/isAlignRight}}" contenteditable="false">
                 <a href="{{btnUrl}}" class="studiolms-btn" target="_blank" rel="noopener noreferrer"
                    style="--slms-display: {{btnDisplayMode}}; --slms-w: {{#isBtnFullWidth}}100%{{/isBtnFullWidth}}{{^isBtnFullWidth}}auto{{/isBtnFullWidth}};
                           --slms-bg: {{btnBg}}; --slms-color: {{btnTextCol}}; --slms-radius: {{radius}}px;">

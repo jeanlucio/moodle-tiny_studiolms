@@ -22,6 +22,7 @@
  */
 
 import Templates from 'core/templates';
+import {getString} from 'core/str';
 
 export default {
     id: 'table',
@@ -29,43 +30,38 @@ export default {
     icon: '📊',
     defaultData: {
         cols: 3,
-        rows: 4, // 1 Cabeçalho + 3 Linhas de corpo
+        rows: 4,
         style: 'striped',
-        headerBg: '#0f172a', // Azul muito escuro/Slate
+        headerBg: '#0f172a',
         headerText: '#ffffff',
-        cellData: [] // Matriz 2D: cellData[rowIndex][colIndex]
+        cellData: []
     },
 
-    // O conteúdo das células não vai para o Base64
+    // Cell content is excluded from the Base64 state chip.
     excludeFromState: ['cellData'],
 
-    // A MÁGICA DE PRESERVAÇÃO TURBINADA: Aceita alterações feitas pela barra nativa do Moodle!
     extractDOM: (node, state) => {
         const tableRows = node.querySelectorAll('tr');
         state.cellData = [];
 
         tableRows.forEach(tr => {
             const rowContent = [];
-            // Lê todas as células, sejam do nosso padrão (th/td) ou injetadas pelo TinyMCE
             const cells = tr.querySelectorAll('th, td');
 
             cells.forEach(cell => {
-                // Verifica se tem a nossa div protetora
                 const innerDiv = cell.querySelector('.slms-cell-content');
                 if (innerDiv) {
                     rowContent.push(innerDiv.innerHTML);
                 } else {
-                    // Se não tiver (porque o professor usou a barra nativa do Moodle), pega o conteúdo cru!
+                    // Fallback for cells edited with the native TinyMCE toolbar, which omits our wrapper div.
                     rowContent.push(cell.innerHTML);
                 }
             });
             state.cellData.push(rowContent);
         });
 
-        // Atualiza a estrutura no painel do StudioLMS automaticamente!
         if (state.cellData.length > 0) {
             state.rows = state.cellData.length;
-            // Pega o número máximo de colunas encontrado nas linhas
             state.cols = Math.max(...state.cellData.map(row => row.length));
         }
     },
@@ -89,7 +85,6 @@ export default {
                             const el = popup.querySelector(selector);
                             if (el) {
                                 el.addEventListener('input', (ev) => {
-                                    // Garante que sejam números inteiros
                                     data[propMap[selector]] = parseInt(ev.target.value) || 1;
                                     onUpdate(data);
                                 });
@@ -124,7 +119,15 @@ export default {
                 });
             }
         } catch (error) {
-            container.innerHTML = '<div class="text-danger small">Erro ao carregar toolbar</div>';
+            container.innerHTML = '';
+            const errorNode = document.createElement('div');
+            errorNode.className = 'text-danger small';
+            try {
+                errorNode.textContent = await getString('error_loading_form', 'tiny_studiolms');
+            } catch (innerError) {
+                errorNode.textContent = 'Error';
+            }
+            container.appendChild(errorNode);
         }
     },
 
@@ -145,10 +148,9 @@ export default {
             for (let c = 0; c < numCols; c++) {
                 let content = currentRowData[c];
                 if (!content || content.trim() === '') {
-                    content = (r === 0) ? 'Cabeçalho' : '&nbsp;';
+                    content = '&nbsp;';
                 }
 
-                // MÁGICA: Injetando a cor DENTRO do objeto de cada célula!
                 cellsInThisRow.push({
                     content: content,
                     headerBg: data.headerBg,

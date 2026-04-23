@@ -42,8 +42,7 @@ export default {
         btnBg: '#0d47a1',
         btnTextCol: '#ffffff',
         btnAlign: 'left',
-        content: '<h4 style="margin-top: 0; color: inherit; font-weight: bold;">Título do cartão</h4>' +
-                 '<p style="margin-bottom: 0;">Escreva seu conteúdo aqui.</p>'
+        content: ''
     },
 
     // Exclude the rich text area from the Base64 state chip.
@@ -165,7 +164,7 @@ export default {
         }
     },
 
-    renderHtml: (data) => {
+    renderHtml: async(data) => {
         const templateData = Object.assign({}, data);
         const shadowMap = {
             'none': 'none',
@@ -195,7 +194,19 @@ export default {
         templateData.isHorizontal = data.layout === 'horizontal';
         templateData.hasButton = data.btnText.trim() !== '';
 
-        templateData.btnTextAlign = (data.btnAlign === 'full') ? 'center' : data.btnAlign;
+        if (!templateData.content || templateData.content.trim() === '') {
+            const [defaultTitle, defaultText] = await Promise.all([
+                getString('default_card_title', 'tiny_studiolms'),
+                getString('default_card_text', 'tiny_studiolms')
+            ]);
+            templateData.content = '<h4 style="margin-top: 0; color: inherit; font-weight: bold;">' +
+                defaultTitle + '</h4><p style="margin-bottom: 0;">' + defaultText + '</p>';
+        }
+
+        templateData.isAlignLeft = data.btnAlign === 'left';
+        templateData.isAlignCenter = data.btnAlign === 'center';
+        templateData.isAlignRight = data.btnAlign === 'right';
+        templateData.isAlignFull = data.btnAlign === 'full';
         templateData.btnDisplayMode = (data.btnAlign === 'full') ? 'flex' : 'inline-flex';
         templateData.isBtnFullWidth = data.btnAlign === 'full';
 
