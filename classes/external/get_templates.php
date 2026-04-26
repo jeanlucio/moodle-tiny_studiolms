@@ -102,7 +102,7 @@ class get_templates extends external_api {
                 'name'        => $row->name,
                 'content'     => $row->content,
                 'isglobal'    => (int) $row->isglobal,
-                'ismine'      => ((int) $row->userid === $userid),
+                'ismine'      => ((int) $row->userid === (int) $userid),
                 'isfavourite' => (bool) $row->isfavourite,
             ];
         }

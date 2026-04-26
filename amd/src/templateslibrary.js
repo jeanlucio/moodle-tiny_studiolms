@@ -27,6 +27,29 @@ import Notification from 'core/notification';
 import {getString} from 'core/str';
 
 /**
+ * Show a brief feedback message inside the modal's designated feedback area.
+ *
+ * @param {string} message
+ * @param {string} type - Bootstrap alert variant: 'success' | 'danger' | 'info'
+ */
+export const showInlineFeedback = (message, type = 'success') => {
+    const area = document.getElementById('slms-feedback-area');
+    if (!area) {
+        return;
+    }
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type} py-2 px-3 mb-0 small`;
+    alert.textContent = message;
+    area.innerHTML = '';
+    area.appendChild(alert);
+    setTimeout(() => {
+        if (area.contains(alert)) {
+            alert.remove();
+        }
+    }, 3000);
+};
+
+/**
  * Load templates from the server filtered by type.
  *
  * @param {string} type - 'global' | 'mine' | 'favourites'
@@ -178,10 +201,7 @@ const handleToggleFavourite = async(btnFav, tpl) => {
         }
 
         const msgKey = isFav ? 'fav_added' : 'fav_removed';
-        Notification.addNotification({
-            message: await getString(msgKey, 'tiny_studiolms'),
-            type: 'info'
-        });
+        showInlineFeedback(await getString(msgKey, 'tiny_studiolms'), 'info');
     } catch (error) {
         Notification.exception(error);
     }
@@ -206,10 +226,7 @@ const handleDeleteTemplate = async(card, tpl) => {
             try {
                 await deleteTemplate(tpl.id);
                 card.remove();
-                Notification.addNotification({
-                    message: await getString('tpl_deleted', 'tiny_studiolms'),
-                    type: 'info'
-                });
+                showInlineFeedback(await getString('tpl_deleted', 'tiny_studiolms'), 'info');
             } catch (error) {
                 Notification.exception(error);
             }

@@ -25,7 +25,7 @@ import {Blocks} from './blocks/registry';
 import {getString} from 'core/str';
 import Templates from 'core/templates';
 import Notification from 'core/notification';
-import {loadTemplates, renderTemplateGrid, saveTemplate} from './templateslibrary';
+import {loadTemplates, renderTemplateGrid, saveTemplate, showInlineFeedback} from './templateslibrary';
 
 let currentConfig = null;
 let currentBlockType = null;
@@ -409,10 +409,7 @@ const setupSaveTemplateButton = () => {
                 try {
                     const content = tinyEditorInstance.getContent();
                     await saveTemplate(name, content);
-                    Notification.addNotification({
-                        message: await getString('tpl_saved', 'tiny_studiolms'),
-                        type: 'success'
-                    });
+                    showInlineFeedback(await getString('tpl_saved', 'tiny_studiolms'), 'success');
                     await switchTab('mine');
                 } catch (saveError) {
                     Notification.exception(saveError);
