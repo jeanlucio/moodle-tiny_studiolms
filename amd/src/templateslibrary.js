@@ -105,20 +105,20 @@ export const renderTemplateGrid = async(container, templates, editor, modal) => 
             const wrapper = document.createElement('div');
             wrapper.innerHTML = html;
             const card = wrapper.firstElementChild;
+            const insertTrigger = card.querySelector('.slms-tpl-insert');
 
-            card.addEventListener('click', (e) => {
-                if (e.target.closest('.slms-btn-fav') || e.target.closest('.slms-btn-tpl-delete')) {
-                    return;
-                }
-                handleInsertTemplate(tpl, editor, modal);
-            });
-
-            card.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
+            if (insertTrigger) {
+                insertTrigger.addEventListener('click', () => {
                     handleInsertTemplate(tpl, editor, modal);
-                }
-            });
+                });
+
+                insertTrigger.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleInsertTemplate(tpl, editor, modal);
+                    }
+                });
+            }
 
             const btnFav = card.querySelector('.slms-btn-fav');
             if (btnFav) {

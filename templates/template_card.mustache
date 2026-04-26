@@ -27,19 +27,22 @@
         "isfavourite": false
     }
 }}
-<div class="slms-tpl-card" role="button" tabindex="0" data-templateid="{{id}}" aria-label="{{name}}">
-    <div class="slms-tpl-thumb" aria-hidden="true">
-        <div class="slms-tpl-thumb-content">{{{content}}}</div>
-    </div>
-    <div class="slms-tpl-meta">
-        <div class="slms-tpl-name-row">
-            <div class="slms-tpl-icon" aria-hidden="true">
-                {{#isglobal}}🏛️{{/isglobal}}
-                {{^isglobal}}📄{{/isglobal}}
-            </div>
-            <div class="slms-tpl-name">{{name}}</div>
+<div class="slms-tpl-card" data-templateid="{{id}}">
+    <div class="slms-tpl-insert" role="button" tabindex="0" aria-label="{{name}}">
+        <div class="slms-tpl-thumb" aria-hidden="true">
+            <div class="slms-tpl-thumb-content">{{{content}}}</div>
         </div>
-        <div class="slms-tpl-actions">
+        <div class="slms-tpl-meta">
+            <div class="slms-tpl-name-row">
+                <div class="slms-tpl-icon" aria-hidden="true">
+                    {{#isglobal}}🏛️{{/isglobal}}
+                    {{^isglobal}}📄{{/isglobal}}
+                </div>
+                <div class="slms-tpl-name">{{name}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="slms-tpl-actions">
         <button type="button"
                 class="slms-btn-fav{{#isfavourite}} active{{/isfavourite}}"
                 data-templateid="{{id}}"
@@ -57,6 +60,5 @@
             <span aria-hidden="true">🗑</span>
         </button>
         {{/ismine}}
-        </div>
     </div>
 </div>

@@ -68,12 +68,15 @@
     border: 1px solid var(--bs-border-color, #dee2e6);
     border-radius: 0.75rem;
     overflow: hidden;
-    cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
+.tiny_studiolms .slms-tpl-insert {
+    cursor: pointer;
+}
+
 .tiny_studiolms .slms-tpl-card:hover,
-.tiny_studiolms .slms-tpl-card:focus {
+.tiny_studiolms .slms-tpl-insert:focus {
     transform: translateY(-4px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
     border-color: var(--bs-primary, #0f6cbf);
@@ -106,8 +109,7 @@
 .tiny_studiolms .slms-tpl-meta {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
+    justify-content: flex-start;
     padding: 0.75rem;
 }
 
@@ -132,6 +134,8 @@
 }
 
 .tiny_studiolms .slms-tpl-actions {
+    border-top: 1px solid var(--bs-border-color, #dee2e6);
+    padding: 0.5rem 0.75rem 0.75rem;
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
