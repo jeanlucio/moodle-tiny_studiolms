@@ -51,7 +51,7 @@ const StateManager = {
     }
 };
 
-export const initStudioApp = (editor, modal, editData = null) => {
+export const initStudioApp = (editor, modal, editData = null, canManageGlobal = false) => {
     tinyEditorInstance = editor;
     moodleModalInstance = modal;
     currentZoom = 1;
@@ -65,7 +65,7 @@ export const initStudioApp = (editor, modal, editData = null) => {
         setupNavigation();
         setupZoomControls();
         setupTabs();
-        setupSaveTemplateButton();
+        setupSaveTemplateButton(canManageGlobal);
 
         if (editData && editData.type && editData.state) {
             const blockDef = Blocks[editData.type];
@@ -346,7 +346,7 @@ const switchTab = async(tabName) => {
     }
 };
 
-const setupSaveTemplateButton = () => {
+const setupSaveTemplateButton = (canManageGlobal = false) => {
     const btn = document.getElementById('slms-btn-save-template');
     if (!btn) {
         return;
@@ -354,12 +354,17 @@ const setupSaveTemplateButton = () => {
 
     btn.addEventListener('click', async() => {
         try {
-            const [strTitle, strPlaceholder, strOk, strCancel] = await Promise.all([
+            const stringsToLoad = [
                 getString('btn_save_template', 'tiny_studiolms'),
                 getString('placeholder_tpl_name', 'tiny_studiolms'),
                 getString('ok', 'core'),
                 getString('cancel', 'core'),
-            ]);
+            ];
+            if (canManageGlobal) {
+                stringsToLoad.push(getString('mark_as_global', 'tiny_studiolms'));
+            }
+            const [strTitle, strPlaceholder, strOk, strCancel, strMarkGlobal = ''] =
+                await Promise.all(stringsToLoad);
 
             const anchor = document.getElementById('slms-tab-toolbar');
             if (!anchor) {
@@ -395,6 +400,29 @@ const setupSaveTemplateButton = () => {
             form.appendChild(input);
             form.appendChild(btnOk);
             form.appendChild(btnCancelEl);
+
+            let chkGlobal = null;
+            if (canManageGlobal) {
+                form.classList.add('flex-wrap');
+
+                const chkWrap = document.createElement('div');
+                chkWrap.className = 'd-flex align-items-center gap-1 w-100';
+
+                chkGlobal = document.createElement('input');
+                chkGlobal.type = 'checkbox';
+                chkGlobal.id = 'slms-chk-global';
+                chkGlobal.className = 'form-check-input m-0';
+
+                const chkLabel = document.createElement('label');
+                chkLabel.htmlFor = 'slms-chk-global';
+                chkLabel.className = 'form-check-label small mb-0';
+                chkLabel.textContent = strMarkGlobal;
+
+                chkWrap.appendChild(chkGlobal);
+                chkWrap.appendChild(chkLabel);
+                form.appendChild(chkWrap);
+            }
+
             anchor.appendChild(form);
             input.focus();
 
@@ -405,12 +433,13 @@ const setupSaveTemplateButton = () => {
                 if (!name) {
                     return;
                 }
+                const isglobal = chkGlobal && chkGlobal.checked ? 1 : 0;
                 form.remove();
                 try {
                     const content = tinyEditorInstance.getContent();
-                    await saveTemplate(name, content);
+                    await saveTemplate(name, content, isglobal);
                     showInlineFeedback(await getString('tpl_saved', 'tiny_studiolms'), 'success');
-                    await switchTab('mine');
+                    await switchTab(isglobal ? 'global' : 'mine');
                 } catch (saveError) {
                     Notification.exception(saveError);
                 }

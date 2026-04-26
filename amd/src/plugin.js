@@ -23,6 +23,7 @@
 
 import {getTinyMCE} from 'editor_tiny/loader';
 import {getPluginMetadata, addToolbarButton, addMenubarItem} from 'editor_tiny/utils';
+import {getPluginOptionName} from 'editor_tiny/options';
 import {getString} from 'core/str';
 import {initStudioApp} from './app';
 import Templates from 'core/templates';
@@ -33,6 +34,7 @@ import Notification from 'core/notification';
 const component = 'tiny_studiolms';
 const pluginName = `${component}/plugin`;
 const buttonName = `${component}/studiolms`;
+const canManageGlobalOption = getPluginOptionName(pluginName, 'canmanageglobaltemplates');
 
 const brushIcon = '<svg width="24" height="24" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">' +
     '<path d="M15.825.12a.5.5 0 0 1 .132.584c-1.53 3.43-4.743 8.17-7.095 10.64a6.1 6.1 0 0 1-2.373 1.534' +
@@ -64,6 +66,11 @@ export default Promise.all([
 ]) => {
 
     tinyMCE.PluginManager.add(pluginName, (editor) => {
+
+        editor.options.register(canManageGlobalOption, {
+            processor: 'boolean',
+            'default': false,
+        });
 
         const getActiveSlmsBlock = () => {
             const selectedNode = editor.selection.getNode();
@@ -110,7 +117,8 @@ export default Promise.all([
                 modalRoot.on(ModalEvents.hidden, () => modal.destroy());
                 modal.show();
 
-                initStudioApp(editor, modal, editData);
+                const canManageGlobal = editor.options.get(canManageGlobalOption);
+                initStudioApp(editor, modal, editData, canManageGlobal);
             } catch (error) {
                 Notification.exception(error);
             }

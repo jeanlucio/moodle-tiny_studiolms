@@ -67,12 +67,13 @@ export const loadTemplates = (type) => {
  *
  * @param {string} name
  * @param {string} content
+ * @param {number} isglobal - 1 to create an official template (requires manageglobaltemplates capability)
  * @returns {Promise<{id: number}>}
  */
-export const saveTemplate = (name, content) => {
+export const saveTemplate = (name, content, isglobal = 0) => {
     return Ajax.call([{
         methodname: 'tiny_studiolms_save_template',
-        args: {name, content, isglobal: 0}
+        args: {name, content, isglobal}
     }])[0];
 };
 

@@ -143,6 +143,7 @@ $string['layout_vertical'] = 'Vertical (Top)';
 $string['library'] = 'Library';
 $string['link_file'] = 'Link';
 $string['main_color'] = 'Main Color';
+$string['mark_as_global'] = 'Mark as official template';
 $string['media'] = 'Media';
 $string['media_image'] = 'Image';
 $string['media_none'] = 'None';

@@ -143,6 +143,7 @@ $string['layout_vertical'] = 'Vertical (topo)';
 $string['library'] = 'Biblioteca';
 $string['link_file'] = 'Link';
 $string['main_color'] = 'Cor principal';
+$string['mark_as_global'] = 'Marcar como template oficial';
 $string['media'] = 'Mídia';
 $string['media_image'] = 'Imagem';
 $string['media_none'] = 'Nenhuma';

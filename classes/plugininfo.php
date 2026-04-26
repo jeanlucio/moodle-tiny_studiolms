@@ -24,8 +24,10 @@
 
 namespace tiny_studiolms;
 
+use context;
 use editor_tiny\plugin;
 use editor_tiny\plugin_with_buttons;
+use editor_tiny\plugin_with_configuration;
 use editor_tiny\plugin_with_menuitems;
 
 /**
@@ -35,7 +37,27 @@ use editor_tiny\plugin_with_menuitems;
  * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class plugininfo extends plugin implements plugin_with_buttons, plugin_with_menuitems {
+class plugininfo extends plugin implements plugin_with_buttons, plugin_with_configuration, plugin_with_menuitems {
+    /**
+     * Returns plugin configuration for the current context.
+     *
+     * @param context $context
+     * @param array $options
+     * @param array $fpoptions
+     * @param \editor_tiny\editor|null $editor
+     * @return array
+     */
+    public static function get_plugin_configuration_for_context(
+        context $context,
+        array $options,
+        array $fpoptions,
+        ?\editor_tiny\editor $editor = null
+    ): array {
+        return [
+            'canmanageglobaltemplates' => has_capability('tiny/studiolms:manageglobaltemplates', $context),
+        ];
+    }
+
     /**
      * Get the list of available buttons provided by this plugin.
      *
