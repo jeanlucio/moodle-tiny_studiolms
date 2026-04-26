@@ -24,7 +24,8 @@
         "name": "Weekly Lesson Layout",
         "isglobal": 0,
         "ismine": true,
-        "isfavourite": false
+        "isfavourite": false,
+        "isPreset": false
     }
 }}
 <div class="slms-tpl-card" data-templateid="{{id}}">
@@ -39,10 +40,12 @@
                     {{^isglobal}}📄{{/isglobal}}
                 </div>
                 <div class="slms-tpl-name">{{name}}</div>
+                {{#isPreset}}<span class="badge bg-secondary ms-1 slms-preset-badge">{{#str}} preset_badge, tiny_studiolms {{/str}}</span>{{/isPreset}}
             </div>
         </div>
     </div>
     <div class="slms-tpl-actions">
+        {{^isPreset}}
         <button type="button"
                 class="slms-btn-fav{{#isfavourite}} active{{/isfavourite}}"
                 data-templateid="{{id}}"
@@ -51,6 +54,7 @@
                 aria-pressed="{{#isfavourite}}true{{/isfavourite}}{{^isfavourite}}false{{/isfavourite}}">
             <span aria-hidden="true">{{#isfavourite}}★{{/isfavourite}}{{^isfavourite}}☆{{/isfavourite}}</span>
         </button>
+        {{/isPreset}}
         {{#ismine}}
         <button type="button"
                 class="slms-btn-tpl-delete"

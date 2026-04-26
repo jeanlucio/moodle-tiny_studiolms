@@ -33,6 +33,7 @@ let tinyEditorInstance = null;
 let moodleModalInstance = null;
 let currentZoom = 1;
 let targetEditNode = null;
+let presetsData = [];
 
 const StateManager = {
     encode: (data, excludeKeys = []) => {
@@ -51,11 +52,12 @@ const StateManager = {
     }
 };
 
-export const initStudioApp = (editor, modal, editData = null, canManageGlobal = false) => {
+export const initStudioApp = (editor, modal, editData = null, canManageGlobal = false, presets = []) => {
     tinyEditorInstance = editor;
     moodleModalInstance = modal;
     currentZoom = 1;
     targetEditNode = null;
+    presetsData = presets;
 
     if (editData && editData.node) {
         targetEditNode = editData.node;
@@ -319,6 +321,66 @@ const setupTabs = () => {
     });
 };
 
+/**
+ * Render a single preset definition into a flat HTML string with SLMS block attributes.
+ *
+ * @param {object} preset Preset definition with a blocks array.
+ * @returns {Promise<string>}
+ */
+const renderPresetToHtml = async(preset) => {
+    const parts = [];
+    for (const block of preset.blocks) {
+        const blockDef = Blocks[block.type];
+        if (!blockDef) {
+            continue;
+        }
+        const config = Object.assign({}, blockDef.defaultData, block.config ?? {});
+        const rawHtml = await blockDef.renderHtml(config);
+        const excludeKeys = blockDef.excludeFromState || [];
+        const base64State = StateManager.encode(config, excludeKeys);
+
+        const temp = document.createElement('div');
+        temp.innerHTML = rawHtml.trim();
+        const root = temp.firstElementChild;
+        if (root) {
+            root.setAttribute('data-slms-block-type', blockDef.id);
+            root.setAttribute('data-slms-state', base64State);
+            if (blockDef.id !== 'table') {
+                root.classList.add('mceNonEditable');
+            }
+            parts.push(root.outerHTML);
+        }
+    }
+    return parts.join('<p><br></p>');
+};
+
+/**
+ * Convert raw preset definitions into template-compatible objects for renderTemplateGrid.
+ *
+ * @param {Array} presets
+ * @returns {Promise<Array>}
+ */
+const renderPresetsAsTemplates = async(presets) => {
+    const result = [];
+    for (const preset of presets) {
+        try {
+            const content = await renderPresetToHtml(preset);
+            result.push({
+                id: null,
+                name: preset.name,
+                content,
+                isglobal: 1,
+                ismine: false,
+                isfavourite: false,
+                isPreset: true,
+            });
+        } catch (e) {
+            window.console.error('StudioLMS: error rendering preset', preset.name, e);
+        }
+    }
+    return result;
+};
+
 const switchTab = async(tabName) => {
     const grid = document.getElementById('slms-library-grid');
     const tabToolbar = document.getElementById('slms-tab-toolbar');
@@ -339,7 +401,16 @@ const switchTab = async(tabName) => {
     grid.innerHTML = '';
 
     try {
-        const templates = await loadTemplates(tabName);
+        let templates = [];
+        if (tabName === 'global') {
+            const [dbTemplates, presetTemplates] = await Promise.all([
+                loadTemplates('global'),
+                renderPresetsAsTemplates(presetsData),
+            ]);
+            templates = [...presetTemplates, ...dbTemplates];
+        } else {
+            templates = await loadTemplates(tabName);
+        }
         await renderTemplateGrid(grid, templates, tinyEditorInstance, moodleModalInstance);
     } catch (error) {
         Notification.exception(error);

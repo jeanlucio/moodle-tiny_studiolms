@@ -161,6 +161,7 @@ $string['placeholder_btn_text'] = 'E.g., Click Here';
 $string['placeholder_emoji'] = 'Paste an emoji here...';
 $string['placeholder_tpl_name'] = 'Template name...';
 $string['pluginname'] = 'StudioLMS for TinyMCE';
+$string['preset_badge'] = 'Built-in';
 $string['preview'] = 'Live Preview';
 $string['privacy:metadata:tiny_studiolms_favourites'] = 'Stores template favourite relationships for each user.';
 $string['privacy:metadata:tiny_studiolms_favourites:templateid'] = 'The ID of the favourited template.';

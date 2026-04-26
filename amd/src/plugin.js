@@ -36,6 +36,7 @@ const pluginName = `${component}/plugin`;
 const buttonName = `${component}/studiolms`;
 const enabledOption = getPluginOptionName(pluginName, 'enabled');
 const canManageGlobalOption = getPluginOptionName(pluginName, 'canmanageglobaltemplates');
+const presetsOption = getPluginOptionName(pluginName, 'presets');
 
 const brushIcon = '<svg width="24" height="24" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">' +
     '<path d="M15.825.12a.5.5 0 0 1 .132.584c-1.53 3.43-4.743 8.17-7.095 10.64a6.1 6.1 0 0 1-2.373 1.534' +
@@ -76,6 +77,11 @@ export default Promise.all([
         editor.options.register(canManageGlobalOption, {
             processor: 'boolean',
             'default': false,
+        });
+
+        editor.options.register(presetsOption, {
+            processor: 'array',
+            'default': [],
         });
 
         const getActiveSlmsBlock = () => {
@@ -124,7 +130,8 @@ export default Promise.all([
                 modal.show();
 
                 const canManageGlobal = editor.options.get(canManageGlobalOption);
-                initStudioApp(editor, modal, editData, canManageGlobal);
+                const presets = editor.options.get(presetsOption) || [];
+                initStudioApp(editor, modal, editData, canManageGlobal, presets);
             } catch (error) {
                 Notification.exception(error);
             }

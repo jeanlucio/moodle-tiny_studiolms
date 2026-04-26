@@ -56,7 +56,48 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
         return [
             'enabled'                  => has_capability('tiny/studiolms:use', $context),
             'canmanageglobaltemplates' => has_capability('tiny/studiolms:manageglobaltemplates', $context),
+            'presets'                  => self::load_presets(current_language()),
         ];
+    }
+
+    /**
+     * Load preset templates for the given language, falling back to English.
+     *
+     * @param string $lang Current Moodle language code (e.g. 'pt_br', 'en').
+     * @return array Array of preset definitions, each with 'name' and 'blocks' keys.
+     */
+    private static function load_presets(string $lang): array {
+        $basedir = dirname(__DIR__) . '/presets';
+        $langdir = $basedir . '/' . $lang;
+
+        if (!is_dir($langdir)) {
+            $langdir = $basedir . '/en';
+        }
+
+        if (!is_dir($langdir)) {
+            return [];
+        }
+
+        $files = glob($langdir . '/*.json');
+        if (!$files) {
+            return [];
+        }
+
+        sort($files);
+
+        $presets = [];
+        foreach ($files as $file) {
+            $raw = file_get_contents($file);
+            if ($raw === false) {
+                continue;
+            }
+            $data = json_decode($raw, true);
+            if (is_array($data) && !empty($data['name']) && !empty($data['blocks'])) {
+                $presets[] = $data;
+            }
+        }
+
+        return $presets;
     }
 
     /**
