@@ -156,8 +156,9 @@ export default Promise.all([
         return pluginMetadata;
     });
 
-    const configure = (instanceConfig) => {
-        if (!instanceConfig[enabledOption]) {
+    const configure = (instanceConfig, options) => {
+        const pluginOptions = options?.plugins?.[pluginName]?.config ?? {};
+        if (!pluginOptions.enabled) {
             return instanceConfig;
         }
 
