@@ -38,7 +38,7 @@ export const showInlineFeedback = (message, type = 'success') => {
         return;
     }
     const alert = document.createElement('div');
-    alert.className = `alert alert-${type} py-2 px-3 mb-0 small`;
+    alert.className = `alert alert-${type} py-2 px-3 mb-2 small`;
     alert.textContent = message;
     area.innerHTML = '';
     area.appendChild(alert);
