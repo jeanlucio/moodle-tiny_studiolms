@@ -33,4 +33,12 @@ $capabilities = [
             'user' => CAP_ALLOW, // Allows any logged-in user to see the button.
         ],
     ],
+    // Allows creating and editing official/global templates visible to all users.
+    'tiny/studiolms:manageglobaltemplates' => [
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
 ];

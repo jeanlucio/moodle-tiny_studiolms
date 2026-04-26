@@ -1,0 +1,53 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_studiolms/template_card
+    @copyright 2026 Jean Lúcio
+
+    Card displayed in the template library tabs (Official, Mine, Favourites).
+    Example context (json): {
+        "id": 1,
+        "name": "Weekly Lesson Layout",
+        "isglobal": 0,
+        "ismine": true,
+        "isfavourite": false
+    }
+}}
+<div class="slms-tpl-card" role="button" tabindex="0" data-templateid="{{id}}" aria-label="{{name}}">
+    <div class="slms-tpl-icon" aria-hidden="true">
+        {{#isglobal}}🏛️{{/isglobal}}
+        {{^isglobal}}📄{{/isglobal}}
+    </div>
+    <div class="slms-tpl-name">{{name}}</div>
+    <div class="slms-tpl-actions">
+        <button type="button"
+                class="slms-btn-fav{{#isfavourite}} active{{/isfavourite}}"
+                data-templateid="{{id}}"
+                aria-label="{{#isfavourite}}{{#str}} fav_remove_aria, tiny_studiolms {{/str}}{{/isfavourite}}{{^isfavourite}}{{#str}} fav_add_aria, tiny_studiolms {{/str}}{{^isfavourite}}{{/isfavourite}}"
+                aria-pressed="{{#isfavourite}}true{{/isfavourite}}{{^isfavourite}}false{{/isfavourite}}">
+            <span aria-hidden="true">{{#isfavourite}}★{{/isfavourite}}{{^isfavourite}}☆{{/isfavourite}}</span>
+        </button>
+        {{#ismine}}
+        <button type="button"
+                class="slms-btn-tpl-delete"
+                data-templateid="{{id}}"
+                aria-label="{{#str}} btn_delete, tiny_studiolms {{/str}}">
+            <span aria-hidden="true">🗑</span>
+        </button>
+        {{/ismine}}
+    </div>
+</div>

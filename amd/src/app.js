@@ -25,6 +25,7 @@ import {Blocks} from './blocks/registry';
 import {getString} from 'core/str';
 import Templates from 'core/templates';
 import Notification from 'core/notification';
+import {loadTemplates, renderTemplateGrid, saveTemplate} from './templateslibrary';
 
 let currentConfig = null;
 let currentBlockType = null;
@@ -63,6 +64,8 @@ export const initStudioApp = (editor, modal, editData = null) => {
     setTimeout(async() => {
         setupNavigation();
         setupZoomControls();
+        setupTabs();
+        setupSaveTemplateButton();
 
         if (editData && editData.type && editData.state) {
             const blockDef = Blocks[editData.type];
@@ -299,6 +302,133 @@ export const PopupManager = {
             Notification.exception(error);
         }
     }
+};
+
+const setupTabs = () => {
+    const tabs = document.querySelectorAll('[data-slms-tab]');
+    tabs.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            tabs.forEach((t) => {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
+            });
+            btn.classList.add('active');
+            btn.setAttribute('aria-selected', 'true');
+            switchTab(btn.getAttribute('data-slms-tab'));
+        });
+    });
+};
+
+const switchTab = async(tabName) => {
+    const grid = document.getElementById('slms-library-grid');
+    const tabToolbar = document.getElementById('slms-tab-toolbar');
+
+    if (tabToolbar) {
+        tabToolbar.classList.toggle('d-none', tabName !== 'mine');
+    }
+
+    if (tabName === 'components') {
+        renderLibrary();
+        return;
+    }
+
+    if (!grid) {
+        return;
+    }
+
+    grid.innerHTML = '';
+
+    try {
+        const templates = await loadTemplates(tabName);
+        await renderTemplateGrid(grid, templates, tinyEditorInstance, moodleModalInstance);
+    } catch (error) {
+        Notification.exception(error);
+    }
+};
+
+const setupSaveTemplateButton = () => {
+    const btn = document.getElementById('slms-btn-save-template');
+    if (!btn) {
+        return;
+    }
+
+    btn.addEventListener('click', async() => {
+        try {
+            const [strTitle, strPlaceholder, strOk, strCancel] = await Promise.all([
+                getString('btn_save_template', 'tiny_studiolms'),
+                getString('placeholder_tpl_name', 'tiny_studiolms'),
+                getString('ok', 'core'),
+                getString('cancel', 'core'),
+            ]);
+
+            const anchor = document.getElementById('slms-tab-toolbar');
+            if (!anchor) {
+                return;
+            }
+
+            const existingForm = anchor.querySelector('.slms-save-tpl-form');
+            if (existingForm) {
+                existingForm.remove();
+                return;
+            }
+
+            const form = document.createElement('div');
+            form.className = 'slms-save-tpl-form d-flex align-items-center gap-2 mt-2';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'form-control form-control-sm';
+            input.placeholder = strPlaceholder;
+            input.setAttribute('aria-label', strTitle);
+            input.maxLength = 255;
+
+            const btnOk = document.createElement('button');
+            btnOk.type = 'button';
+            btnOk.className = 'btn btn-sm btn-primary';
+            btnOk.textContent = strOk;
+
+            const btnCancelEl = document.createElement('button');
+            btnCancelEl.type = 'button';
+            btnCancelEl.className = 'btn btn-sm btn-outline-secondary';
+            btnCancelEl.textContent = strCancel;
+
+            form.appendChild(input);
+            form.appendChild(btnOk);
+            form.appendChild(btnCancelEl);
+            anchor.appendChild(form);
+            input.focus();
+
+            btnCancelEl.addEventListener('click', () => form.remove());
+
+            btnOk.addEventListener('click', async() => {
+                const name = input.value.trim();
+                if (!name) {
+                    return;
+                }
+                form.remove();
+                try {
+                    const content = tinyEditorInstance.getContent();
+                    await saveTemplate(name, content);
+                    Notification.addNotification({
+                        message: await getString('tpl_saved', 'tiny_studiolms'),
+                        type: 'success'
+                    });
+                } catch (saveError) {
+                    Notification.exception(saveError);
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    btnOk.click();
+                } else if (e.key === 'Escape') {
+                    form.remove();
+                }
+            });
+        } catch (error) {
+            Notification.exception(error);
+        }
+    });
 };
 
 const renderLibrary = () => {
