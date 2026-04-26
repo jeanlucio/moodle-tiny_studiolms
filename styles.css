@@ -63,6 +63,104 @@
     pointer-events: none;
 }
 
+.tiny_studiolms .slms-tpl-card {
+    background: var(--bs-white, #fff);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.tiny_studiolms .slms-tpl-card:hover,
+.tiny_studiolms .slms-tpl-card:focus {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    border-color: var(--bs-primary, #0f6cbf);
+    outline: none;
+}
+
+.tiny_studiolms .slms-tpl-thumb {
+    height: 140px;
+    overflow: hidden;
+    background: var(--bs-gray-100, #f8f9fa);
+    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+    padding: 12px;
+}
+
+.tiny_studiolms .slms-tpl-thumb-content {
+    transform: scale(0.32);
+    transform-origin: top left;
+    width: 312%;
+    min-height: 320px;
+    pointer-events: none;
+}
+
+.tiny_studiolms .slms-tpl-thumb-content img,
+.tiny_studiolms .slms-tpl-thumb-content video,
+.tiny_studiolms .slms-tpl-thumb-content iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+.tiny_studiolms .slms-tpl-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.75rem;
+}
+
+.tiny_studiolms .slms-tpl-name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.tiny_studiolms .slms-tpl-icon {
+    flex: 0 0 auto;
+}
+
+.tiny_studiolms .slms-tpl-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--bs-body-color, #212529);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tiny_studiolms .slms-tpl-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.tiny_studiolms .slms-btn-fav,
+.tiny_studiolms .slms-btn-tpl-delete {
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 999px;
+    background: var(--bs-white, #fff);
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.tiny_studiolms .slms-btn-fav.active {
+    border-color: var(--bs-warning, #ffc107);
+    background: var(--bs-warning-bg-subtle, #fff3cd);
+}
+
+.tiny_studiolms .slms-btn-fav:hover,
+.tiny_studiolms .slms-btn-tpl-delete:hover {
+    background: var(--bs-gray-100, #f8f9fa);
+}
+
 /* -----------------------------------------
    NEW: CANVA-STYLE EDITOR & TOOLBAR
    ----------------------------------------- */

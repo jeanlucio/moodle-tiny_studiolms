@@ -43,7 +43,7 @@ class save_template extends external_api {
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'name'     => new external_value(PARAM_TEXT, 'Template name', VALUE_REQUIRED),
-            'content'  => new external_value(PARAM_CLEANHTML, 'Full HTML content from TinyMCE', VALUE_REQUIRED),
+            'content'  => new external_value(PARAM_RAW, 'Full HTML content from TinyMCE', VALUE_REQUIRED),
             'isglobal' => new external_value(
                 PARAM_INT,
                 'Whether this is an official template (1) or user-owned (0)',

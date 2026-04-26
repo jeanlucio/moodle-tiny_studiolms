@@ -413,6 +413,7 @@ const setupSaveTemplateButton = () => {
                         message: await getString('tpl_saved', 'tiny_studiolms'),
                         type: 'success'
                     });
+                    await switchTab('mine');
                 } catch (saveError) {
                     Notification.exception(saveError);
                 }
