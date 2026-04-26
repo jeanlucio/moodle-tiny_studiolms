@@ -34,6 +34,7 @@ import Notification from 'core/notification';
 const component = 'tiny_studiolms';
 const pluginName = `${component}/plugin`;
 const buttonName = `${component}/studiolms`;
+const enabledOption = getPluginOptionName(pluginName, 'enabled');
 const canManageGlobalOption = getPluginOptionName(pluginName, 'canmanageglobaltemplates');
 
 const brushIcon = '<svg width="24" height="24" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">' +
@@ -66,6 +67,11 @@ export default Promise.all([
 ]) => {
 
     tinyMCE.PluginManager.add(pluginName, (editor) => {
+
+        editor.options.register(enabledOption, {
+            processor: 'boolean',
+            'default': false,
+        });
 
         editor.options.register(canManageGlobalOption, {
             processor: 'boolean',
@@ -151,6 +157,10 @@ export default Promise.all([
     });
 
     const configure = (instanceConfig) => {
+        if (!instanceConfig[enabledOption]) {
+            return instanceConfig;
+        }
+
         instanceConfig.toolbar = addToolbarButton(instanceConfig.toolbar, 'content', buttonName);
         instanceConfig.menu = addMenubarItem(instanceConfig.menu, 'tools', buttonName);
 

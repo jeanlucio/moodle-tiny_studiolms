@@ -54,6 +54,7 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
         ?\editor_tiny\editor $editor = null
     ): array {
         return [
+            'enabled'                  => has_capability('tiny/studiolms:use', $context),
             'canmanageglobaltemplates' => has_capability('tiny/studiolms:manageglobaltemplates', $context),
         ];
     }

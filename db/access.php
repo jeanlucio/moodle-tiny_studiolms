@@ -27,10 +27,12 @@ defined('MOODLE_INTERNAL') || die();
 $capabilities = [
     // The standard capability required by TinyMCE to use this plugin.
     'tiny/studiolms:use' => [
-        'captype' => 'read',
+        'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => [
-            'user' => CAP_ALLOW, // Allows any logged-in user to see the button.
+            'editingteacher' => CAP_ALLOW,
+            'teacher'        => CAP_ALLOW,
+            'manager'        => CAP_ALLOW,
         ],
     ],
     // Allows creating and editing official/global templates visible to all users.
