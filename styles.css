@@ -334,14 +334,18 @@
     }
 }
 
-/* Student-facing: accordion icon rotates smoothly when toggled. */
-.studiolms-accordion-header .user-select-none {
+/* Student-facing: accordion and webteca icons animate on toggle.
+   Base state = -90deg so ▼ renders as ▶ (closed); open state = 0deg so ▼ shows naturally. */
+.studiolms-accordion-header .user-select-none,
+.studiolms-webteca-summary .user-select-none {
     display: inline-block;
     transition: transform 0.3s ease;
+    transform: rotate(-90deg);
 }
 
-.studiolms-accordion[open] .studiolms-accordion-header .user-select-none {
-    transform: rotate(90deg);
+.studiolms-accordion[open] .studiolms-accordion-header .user-select-none,
+.studiolms-webteca[open] .studiolms-webteca-summary .user-select-none {
+    transform: rotate(0deg);
 }
 
 /* Webteca Component Styles */
