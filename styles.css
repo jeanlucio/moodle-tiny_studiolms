@@ -460,6 +460,13 @@ a.studiolms-btn {
     outline: none;
 }
 
+a.studiolms-btn:hover,
+a.studiolms-btn:focus {
+    text-decoration: none;
+    color: var(--slms-color, #fff);
+    opacity: 0.88;
+}
+
 /* Callout */
 .studiolms-callout-wrap {
     background-color: var(--slms-bg, #fef9c3);

@@ -46,6 +46,17 @@ const applyInitialStates = () => {
 };
 
 /**
+ * Remove contenteditable from any button <a> elements saved before the
+ * block_button.mustache was updated to use contenteditable="false" on the anchor.
+ * Without this, legacy buttons remain non-clickable for students.
+ */
+const fixLegacyButtons = () => {
+    document.querySelectorAll('a.studiolms-btn[contenteditable]').forEach(btn => {
+        btn.removeAttribute('contenteditable');
+    });
+};
+
+/**
  * Initialise the StudioLMS frontend engine.
  * Exits immediately if no StudioLMS blocks are present on the page.
  */
@@ -54,4 +65,5 @@ export const init = () => {
         return;
     }
     applyInitialStates();
+    fixLegacyButtons();
 };
