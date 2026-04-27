@@ -86,6 +86,14 @@ export default {
                                 });
                             }
                         });
+
+                        const elOpen = popup.querySelector('#pop_web_open');
+                        if (elOpen) {
+                            elOpen.addEventListener('input', (ev) => {
+                                data.isOpen = ev.target.value === 'true';
+                                onUpdate(data);
+                            });
+                        }
                     });
                 });
             }

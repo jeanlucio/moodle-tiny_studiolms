@@ -35,7 +35,14 @@
     <label for="pop_web_desc" class="form-label small fw-bold text-muted">{{#str}} webteca_desc, tiny_studiolms {{/str}}</label>
     <textarea class="form-control form-control-sm" id="pop_web_desc" rows="2">{{desc}}</textarea>
 </div>
-<div class="d-flex justify-content-between align-items-center">
+<div class="d-flex justify-content-between align-items-center mb-3">
     <label for="pop_web_bg" class="form-label m-0 small fw-bold text-muted">{{#str}} bg_color, tiny_studiolms {{/str}}</label>
     <input type="color" class="slms-color-picker" id="pop_web_bg" value="{{bg}}">
+</div>
+<div class="d-flex justify-content-between align-items-center pt-3 border-top">
+    <label for="pop_web_open" class="form-label m-0 small fw-bold text-muted">{{#str}} initial_state, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_web_open" style="max-width: 150px;">
+        <option value="true" {{#isOpen}}selected{{/isOpen}}>{{#str}} state_open, tiny_studiolms {{/str}}</option>
+        <option value="false" {{^isOpen}}selected{{/isOpen}}>{{#str}} state_closed, tiny_studiolms {{/str}}</option>
+    </select>
 </div>

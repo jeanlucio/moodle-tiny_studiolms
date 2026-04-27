@@ -341,7 +341,7 @@
 }
 
 .studiolms-accordion[open] .studiolms-accordion-header .user-select-none {
-    transform: rotate(180deg);
+    transform: rotate(90deg);
 }
 
 /* Webteca Component Styles */
