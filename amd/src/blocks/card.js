@@ -42,7 +42,8 @@ export default {
         btnBg: '#0d47a1',
         btnTextCol: '#ffffff',
         btnAlign: 'left',
-        content: ''
+        content: '',
+        hoverEffect: 'none'
     },
 
     // Exclude the rich text area from the Base64 state chip.
@@ -74,6 +75,7 @@ export default {
                 btnDesign.addEventListener('click', () => {
                     const tplData = Object.assign({}, data);
                     tplData[`shadow_${data.shadow}`] = true;
+                    tplData['hover_' + (data.hoverEffect || 'none')] = true;
 
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_card_design', tplData, (popup) => {
                         // Explicit property mapping.
@@ -82,7 +84,8 @@ export default {
                             '#pop_card_text': 'text',
                             '#pop_card_border': 'border',
                             '#pop_card_radius': 'radius',
-                            '#pop_card_shadow': 'shadow'
+                            '#pop_card_shadow': 'shadow',
+                            '#pop_card_hover': 'hoverEffect'
                         };
                         Object.keys(propMap).forEach(selector => {
                             const el = popup.querySelector(selector);

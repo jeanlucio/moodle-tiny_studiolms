@@ -633,6 +633,36 @@ a.studiolms-webteca-item:hover {
 }
 
 /* =========================================
+   STUDIOLMS: HOVER EFFECTS (data-slms-hover)
+   ========================================= */
+
+[data-slms-hover="scale"] {
+    transition: transform 0.2s ease;
+}
+
+[data-slms-hover="scale"]:hover {
+    transform: scale(1.04);
+}
+
+[data-slms-hover="glow"] {
+    transition: filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+[data-slms-hover="glow"]:hover {
+    filter: brightness(1.06);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+[data-slms-hover="lift"] {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+[data-slms-hover="lift"]:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+/* =========================================
    STUDIOLMS: MODAL & POPUP UI (NO INLINE CSS)
    ========================================= */
 

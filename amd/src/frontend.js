@@ -31,6 +31,65 @@ const SELECTORS = {
 };
 
 /**
+ * Synthesise a short sound using the Web Audio API.
+ *
+ * @param {string} type - One of: click, chime, pop.
+ */
+const playSound = (type) => {
+    if (!type || type === 'none') {
+        return;
+    }
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+        if (type === 'click') {
+            const bufLen = Math.floor(ctx.sampleRate * 0.06);
+            const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+            const data = buf.getChannelData(0);
+            for (let i = 0; i < bufLen; i++) {
+                data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.25));
+            }
+            const src = ctx.createBufferSource();
+            src.buffer = buf;
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 900;
+            const gain = ctx.createGain();
+            gain.gain.value = 0.35;
+            src.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+            src.start();
+        } else if (type === 'chime') {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = 880;
+            gain.gain.setValueAtTime(0.4, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.5);
+        } else if (type === 'pop') {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(220, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(55, ctx.currentTime + 0.09);
+            gain.gain.setValueAtTime(0.45, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.1);
+        }
+    } catch (e) {
+        // Web Audio API unavailable — silent fail.
+    }
+};
+
+/**
  * Remove the `open` attribute from details elements whose initial state is "closed".
  * The mustache templates render all details as open so the HTML is valid and
  * predictable; this function applies the author-configured state on page load.
@@ -42,6 +101,30 @@ const applyInitialStates = () => {
 
     document.querySelectorAll(selector).forEach(details => {
         details.removeAttribute('open');
+    });
+};
+
+/**
+ * Attach click-sound handlers to buttons and open-sound handlers to accordions.
+ * Only wires up elements that carry a data-slms-sound attribute with a non-"none" value.
+ */
+const initSounds = () => {
+    document.querySelectorAll('a.studiolms-btn[data-slms-sound]').forEach(el => {
+        const sound = el.dataset.slmsSound;
+        if (sound && sound !== 'none') {
+            el.addEventListener('click', () => playSound(sound));
+        }
+    });
+
+    document.querySelectorAll(`${SELECTORS.ACCORDION}[data-slms-sound]`).forEach(el => {
+        const sound = el.dataset.slmsSound;
+        if (sound && sound !== 'none') {
+            el.addEventListener('toggle', () => {
+                if (el.open) {
+                    playSound(sound);
+                }
+            });
+        }
     });
 };
 
@@ -66,4 +149,5 @@ export const init = () => {
     }
     applyInitialStates();
     fixLegacyButtons();
+    initSounds();
 };

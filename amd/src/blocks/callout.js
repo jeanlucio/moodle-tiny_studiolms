@@ -35,7 +35,8 @@ export default {
         borderColor: '#eab308',
         borderLeftWidth: 4,
         borderRadius: 6,
-        contentHtml: ''
+        contentHtml: '',
+        hoverEffect: 'none'
     },
 
     // Rich text is excluded from the Base64 state chip.
@@ -57,12 +58,16 @@ export default {
 
             if (btnDesign) {
                 btnDesign.addEventListener('click', () => {
-                    PopupManager.open(btnDesign, 'tiny_studiolms/popup_callout_design', data, (popup) => {
+                    const tplData = Object.assign({}, data);
+                    tplData['hover_' + (data.hoverEffect || 'none')] = true;
+
+                    PopupManager.open(btnDesign, 'tiny_studiolms/popup_callout_design', tplData, (popup) => {
                         const propMap = {
                             '#pop_callout_icon': 'icon',
                             '#pop_callout_bg': 'backgroundColor',
                             '#pop_callout_text': 'textColor',
-                            '#pop_callout_border': 'borderColor'
+                            '#pop_callout_border': 'borderColor',
+                            '#pop_callout_hover': 'hoverEffect'
                         };
 
                         Object.keys(propMap).forEach(selector => {

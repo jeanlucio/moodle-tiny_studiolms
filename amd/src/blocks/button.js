@@ -35,7 +35,9 @@ export default {
         btnTextCol: '#ffffff',
         radius: 6,
         target: '_blank',
-        align: 'left'
+        align: 'left',
+        hoverEffect: 'none',
+        clickSound: 'none'
     },
 
     // Exclude plain text from the Base64 state chip.
@@ -91,9 +93,12 @@ export default {
                     tplData.isAlignCenter = data.align === 'center';
                     tplData.isAlignRight = data.align === 'right';
                     tplData.isAlignFull = data.align === 'full';
+                    tplData['hover_' + (data.hoverEffect || 'none')] = true;
+                    tplData['sound_opt_' + (data.clickSound || 'none')] = true;
 
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_button_design', tplData, (popupNode) => {
-                        const inputs = ['#pop_btn_bg', '#pop_btn_text_col', '#pop_btn_radius', '#pop_btn_align'];
+                        const inputs = ['#pop_btn_bg', '#pop_btn_text_col', '#pop_btn_radius', '#pop_btn_align',
+                            '#pop_btn_hover', '#pop_btn_sound'];
                         inputs.forEach(selector => {
                             const el = popupNode.querySelector(selector);
                             if (el) {
@@ -101,7 +106,9 @@ export default {
                                     const prop = selector.replace('#pop_btn_', '');
                                     const propMap = {
                                         'text_col': 'btnTextCol',
-                                        'bg': 'btnBg'
+                                        'bg': 'btnBg',
+                                        'hover': 'hoverEffect',
+                                        'sound': 'clickSound'
                                     };
                                     const finalProp = propMap[prop] || prop;
                                     data[finalProp] = ev.target.value;

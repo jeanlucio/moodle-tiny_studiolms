@@ -34,7 +34,9 @@ export default {
         bg: '#ffffff',
         icon: '▼ / ▲',
         state: 'closed',
-        content: ''
+        content: '',
+        hoverEffect: 'none',
+        openSound: 'none'
     },
 
     // Exclude strings and rich text from the Base64 state chip.
@@ -99,11 +101,16 @@ export default {
 
                     tplData[iconKey] = true;
 
+                    tplData['hover_' + (data.hoverEffect || 'none')] = true;
+                    tplData['sound_opt_' + (data.openSound || 'none')] = true;
+
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_accordion_design', tplData, (popup) => {
                         const propMap = {
                             '#pop_acc_color': 'color',
                             '#pop_acc_bg': 'bg',
-                            '#pop_acc_icon': 'icon'
+                            '#pop_acc_icon': 'icon',
+                            '#pop_acc_hover': 'hoverEffect',
+                            '#pop_acc_sound': 'openSound'
                         };
                         Object.keys(propMap).forEach(selector => {
                             const el = popup.querySelector(selector);
