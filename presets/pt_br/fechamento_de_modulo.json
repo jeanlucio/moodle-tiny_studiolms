@@ -1,0 +1,28 @@
+{
+    "name": "Fechamento de Módulo",
+    "blocks": [
+        {
+            "type": "callout",
+            "config": {
+                "icon": "✅",
+                "backgroundColor": "#f0fdf4",
+                "textColor": "#14532d",
+                "borderColor": "#22c55e",
+                "borderLeftWidth": 4,
+                "borderRadius": 6,
+                "contentHtml": "<p class=\"m-0\"><strong>Parabéns!</strong> Você chegou ao fim deste módulo. Revise os pontos principais antes de continuar.</p>"
+            }
+        },
+        {
+            "type": "accordion",
+            "config": {
+                "title": "Pontos-Chave do Módulo",
+                "color": "#16a34a",
+                "bg": "#ffffff",
+                "icon": "▼ / ▲",
+                "state": "closed",
+                "content": "<p>Revise os conceitos mais importantes vistos neste módulo:</p><ul><li>Conceito 1</li><li>Conceito 2</li><li>Conceito 3</li></ul>"
+            }
+        }
+    ]
+}

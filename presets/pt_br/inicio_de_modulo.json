@@ -1,0 +1,27 @@
+{
+    "name": "Início de Módulo",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Bem-vindo ao Módulo",
+                "level": "h3",
+                "icon": "📚",
+                "bgColor": "#e3f2fd",
+                "textColor": "#0d47a1"
+            }
+        },
+        {
+            "type": "callout",
+            "config": {
+                "icon": "🎯",
+                "backgroundColor": "#eff6ff",
+                "textColor": "#1e3a8a",
+                "borderColor": "#3b82f6",
+                "borderLeftWidth": 4,
+                "borderRadius": 6,
+                "contentHtml": "<p class=\"m-0\"><strong>Objetivos de Aprendizagem:</strong> Ao final deste módulo, você será capaz de compreender os principais conceitos abordados nesta unidade.</p>"
+            }
+        }
+    ]
+}

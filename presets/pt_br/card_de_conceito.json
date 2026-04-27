@@ -1,0 +1,24 @@
+{
+    "name": "Card de Conceito",
+    "blocks": [
+        {
+            "type": "advancedCard",
+            "config": {
+                "bg": "#ffffff",
+                "text": "#212529",
+                "border": "#0d47a1",
+                "radius": 8,
+                "shadow": "md",
+                "mediaType": "none",
+                "mediaUrl": "",
+                "layout": "vertical",
+                "btnText": "",
+                "btnUrl": "#",
+                "btnBg": "#0d47a1",
+                "btnTextCol": "#ffffff",
+                "btnAlign": "left",
+                "content": "<h4 style=\"color: #0d47a1;\">Conceito Chave</h4><p>Escreva aqui a definição ou explicação do conceito principal abordado nesta aula.</p>"
+            }
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+{
+    "name": "Dica de Estudo",
+    "blocks": [
+        {
+            "type": "callout",
+            "config": {
+                "icon": "💡",
+                "backgroundColor": "#fefce8",
+                "textColor": "#713f12",
+                "borderColor": "#eab308",
+                "borderLeftWidth": 4,
+                "borderRadius": 6,
+                "contentHtml": "<p class=\"m-0\"><strong>Dica:</strong> Escreva aqui uma dica ou sugestão para ajudar os alunos no estudo deste tema.</p>"
+            }
+        }
+    ]
+}

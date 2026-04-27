@@ -1,0 +1,17 @@
+{
+    "name": "Aviso de Prazo",
+    "blocks": [
+        {
+            "type": "callout",
+            "config": {
+                "icon": "⚠️",
+                "backgroundColor": "#fff1f2",
+                "textColor": "#9f1239",
+                "borderColor": "#f43f5e",
+                "borderLeftWidth": 4,
+                "borderRadius": 6,
+                "contentHtml": "<p class=\"m-0\"><strong>Atenção ao prazo!</strong> Esta atividade encerra em [DATA]. Envie sua resposta com antecedência.</p>"
+            }
+        }
+    ]
+}

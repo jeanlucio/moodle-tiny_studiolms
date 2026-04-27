@@ -1,0 +1,31 @@
+{
+    "name": "Material de Apoio",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Material de Apoio",
+                "level": "h3",
+                "icon": "📂",
+                "bgColor": "#f0fdf4",
+                "textColor": "#15803d"
+            }
+        },
+        {
+            "type": "webteca",
+            "config": {
+                "title": "Materiais de Apoio",
+                "desc": "Recursos complementares para aprofundar seus estudos.",
+                "bg": "#ffffff",
+                "headerBg": "#f8f9fa",
+                "color": "#15803d",
+                "isOpen": true,
+                "layout": "list",
+                "resources": [
+                    {"type": "pdf", "title": "Guia de Referência", "url": "#"},
+                    {"type": "video", "title": "Videoaula Complementar", "url": "#"}
+                ]
+            }
+        }
+    ]
+}

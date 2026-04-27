@@ -1,0 +1,17 @@
+{
+    "name": "Informação Importante",
+    "blocks": [
+        {
+            "type": "callout",
+            "config": {
+                "icon": "ℹ️",
+                "backgroundColor": "#eff6ff",
+                "textColor": "#1e3a8a",
+                "borderColor": "#3b82f6",
+                "borderLeftWidth": 4,
+                "borderRadius": 6,
+                "contentHtml": "<p class=\"m-0\"><strong>Saiba mais:</strong> Escreva aqui uma informação relevante para os alunos sobre este conteúdo.</p>"
+            }
+        }
+    ]
+}

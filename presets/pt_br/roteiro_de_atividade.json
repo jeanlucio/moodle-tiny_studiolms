@@ -1,0 +1,38 @@
+{
+    "name": "Roteiro de Atividade",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Roteiro de Atividade",
+                "level": "h3",
+                "icon": "📋",
+                "bgColor": "#fce7f3",
+                "textColor": "#9d174d"
+            }
+        },
+        {
+            "type": "accordion",
+            "config": {
+                "title": "Instruções da Atividade",
+                "color": "#db2777",
+                "bg": "#ffffff",
+                "icon": "▼ / ▲",
+                "state": "open",
+                "content": "<p>Siga as etapas abaixo para realizar esta atividade com sucesso.</p><ol><li>Leia o material de apoio indicado.</li><li>Realize a atividade proposta.</li><li>Envie sua resposta no campo indicado.</li></ol>"
+            }
+        },
+        {
+            "type": "actionButton",
+            "config": {
+                "btnText": "Acessar Atividade",
+                "btnUrl": "#",
+                "btnBg": "#db2777",
+                "btnTextCol": "#ffffff",
+                "radius": 6,
+                "target": "_blank",
+                "align": "left"
+            }
+        }
+    ]
+}
