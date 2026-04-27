@@ -32,7 +32,7 @@ export default {
         title: '',
         color: '#3b82f6',
         bg: '#ffffff',
-        icon: '▼ / ▲',
+        icon: '▶ / ▼',
         state: 'closed',
         content: ''
     },
