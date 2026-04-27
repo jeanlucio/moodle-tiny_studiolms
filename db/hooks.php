@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details for the tiny_studiolms plugin.
+ * Hook callbacks for tiny_studiolms.
  *
  * @package    tiny_studiolms
  * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
@@ -24,9 +24,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2026042701;
-$plugin->requires  = 2024100700; // Requires Moodle 4.5+ (Compatible with 5.x).
-$plugin->component = 'tiny_studiolms';
-$plugin->dependencies = [
-    'editor_tiny' => 2024100700,
+$callbacks = [
+    [
+        'hook'     => \core\hook\output\before_footer_html_generation::class,
+        'callback' => \tiny_studiolms\hook_callbacks::class . '::before_footer_html_generation',
+        'priority' => 500,
+    ],
 ];
