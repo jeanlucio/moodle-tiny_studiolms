@@ -25,7 +25,7 @@
     }
 }}
 <div class="studiolms-webteca-wrap my-4 w-100" style="max-width: 900px;">
-    <details class="studiolms-webteca" open style="--slms-bg: {{bg}};">
+    <details class="studiolms-webteca" {{#isOpen}}open{{/isOpen}} data-initial-state="{{#isOpen}}open{{/isOpen}}{{^isOpen}}closed{{/isOpen}}" style="--slms-bg: {{bg}};">
         <summary class="studiolms-webteca-summary" style="--slms-header-bg: {{headerBg}};">
             <span class="d-flex flex-column gap-1">
                 <span class="fw-bold fs-5" style="color: {{color}};">

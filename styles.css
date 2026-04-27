@@ -334,6 +334,16 @@
     }
 }
 
+/* Student-facing: accordion icon rotates smoothly when toggled. */
+.studiolms-accordion-header .user-select-none {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.studiolms-accordion[open] .studiolms-accordion-header .user-select-none {
+    transform: rotate(180deg);
+}
+
 /* Webteca Component Styles */
 details.wt-details summary {
     list-style: none;

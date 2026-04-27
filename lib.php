@@ -22,4 +22,26 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// Intentionally left empty. Logic is handled via autoloaded classes and AMD modules.
+/**
+ * Load the student-facing frontend AMD module on course and module context pages.
+ *
+ * Uses the legacy before_footer callback so no separate filter plugin is required.
+ * Exits immediately on pages that have no StudioLMS blocks (checked inside the AMD
+ * module itself), keeping the overhead near zero on unrelated pages.
+ *
+ * @return string Always empty — AMD is registered via $PAGE->requires, not HTML output.
+ */
+function tiny_studiolms_before_footer(): string {
+    global $PAGE;
+
+    if (!$PAGE->context) {
+        return '';
+    }
+
+    $level = $PAGE->context->contextlevel;
+    if ($level === CONTEXT_COURSE || $level === CONTEXT_MODULE) {
+        $PAGE->requires->js_call_amd('tiny_studiolms/frontend', 'init');
+    }
+
+    return '';
+}
