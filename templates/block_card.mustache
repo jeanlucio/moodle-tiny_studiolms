@@ -53,6 +53,7 @@
             {{#hasButton}}
             <div class="mt-4{{#isAlignLeft}} text-start{{/isAlignLeft}}{{#isAlignCenter}} text-center{{/isAlignCenter}}{{#isAlignRight}} text-end{{/isAlignRight}}" contenteditable="false">
                 <a href="{{btnUrl}}" class="studiolms-btn" target="_blank" rel="noopener noreferrer"
+                   data-slms-hover="{{btnHoverEffect}}" data-slms-sound="{{btnClickSound}}"
                    style="--slms-display: {{btnDisplayMode}}; --slms-w: {{#isBtnFullWidth}}100%{{/isBtnFullWidth}}{{^isBtnFullWidth}}auto{{/isBtnFullWidth}};
                           --slms-bg: {{btnBg}}; --slms-color: {{btnTextCol}}; --slms-radius: {{radius}}px;">
                     {{btnText}}

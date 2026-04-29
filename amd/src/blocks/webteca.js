@@ -36,6 +36,8 @@ export default {
         color: '#0d47a1',
         isOpen: true,
         layout: 'list',
+        hoverEffect: 'none',
+        openSound: 'none',
         resources: [
             {type: 'pdf', title: '', url: 'https://scholar.google.com'},
             {type: 'video', title: '', url: 'https://youtube.com'}
@@ -69,13 +71,17 @@ export default {
                     const tplData = Object.assign({}, data);
                     tplData.isList = data.layout === 'list';
                     tplData.isGrid = data.layout === 'grid';
+                    tplData['hover_' + (data.hoverEffect || 'none')] = true;
+                    tplData['sound_opt_' + (data.openSound || 'none')] = true;
 
                     PopupManager.open(btnGeneral, 'tiny_studiolms/popup_webteca_general', tplData, (popup) => {
                         const propMap = {
                             '#pop_web_layout': 'layout',
                             '#pop_web_title': 'title',
                             '#pop_web_desc': 'desc',
-                            '#pop_web_bg': 'bg'
+                            '#pop_web_bg': 'bg',
+                            '#pop_web_hover': 'hoverEffect',
+                            '#pop_web_sound': 'openSound'
                         };
                         Object.keys(propMap).forEach(selector => {
                             const el = popup.querySelector(selector);

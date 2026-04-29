@@ -43,7 +43,9 @@ export default {
         btnTextCol: '#ffffff',
         btnAlign: 'left',
         content: '',
-        hoverEffect: 'none'
+        hoverEffect: 'none',
+        btnHoverEffect: 'none',
+        btnClickSound: 'none'
     },
 
     // Exclude the rich text area from the Base64 state chip.
@@ -132,6 +134,8 @@ export default {
                     tplData.isAlignCenter = data.btnAlign === 'center';
                     tplData.isAlignRight = data.btnAlign === 'right';
                     tplData.isAlignFull = data.btnAlign === 'full';
+                    tplData['btn_hover_' + (data.btnHoverEffect || 'none')] = true;
+                    tplData['btn_sound_opt_' + (data.btnClickSound || 'none')] = true;
 
                     PopupManager.open(btnButton, 'tiny_studiolms/popup_card_button', tplData, (popup) => {
                         const propMap = {
@@ -139,7 +143,9 @@ export default {
                             '#pop_card_btnUrl': 'btnUrl',
                             '#pop_card_btnBg': 'btnBg',
                             '#pop_card_btnTextCol': 'btnTextCol',
-                            '#pop_card_btnAlign': 'btnAlign'
+                            '#pop_card_btnAlign': 'btnAlign',
+                            '#pop_card_btn_hover': 'btnHoverEffect',
+                            '#pop_card_btn_sound': 'btnClickSound'
                         };
                         Object.keys(propMap).forEach(selector => {
                             const el = popup.querySelector(selector);

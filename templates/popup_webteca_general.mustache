@@ -39,10 +39,31 @@
     <label for="pop_web_bg" class="form-label m-0 small fw-bold text-muted">{{#str}} bg_color, tiny_studiolms {{/str}}</label>
     <input type="color" class="slms-color-picker" id="pop_web_bg" value="{{bg}}">
 </div>
-<div class="d-flex justify-content-between align-items-center pt-3 border-top">
+<div class="d-flex justify-content-between align-items-center pb-3 border-bottom">
     <label for="pop_web_open" class="form-label m-0 small fw-bold text-muted">{{#str}} initial_state, tiny_studiolms {{/str}}</label>
     <select class="form-select form-select-sm" id="pop_web_open" style="max-width: 150px;">
         <option value="true" {{#isOpen}}selected{{/isOpen}}>{{#str}} state_open, tiny_studiolms {{/str}}</option>
         <option value="false" {{^isOpen}}selected{{/isOpen}}>{{#str}} state_closed, tiny_studiolms {{/str}}</option>
     </select>
+</div>
+<div class="mt-3 pt-3 border-top">
+    <div class="small fw-bold text-muted mb-2">{{#str}} interactivity_sounds, tiny_studiolms {{/str}}</div>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <label for="pop_web_hover" class="form-label m-0 small text-muted">{{#str}} hover_effect, tiny_studiolms {{/str}}</label>
+        <select class="form-select form-select-sm" id="pop_web_hover" style="max-width: 140px;">
+            <option value="none" {{#hover_none}}selected{{/hover_none}}>{{#str}} hover_none, tiny_studiolms {{/str}}</option>
+            <option value="scale" {{#hover_scale}}selected{{/hover_scale}}>{{#str}} hover_scale, tiny_studiolms {{/str}}</option>
+            <option value="glow" {{#hover_glow}}selected{{/hover_glow}}>{{#str}} hover_glow, tiny_studiolms {{/str}}</option>
+            <option value="lift" {{#hover_lift}}selected{{/hover_lift}}>{{#str}} hover_lift, tiny_studiolms {{/str}}</option>
+        </select>
+    </div>
+    <div class="d-flex justify-content-between align-items-center">
+        <label for="pop_web_sound" class="form-label m-0 small text-muted">{{#str}} open_sound, tiny_studiolms {{/str}}</label>
+        <select class="form-select form-select-sm" id="pop_web_sound" style="max-width: 140px;">
+            <option value="none" {{#sound_opt_none}}selected{{/sound_opt_none}}>{{#str}} sound_opt_none, tiny_studiolms {{/str}}</option>
+            <option value="click" {{#sound_opt_click}}selected{{/sound_opt_click}}>{{#str}} sound_opt_click, tiny_studiolms {{/str}}</option>
+            <option value="chime" {{#sound_opt_chime}}selected{{/sound_opt_chime}}>{{#str}} sound_opt_chime, tiny_studiolms {{/str}}</option>
+            <option value="pop" {{#sound_opt_pop}}selected{{/sound_opt_pop}}>{{#str}} sound_opt_pop, tiny_studiolms {{/str}}</option>
+        </select>
+    </div>
 </div>

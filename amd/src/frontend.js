@@ -116,7 +116,9 @@ const initSounds = () => {
         }
     });
 
-    document.querySelectorAll(`${SELECTORS.ACCORDION}[data-slms-sound]`).forEach(el => {
+    const detailsSelector =
+        `${SELECTORS.ACCORDION}[data-slms-sound], ${SELECTORS.WEBTECA}[data-slms-sound]`;
+    document.querySelectorAll(detailsSelector).forEach(el => {
         const sound = el.dataset.slmsSound;
         if (sound && sound !== 'none') {
             el.addEventListener('toggle', () => {
