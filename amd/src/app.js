@@ -26,6 +26,7 @@ import {getString} from 'core/str';
 import Templates from 'core/templates';
 import Notification from 'core/notification';
 import {loadTemplates, renderTemplateGrid, saveTemplate, showInlineFeedback} from './templateslibrary';
+import {init as initAiGenerator} from './aigenerator';
 
 let currentConfig = null;
 let currentBlockType = null;
@@ -34,6 +35,7 @@ let moodleModalInstance = null;
 let currentZoom = 1;
 let targetEditNode = null;
 let presetsData = [];
+let hasAiEnabled = false;
 
 const StateManager = {
     encode: (data, excludeKeys = []) => {
@@ -52,12 +54,20 @@ const StateManager = {
     }
 };
 
-export const initStudioApp = (editor, modal, editData = null, canManageGlobal = false, presets = []) => {
+export const initStudioApp = (
+    editor,
+    modal,
+    editData = null,
+    canManageGlobal = false,
+    presets = [],
+    hasAi = false
+) => {
     tinyEditorInstance = editor;
     moodleModalInstance = modal;
     currentZoom = 1;
     targetEditNode = null;
     presetsData = presets;
+    hasAiEnabled = hasAi;
 
     if (editData && editData.node) {
         targetEditNode = editData.node;
@@ -399,6 +409,14 @@ const switchTab = async(tabName) => {
     }
 
     grid.innerHTML = '';
+
+    if (tabName === 'ai') {
+        await initAiGenerator(grid, hasAiEnabled, async(blockDef, mergedConfig) => {
+            const title = await getString(blockDef.titleString, 'tiny_studiolms');
+            openConfigurationPanel(blockDef, title, mergedConfig);
+        });
+        return;
+    }
 
     try {
         let templates = [];

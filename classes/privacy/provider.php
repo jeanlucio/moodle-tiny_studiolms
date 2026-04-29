@@ -60,6 +60,12 @@ class provider implements
             'privacy:metadata:tiny_studiolms_templates'
         );
 
+        $collection->add_external_location_link(
+            'tiny_studiolms_ai',
+            ['prompt' => 'privacy:metadata:tiny_studiolms_ai'],
+            'privacy:metadata:tiny_studiolms_ai'
+        );
+
         $collection->add_database_table(
             'tiny_studiolms_favourites',
             [

@@ -61,4 +61,13 @@ $functions = [
         'loginrequired' => true,
         'capabilities'  => 'tiny/studiolms:use',
     ],
+    'tiny_studiolms_generate_block' => [
+        'classname'   => 'tiny_studiolms\external\generate_block',
+        'methodname'  => 'execute',
+        'description' => 'Generate a StudioLMS block configuration via a configured LLM provider.',
+        'type'        => 'write',
+        'ajax'        => true,
+        'loginrequired' => true,
+        'capabilities'  => 'tiny/studiolms:use',
+    ],
 ];

@@ -53,10 +53,14 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
         array $fpoptions,
         ?\editor_tiny\editor $editor = null
     ): array {
+        $provider = get_config('tiny_studiolms', 'ai_provider');
+        $apikey   = get_config('tiny_studiolms', 'ai_apikey');
+
         return [
             'enabled'                  => has_capability('tiny/studiolms:use', $context),
             'canmanageglobaltemplates' => has_capability('tiny/studiolms:manageglobaltemplates', $context),
             'presets'                  => self::load_presets(current_language()),
+            'hasai'                    => !empty($provider) && !empty($apikey),
         ];
     }
 
