@@ -70,6 +70,15 @@ $functions = [
         'loginrequired' => true,
         'capabilities'  => 'tiny/studiolms:use',
     ],
+    'tiny_studiolms_generate_preset' => [
+        'classname'   => 'tiny_studiolms\external\generate_preset',
+        'methodname'  => 'execute',
+        'description' => 'Generate a multi-block StudioLMS layout via a configured LLM provider.',
+        'type'        => 'write',
+        'ajax'        => true,
+        'loginrequired' => true,
+        'capabilities'  => 'tiny/studiolms:use',
+    ],
     'tiny_studiolms_get_ai_keys' => [
         'classname'   => 'tiny_studiolms\external\get_ai_keys',
         'methodname'  => 'execute',

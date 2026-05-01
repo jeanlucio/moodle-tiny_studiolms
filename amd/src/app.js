@@ -335,10 +335,13 @@ const setupTabs = () => {
 /**
  * Render a single preset definition into a flat HTML string with SLMS block attributes.
  *
- * @param {object} preset Preset definition with a blocks array.
+ * @param {object} preset Preset definition with a blocks array or a raw content string.
  * @returns {Promise<string>}
  */
 const renderPresetToHtml = async(preset) => {
+    if (preset.content) {
+        return preset.content;
+    }
     const parts = [];
     for (const block of preset.blocks) {
         const blockDef = Blocks[block.type];
@@ -412,10 +415,23 @@ const switchTab = async(tabName) => {
     grid.innerHTML = '';
 
     if (tabName === 'ai') {
-        await initAiGenerator(grid, hasAiEnabled, async(blockDef, mergedConfig) => {
-            const title = await getString(blockDef.titleString, 'tiny_studiolms');
-            openConfigurationPanel(blockDef, title, mergedConfig);
-        });
+        await initAiGenerator(
+            grid,
+            hasAiEnabled,
+            async(blockDef, mergedConfig) => {
+                const title = await getString(blockDef.titleString, 'tiny_studiolms');
+                openConfigurationPanel(blockDef, title, mergedConfig);
+            },
+            async(preset) => {
+                const html = await renderPresetToHtml(preset);
+                tinyEditorInstance.undoManager.transact(() => {
+                    tinyEditorInstance.insertContent(html + '<p><br></p>');
+                });
+                if (moodleModalInstance) {
+                    moodleModalInstance.hide();
+                }
+            }
+        );
         return;
     }
 

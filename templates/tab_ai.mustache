@@ -44,3 +44,59 @@
     </div>
     <div id="slms-ai-error" class="mt-2 text-danger small" role="alert" aria-live="assertive"></div>
 </div>
+<div class="slms-ai-preset-section p-4 border-top">
+    <div class="mb-3">
+        <h6 class="fw-bold mb-1">{{#str}} ai_preset_title, tiny_studiolms {{/str}}</h6>
+        <p class="text-muted small mb-0">{{#str}} ai_preset_desc, tiny_studiolms {{/str}}</p>
+    </div>
+    <div class="mb-2">
+        <label for="slms-ai-preset-name" class="form-label small fw-semibold mb-1">
+            {{#str}} ai_preset_name_label, tiny_studiolms {{/str}}
+        </label>
+        <input type="text"
+               id="slms-ai-preset-name"
+               class="form-control form-control-sm"
+               placeholder="{{#str}} ai_preset_name_placeholder, tiny_studiolms {{/str}}">
+    </div>
+    <div class="mb-2">
+        <label for="slms-ai-preset-context" class="form-label small fw-semibold mb-1">
+            {{#str}} ai_preset_context_label, tiny_studiolms {{/str}}
+        </label>
+        <textarea id="slms-ai-preset-context"
+                  class="form-control form-control-sm"
+                  rows="3"
+                  placeholder="{{#str}} ai_preset_context_placeholder, tiny_studiolms {{/str}}"></textarea>
+    </div>
+    <div class="mb-2">
+        <label for="slms-ai-preset-blocks" class="form-label small fw-semibold mb-1">
+            {{#str}} ai_preset_blocks_label, tiny_studiolms {{/str}}
+        </label>
+        <input type="text"
+               id="slms-ai-preset-blocks"
+               class="form-control form-control-sm"
+               placeholder="{{#str}} ai_preset_blocks_placeholder, tiny_studiolms {{/str}}">
+    </div>
+    <div class="mb-3">
+        <label for="slms-ai-preset-palette" class="form-label small fw-semibold mb-1">
+            {{#str}} ai_preset_palette_label, tiny_studiolms {{/str}}
+        </label>
+        <select id="slms-ai-preset-palette" class="form-select form-select-sm">
+            <option value="blue">{{#str}} ai_preset_palette_blue, tiny_studiolms {{/str}}</option>
+            <option value="green">{{#str}} ai_preset_palette_green, tiny_studiolms {{/str}}</option>
+            <option value="purple">{{#str}} ai_preset_palette_purple, tiny_studiolms {{/str}}</option>
+            <option value="orange">{{#str}} ai_preset_palette_orange, tiny_studiolms {{/str}}</option>
+            <option value="neutral">{{#str}} ai_preset_palette_neutral, tiny_studiolms {{/str}}</option>
+        </select>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <button type="button" id="slms-ai-preset-generate" class="btn btn-sm btn-success">
+            <span aria-hidden="true">🪄</span>
+            <span class="ms-1">{{#str}} ai_preset_generate, tiny_studiolms {{/str}}</span>
+        </button>
+        <span id="slms-ai-preset-spinner" class="d-none" aria-live="polite">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span class="ms-1 small text-muted">{{#str}} ai_preset_generating, tiny_studiolms {{/str}}</span>
+        </span>
+    </div>
+    <div id="slms-ai-preset-error" class="mt-2 text-danger small" role="alert" aria-live="assertive"></div>
+</div>

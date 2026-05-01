@@ -14,11 +14,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * AI Block Generator panel for StudioLMS.
+ * AI generator panel for StudioLMS (single block + multi-block layout).
  *
- * Renders the AI tab content and handles prompt submission.
- * The onBlockReady callback receives (blockDef, mergedConfig) so the caller
- * can open the block in the configuration panel for final review before inserting.
+ * Renders the AI tab content and handles prompt submission for both modes.
+ * - onBlockReady(blockDef, mergedConfig): opens the config panel for the generated block.
+ * - onPresetReady(preset): inserts the generated multi-block layout into the editor.
  *
  * @module     tiny_studiolms/aigenerator
  * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
@@ -36,9 +36,10 @@ import {Blocks} from './blocks/registry';
  *
  * @param {HTMLElement} container      Target DOM element (the library grid).
  * @param {boolean}     hasAi          Whether an AI provider is configured site-wide.
- * @param {Function}    onBlockReady   Called with (blockDef, mergedConfig) when generation succeeds.
+ * @param {Function}    onBlockReady   Called with (blockDef, mergedConfig) when single-block generation succeeds.
+ * @param {Function}    onPresetReady  Called with ({name, blocks}) when layout generation succeeds.
  */
-export const init = async(container, hasAi, onBlockReady) => {
+export const init = async(container, hasAi, onBlockReady, onPresetReady) => {
     container.innerHTML = '';
 
     if (!hasAi) {
@@ -61,6 +62,17 @@ export const init = async(container, hasAi, onBlockReady) => {
         return;
     }
 
+    setupBlockGenerator(container, onBlockReady);
+    setupPresetGenerator(container, onPresetReady);
+};
+
+/**
+ * Wires up the single-block generation form.
+ *
+ * @param {HTMLElement} container
+ * @param {Function}    onBlockReady
+ */
+const setupBlockGenerator = (container, onBlockReady) => {
     const textarea = container.querySelector('#slms-ai-prompt');
     const btnGenerate = container.querySelector('#slms-ai-generate');
     const spinner = container.querySelector('#slms-ai-spinner');
@@ -77,9 +89,7 @@ export const init = async(container, hasAi, onBlockReady) => {
         }
 
         btnGenerate.disabled = true;
-        if (spinner) {
-            spinner.classList.remove('d-none');
-        }
+        spinner?.classList.remove('d-none');
         if (errorArea) {
             errorArea.textContent = '';
         }
@@ -112,27 +122,98 @@ export const init = async(container, hasAi, onBlockReady) => {
                 onBlockReady(blockDef, mergedConfig);
             }
         } catch (err) {
-            if (errorArea) {
-                let msg = '';
-                try {
-                    msg = await getString('ai_generator_error', 'tiny_studiolms');
-                } catch (strErr) {
-                    msg = 'Error generating block. Please try again.';
-                }
-                if (err && err.debuginfo) {
-                    msg += ' [' + err.debuginfo + ']';
-                } else if (err && err.message && err.message !== msg) {
-                    msg += ' [' + err.message + ']';
-                }
-                errorArea.textContent = msg;
-            } else {
-                Notification.exception(err);
-            }
+            await showError(errorArea, 'ai_generator_error', err);
         } finally {
             btnGenerate.disabled = false;
-            if (spinner) {
-                spinner.classList.add('d-none');
-            }
+            spinner?.classList.add('d-none');
         }
     });
+};
+
+/**
+ * Wires up the multi-block layout generation form.
+ *
+ * @param {HTMLElement} container
+ * @param {Function}    onPresetReady
+ */
+const setupPresetGenerator = (container, onPresetReady) => {
+    const inputName = container.querySelector('#slms-ai-preset-name');
+    const textareaCtx = container.querySelector('#slms-ai-preset-context');
+    const inputBlocks = container.querySelector('#slms-ai-preset-blocks');
+    const selectPalette = container.querySelector('#slms-ai-preset-palette');
+    const btnGenerate = container.querySelector('#slms-ai-preset-generate');
+    const spinner = container.querySelector('#slms-ai-preset-spinner');
+    const errorArea = container.querySelector('#slms-ai-preset-error');
+
+    if (!btnGenerate || !textareaCtx) {
+        return;
+    }
+
+    btnGenerate.addEventListener('click', async() => {
+        const contexttext = textareaCtx.value.trim();
+        if (!contexttext) {
+            return;
+        }
+
+        btnGenerate.disabled = true;
+        spinner?.classList.remove('d-none');
+        if (errorArea) {
+            errorArea.textContent = '';
+        }
+
+        try {
+            const [promise] = ajaxCall([{
+                methodname: 'tiny_studiolms_generate_preset',
+                args: {
+                    name:        (inputName?.value.trim()) || '',
+                    contexttext,
+                    blocks:      (inputBlocks?.value.trim()) || '',
+                    palette:     selectPalette?.value || 'blue',
+                },
+            }]);
+            const result = await promise;
+
+            let parsedBlocks = [];
+            try {
+                parsedBlocks = JSON.parse(result.blocks || '[]');
+            } catch (parseError) {
+                parsedBlocks = [];
+            }
+
+            if (onPresetReady && parsedBlocks.length > 0) {
+                onPresetReady({name: result.name, blocks: parsedBlocks});
+            }
+        } catch (err) {
+            await showError(errorArea, 'ai_preset_error', err);
+        } finally {
+            btnGenerate.disabled = false;
+            spinner?.classList.add('d-none');
+        }
+    });
+};
+
+/**
+ * Displays a localised error message in the given element.
+ *
+ * @param {HTMLElement|null} errorArea
+ * @param {string}           stringKey Lang string key for the error message.
+ * @param {Error|object}     err       Caught error object.
+ */
+const showError = async(errorArea, stringKey, err) => {
+    if (!errorArea) {
+        Notification.exception(err);
+        return;
+    }
+    let msg = '';
+    try {
+        msg = await getString(stringKey, 'tiny_studiolms');
+    } catch (strErr) {
+        msg = 'Error. Please try again.';
+    }
+    if (err && err.debuginfo) {
+        msg += ' [' + err.debuginfo + ']';
+    } else if (err && err.message && err.message !== msg) {
+        msg += ' [' + err.message + ']';
+    }
+    errorArea.textContent = msg;
 };
