@@ -73,7 +73,7 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
      * Load preset templates for the given language, falling back to English.
      *
      * @param string $lang Current Moodle language code (e.g. 'pt_br', 'en').
-     * @return array Array of preset definitions, each with 'name' and 'blocks' keys.
+     * @return array Array of preset definitions, each with 'name' and either 'blocks' or 'content'.
      */
     private static function load_presets(string $lang): array {
         $basedir = dirname(__DIR__) . '/presets';
@@ -101,7 +101,9 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
                 continue;
             }
             $data = json_decode($raw, true);
-            if (is_array($data) && !empty($data['name']) && !empty($data['blocks'])) {
+            $hasblocks = !empty($data['blocks']);
+            $hascontent = !empty($data['content']);
+            if (is_array($data) && !empty($data['name']) && ($hasblocks || $hascontent)) {
                 $presets[] = $data;
             }
         }
