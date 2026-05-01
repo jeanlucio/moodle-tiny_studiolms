@@ -677,3 +677,13 @@ a.studiolms-webteca-item:hover {
     overflow-x: hidden;
     padding-right: 5px;
 }
+
+/* =========================================
+   AI GENERATOR: INLINE PREVIEW
+   ========================================= */
+
+.tiny_studiolms .slms-ai-preview-box {
+    max-height: 360px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}

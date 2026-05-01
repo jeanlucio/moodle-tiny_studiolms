@@ -559,7 +559,8 @@ class generator {
             'gridcards', 'stylizedHeading', 'table', 'webteca',
         ];
 
-        if (!is_array($preset) || empty($preset['name']) || !isset($preset['blocks'])
+        if (
+            !is_array($preset) || empty($preset['name']) || !isset($preset['blocks'])
             || !is_array($preset['blocks']) || empty($preset['blocks'])
         ) {
             throw new \moodle_exception('ai_preset_error', 'tiny_studiolms');
@@ -567,7 +568,8 @@ class generator {
 
         $blocks = [];
         foreach ($preset['blocks'] as $block) {
-            if (!is_array($block) || !isset($block['type'])
+            if (
+                !is_array($block) || !isset($block['type'])
                 || !in_array($block['type'], $validtypes, true)
             ) {
                 continue;

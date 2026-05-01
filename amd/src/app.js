@@ -333,6 +333,33 @@ const setupTabs = () => {
 };
 
 /**
+ * Render a single block into a fully attributed HTML string ready for editor insertion.
+ *
+ * @param {object} blockDef Block definition from the Blocks registry.
+ * @param {object} config   Block configuration object.
+ * @returns {Promise<string>}
+ */
+const renderSingleBlockForInsert = async(blockDef, config) => {
+    const rawHtml = await blockDef.renderHtml(config);
+    const excludeKeys = blockDef.excludeFromState || [];
+    const base64State = StateManager.encode(config, excludeKeys);
+
+    const temp = document.createElement('div');
+    temp.innerHTML = rawHtml.trim();
+    const root = temp.firstElementChild;
+
+    if (root) {
+        root.setAttribute('data-slms-block-type', blockDef.id);
+        root.setAttribute('data-slms-state', base64State);
+        if (blockDef.id !== 'table') {
+            root.classList.add('mceNonEditable');
+        }
+        return root.outerHTML;
+    }
+    return rawHtml;
+};
+
+/**
  * Render a single preset definition into a flat HTML string with SLMS block attributes.
  *
  * @param {object} preset Preset definition with a blocks array or a raw content string.
@@ -415,23 +442,30 @@ const switchTab = async(tabName) => {
     grid.innerHTML = '';
 
     if (tabName === 'ai') {
-        await initAiGenerator(
-            grid,
-            hasAiEnabled,
-            async(blockDef, mergedConfig) => {
+        await initAiGenerator(grid, hasAiEnabled, {
+            onConfigure: async(blockDef, mergedConfig) => {
                 const title = await getString(blockDef.titleString, 'tiny_studiolms');
                 openConfigurationPanel(blockDef, title, mergedConfig);
             },
-            async(preset) => {
-                const html = await renderPresetToHtml(preset);
+            onInsert: async(type, data) => {
+                const html = type === 'block'
+                    ? await renderSingleBlockForInsert(data.blockDef, data.config)
+                    : await renderPresetToHtml(data);
                 tinyEditorInstance.undoManager.transact(() => {
                     tinyEditorInstance.insertContent(html + '<p><br></p>');
                 });
                 if (moodleModalInstance) {
                     moodleModalInstance.hide();
                 }
-            }
-        );
+            },
+            onSave: async(name, type, data) => {
+                const html = type === 'block'
+                    ? await renderSingleBlockForInsert(data.blockDef, data.config)
+                    : await renderPresetToHtml(data);
+                await saveTemplate(name, html, 0);
+                showInlineFeedback(await getString('tpl_saved', 'tiny_studiolms'), 'success');
+            },
+        });
         return;
     }
 

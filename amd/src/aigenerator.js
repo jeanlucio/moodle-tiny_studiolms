@@ -16,9 +16,9 @@
 /**
  * AI generator panel for StudioLMS (single block + multi-block layout).
  *
- * Renders the AI tab content and handles prompt submission for both modes.
- * - onBlockReady(blockDef, mergedConfig): opens the config panel for the generated block.
- * - onPresetReady(preset): inserts the generated multi-block layout into the editor.
+ * After generation, both modes show an inline preview area where the user can
+ * choose to insert into the editor, configure the block (single-block only),
+ * save as a template, or discard the result.
  *
  * @module     tiny_studiolms/aigenerator
  * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
@@ -32,14 +32,187 @@ import Notification from 'core/notification';
 import {Blocks} from './blocks/registry';
 
 /**
+ * Renders a bare preview HTML for a single block (no state attributes).
+ *
+ * @param {object} blockDef     Block definition from the Blocks registry.
+ * @param {object} mergedConfig Config object for the block.
+ * @returns {Promise<string>}
+ */
+const renderBlockPreview = async(blockDef, mergedConfig) => {
+    return blockDef.renderHtml(mergedConfig);
+};
+
+/**
+ * Renders a bare preview HTML for a multi-block preset (no state attributes).
+ *
+ * @param {object} preset Preset object with a blocks array.
+ * @returns {Promise<string>}
+ */
+const renderPresetPreview = async(preset) => {
+    const parts = [];
+    for (const block of preset.blocks) {
+        const blockDef = Blocks[block.type];
+        if (!blockDef) {
+            continue;
+        }
+        const config = Object.assign({}, blockDef.defaultData, block.config ?? {});
+        try {
+            const html = await blockDef.renderHtml(config);
+            parts.push(html);
+        } catch (e) {
+            window.console.error('StudioLMS: preview render error for', block.type, e);
+        }
+    }
+    return parts.join('<p><br></p>');
+};
+
+/**
+ * Shows the inline preview section with the generated content and action buttons.
+ *
+ * @param {HTMLElement} container   The AI tab container element.
+ * @param {string}      htmlContent Rendered preview HTML (no state attributes).
+ * @param {string}      type        'block' or 'preset'.
+ * @param {object}      data        The raw generated data passed to callbacks.
+ * @param {object}      callbacks   Action callbacks: { onConfigure, onInsert, onSave }.
+ */
+const showPreview = (container, htmlContent, type, data, callbacks) => {
+    const previewSection = container.querySelector('#slms-ai-preview-section');
+    const previewContent = container.querySelector('#slms-ai-preview-content');
+    const btnConfigure = container.querySelector('#slms-ai-preview-configure');
+    const btnDiscard = container.querySelector('#slms-ai-preview-discard');
+    const btnInsert = container.querySelector('#slms-ai-preview-insert');
+    const btnSave = container.querySelector('#slms-ai-preview-save');
+    const saveFormArea = container.querySelector('#slms-ai-preview-save-form');
+
+    if (!previewSection || !previewContent) {
+        return;
+    }
+
+    previewContent.innerHTML = htmlContent;
+
+    if (btnConfigure) {
+        if (type === 'block') {
+            btnConfigure.classList.remove('d-none');
+        } else {
+            btnConfigure.classList.add('d-none');
+        }
+    }
+
+    previewSection.classList.remove('d-none');
+    previewSection.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+
+    const resetSaveForm = () => {
+        if (saveFormArea) {
+            saveFormArea.innerHTML = '';
+            saveFormArea.classList.add('d-none');
+        }
+    };
+
+    if (btnDiscard) {
+        btnDiscard.onclick = () => {
+            previewSection.classList.add('d-none');
+            resetSaveForm();
+        };
+    }
+
+    if (btnInsert) {
+        btnInsert.onclick = async() => {
+            if (callbacks.onInsert) {
+                await callbacks.onInsert(type, data);
+            }
+        };
+    }
+
+    if (btnConfigure && type === 'block') {
+        btnConfigure.onclick = () => {
+            if (callbacks.onConfigure) {
+                callbacks.onConfigure(data.blockDef, data.config);
+            }
+        };
+    }
+
+    if (btnSave && saveFormArea) {
+        btnSave.onclick = async() => {
+            if (!saveFormArea.classList.contains('d-none')) {
+                resetSaveForm();
+                return;
+            }
+            try {
+                const [strOk, strCancel, strPlaceholder] = await Promise.all([
+                    getString('ok', 'core'),
+                    getString('cancel', 'core'),
+                    getString('placeholder_tpl_name', 'tiny_studiolms'),
+                ]);
+
+                const defaultName = (type === 'preset' && data.name) ? data.name : '';
+                const form = document.createElement('div');
+                form.className = 'd-flex align-items-center flex-wrap gap-2';
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'form-control form-control-sm';
+                input.placeholder = strPlaceholder;
+                input.value = defaultName;
+                input.maxLength = 255;
+                input.setAttribute('aria-label', strPlaceholder);
+                input.style.maxWidth = '260px';
+
+                const btnOk = document.createElement('button');
+                btnOk.type = 'button';
+                btnOk.className = 'btn btn-sm btn-primary';
+                btnOk.textContent = strOk;
+
+                const btnCancelEl = document.createElement('button');
+                btnCancelEl.type = 'button';
+                btnCancelEl.className = 'btn btn-sm btn-outline-secondary';
+                btnCancelEl.textContent = strCancel;
+
+                form.appendChild(input);
+                form.appendChild(btnOk);
+                form.appendChild(btnCancelEl);
+                saveFormArea.appendChild(form);
+                saveFormArea.classList.remove('d-none');
+                input.focus();
+
+                if (defaultName) {
+                    input.select();
+                }
+
+                btnCancelEl.onclick = resetSaveForm;
+
+                btnOk.onclick = async() => {
+                    const name = input.value.trim();
+                    if (!name) {
+                        return;
+                    }
+                    resetSaveForm();
+                    if (callbacks.onSave) {
+                        await callbacks.onSave(name, type, data);
+                    }
+                };
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        btnOk.click();
+                    } else if (e.key === 'Escape') {
+                        resetSaveForm();
+                    }
+                });
+            } catch (formErr) {
+                Notification.exception(formErr);
+            }
+        };
+    }
+};
+
+/**
  * Initialise the AI generator panel inside the given container.
  *
- * @param {HTMLElement} container      Target DOM element (the library grid).
- * @param {boolean}     hasAi          Whether an AI provider is configured site-wide.
- * @param {Function}    onBlockReady   Called with (blockDef, mergedConfig) when single-block generation succeeds.
- * @param {Function}    onPresetReady  Called with ({name, blocks}) when layout generation succeeds.
+ * @param {HTMLElement} container Target DOM element (the library grid).
+ * @param {boolean}     hasAi     Whether an AI provider is configured site-wide.
+ * @param {object}      callbacks Action callbacks: { onConfigure, onInsert, onSave }.
  */
-export const init = async(container, hasAi, onBlockReady, onPresetReady) => {
+export const init = async(container, hasAi, callbacks = {}) => {
     container.innerHTML = '';
 
     if (!hasAi) {
@@ -62,17 +235,17 @@ export const init = async(container, hasAi, onBlockReady, onPresetReady) => {
         return;
     }
 
-    setupBlockGenerator(container, onBlockReady);
-    setupPresetGenerator(container, onPresetReady);
+    setupBlockGenerator(container, callbacks);
+    setupPresetGenerator(container, callbacks);
 };
 
 /**
  * Wires up the single-block generation form.
  *
  * @param {HTMLElement} container
- * @param {Function}    onBlockReady
+ * @param {object}      callbacks
  */
-const setupBlockGenerator = (container, onBlockReady) => {
+const setupBlockGenerator = (container, callbacks) => {
     const textarea = container.querySelector('#slms-ai-prompt');
     const btnGenerate = container.querySelector('#slms-ai-generate');
     const spinner = container.querySelector('#slms-ai-spinner');
@@ -118,9 +291,8 @@ const setupBlockGenerator = (container, onBlockReady) => {
                 parsedConfig
             );
 
-            if (onBlockReady) {
-                onBlockReady(blockDef, mergedConfig);
-            }
+            const htmlContent = await renderBlockPreview(blockDef, mergedConfig);
+            showPreview(container, htmlContent, 'block', {blockDef, config: mergedConfig}, callbacks);
         } catch (err) {
             await showError(errorArea, 'ai_generator_error', err);
         } finally {
@@ -134,9 +306,9 @@ const setupBlockGenerator = (container, onBlockReady) => {
  * Wires up the multi-block layout generation form.
  *
  * @param {HTMLElement} container
- * @param {Function}    onPresetReady
+ * @param {object}      callbacks
  */
-const setupPresetGenerator = (container, onPresetReady) => {
+const setupPresetGenerator = (container, callbacks) => {
     const inputName = container.querySelector('#slms-ai-preset-name');
     const textareaCtx = container.querySelector('#slms-ai-preset-context');
     const inputBlocks = container.querySelector('#slms-ai-preset-blocks');
@@ -180,8 +352,10 @@ const setupPresetGenerator = (container, onPresetReady) => {
                 parsedBlocks = [];
             }
 
-            if (onPresetReady && parsedBlocks.length > 0) {
-                onPresetReady({name: result.name, blocks: parsedBlocks});
+            if (parsedBlocks.length > 0) {
+                const preset = {name: result.name, blocks: parsedBlocks};
+                const htmlContent = await renderPresetPreview(preset);
+                showPreview(container, htmlContent, 'preset', preset, callbacks);
             }
         } catch (err) {
             await showError(errorArea, 'ai_preset_error', err);

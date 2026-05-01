@@ -100,3 +100,36 @@
     </div>
     <div id="slms-ai-preset-error" class="mt-2 text-danger small" role="alert" aria-live="assertive"></div>
 </div>
+<div id="slms-ai-preview-section" class="d-none slms-ai-preview-section p-4 border-top">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="fw-bold mb-0">{{#str}} ai_preview_title, tiny_studiolms {{/str}}</h6>
+        <button type="button"
+                id="slms-ai-preview-discard"
+                class="btn btn-sm btn-outline-secondary">
+            {{#str}} ai_preview_discard, tiny_studiolms {{/str}}
+        </button>
+    </div>
+    <div id="slms-ai-preview-content"
+         class="border rounded p-3 bg-white mb-3 slms-ai-preview-box"></div>
+    <div class="d-flex align-items-center flex-wrap mb-2" id="slms-ai-preview-actions">
+        <button type="button"
+                id="slms-ai-preview-insert"
+                class="btn btn-sm btn-primary me-2 mb-1">
+            <span aria-hidden="true">🚀</span>
+            <span class="ms-1">{{#str}} ai_preview_insert, tiny_studiolms {{/str}}</span>
+        </button>
+        <button type="button"
+                id="slms-ai-preview-configure"
+                class="btn btn-sm btn-outline-primary d-none me-2 mb-1">
+            <span aria-hidden="true">⚙️</span>
+            <span class="ms-1">{{#str}} ai_preview_configure, tiny_studiolms {{/str}}</span>
+        </button>
+        <button type="button"
+                id="slms-ai-preview-save"
+                class="btn btn-sm btn-outline-success me-2 mb-1">
+            <span aria-hidden="true">💾</span>
+            <span class="ms-1">{{#str}} ai_preview_save, tiny_studiolms {{/str}}</span>
+        </button>
+    </div>
+    <div id="slms-ai-preview-save-form" class="d-none"></div>
+</div>
