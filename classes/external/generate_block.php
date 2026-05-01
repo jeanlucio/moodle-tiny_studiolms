@@ -30,6 +30,7 @@ use core_external\external_single_structure;
 use core_external\external_value;
 use context_system;
 use tiny_studiolms\ai\generator;
+use stdClass;
 
 /**
  * Generates a StudioLMS block configuration from a plain-text teacher prompt using an LLM.
@@ -39,7 +40,6 @@ use tiny_studiolms\ai\generator;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class generate_block extends external_api {
-
     /**
      * Declares the parameters accepted by execute().
      *
@@ -58,13 +58,36 @@ class generate_block extends external_api {
      * @return array With keys 'blocktype' and 'config'.
      */
     public static function execute(string $prompt): array {
+        global $DB, $USER;
+
         $params = self::validate_parameters(self::execute_parameters(), ['prompt' => $prompt]);
 
         $context = context_system::instance();
         self::validate_context($context);
         require_capability('tiny/studiolms:use', $context);
 
-        return generator::generate_block($params['prompt']);
+        try {
+            $result = generator::generate_block($params['prompt']);
+        } catch (\moodle_exception $e) {
+            throw $e;
+        } catch (\Throwable $t) {
+            $detail = 'SLMS ' . get_class($t) . ': ' . $t->getMessage()
+                . ' at ' . basename($t->getFile()) . ':' . $t->getLine();
+            throw new \moodle_exception('generalexceptionmessage', 'error', '', $detail);
+        }
+
+        try {
+            $log = new stdClass();
+            $log->userid = $USER->id;
+            $log->blocktype = $result['blocktype'];
+            $log->ai_provider = $result['provider'] ?? 'unknown';
+            $log->timecreated = time();
+            $DB->insert_record('tiny_studiolms_ai_logs', $log);
+        } catch (\dml_exception $e) {
+            debugging('StudioLMS AI: log insert failed — ' . $e->getMessage(), DEBUG_DEVELOPER);
+        }
+
+        return ['blocktype' => $result['blocktype'], 'config' => $result['config']];
     }
 
     /**

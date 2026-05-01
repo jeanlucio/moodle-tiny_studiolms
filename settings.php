@@ -31,30 +31,50 @@ if ($hassiteconfig) {
         ''
     ));
 
-    $settings->add(new admin_setting_configselect(
-        'tiny_studiolms/ai_provider',
-        get_string('settings_ai_provider', 'tiny_studiolms'),
-        get_string('settings_ai_provider_desc', 'tiny_studiolms'),
-        '',
-        [
-            ''          => get_string('settings_ai_provider_none', 'tiny_studiolms'),
-            'openai'    => get_string('ai_provider_openai', 'tiny_studiolms'),
-            'groq'      => get_string('ai_provider_groq', 'tiny_studiolms'),
-            'anthropic' => get_string('ai_provider_anthropic', 'tiny_studiolms'),
-        ]
+    $settings->add(new admin_setting_heading(
+        'tiny_studiolms/ai_institution_heading',
+        get_string('settings_ai_institution_heading', 'tiny_studiolms'),
+        get_string('settings_ai_institution_heading_desc', 'tiny_studiolms')
     ));
 
     $settings->add(new admin_setting_configpasswordunmask(
-        'tiny_studiolms/ai_apikey',
-        get_string('settings_ai_key', 'tiny_studiolms'),
-        get_string('settings_ai_key_desc', 'tiny_studiolms'),
+        'tiny_studiolms/apikey_gemini',
+        get_string('settings_ai_gemini_key', 'tiny_studiolms'),
+        get_string('settings_ai_gemini_key_desc', 'tiny_studiolms'),
+        ''
+    ));
+
+    $settings->add(new admin_setting_configpasswordunmask(
+        'tiny_studiolms/apikey_groq',
+        get_string('settings_ai_groq_key', 'tiny_studiolms'),
+        get_string('settings_ai_groq_key_desc', 'tiny_studiolms'),
+        ''
+    ));
+
+    $settings->add(new admin_setting_heading(
+        'tiny_studiolms/ai_custom_heading',
+        get_string('settings_ai_custom_heading', 'tiny_studiolms'),
+        get_string('settings_ai_custom_heading_desc', 'tiny_studiolms')
+    ));
+
+    $settings->add(new admin_setting_configpasswordunmask(
+        'tiny_studiolms/apikey_custom',
+        get_string('settings_ai_custom_key', 'tiny_studiolms'),
+        get_string('settings_ai_custom_key_desc', 'tiny_studiolms'),
         ''
     ));
 
     $settings->add(new admin_setting_configtext(
-        'tiny_studiolms/ai_model',
-        get_string('settings_ai_model', 'tiny_studiolms'),
-        get_string('settings_ai_model_desc', 'tiny_studiolms'),
+        'tiny_studiolms/custom_baseurl',
+        get_string('settings_ai_custom_url', 'tiny_studiolms'),
+        get_string('settings_ai_custom_url_desc', 'tiny_studiolms'),
+        ''
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'tiny_studiolms/custom_model',
+        get_string('settings_ai_custom_model', 'tiny_studiolms'),
+        get_string('settings_ai_custom_model_desc', 'tiny_studiolms'),
         ''
     ));
 }

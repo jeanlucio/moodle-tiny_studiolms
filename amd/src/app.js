@@ -27,6 +27,7 @@ import Templates from 'core/templates';
 import Notification from 'core/notification';
 import {loadTemplates, renderTemplateGrid, saveTemplate, showInlineFeedback} from './templateslibrary';
 import {init as initAiGenerator} from './aigenerator';
+import {init as initAiKeys} from './aikeys';
 
 let currentConfig = null;
 let currentBlockType = null;
@@ -415,6 +416,11 @@ const switchTab = async(tabName) => {
             const title = await getString(blockDef.titleString, 'tiny_studiolms');
             openConfigurationPanel(blockDef, title, mergedConfig);
         });
+        return;
+    }
+
+    if (tabName === 'ai-keys') {
+        await initAiKeys(grid);
         return;
     }
 

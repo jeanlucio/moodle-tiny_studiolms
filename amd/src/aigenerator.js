@@ -85,10 +85,11 @@ export const init = async(container, hasAi, onBlockReady) => {
         }
 
         try {
-            const [result] = await ajaxCall([{
+            const [promise] = ajaxCall([{
                 methodname: 'tiny_studiolms_generate_block',
                 args: {prompt},
             }]);
+            const result = await promise;
 
             const blockDef = Blocks[result.blocktype];
             if (!blockDef) {
@@ -112,11 +113,18 @@ export const init = async(container, hasAi, onBlockReady) => {
             }
         } catch (err) {
             if (errorArea) {
+                let msg = '';
                 try {
-                    errorArea.textContent = await getString('ai_generator_error', 'tiny_studiolms');
+                    msg = await getString('ai_generator_error', 'tiny_studiolms');
                 } catch (strErr) {
-                    errorArea.textContent = 'Error generating block. Please try again.';
+                    msg = 'Error generating block. Please try again.';
                 }
+                if (err && err.debuginfo) {
+                    msg += ' [' + err.debuginfo + ']';
+                } else if (err && err.message && err.message !== msg) {
+                    msg += ' [' + err.message + ']';
+                }
+                errorArea.textContent = msg;
             } else {
                 Notification.exception(err);
             }

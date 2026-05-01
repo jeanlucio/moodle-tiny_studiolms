@@ -1,0 +1,106 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_studiolms/tab_ai_keys
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Example context (json): {}
+}}
+<div class="slms-ai-keys-tab p-4">
+    <div class="mb-3">
+        <h6 class="fw-bold mb-1">{{#str}} ai_keys_title, tiny_studiolms {{/str}}</h6>
+        <p class="text-muted small mb-0">{{#str}} ai_keys_desc, tiny_studiolms {{/str}}</p>
+    </div>
+
+    <div class="mb-4 border rounded p-3">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="fw-semibold small">{{#str}} ai_keys_gemini_section, tiny_studiolms {{/str}}</span>
+            <span id="slms-key-status-gemini"
+                  class="badge bg-secondary small"
+                  aria-live="polite">
+                {{#str}} ai_keys_not_set, tiny_studiolms {{/str}}
+            </span>
+        </div>
+        <input type="password"
+               id="slms-key-gemini"
+               class="form-control form-control-sm"
+               autocomplete="new-password"
+               aria-label="{{#str}} ai_keys_gemini_section, tiny_studiolms {{/str}}"
+               placeholder="{{#str}} ai_keys_placeholder, tiny_studiolms {{/str}}">
+    </div>
+
+    <div class="mb-4 border rounded p-3">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="fw-semibold small">{{#str}} ai_keys_groq_section, tiny_studiolms {{/str}}</span>
+            <span id="slms-key-status-groq"
+                  class="badge bg-secondary small"
+                  aria-live="polite">
+                {{#str}} ai_keys_not_set, tiny_studiolms {{/str}}
+            </span>
+        </div>
+        <input type="password"
+               id="slms-key-groq"
+               class="form-control form-control-sm"
+               autocomplete="new-password"
+               aria-label="{{#str}} ai_keys_groq_section, tiny_studiolms {{/str}}"
+               placeholder="{{#str}} ai_keys_placeholder, tiny_studiolms {{/str}}">
+    </div>
+
+    <div class="mb-4 border rounded p-3">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="fw-semibold small">{{#str}} ai_keys_custom_section, tiny_studiolms {{/str}}</span>
+            <span id="slms-key-status-custom"
+                  class="badge bg-secondary small"
+                  aria-live="polite">
+                {{#str}} ai_keys_not_set, tiny_studiolms {{/str}}
+            </span>
+        </div>
+        <input type="password"
+               id="slms-key-custom"
+               class="form-control form-control-sm mb-2"
+               autocomplete="new-password"
+               aria-label="{{#str}} ai_keys_custom_section, tiny_studiolms {{/str}}"
+               placeholder="{{#str}} ai_keys_placeholder, tiny_studiolms {{/str}}">
+        <input type="url"
+               id="slms-key-custom-url"
+               class="form-control form-control-sm mb-2"
+               aria-label="{{#str}} settings_ai_custom_url, tiny_studiolms {{/str}}"
+               placeholder="{{#str}} ai_keys_custom_url_placeholder, tiny_studiolms {{/str}}">
+        <input type="text"
+               id="slms-key-custom-model"
+               class="form-control form-control-sm"
+               aria-label="{{#str}} settings_ai_custom_model, tiny_studiolms {{/str}}"
+               placeholder="{{#str}} ai_keys_custom_model_placeholder, tiny_studiolms {{/str}}">
+    </div>
+
+    <div class="d-flex align-items-center gap-2">
+        <button type="button" id="slms-ai-keys-save" class="btn btn-sm btn-primary">
+            <span aria-hidden="true">💾</span>
+            <span class="ms-1">{{#str}} ai_keys_save, tiny_studiolms {{/str}}</span>
+        </button>
+        <span id="slms-ai-keys-spinner" class="d-none" aria-live="polite">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        </span>
+        <span id="slms-ai-keys-feedback"
+              class="small d-none"
+              role="status"
+              aria-live="polite">
+            {{#str}} ai_keys_saved, tiny_studiolms {{/str}}
+        </span>
+    </div>
+    <div id="slms-ai-keys-error" class="mt-2 text-danger small" role="alert" aria-live="assertive"></div>
+</div>

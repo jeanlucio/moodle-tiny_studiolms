@@ -25,14 +25,16 @@
 namespace tiny_studiolms\ai;
 
 /**
- * Generates StudioLMS block configurations via a configured LLM API.
+ * Generates StudioLMS block configurations via AI APIs with automatic provider fallback.
+ *
+ * Provider priority: Gemini → Groq → Custom OpenAI-compatible.
+ * User preferences override global admin config for each provider independently.
  *
  * @package    tiny_studiolms
  * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class generator {
-
     /**
      * Returns the system prompt describing supported block types and their config schemas.
      *
@@ -100,52 +102,96 @@ class generator {
     /**
      * Generates a block configuration from a plain-text prompt.
      *
+     * Tries providers in order: Gemini → Groq → Custom OpenAI-compatible.
+     * User preferences override global admin config per provider.
+     *
      * @param string $prompt Teacher's content request.
-     * @return array Associative array with keys 'blocktype' (string) and 'config' (JSON string).
-     * @throws \moodle_exception If AI is not configured or the API call fails.
+     * @return array With keys 'blocktype' (string), 'config' (JSON string), 'provider' (string).
+     * @throws \moodle_exception If no provider is configured or all calls fail.
      */
     public static function generate_block(string $prompt): array {
-        $provider = get_config('tiny_studiolms', 'ai_provider');
-        $apikey   = get_config('tiny_studiolms', 'ai_apikey');
-        $model    = get_config('tiny_studiolms', 'ai_model') ?: '';
+        $geminikey = get_user_preferences('tiny_studiolms_gemini_key', '')
+            ?: get_config('tiny_studiolms', 'apikey_gemini');
+        $groqkey = get_user_preferences('tiny_studiolms_groq_key', '')
+            ?: get_config('tiny_studiolms', 'apikey_groq');
+        $customkey = get_user_preferences('tiny_studiolms_custom_key', '')
+            ?: get_config('tiny_studiolms', 'apikey_custom');
+        $customurl = get_user_preferences('tiny_studiolms_custom_url', '')
+            ?: get_config('tiny_studiolms', 'custom_baseurl');
+        $custommodel = get_user_preferences('tiny_studiolms_custom_model', '')
+            ?: get_config('tiny_studiolms', 'custom_model');
 
-        if (empty($provider) || empty($apikey)) {
+        if (empty($geminikey) && empty($groqkey) && empty($customkey)) {
             throw new \moodle_exception('ai_generator_no_config', 'tiny_studiolms');
         }
 
-        if ($provider === 'anthropic') {
-            return self::call_anthropic($prompt, $apikey, $model);
+        $result = ['success' => false, 'data' => ''];
+        $failures = [];
+
+        if (!empty($geminikey)) {
+            $result = self::call_gemini($prompt, $geminikey);
+            if (!$result['success']) {
+                $failures[] = 'Gemini: HTTP ' . ($result['httpcode'] ?? '?')
+                    . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
+            }
         }
 
-        return self::call_openai_compatible($provider, $prompt, $apikey, $model);
+        if (!$result['success'] && !empty($groqkey)) {
+            $result = self::call_groq($prompt, $groqkey);
+            if (!$result['success']) {
+                $failures[] = 'Groq: HTTP ' . ($result['httpcode'] ?? '?')
+                    . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
+            }
+        }
+
+        if (!$result['success'] && !empty($customkey) && !empty($customurl)) {
+            $result = self::call_openai_compatible($prompt, $customkey, $customurl, (string)$custommodel);
+            if (!$result['success']) {
+                $failures[] = 'Custom: HTTP ' . ($result['httpcode'] ?? '?')
+                    . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
+            }
+        }
+
+        if (!$result['success']) {
+            $debuginfo = implode(' | ', $failures);
+            throw new \moodle_exception('ai_generator_error', 'tiny_studiolms', '', null, $debuginfo);
+        }
+
+        $block = self::parse_block_json($result['data']);
+        $block['provider'] = $result['provider'];
+
+        return $block;
     }
 
     /**
-     * Calls an OpenAI-compatible endpoint (OpenAI or Groq).
+     * Calls the Google Gemini API.
      *
-     * @param string $provider Either 'openai' or 'groq'.
-     * @param string $prompt   User prompt.
-     * @param string $apikey   API key.
-     * @param string $model    Model name; empty string for provider default.
-     * @return array
-     * @throws \moodle_exception
+     * @param string $prompt User prompt.
+     * @param string $key    Gemini API key.
+     * @return array With keys 'success', 'data', 'provider'.
      */
-    private static function call_openai_compatible(
-        string $provider,
-        string $prompt,
-        string $apikey,
-        string $model
-    ): array {
-        $baseurl = $provider === 'groq'
-            ? 'https://api.groq.com/openai/v1'
-            : 'https://api.openai.com/v1';
+    private static function call_gemini(string $prompt, string $key): array {
+        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' . $key;
+        $systemprompt = self::system_prompt();
+        $data = [
+            'system_instruction' => ['parts' => [['text' => $systemprompt]]],
+            'contents' => [['parts' => [['text' => $prompt]]]],
+            'generationConfig' => ['responseMimeType' => 'application/json', 'maxOutputTokens' => 1000],
+        ];
+        return self::curl_request($url, json_encode($data), ['Content-Type: application/json'], 'Gemini');
+    }
 
-        if (empty($model)) {
-            $model = $provider === 'groq' ? 'llama-3.1-8b-instant' : 'gpt-4o-mini';
-        }
-
-        $payload = [
-            'model'           => $model,
+    /**
+     * Calls the Groq API (OpenAI-compatible, fixed endpoint).
+     *
+     * @param string $prompt User prompt.
+     * @param string $key    Groq API key.
+     * @return array With keys 'success', 'data', 'provider'.
+     */
+    private static function call_groq(string $prompt, string $key): array {
+        $url = 'https://api.groq.com/openai/v1/chat/completions';
+        $data = [
+            'model'           => 'llama-3.3-70b-versatile',
             'messages'        => [
                 ['role' => 'system', 'content' => self::system_prompt()],
                 ['role' => 'user', 'content' => $prompt],
@@ -154,87 +200,145 @@ class generator {
             'max_tokens'      => 1000,
             'temperature'     => 0.7,
         ];
-
-        $curl = new \curl();
-        $curl->setopt(['CURLOPT_TIMEOUT' => 30]);
-        $curl->setHeader([
-            'Authorization: Bearer ' . $apikey,
-            'Content-Type: application/json',
-        ]);
-
-        $response = $curl->post($baseurl . '/chat/completions', json_encode($payload));
-
-        return self::parse_openai_response($response);
+        return self::curl_request(
+            $url,
+            json_encode($data),
+            ['Authorization: Bearer ' . $key, 'Content-Type: application/json'],
+            'Groq'
+        );
     }
 
     /**
-     * Calls the Anthropic Messages API.
+     * Calls a custom OpenAI-compatible endpoint.
      *
-     * @param string $prompt  User prompt.
-     * @param string $apikey  Anthropic API key.
-     * @param string $model   Model name; empty string for default.
-     * @return array
-     * @throws \moodle_exception
+     * @param string $prompt User prompt.
+     * @param string $key    API key.
+     * @param string $url    Full chat/completions endpoint URL (must be HTTPS, public IP).
+     * @param string $model  Model name; empty string uses endpoint default.
+     * @return array With keys 'success', 'data', 'provider'.
      */
-    private static function call_anthropic(string $prompt, string $apikey, string $model): array {
-        if (empty($model)) {
-            $model = 'claude-haiku-4-5-20251001';
+    private static function call_openai_compatible(
+        string $prompt,
+        string $key,
+        string $url,
+        string $model
+    ): array {
+        if (!self::is_safe_url($url)) {
+            return ['success' => false, 'data' => '', 'provider' => 'Custom'];
         }
-
-        $payload = [
-            'model'      => $model,
-            'max_tokens' => 1000,
-            'system'     => self::system_prompt(),
-            'messages'   => [
+        $data = [
+            'model'           => !empty($model) ? $model : 'gpt-4o-mini',
+            'messages'        => [
+                ['role' => 'system', 'content' => self::system_prompt()],
                 ['role' => 'user', 'content' => $prompt],
             ],
+            'response_format' => ['type' => 'json_object'],
+            'max_tokens'      => 1000,
+            'temperature'     => 0.7,
         ];
+        return self::curl_request(
+            $url,
+            json_encode($data),
+            ['Authorization: Bearer ' . $key, 'Content-Type: application/json'],
+            'Custom'
+        );
+    }
 
+    /**
+     * Performs the HTTP POST and normalises the response into a common structure.
+     *
+     * @param string   $url     Full endpoint URL.
+     * @param string   $payload JSON request body.
+     * @param string[] $headers HTTP headers.
+     * @param string   $source  Provider label used in logs and return value.
+     * @return array With keys 'success' (bool), 'data' (string), 'provider' (string).
+     */
+    private static function curl_request(
+        string $url,
+        string $payload,
+        array $headers,
+        string $source
+    ): array {
+        global $CFG;
+        require_once($CFG->libdir . '/filelib.php');
         $curl = new \curl();
         $curl->setopt(['CURLOPT_TIMEOUT' => 30]);
-        $curl->setHeader([
-            'x-api-key: ' . $apikey,
-            'anthropic-version: 2023-06-01',
-            'Content-Type: application/json',
-        ]);
+        $curl->setHeader($headers);
 
-        $response = $curl->post('https://api.anthropic.com/v1/messages', json_encode($payload));
+        $response = $curl->post($url, $payload);
+        $info = $curl->get_info();
+        $code = isset($info['http_code']) ? (int)$info['http_code'] : 0;
 
-        return self::parse_anthropic_response($response);
+        if ($code < 200 || $code >= 300 || empty($response)) {
+            $errmsg = substr((string)$response, 0, 200);
+            debugging(
+                'StudioLMS AI [' . $source . ']: HTTP ' . $code
+                . ' | curl_error: ' . $curl->get_errno()
+                . ' | response: ' . $errmsg,
+                DEBUG_DEVELOPER
+            );
+            return ['success' => false, 'data' => '', 'provider' => $source, 'httpcode' => $code, 'errmsg' => $errmsg];
+        }
+
+        $decoded = json_decode($response, true);
+        if (!is_array($decoded)) {
+            $errmsg = 'JSON decode failed: ' . substr($response, 0, 200);
+            debugging('StudioLMS AI [' . $source . ']: ' . $errmsg, DEBUG_DEVELOPER);
+            return ['success' => false, 'data' => '', 'provider' => $source, 'httpcode' => $code, 'errmsg' => $errmsg];
+        }
+
+        if ($source === 'Gemini') {
+            $content = $decoded['candidates'][0]['content']['parts'][0]['text'] ?? '';
+            if (empty($content)) {
+                $blocked = $decoded['candidates'][0]['finishReason'] ?? ($decoded['promptFeedback']['blockReason'] ?? '');
+                $errmsg = 'empty content. finishReason/blockReason: ' . $blocked
+                    . ' | keys: ' . implode(',', array_keys($decoded));
+                debugging('StudioLMS AI [Gemini]: ' . $errmsg, DEBUG_DEVELOPER);
+                return [
+                    'success' => false, 'data' => '', 'provider' => $source, 'httpcode' => $code, 'errmsg' => $errmsg,
+                ];
+            }
+        } else {
+            $content = $decoded['choices'][0]['message']['content'] ?? '';
+            if (empty($content)) {
+                $errmsg = 'empty content. keys: ' . implode(',', array_keys($decoded));
+                debugging('StudioLMS AI [' . $source . ']: ' . $errmsg, DEBUG_DEVELOPER);
+                return [
+                    'success' => false, 'data' => '', 'provider' => $source, 'httpcode' => $code, 'errmsg' => $errmsg,
+                ];
+            }
+        }
+
+        return ['success' => true, 'data' => $content, 'provider' => $source, 'httpcode' => $code, 'errmsg' => ''];
     }
 
     /**
-     * Extracts the text content from an OpenAI-compatible chat completions response.
+     * Validates that a URL is safe to call: HTTPS only, public IP, no private/localhost ranges.
      *
-     * @param string $response Raw JSON response body.
-     * @return array
-     * @throws \moodle_exception
+     * @param string $url URL to validate.
+     * @return bool
      */
-    private static function parse_openai_response(string $response): array {
-        $data = json_decode($response, true);
-
-        if (!is_array($data) || !isset($data['choices'][0]['message']['content'])) {
-            throw new \moodle_exception('ai_generator_error', 'tiny_studiolms');
+    private static function is_safe_url(string $url): bool {
+        $parsed = parse_url($url);
+        if (!$parsed || ($parsed['scheme'] ?? '') !== 'https') {
+            return false;
         }
-
-        return self::parse_block_json($data['choices'][0]['message']['content']);
-    }
-
-    /**
-     * Extracts the text content from an Anthropic Messages response.
-     *
-     * @param string $response Raw JSON response body.
-     * @return array
-     * @throws \moodle_exception
-     */
-    private static function parse_anthropic_response(string $response): array {
-        $data = json_decode($response, true);
-
-        if (!is_array($data) || !isset($data['content'][0]['text'])) {
-            throw new \moodle_exception('ai_generator_error', 'tiny_studiolms');
+        $host = strtolower($parsed['host'] ?? '');
+        if (in_array($host, ['localhost', '127.0.0.1', '::1'], true)) {
+            return false;
         }
-
-        return self::parse_block_json($data['content'][0]['text']);
+        $ip = gethostbyname($host);
+        if ($ip !== false) {
+            $ispublic = filter_var(
+                $ip,
+                FILTER_VALIDATE_IP,
+                FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+            );
+            if ($ispublic === false) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -246,10 +350,8 @@ class generator {
      */
     private static function parse_block_json(string $content): array {
         $content = trim($content);
-
-        // Strip markdown code fences that some models add despite instructions.
-        $content = preg_replace('/^```(?:json)?\s*/i', '', $content);
-        $content = preg_replace('/\s*```$/i', '', $content);
+        $content = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $content);
+        $content = preg_replace('/\s*\x60{3}$/i', '', $content);
 
         $block = json_decode(trim($content), true);
 

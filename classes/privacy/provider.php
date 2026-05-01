@@ -67,6 +67,38 @@ class provider implements
         );
 
         $collection->add_database_table(
+            'tiny_studiolms_ai_logs',
+            [
+                'userid'      => 'privacy:metadata:tiny_studiolms_ai_logs:userid',
+                'blocktype'   => 'privacy:metadata:tiny_studiolms_ai_logs:blocktype',
+                'ai_provider' => 'privacy:metadata:tiny_studiolms_ai_logs:ai_provider',
+                'timecreated' => 'privacy:metadata:tiny_studiolms_ai_logs:timecreated',
+            ],
+            'privacy:metadata:tiny_studiolms_ai_logs'
+        );
+
+        $collection->add_user_preference(
+            'tiny_studiolms_gemini_key',
+            'privacy:metadata:tiny_studiolms_userprefs:gemini_key'
+        );
+        $collection->add_user_preference(
+            'tiny_studiolms_groq_key',
+            'privacy:metadata:tiny_studiolms_userprefs:groq_key'
+        );
+        $collection->add_user_preference(
+            'tiny_studiolms_custom_key',
+            'privacy:metadata:tiny_studiolms_userprefs:custom_key'
+        );
+        $collection->add_user_preference(
+            'tiny_studiolms_custom_url',
+            'privacy:metadata:tiny_studiolms_userprefs:custom_url'
+        );
+        $collection->add_user_preference(
+            'tiny_studiolms_custom_model',
+            'privacy:metadata:tiny_studiolms_userprefs:custom_model'
+        );
+
+        $collection->add_database_table(
             'tiny_studiolms_favourites',
             [
                 'userid'      => 'privacy:metadata:tiny_studiolms_favourites:userid',
@@ -124,9 +156,10 @@ class provider implements
 
         $userid = $contextlist->get_user()->id;
 
+        $context = \context_system::instance();
+
         $templates = $DB->get_records('tiny_studiolms_templates', ['userid' => $userid]);
         if (!empty($templates)) {
-            $context = \context_system::instance();
             writer::with_context($context)->export_data(
                 [get_string('pluginname', 'tiny_studiolms'), get_string('tab_mine', 'tiny_studiolms')],
                 (object) ['templates' => array_values($templates)]
@@ -135,10 +168,17 @@ class provider implements
 
         $favourites = $DB->get_records('tiny_studiolms_favourites', ['userid' => $userid]);
         if (!empty($favourites)) {
-            $context = \context_system::instance();
             writer::with_context($context)->export_data(
                 [get_string('pluginname', 'tiny_studiolms'), get_string('tab_favourites', 'tiny_studiolms')],
                 (object) ['favourites' => array_values($favourites)]
+            );
+        }
+
+        $ailogs = $DB->get_records('tiny_studiolms_ai_logs', ['userid' => $userid]);
+        if (!empty($ailogs)) {
+            writer::with_context($context)->export_data(
+                [get_string('pluginname', 'tiny_studiolms'), 'AI Logs'],
+                (object) ['ailogs' => array_values($ailogs)]
             );
         }
     }
@@ -154,6 +194,7 @@ class provider implements
         }
 
         global $DB;
+        $DB->delete_records('tiny_studiolms_ai_logs');
         $DB->delete_records('tiny_studiolms_favourites');
         $DB->delete_records_select(
             'tiny_studiolms_templates',
@@ -171,6 +212,7 @@ class provider implements
 
         $userid = $contextlist->get_user()->id;
 
+        $DB->delete_records('tiny_studiolms_ai_logs', ['userid' => $userid]);
         $DB->delete_records('tiny_studiolms_favourites', ['userid' => $userid]);
 
         $templateids = $DB->get_fieldset_select(
@@ -201,6 +243,7 @@ class provider implements
 
         $userlist->add_from_sql('userid', "SELECT userid FROM {tiny_studiolms_templates}", []);
         $userlist->add_from_sql('userid', "SELECT userid FROM {tiny_studiolms_favourites}", []);
+        $userlist->add_from_sql('userid', "SELECT userid FROM {tiny_studiolms_ai_logs}", []);
     }
 
     /**
@@ -225,6 +268,7 @@ class provider implements
 
         [$insql, $inparams] = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
 
+        $DB->delete_records_select('tiny_studiolms_ai_logs', "userid {$insql}", $inparams);
         $DB->delete_records_select('tiny_studiolms_favourites', "userid {$insql}", $inparams);
 
         $templateids = $DB->get_fieldset_select(

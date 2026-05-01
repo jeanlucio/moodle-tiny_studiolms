@@ -25,6 +25,22 @@
         <INDEX NAME="idx_isglobal" UNIQUE="false" FIELDS="isglobal"/>
       </INDEXES>
     </TABLE>
+    <TABLE NAME="tiny_studiolms_ai_logs" COMMENT="Log of AI block generation requests">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="User who triggered the generation"/>
+        <FIELD NAME="blocktype" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false" COMMENT="Type of block generated"/>
+        <FIELD NAME="ai_provider" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false" COMMENT="AI provider that fulfilled the request"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="idx_timecreated" UNIQUE="false" FIELDS="timecreated"/>
+      </INDEXES>
+    </TABLE>
     <TABLE NAME="tiny_studiolms_favourites" COMMENT="User favourite relationships for templates">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>

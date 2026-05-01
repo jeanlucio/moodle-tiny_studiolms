@@ -70,4 +70,22 @@ $functions = [
         'loginrequired' => true,
         'capabilities'  => 'tiny/studiolms:use',
     ],
+    'tiny_studiolms_get_ai_keys' => [
+        'classname'   => 'tiny_studiolms\external\get_ai_keys',
+        'methodname'  => 'execute',
+        'description' => 'Return the current user\'s personal AI key status (presence flags, no actual values).',
+        'type'        => 'read',
+        'ajax'        => true,
+        'loginrequired' => true,
+        'capabilities'  => 'tiny/studiolms:use',
+    ],
+    'tiny_studiolms_save_ai_keys' => [
+        'classname'   => 'tiny_studiolms\external\save_ai_keys',
+        'methodname'  => 'execute',
+        'description' => 'Save personal AI provider keys as Moodle user preferences.',
+        'type'        => 'write',
+        'ajax'        => true,
+        'loginrequired' => true,
+        'capabilities'  => 'tiny/studiolms:use',
+    ],
 ];
