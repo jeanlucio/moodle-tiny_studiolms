@@ -49,6 +49,25 @@ const setStatusBadge = (badge, isSet, strSet, strNotSet) => {
 };
 
 /**
+ * Updates the status badge and clears the input after a successful save.
+ *
+ * @param {HTMLInputElement|null} input     The key input element.
+ * @param {HTMLElement|null}      badge     The status badge element.
+ * @param {string}                strSet    Localised "Configured" string.
+ * @param {string}                strNotSet Localised "Not configured" string.
+ */
+const updateKeyBadge = (input, badge, strSet, strNotSet) => {
+    if (!input) {
+        return;
+    }
+    const isSet = input.value !== '';
+    setStatusBadge(badge, isSet, strSet, strNotSet);
+    if (isSet) {
+        input.value = '';
+    }
+};
+
+/**
  * Initialise the AI Keys panel inside the given container.
  *
  * @param {HTMLElement} container Target DOM element (the library grid).
@@ -115,36 +134,22 @@ export const init = async(container) => {
         }
 
         try {
-            const [savePromise] = ajaxCall([{
-                methodname: 'tiny_studiolms_save_ai_keys',
-                args: {
-                    gemini_key:   inputGemini ? inputGemini.value : '',
-                    groq_key:     inputGroq ? inputGroq.value : '',
-                    custom_key:   inputCustomKey ? inputCustomKey.value : '',
-                    custom_url:   inputCustomUrl ? inputCustomUrl.value : '',
-                    custom_model: inputCustomModel ? inputCustomModel.value : '',
-                },
-            }]);
+            /* eslint-disable camelcase */
+            const args = {
+                gemini_key: inputGemini?.value ?? '',
+                groq_key: inputGroq?.value ?? '',
+                custom_key: inputCustomKey?.value ?? '',
+                custom_url: inputCustomUrl?.value ?? '',
+                custom_model: inputCustomModel?.value ?? '',
+            };
+            /* eslint-enable camelcase */
+
+            const [savePromise] = ajaxCall([{methodname: 'tiny_studiolms_save_ai_keys', args}]);
             await savePromise;
 
-            if (inputGemini && inputGemini.value !== '') {
-                setStatusBadge(badgeGemini, true, strSet, strNotSet);
-                inputGemini.value = '';
-            } else if (inputGemini && inputGemini.value === '') {
-                setStatusBadge(badgeGemini, false, strSet, strNotSet);
-            }
-            if (inputGroq && inputGroq.value !== '') {
-                setStatusBadge(badgeGroq, true, strSet, strNotSet);
-                inputGroq.value = '';
-            } else if (inputGroq && inputGroq.value === '') {
-                setStatusBadge(badgeGroq, false, strSet, strNotSet);
-            }
-            if (inputCustomKey && inputCustomKey.value !== '') {
-                setStatusBadge(badgeCustom, true, strSet, strNotSet);
-                inputCustomKey.value = '';
-            } else if (inputCustomKey && inputCustomKey.value === '') {
-                setStatusBadge(badgeCustom, false, strSet, strNotSet);
-            }
+            updateKeyBadge(inputGemini, badgeGemini, strSet, strNotSet);
+            updateKeyBadge(inputGroq, badgeGroq, strSet, strNotSet);
+            updateKeyBadge(inputCustomKey, badgeCustom, strSet, strNotSet);
 
             if (feedback) {
                 feedback.classList.remove('d-none');
