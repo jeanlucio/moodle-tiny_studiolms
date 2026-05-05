@@ -21,86 +21,137 @@
     Example context (json): {}
 }}
 <div class="slms-ai-keys-tab p-4">
-    <div class="mb-3">
-        <h6 class="fw-bold mb-1">{{#str}} ai_keys_title, tiny_studiolms {{/str}}</h6>
-        <p class="text-muted small mb-0">{{#str}} ai_keys_desc, tiny_studiolms {{/str}}</p>
-    </div>
-
-    <div class="mb-4 border rounded p-3">
-        <div class="d-flex align-items-center justify-content-between mb-2">
-            <span class="fw-semibold small">{{#str}} ai_keys_gemini_section, tiny_studiolms {{/str}}</span>
-            <span id="slms-key-status-gemini"
-                  class="badge bg-secondary small"
-                  aria-live="polite">
-                {{#str}} ai_keys_not_set, tiny_studiolms {{/str}}
-            </span>
+    <div class="card border-dark shadow-sm">
+        <div class="card-header bg-dark text-white fw-bold">
+            <i class="fa fa-key me-2" aria-hidden="true"></i>{{#str}} ai_keys_title, tiny_studiolms {{/str}}
         </div>
-        <input type="password"
-               id="slms-key-gemini"
-               class="form-control form-control-sm"
-               autocomplete="new-password"
-               aria-label="{{#str}} ai_keys_gemini_section, tiny_studiolms {{/str}}"
-               placeholder="{{#str}} ai_keys_placeholder, tiny_studiolms {{/str}}">
-    </div>
+        <div class="card-body">
+            <p class="text-muted small mb-4">{{#str}} ai_keys_desc, tiny_studiolms {{/str}}</p>
 
-    <div class="mb-4 border rounded p-3">
-        <div class="d-flex align-items-center justify-content-between mb-2">
-            <span class="fw-semibold small">{{#str}} ai_keys_groq_section, tiny_studiolms {{/str}}</span>
-            <span id="slms-key-status-groq"
-                  class="badge bg-secondary small"
+            <div class="mb-3">
+                <label class="fw-bold form-label" for="slms-key-gemini">
+                    <span class="badge bg-dark me-1" aria-hidden="true">1º</span>
+                    {{#str}} ai_keys_gemini_section, tiny_studiolms {{/str}}
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa fa-google" aria-hidden="true"></i>
+                    </span>
+                    <input type="password"
+                           id="slms-key-gemini"
+                           class="form-control slms-apikey-input"
+                           autocomplete="new-password"
+                           aria-label="{{#str}} ai_keys_gemini_section, tiny_studiolms {{/str}}"
+                           placeholder="{{#str}} ai_keys_placeholder, tiny_studiolms {{/str}}">
+                    <button type="button"
+                            class="btn btn-outline-secondary slms-toggle-key"
+                            data-target="slms-key-gemini"
+                            aria-label="{{#str}} ai_keys_show_hide, tiny_studiolms {{/str}}"
+                            aria-pressed="false">
+                        <span aria-hidden="true">&#128065;</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="fw-bold form-label" for="slms-key-groq">
+                    <span class="badge bg-dark me-1" aria-hidden="true">2º</span>
+                    {{#str}} ai_keys_groq_section, tiny_studiolms {{/str}}
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                    </span>
+                    <input type="password"
+                           id="slms-key-groq"
+                           class="form-control slms-apikey-input"
+                           autocomplete="new-password"
+                           aria-label="{{#str}} ai_keys_groq_section, tiny_studiolms {{/str}}"
+                           placeholder="{{#str}} ai_keys_placeholder, tiny_studiolms {{/str}}">
+                    <button type="button"
+                            class="btn btn-outline-secondary slms-toggle-key"
+                            data-target="slms-key-groq"
+                            aria-label="{{#str}} ai_keys_show_hide, tiny_studiolms {{/str}}"
+                            aria-pressed="false">
+                        <span aria-hidden="true">&#128065;</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="fw-bold form-label" for="slms-key-custom">
+                    <span class="badge bg-dark me-1" aria-hidden="true">3º</span>
+                    {{#str}} ai_keys_custom_section, tiny_studiolms {{/str}}
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa fa-plug" aria-hidden="true"></i>
+                    </span>
+                    <input type="password"
+                           id="slms-key-custom"
+                           class="form-control slms-apikey-input"
+                           autocomplete="new-password"
+                           aria-label="{{#str}} ai_keys_custom_section, tiny_studiolms {{/str}}"
+                           placeholder="{{#str}} ai_keys_placeholder, tiny_studiolms {{/str}}">
+                    <button type="button"
+                            class="btn btn-outline-secondary slms-toggle-key"
+                            data-target="slms-key-custom"
+                            aria-label="{{#str}} ai_keys_show_hide, tiny_studiolms {{/str}}"
+                            aria-pressed="false">
+                        <span aria-hidden="true">&#128065;</span>
+                    </button>
+                </div>
+                <div class="mt-2">
+                    <a class="text-muted small text-decoration-none d-block"
+                       data-bs-toggle="collapse"
+                       data-toggle="collapse"
+                       href="#slms-custom-advanced"
+                       role="button"
+                       aria-expanded="false"
+                       aria-controls="slms-custom-advanced">
+                        <i class="fa fa-caret-right me-1" aria-hidden="true"></i>
+                        {{#str}} ai_keys_advanced, tiny_studiolms {{/str}}
+                    </a>
+                    <div class="collapse" id="slms-custom-advanced">
+                        <div class="mt-2 ps-3 border-start">
+                            <p class="text-muted small mb-2">{{#str}} ai_keys_advanced_hint, tiny_studiolms {{/str}}</p>
+                            <label class="form-label small fw-semibold mb-1" for="slms-key-custom-url">
+                                {{#str}} settings_ai_custom_url, tiny_studiolms {{/str}}
+                            </label>
+                            <input type="url"
+                                   id="slms-key-custom-url"
+                                   class="form-control form-control-sm mb-2"
+                                   aria-label="{{#str}} settings_ai_custom_url, tiny_studiolms {{/str}}"
+                                   placeholder="{{#str}} ai_keys_custom_url_placeholder, tiny_studiolms {{/str}}">
+                            <label class="form-label small fw-semibold mb-1" for="slms-key-custom-model">
+                                {{#str}} settings_ai_custom_model, tiny_studiolms {{/str}}
+                            </label>
+                            <input type="text"
+                                   id="slms-key-custom-model"
+                                   class="form-control form-control-sm"
+                                   aria-label="{{#str}} settings_ai_custom_model, tiny_studiolms {{/str}}"
+                                   placeholder="{{#str}} ai_keys_custom_model_placeholder, tiny_studiolms {{/str}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" id="slms-ai-keys-save" class="btn btn-success w-100 shadow-sm">
+                    <i class="fa fa-save me-1" aria-hidden="true"></i>{{#str}} ai_keys_save, tiny_studiolms {{/str}}
+                </button>
+                <span id="slms-ai-keys-spinner" class="d-none" aria-live="polite">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                </span>
+            </div>
+            <span id="slms-ai-keys-feedback"
+                  class="small d-none text-success"
+                  role="status"
                   aria-live="polite">
-                {{#str}} ai_keys_not_set, tiny_studiolms {{/str}}
+                {{#str}} ai_keys_saved, tiny_studiolms {{/str}}
             </span>
+            <div id="slms-ai-keys-error" class="mt-2 text-danger small" role="alert" aria-live="assertive"></div>
         </div>
-        <input type="password"
-               id="slms-key-groq"
-               class="form-control form-control-sm"
-               autocomplete="new-password"
-               aria-label="{{#str}} ai_keys_groq_section, tiny_studiolms {{/str}}"
-               placeholder="{{#str}} ai_keys_placeholder, tiny_studiolms {{/str}}">
     </div>
-
-    <div class="mb-4 border rounded p-3">
-        <div class="d-flex align-items-center justify-content-between mb-2">
-            <span class="fw-semibold small">{{#str}} ai_keys_custom_section, tiny_studiolms {{/str}}</span>
-            <span id="slms-key-status-custom"
-                  class="badge bg-secondary small"
-                  aria-live="polite">
-                {{#str}} ai_keys_not_set, tiny_studiolms {{/str}}
-            </span>
-        </div>
-        <input type="password"
-               id="slms-key-custom"
-               class="form-control form-control-sm mb-2"
-               autocomplete="new-password"
-               aria-label="{{#str}} ai_keys_custom_section, tiny_studiolms {{/str}}"
-               placeholder="{{#str}} ai_keys_placeholder, tiny_studiolms {{/str}}">
-        <input type="url"
-               id="slms-key-custom-url"
-               class="form-control form-control-sm mb-2"
-               aria-label="{{#str}} settings_ai_custom_url, tiny_studiolms {{/str}}"
-               placeholder="{{#str}} ai_keys_custom_url_placeholder, tiny_studiolms {{/str}}">
-        <input type="text"
-               id="slms-key-custom-model"
-               class="form-control form-control-sm"
-               aria-label="{{#str}} settings_ai_custom_model, tiny_studiolms {{/str}}"
-               placeholder="{{#str}} ai_keys_custom_model_placeholder, tiny_studiolms {{/str}}">
-    </div>
-
-    <div class="d-flex align-items-center gap-2">
-        <button type="button" id="slms-ai-keys-save" class="btn btn-sm btn-primary">
-            <span aria-hidden="true">💾</span>
-            <span class="ms-1">{{#str}} ai_keys_save, tiny_studiolms {{/str}}</span>
-        </button>
-        <span id="slms-ai-keys-spinner" class="d-none" aria-live="polite">
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        </span>
-        <span id="slms-ai-keys-feedback"
-              class="small d-none"
-              role="status"
-              aria-live="polite">
-            {{#str}} ai_keys_saved, tiny_studiolms {{/str}}
-        </span>
-    </div>
-    <div id="slms-ai-keys-error" class="mt-2 text-danger small" role="alert" aria-live="assertive"></div>
 </div>

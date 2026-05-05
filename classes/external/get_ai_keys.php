@@ -60,10 +60,17 @@ class get_ai_keys extends external_api {
         self::validate_context($context);
         require_capability('tiny/studiolms:use', $context);
 
+        $geminikey  = (string)get_user_preferences('tiny_studiolms_gemini_key', '');
+        $groqkey    = (string)get_user_preferences('tiny_studiolms_groq_key', '');
+        $customkey  = (string)get_user_preferences('tiny_studiolms_custom_key', '');
+
         return [
-            'has_gemini'    => !empty(get_user_preferences('tiny_studiolms_gemini_key', '')),
-            'has_groq'      => !empty(get_user_preferences('tiny_studiolms_groq_key', '')),
-            'has_custom_key' => !empty(get_user_preferences('tiny_studiolms_custom_key', '')),
+            'has_gemini'    => $geminikey !== '',
+            'has_groq'      => $groqkey !== '',
+            'has_custom_key' => $customkey !== '',
+            'gemini_key'    => $geminikey,
+            'groq_key'      => $groqkey,
+            'custom_key'    => $customkey,
             'custom_url'    => (string)get_user_preferences('tiny_studiolms_custom_url', ''),
             'custom_model'  => (string)get_user_preferences('tiny_studiolms_custom_model', ''),
         ];
@@ -79,6 +86,9 @@ class get_ai_keys extends external_api {
             'has_gemini'     => new external_value(PARAM_BOOL, 'Whether a personal Gemini key is saved'),
             'has_groq'       => new external_value(PARAM_BOOL, 'Whether a personal Groq key is saved'),
             'has_custom_key' => new external_value(PARAM_BOOL, 'Whether a personal custom provider key is saved'),
+            'gemini_key'     => new external_value(PARAM_RAW, 'Personal Gemini API key', VALUE_OPTIONAL, ''),
+            'groq_key'       => new external_value(PARAM_RAW, 'Personal Groq API key', VALUE_OPTIONAL, ''),
+            'custom_key'     => new external_value(PARAM_RAW, 'Personal custom provider API key', VALUE_OPTIONAL, ''),
             'custom_url'     => new external_value(PARAM_URL, 'Saved custom provider URL', VALUE_OPTIONAL, ''),
             'custom_model'   => new external_value(PARAM_TEXT, 'Saved custom provider model', VALUE_OPTIONAL, ''),
         ]);

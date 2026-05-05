@@ -27,7 +27,7 @@ import {getPluginOptionName} from 'editor_tiny/options';
 import {getString} from 'core/str';
 import {initStudioApp} from './app';
 import Templates from 'core/templates';
-import ModalFactory from 'core/modal_factory';
+import Modal from 'core/modal';
 import ModalEvents from 'core/modal_events';
 import Notification from 'core/notification';
 
@@ -122,11 +122,10 @@ export default Promise.all([
                     };
                 }
 
-                const modal = await ModalFactory.create({
-                    type: ModalFactory.types.DEFAULT,
+                const modal = await Modal.create({
                     title: modalTitle,
                     body: modalBodyHtml,
-                    large: true
+                    large: true,
                 });
 
                 const modalRoot = modal.getRoot();

@@ -431,6 +431,7 @@ const switchTab = async(tabName) => {
     }
 
     if (tabName === 'components') {
+        grid.style.gridTemplateColumns = '';
         renderLibrary();
         return;
     }
@@ -439,6 +440,7 @@ const switchTab = async(tabName) => {
         return;
     }
 
+    grid.style.gridTemplateColumns = '';
     grid.innerHTML = '';
 
     if (tabName === 'ai') {

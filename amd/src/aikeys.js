@@ -28,43 +28,29 @@ import Templates from 'core/templates';
 import {getString} from 'core/str';
 import Notification from 'core/notification';
 
-const STATUS_CLASS_SET = 'bg-success';
-const STATUS_CLASS_UNSET = 'bg-secondary';
-
 /**
- * Updates a status badge element to reflect whether the key is configured.
+ * Attaches show/hide handlers to key visibility buttons.
  *
- * @param {HTMLElement} badge      The badge element.
- * @param {boolean}     isSet      Whether the key is configured.
- * @param {string}      strSet     Localised "Configured" string.
- * @param {string}      strNotSet  Localised "Not configured" string.
+ * @param {HTMLElement} container Parent container with the form.
  */
-const setStatusBadge = (badge, isSet, strSet, strNotSet) => {
-    if (!badge) {
-        return;
-    }
-    badge.textContent = isSet ? strSet : strNotSet;
-    badge.classList.remove(STATUS_CLASS_SET, STATUS_CLASS_UNSET);
-    badge.classList.add(isSet ? STATUS_CLASS_SET : STATUS_CLASS_UNSET);
-};
+const initVisibilityToggles = (container) => {
+    container.querySelectorAll('.slms-toggle-key').forEach((button) => {
+        button.addEventListener('click', () => {
+            const targetId = button.getAttribute('data-target');
+            if (!targetId) {
+                return;
+            }
 
-/**
- * Updates the status badge and clears the input after a successful save.
- *
- * @param {HTMLInputElement|null} input     The key input element.
- * @param {HTMLElement|null}      badge     The status badge element.
- * @param {string}                strSet    Localised "Configured" string.
- * @param {string}                strNotSet Localised "Not configured" string.
- */
-const updateKeyBadge = (input, badge, strSet, strNotSet) => {
-    if (!input) {
-        return;
-    }
-    const isSet = input.value !== '';
-    setStatusBadge(badge, isSet, strSet, strNotSet);
-    if (isSet) {
-        input.value = '';
-    }
+            const input = container.querySelector(`#${targetId}`);
+            if (!input) {
+                return;
+            }
+
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            button.setAttribute('aria-pressed', isPassword ? 'true' : 'false');
+        });
+    });
 };
 
 /**
@@ -74,6 +60,7 @@ const updateKeyBadge = (input, badge, strSet, strNotSet) => {
  */
 export const init = async(container) => {
     container.innerHTML = '';
+    container.style.gridTemplateColumns = '1fr';
 
     try {
         const {html, js} = await Templates.renderForPromise('tiny_studiolms/tab_ai_keys', {});
@@ -88,30 +75,31 @@ export const init = async(container) => {
     const inputCustomKey = container.querySelector('#slms-key-custom');
     const inputCustomUrl = container.querySelector('#slms-key-custom-url');
     const inputCustomModel = container.querySelector('#slms-key-custom-model');
-    const badgeGemini = container.querySelector('#slms-key-status-gemini');
-    const badgeGroq = container.querySelector('#slms-key-status-groq');
-    const badgeCustom = container.querySelector('#slms-key-status-custom');
     const btnSave = container.querySelector('#slms-ai-keys-save');
     const spinner = container.querySelector('#slms-ai-keys-spinner');
     const feedback = container.querySelector('#slms-ai-keys-feedback');
     const errorArea = container.querySelector('#slms-ai-keys-error');
 
-    const [strSet, strNotSet] = await Promise.all([
-        getString('ai_keys_set', 'tiny_studiolms'),
-        getString('ai_keys_not_set', 'tiny_studiolms'),
-    ]);
+    initVisibilityToggles(container);
 
     try {
         const [loadPromise] = ajaxCall([{methodname: 'tiny_studiolms_get_ai_keys', args: {}}]);
         const status = await loadPromise;
-        setStatusBadge(badgeGemini, status.has_gemini, strSet, strNotSet);
-        setStatusBadge(badgeGroq, status.has_groq, strSet, strNotSet);
-        setStatusBadge(badgeCustom, status.has_custom_key, strSet, strNotSet);
-        if (inputCustomUrl && status.custom_url) {
-            inputCustomUrl.value = status.custom_url;
+
+        if (inputGemini) {
+            inputGemini.value = status.gemini_key ?? '';
         }
-        if (inputCustomModel && status.custom_model) {
-            inputCustomModel.value = status.custom_model;
+        if (inputGroq) {
+            inputGroq.value = status.groq_key ?? '';
+        }
+        if (inputCustomKey) {
+            inputCustomKey.value = status.custom_key ?? '';
+        }
+        if (inputCustomUrl) {
+            inputCustomUrl.value = status.custom_url ?? '';
+        }
+        if (inputCustomModel) {
+            inputCustomModel.value = status.custom_model ?? '';
         }
     } catch (loadError) {
         Notification.exception(loadError);
@@ -146,10 +134,6 @@ export const init = async(container) => {
 
             const [savePromise] = ajaxCall([{methodname: 'tiny_studiolms_save_ai_keys', args}]);
             await savePromise;
-
-            updateKeyBadge(inputGemini, badgeGemini, strSet, strNotSet);
-            updateKeyBadge(inputGroq, badgeGroq, strSet, strNotSet);
-            updateKeyBadge(inputCustomKey, badgeCustom, strSet, strNotSet);
 
             if (feedback) {
                 feedback.classList.remove('d-none');
