@@ -130,7 +130,7 @@ export default Promise.all([
 
                 const modalRoot = modal.getRoot();
                 modalRoot.find('.modal-dialog').removeClass('modal-lg').addClass('modal-xl studiolms-modal-dialog');
-
+                modalRoot.find('.modal-header').addClass('slms-modal-header-branded');
                 modalRoot.on(ModalEvents.hidden, () => modal.destroy());
                 modal.show();
 

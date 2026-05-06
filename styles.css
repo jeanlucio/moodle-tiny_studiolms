@@ -15,13 +15,99 @@
 /* -----------------------------------------
    HEADER & LIBRARY
    ----------------------------------------- */
-.tiny_studiolms .slms-header {
-    border: 1px solid var(--bs-border-color, #dee2e6);
-    background-color: var(--bs-gray-100, #f8f9fa);
-    padding: 0.75rem 1.5rem;
-    margin-bottom: 1rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+/* Branded modal header — gradient on Moodle's own header bar */
+.studiolms-modal-dialog .slms-modal-header-branded {
+    background: linear-gradient(90deg, #e9f3ff 0%, var(--bs-white, #fff) 55%);
+    border-bottom: 1px solid rgba(13, 71, 161, 0.1);
+}
+
+.studiolms-modal-dialog .slms-modal-header-branded .modal-title {
+    font-weight: 700;
+    color: #0d47a1;
+}
+
+/* Logo bar — global navigation, persistent across both views */
+.tiny_studiolms .slms-logo-bar {
+    background: linear-gradient(90deg, #e9f3ff 0%, var(--bs-white, #fff) 55%);
+    border-bottom: 1px solid rgba(13, 71, 161, 0.06);
+    padding: 0.5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tiny_studiolms .slms-logo-bar img {
+    height: 34px;
+    width: auto;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
+}
+
+/* Logo as home button */
+.tiny_studiolms .slms-logo-home-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    cursor: default;
+    border-radius: 6px;
+    transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+.tiny_studiolms .slms-logo-home-btn.slms-logo-active {
+    cursor: pointer;
+}
+
+.tiny_studiolms .slms-logo-home-btn.slms-logo-active:hover {
+    opacity: 0.8;
+    filter: drop-shadow(0 1px 4px rgba(13, 71, 161, 0.22));
+}
+
+/* Breadcrumb inside logo bar */
+.tiny_studiolms .slms-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.tiny_studiolms .slms-bc-sep {
+    color: rgba(13, 71, 161, 0.38);
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1;
+}
+
+.tiny_studiolms .slms-bc-component {
+    color: #0d47a1;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+/* Breadcrumb — library link button */
+.tiny_studiolms .slms-bc-library-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: rgba(13, 71, 161, 0.65);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.15s ease;
+    line-height: 1;
+}
+
+.tiny_studiolms .slms-bc-library-btn:hover {
+    color: #0d47a1;
+    text-decoration: underline;
+}
+
+/* Editor footer — action bar at bottom of editor view */
+.tiny_studiolms .slms-editor-footer {
+    border-top: 1px solid rgba(13, 71, 161, 0.1);
+    padding: 0.625rem 1.25rem;
+    background: linear-gradient(90deg, var(--bs-white, #fff) 45%, #e9f3ff 100%);
 }
 
 .tiny_studiolms .slms-library-grid {
@@ -183,12 +269,20 @@
 
 /* Top Toolbar */
 .tiny_studiolms .slms-toolbar {
-    background-color: var(--bs-white, #fff);
-    border: 1px solid var(--bs-border-color, #dee2e6);
-    border-radius: 0.5rem;
-    padding: 0.5rem 1rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid #e0f2fe;
+    border-radius: 50px;
+    padding: 0.5rem 1.25rem;
+    box-shadow: 0 10px 40px rgba(13, 71, 161, 0.12), 0 0 0 1px rgba(13, 71, 161, 0.05);
     flex-wrap: wrap;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.tiny_studiolms .slms-toolbar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 50px rgba(13, 71, 161, 0.18), 0 0 0 1px rgba(13, 71, 161, 0.08);
 }
 
 /* Toolbar Buttons */
@@ -209,10 +303,10 @@
 
 .tiny_studiolms .slms-toolbar-btn:hover,
 .tiny_studiolms .slms-toolbar-btn.active {
-    background: var(--bs-gray-200, #e9ecef);
-    border-color: var(--bs-gray-400, #ced4da);
-    color: var(--bs-gray-900, #212529);
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    background: #e9f3ff;
+    border-color: rgba(13, 71, 161, 0.2);
+    color: #0d47a1;
+    box-shadow: none;
 }
 
 /* Canvas Area (Where the preview lives) */
@@ -295,6 +389,29 @@
     min-width: 280px;
     max-width: 360px;
     animation: slms-fade-in 0.15s ease-out;
+}
+
+/* -----------------------------------------
+   NAVIGATION TABS
+   ----------------------------------------- */
+.tiny_studiolms .slms-tabs .nav-link {
+    font-weight: 500;
+    color: var(--bs-secondary, #6c757d);
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.tiny_studiolms .slms-tabs .nav-link:hover {
+    color: #0d47a1;
+    border-bottom-color: rgba(13, 71, 161, 0.25);
+    background-color: rgba(13, 71, 161, 0.03);
+}
+
+.tiny_studiolms .slms-tabs .nav-link.active {
+    color: #0d47a1;
+    font-weight: 600;
+    border-bottom: 3px solid #0d47a1;
+    background-color: transparent;
 }
 
 /* Caret pointing up to the toolbar button that triggered this popup. */

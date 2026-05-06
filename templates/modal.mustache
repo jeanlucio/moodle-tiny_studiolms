@@ -21,6 +21,21 @@
     Example context (json): {}
 }}
 <div class="tiny_studiolms container-fluid px-0" id="studiolms-app">
+    <div class="slms-logo-bar">
+        <button type="button" id="slms-logo-home-btn" class="slms-logo-home-btn"
+                aria-label="{{#str}} back_to_library, tiny_studiolms {{/str}}"
+                title="{{#str}} back_to_library, tiny_studiolms {{/str}}">
+            {{#pix}} logo, tiny_studiolms, StudioLMS {{/pix}}
+        </button>
+        <nav id="slms-breadcrumb" class="slms-breadcrumb d-none" aria-label="breadcrumb">
+            <span class="slms-bc-sep" aria-hidden="true">›</span>
+            <button type="button" id="slms-bc-library" class="slms-bc-library-btn">
+                {{#str}} library, tiny_studiolms {{/str}}
+            </button>
+            <span class="slms-bc-sep" aria-hidden="true">›</span>
+            <span id="slms-bc-component" class="slms-bc-component"></span>
+        </nav>
+    </div>
     <div id="slms-view-library">
         <ul class="nav nav-tabs slms-tabs px-3 pt-2" role="tablist" aria-label="{{#str}} library, tiny_studiolms {{/str}}">
             <li class="nav-item" role="presentation">
@@ -107,21 +122,6 @@
         <div class="slms-library-grid" id="slms-library-grid" role="tabpanel"></div>
     </div>
     <div id="slms-view-editor" class="d-none position-relative">
-        <div class="slms-header d-flex justify-content-between align-items-center">
-            <button id="slms-btn-back" class="btn btn-outline-secondary rounded-pill btn-sm">
-                <span aria-hidden="true">&larr;</span> {{#str}} back_to_library, tiny_studiolms {{/str}}
-            </button>
-            <h5 class="m-0 fw-bold text-dark fs-6" id="slms-editor-title">StudioLMS</h5>
-
-            <button id="slms-btn-insert" class="btn btn-primary px-4 shadow-sm rounded-pill btn-sm">
-                <span class="slms-state-insert">
-                    <span aria-hidden="true">🚀</span> {{#str}} btn_insert, tiny_studiolms {{/str}}
-                </span>
-                <span class="slms-state-update d-none">
-                    <span aria-hidden="true">💾</span> {{#str}} btn_update, tiny_studiolms {{/str}}
-                </span>
-            </button>
-        </div>
         <div id="slms-top-toolbar" class="slms-toolbar d-flex align-items-center gap-2 mb-3" role="toolbar"
              aria-label="{{#str}} configuration, tiny_studiolms {{/str}}">
         </div>
@@ -145,5 +145,16 @@
             </div>
         </div>
         <div id="slms-popup-anchor" class="d-none" aria-hidden="true"></div>
+        <div id="slms-editor-footer" class="slms-editor-footer d-flex justify-content-between align-items-center">
+            <div id="slms-footer-left"></div>
+            <button id="slms-btn-insert" class="btn btn-primary px-4 shadow-sm rounded-pill btn-sm">
+                <span class="slms-state-insert">
+                    <span aria-hidden="true">🚀</span> {{#str}} btn_insert, tiny_studiolms {{/str}}
+                </span>
+                <span class="slms-state-update d-none">
+                    <span aria-hidden="true">💾</span> {{#str}} btn_update, tiny_studiolms {{/str}}
+                </span>
+            </button>
+        </div>
     </div>
 </div>

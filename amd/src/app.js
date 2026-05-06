@@ -159,11 +159,14 @@ const setupZoomControls = () => {
 };
 
 const setupNavigation = () => {
-    const btnBack = document.getElementById('slms-btn-back');
     const btnInsert = document.getElementById('slms-btn-insert');
+    const logoHomeBtn = document.getElementById('slms-logo-home-btn');
 
-    if (btnBack) {
-        btnBack.addEventListener('click', () => {
+    if (logoHomeBtn) {
+        logoHomeBtn.addEventListener('click', () => {
+            if (!logoHomeBtn.classList.contains('slms-logo-active')) {
+                return;
+            }
             PopupManager.closeAll();
             toggleView('library');
         });
@@ -210,6 +213,14 @@ const setupNavigation = () => {
             }
         });
     }
+
+    const bcLibraryBtn = document.getElementById('slms-bc-library');
+    if (bcLibraryBtn) {
+        bcLibraryBtn.addEventListener('click', () => {
+            PopupManager.closeAll();
+            toggleView('library');
+        });
+    }
 };
 
 const toggleView = (viewName) => {
@@ -223,6 +234,15 @@ const toggleView = (viewName) => {
     if (viewName === 'library') {
         viewLibrary.classList.remove('d-none');
         viewEditor.classList.add('d-none');
+
+        const breadcrumb = document.getElementById('slms-breadcrumb');
+        const logoBtn = document.getElementById('slms-logo-home-btn');
+        if (breadcrumb) {
+            breadcrumb.classList.add('d-none');
+        }
+        if (logoBtn) {
+            logoBtn.classList.remove('slms-logo-active');
+        }
     } else {
         viewLibrary.classList.add('d-none');
         viewEditor.classList.remove('d-none');
@@ -721,8 +741,6 @@ const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig =
         currentConfig = JSON.parse(JSON.stringify(blockDef.defaultData));
     }
 
-    const headerTitle = document.getElementById('slms-editor-title');
-    const btnBack = document.getElementById('slms-btn-back');
     const btnInsert = document.getElementById('slms-btn-insert');
 
     const strEditMode = await getString('mode_edit', 'tiny_studiolms');
@@ -732,24 +750,10 @@ const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig =
     const strYes = await getString('yes', 'core');
     const strNo = await getString('no', 'core');
 
-    if (headerTitle) {
-        headerTitle.textContent = '';
-        if (restoredConfig) {
-            const badgeSpan = document.createElement('span');
-            badgeSpan.className = 'badge bg-warning text-dark me-2 small align-middle';
-            badgeSpan.textContent = strEditMode;
-            headerTitle.appendChild(badgeSpan);
-        }
-        headerTitle.appendChild(document.createTextNode(translatedTitle));
-    }
-
-    if (btnBack) {
-        btnBack.style.display = restoredConfig ? 'none' : 'inline-flex';
-    }
-
     if (btnInsert) {
         const stateInsert = btnInsert.querySelector('.slms-state-insert');
         const stateUpdate = btnInsert.querySelector('.slms-state-update');
+        const footerLeft = document.getElementById('slms-footer-left');
         let btnDelete = document.getElementById('slms-btn-delete-block');
 
         if (restoredConfig && targetEditNode) {
@@ -765,7 +769,7 @@ const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig =
             if (!btnDelete) {
                 btnDelete = document.createElement('button');
                 btnDelete.id = 'slms-btn-delete-block';
-                btnDelete.className = 'btn btn-danger px-3 shadow-sm rounded-pill btn-sm me-2';
+                btnDelete.className = 'btn btn-danger px-3 shadow-sm rounded-pill btn-sm';
 
                 const delIcon = document.createElement('span');
                 delIcon.setAttribute('aria-hidden', 'true');
@@ -792,7 +796,9 @@ const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig =
                         }
                     );
                 };
-                btnInsert.parentNode.insertBefore(btnDelete, btnInsert);
+                if (footerLeft) {
+                    footerLeft.appendChild(btnDelete);
+                }
             }
             btnDelete.style.display = 'inline-flex';
         } else {
@@ -812,6 +818,24 @@ const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig =
     }
 
     toggleView('editor');
+
+    const breadcrumb = document.getElementById('slms-breadcrumb');
+    const bcComponent = document.getElementById('slms-bc-component');
+    const logoBtn = document.getElementById('slms-logo-home-btn');
+    if (breadcrumb && bcComponent) {
+        bcComponent.innerHTML = '';
+        if (restoredConfig) {
+            const badgeSpan = document.createElement('span');
+            badgeSpan.className = 'badge bg-warning text-dark me-1 small align-middle';
+            badgeSpan.textContent = strEditMode;
+            bcComponent.appendChild(badgeSpan);
+        }
+        bcComponent.appendChild(document.createTextNode(translatedTitle));
+        breadcrumb.classList.remove('d-none');
+    }
+    if (logoBtn) {
+        logoBtn.classList.add('slms-logo-active');
+    }
 
     const toolbarContainer = document.getElementById('slms-top-toolbar');
     if (toolbarContainer) {
