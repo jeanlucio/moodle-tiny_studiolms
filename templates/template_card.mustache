@@ -45,6 +45,13 @@
         </div>
     </div>
     <div class="slms-tpl-actions">
+        {{#ismine}}
+        <input type="checkbox"
+               class="slms-tpl-select form-check-input m-0"
+               data-templateid="{{id}}"
+               aria-label="{{#str}} select_for_export, tiny_studiolms {{/str}}"
+               title="{{#str}} select_for_export, tiny_studiolms {{/str}}">
+        {{/ismine}}
         {{^isPreset}}
         <button type="button"
                 class="slms-btn-fav{{#isfavourite}} active{{/isfavourite}}"

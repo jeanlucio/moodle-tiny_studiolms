@@ -141,6 +141,18 @@
     gap: 0.35rem;
 }
 
+.tiny_studiolms .slms-tpl-select {
+    cursor: pointer;
+    flex: 0 0 auto;
+    width: 1rem;
+    height: 1rem;
+}
+
+.tiny_studiolms .slms-tpl-card.slms-selected {
+    border-color: var(--bs-primary, #0f6cbf);
+    box-shadow: 0 0 0 3px rgba(15, 108, 191, 0.15);
+}
+
 .tiny_studiolms .slms-btn-fav,
 .tiny_studiolms .slms-btn-tpl-delete {
     border: 1px solid var(--bs-border-color, #dee2e6);

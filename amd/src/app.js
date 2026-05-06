@@ -25,7 +25,8 @@ import {Blocks} from './blocks/registry';
 import {getString} from 'core/str';
 import Templates from 'core/templates';
 import Notification from 'core/notification';
-import {loadTemplates, renderTemplateGrid, saveTemplate, showInlineFeedback} from './templateslibrary';
+import {loadTemplates, renderTemplateGrid, saveTemplate, showInlineFeedback,
+    exportTemplates, importTemplatesFromFile} from './templateslibrary';
 import {init as initAiGenerator} from './aigenerator';
 import {init as initAiKeys} from './aikeys';
 
@@ -79,6 +80,7 @@ export const initStudioApp = (
         setupZoomControls();
         setupTabs();
         setupSaveTemplateButton(canManageGlobal);
+        setupImportExportButtons();
 
         if (editData && editData.type && editData.state) {
             const blockDef = Blocks[editData.type];
@@ -603,6 +605,63 @@ const setupSaveTemplateButton = (canManageGlobal = false) => {
             Notification.exception(error);
         }
     });
+};
+
+/**
+ * Wire up the export-all and import buttons present in the "mine" tab toolbar.
+ */
+const setupImportExportButtons = () => {
+    const btnExport = document.getElementById('slms-btn-export');
+    const btnImport = document.getElementById('slms-btn-import');
+
+    if (btnExport) {
+        btnExport.addEventListener('click', async() => {
+            try {
+                btnExport.disabled = true;
+                const checked = [...document.querySelectorAll('.slms-tpl-select:checked')];
+                const ids = checked.map((el) => parseInt(el.dataset.templateid, 10));
+                await exportTemplates(ids, 'studiolms-templates.json');
+                showInlineFeedback(
+                    await getString('export_success', 'tiny_studiolms'),
+                    'success'
+                );
+            } catch (error) {
+                Notification.exception(error);
+            } finally {
+                btnExport.disabled = false;
+            }
+        });
+    }
+
+    if (btnImport) {
+        btnImport.addEventListener('click', async() => {
+            try {
+                btnImport.disabled = true;
+                const created = await importTemplatesFromFile();
+                if (created.length > 0) {
+                    showInlineFeedback(
+                        await getString('import_success', 'tiny_studiolms'),
+                        'success'
+                    );
+                    await switchTab('mine');
+                }
+            } catch (error) {
+                const msgKey = error.message === 'invalid_import_file'
+                    ? 'import_invalid_file'
+                    : null;
+                if (msgKey) {
+                    showInlineFeedback(
+                        await getString(msgKey, 'tiny_studiolms'),
+                        'danger'
+                    );
+                } else {
+                    Notification.exception(error);
+                }
+            } finally {
+                btnImport.disabled = false;
+            }
+        });
+    }
 };
 
 const renderLibrary = () => {

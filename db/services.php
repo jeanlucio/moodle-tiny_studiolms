@@ -97,4 +97,22 @@ $functions = [
         'loginrequired' => true,
         'capabilities'  => 'tiny/studiolms:use',
     ],
+    'tiny_studiolms_export_templates' => [
+        'classname'   => 'tiny_studiolms\external\export_templates',
+        'methodname'  => 'execute',
+        'description' => 'Export templates owned by the current user as a portable JSON payload.',
+        'type'        => 'read',
+        'ajax'        => true,
+        'loginrequired' => true,
+        'capabilities'  => 'tiny/studiolms:use',
+    ],
+    'tiny_studiolms_import_templates' => [
+        'classname'   => 'tiny_studiolms\external\import_templates',
+        'methodname'  => 'execute',
+        'description' => 'Import templates from a portable JSON payload into the current user\'s library.',
+        'type'        => 'write',
+        'ajax'        => true,
+        'loginrequired' => true,
+        'capabilities'  => 'tiny/studiolms:use',
+    ],
 ];

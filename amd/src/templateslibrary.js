@@ -104,6 +104,99 @@ export const toggleFavourite = (templateid) => {
 };
 
 /**
+ * Export a set of templates (by ID) and trigger a browser file download.
+ * Passing an empty array exports all templates owned by the current user.
+ *
+ * @param {number[]} ids - Template IDs to export; [] = all owned.
+ * @param {string}   filename - Suggested filename for the downloaded file.
+ * @returns {Promise<void>}
+ */
+export const exportTemplates = async(ids = [], filename = 'studiolms-templates.json') => {
+    const templates = await Ajax.call([{
+        methodname: 'tiny_studiolms_export_templates',
+        args: {ids}
+    }])[0];
+
+    const payload = JSON.stringify({
+        schema: 'tiny_studiolms_export_v1',
+        exported: new Date().toISOString(),
+        templates
+    }, null, 2);
+
+    const blob = new Blob([payload], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = filename;
+    anchor.style.display = 'none';
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(url);
+};
+
+/**
+ * Read a .json file chosen by the user and import the templates via the web service.
+ * Resolves with the array of created template records {id, name}.
+ *
+ * @returns {Promise<Array<{id: number, name: string}>>}
+ */
+export const importTemplatesFromFile = () => {
+    return new Promise((resolve, reject) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json,.json';
+        input.style.display = 'none';
+        document.body.appendChild(input);
+
+        input.addEventListener('change', async() => {
+            document.body.removeChild(input);
+            const file = input.files[0];
+            if (!file) {
+                resolve([]);
+                return;
+            }
+
+            try {
+                const text = await file.text();
+                const parsed = JSON.parse(text);
+
+                // Accept both a bare array and our versioned envelope.
+                const items = Array.isArray(parsed) ? parsed : (parsed.templates ?? []);
+
+                if (!Array.isArray(items) || items.length === 0) {
+                    reject(new Error('invalid_import_file'));
+                    return;
+                }
+
+                // Sanitise: keep only expected fields.
+                const payload = items.map((t) => ({
+                    name:     String(t.name ?? '').substring(0, 255) || 'Imported',
+                    content:  String(t.content ?? ''),
+                    isglobal: Number(t.isglobal ?? 0) === 1 ? 1 : 0,
+                }));
+
+                const created = await Ajax.call([{
+                    methodname: 'tiny_studiolms_import_templates',
+                    args: {templates: payload}
+                }])[0];
+
+                resolve(created);
+            } catch (err) {
+                reject(err);
+            }
+        });
+
+        input.addEventListener('cancel', () => {
+            document.body.removeChild(input);
+            resolve([]);
+        });
+
+        input.click();
+    });
+};
+
+/**
  * Render the template grid inside a container element.
  *
  * @param {HTMLElement} container
@@ -157,6 +250,17 @@ export const renderTemplateGrid = async(container, templates, editor, modal) => 
                 btnDel.addEventListener('click', async(e) => {
                     e.stopPropagation();
                     await handleDeleteTemplate(card, tpl);
+                });
+            }
+
+            const chkSelect = card.querySelector('.slms-tpl-select');
+            if (chkSelect) {
+                chkSelect.addEventListener('change', () => {
+                    card.classList.toggle('slms-selected', chkSelect.checked);
+                });
+                // Prevent checkbox click from bubbling to the insert trigger.
+                chkSelect.addEventListener('click', (e) => {
+                    e.stopPropagation();
                 });
             }
 
