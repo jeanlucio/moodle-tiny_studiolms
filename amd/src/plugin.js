@@ -368,6 +368,62 @@ export default Promise.all([
                 font-weight: 500;
                 transition: transform 0.2s ease, box-shadow 0.2s ease;
                 height: 100%; }
+            body.mce-content-body .studiolms-profilecard {
+                background: var(--slms-pc-bg, #fff);
+                border: 1px solid #dee2e6;
+                border-radius: 0.75rem;
+                padding: 2rem 1.5rem 1.5rem;
+                text-align: center;
+                margin: 1rem 0; }
+            body.mce-content-body .slms-pc-photo {
+                width: 110px;
+                height: 110px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid var(--slms-pc-accent, #0f6cbf);
+                display: block;
+                margin: 0 auto 1rem; }
+            body.mce-content-body .slms-pc-photo-placeholder {
+                width: 110px;
+                height: 110px;
+                border-radius: 50%;
+                background: #f8f9fa;
+                border: 3px solid var(--slms-pc-accent, #0f6cbf);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2.8rem;
+                margin: 0 auto 1rem; }
+            body.mce-content-body .slms-pc-name {
+                font-size: 1.15rem;
+                font-weight: 700;
+                margin: 0 0 0.2rem; }
+            body.mce-content-body .slms-pc-role {
+                font-size: 0.8rem;
+                color: var(--slms-pc-accent, #0f6cbf);
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                margin: 0 0 0.75rem; }
+            body.mce-content-body .slms-pc-bio {
+                font-size: 0.875rem;
+                color: #6c757d;
+                line-height: 1.55;
+                margin: 0 0 1.25rem; }
+            body.mce-content-body .slms-pc-links {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+                justify-content: center; }
+            body.mce-content-body .slms-pc-link {
+                display: inline-block;
+                padding: 0.3rem 1rem;
+                border: 1px solid var(--slms-pc-accent, #0f6cbf);
+                border-radius: 999px;
+                color: var(--slms-pc-accent, #0f6cbf);
+                font-size: 0.8rem;
+                font-weight: 600;
+                text-decoration: none; }
         `;
 
         if (instanceConfig.content_style) {

@@ -29,6 +29,7 @@ import webteca from './webteca';
 import gridcards from './gridcards';
 import callout from './callout';
 import table from './table';
+import profileCard from './profilecard';
 
 export const Blocks = {
     stylizedHeading,
@@ -39,4 +40,5 @@ export const Blocks = {
     gridcards,
     callout,
     table,
+    profileCard,
 };
