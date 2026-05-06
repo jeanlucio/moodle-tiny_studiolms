@@ -127,6 +127,7 @@ $string['default_card_title'] = 'Card Title';
 $string['default_heading_text'] = 'New Heading';
 $string['default_profilecard_name'] = 'Professor Name';
 $string['design_colors'] = 'Design & Colors';
+$string['editing_suffix'] = '(editing)';
 $string['error_generic'] = 'Error';
 $string['error_loading_form'] = 'Error loading form.';
 $string['error_preview'] = 'Preview error.';

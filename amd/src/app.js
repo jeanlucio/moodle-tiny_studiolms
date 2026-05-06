@@ -38,6 +38,7 @@ let currentZoom = 1;
 let targetEditNode = null;
 let presetsData = [];
 let hasAiEnabled = false;
+let currentTplName = null;
 
 const StateManager = {
     encode: (data, excludeKeys = []) => {
@@ -97,12 +98,11 @@ export const initStudioApp = (
                         blockDef.extractDOM(targetEditNode, mergedConfig);
                     }
 
-                    const translatedTitle = await getString('configuration', 'tiny_studiolms');
+                    const translatedTitle = await getString(blockDef.titleString, 'tiny_studiolms');
                     currentBlockType = blockDef;
                     currentConfig = mergedConfig;
 
-                    openConfigurationPanel(blockDef, translatedTitle, mergedConfig);
-                    return;
+                    openConfigurationPanel(blockDef, translatedTitle, mergedConfig, editData.tplName || null);
                 }
             }
         }
@@ -242,6 +242,14 @@ const toggleView = (viewName) => {
         }
         if (logoBtn) {
             logoBtn.classList.remove('slms-logo-active');
+        }
+        currentTplName = null;
+
+        const grid = document.getElementById('slms-library-grid');
+        if (grid && grid.children.length === 0) {
+            const activeTab = document.querySelector('[data-slms-tab].active');
+            const tabName = activeTab ? activeTab.getAttribute('data-slms-tab') : 'components';
+            switchTab(tabName);
         }
     } else {
         viewLibrary.classList.add('d-none');
@@ -732,8 +740,9 @@ const renderLibrary = () => {
     });
 };
 
-const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig = null) => {
+const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig = null, tplName = null) => {
     currentBlockType = blockDef;
+    currentTplName = tplName;
 
     if (restoredConfig) {
         currentConfig = restoredConfig;
@@ -743,7 +752,7 @@ const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig =
 
     const btnInsert = document.getElementById('slms-btn-insert');
 
-    const strEditMode = await getString('mode_edit', 'tiny_studiolms');
+    const strEditingSuffix = await getString('editing_suffix', 'tiny_studiolms');
     const strDelete = await getString('btn_delete', 'tiny_studiolms');
     const strConfirmDel = await getString('confirm_delete', 'tiny_studiolms');
     const strConfirmTitle = await getString('confirm', 'core');
@@ -823,14 +832,11 @@ const openConfigurationPanel = async(blockDef, translatedTitle, restoredConfig =
     const bcComponent = document.getElementById('slms-bc-component');
     const logoBtn = document.getElementById('slms-logo-home-btn');
     if (breadcrumb && bcComponent) {
-        bcComponent.innerHTML = '';
+        let label = currentTplName ? currentTplName + ' · ' + translatedTitle : translatedTitle;
         if (restoredConfig) {
-            const badgeSpan = document.createElement('span');
-            badgeSpan.className = 'badge bg-warning text-dark me-1 small align-middle';
-            badgeSpan.textContent = strEditMode;
-            bcComponent.appendChild(badgeSpan);
+            label += ' ' + strEditingSuffix;
         }
-        bcComponent.appendChild(document.createTextNode(translatedTitle));
+        bcComponent.textContent = label;
         breadcrumb.classList.remove('d-none');
     }
     if (logoBtn) {

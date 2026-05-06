@@ -118,7 +118,8 @@ export default Promise.all([
                     editData = {
                         node: slmsBlock,
                         type: slmsBlock.getAttribute('data-slms-block-type'),
-                        state: slmsBlock.getAttribute('data-slms-state')
+                        state: slmsBlock.getAttribute('data-slms-state'),
+                        tplName: slmsBlock.getAttribute('data-slms-tpl-name') || null
                     };
                 }
 

@@ -280,7 +280,19 @@ export const renderTemplateGrid = async(container, templates, editor, modal) => 
  */
 const handleInsertTemplate = (tpl, editor, modal) => {
     if (tpl.content) {
-        editor.insertContent(tpl.content);
+        const tplName = (tpl.name || '').trim();
+        let contentToInsert = tpl.content;
+
+        if (tplName) {
+            const temp = document.createElement('div');
+            temp.innerHTML = tpl.content;
+            temp.querySelectorAll('[data-slms-block-type]').forEach((el) => {
+                el.setAttribute('data-slms-tpl-name', tplName);
+            });
+            contentToInsert = temp.innerHTML;
+        }
+
+        editor.insertContent(contentToInsert);
     }
     if (modal) {
         modal.hide();
