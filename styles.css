@@ -308,6 +308,8 @@
 }
 
 .slms-sidebar .slms-tpl-name {
+    flex: 1;
+    min-width: 0;
     font-size: 0.65rem;
     font-weight: 500;
     color: var(--bs-body-color, #212529);
@@ -322,7 +324,11 @@
     display: none;
 }
 
-.slms-sidebar .slms-tpl-actions {
+.slms-sidebar .slms-preset-badge {
+    display: none;
+}
+
+.slms-sidebar .slms-tpl-card .slms-tpl-actions {
     display: none;
 }
 
