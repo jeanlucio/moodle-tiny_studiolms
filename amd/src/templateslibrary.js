@@ -203,8 +203,9 @@ export const importTemplatesFromFile = () => {
  * @param {Array} templates
  * @param {object} editor - TinyMCE editor instance
  * @param {object} modal - Moodle modal instance
+ * @param {object} options - Optional callbacks e.g. {onLoadToCanvas}
  */
-export const renderTemplateGrid = async(container, templates, editor, modal) => {
+export const renderTemplateGrid = async(container, templates, editor, modal, options = {}) => {
     container.innerHTML = '';
 
     if (!templates || templates.length === 0) {
@@ -225,14 +226,20 @@ export const renderTemplateGrid = async(container, templates, editor, modal) => 
             const insertTrigger = card.querySelector('.slms-tpl-insert');
 
             if (insertTrigger) {
-                insertTrigger.addEventListener('click', () => {
-                    handleInsertTemplate(tpl, editor, modal);
-                });
+                const handleClick = () => {
+                    if (options.onLoadToCanvas) {
+                        options.onLoadToCanvas(tpl.content || '', tpl.name || '');
+                    } else {
+                        handleInsertTemplate(tpl, editor, modal);
+                    }
+                };
+
+                insertTrigger.addEventListener('click', handleClick);
 
                 insertTrigger.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        handleInsertTemplate(tpl, editor, modal);
+                        handleClick();
                     }
                 });
             }

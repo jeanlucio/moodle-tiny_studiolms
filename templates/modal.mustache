@@ -20,141 +20,170 @@
 
     Example context (json): {}
 }}
-<div class="tiny_studiolms container-fluid px-0" id="studiolms-app">
+<div class="tiny_studiolms" id="studiolms-app">
     <div class="slms-logo-bar">
-        <button type="button" id="slms-logo-home-btn" class="slms-logo-home-btn"
-                aria-label="{{#str}} back_to_library, tiny_studiolms {{/str}}"
-                title="{{#str}} back_to_library, tiny_studiolms {{/str}}">
-            {{#pix}} logo, tiny_studiolms, StudioLMS {{/pix}}
+        {{#pix}} logo, tiny_studiolms, StudioLMS {{/pix}}
+    </div>
+    <div class="slms-composer-layout">
+        <aside class="slms-sidebar" id="slms-sidebar">
+            <ul class="nav slms-sidebar-tabs" role="tablist"
+                aria-label="{{#str}} library, tiny_studiolms {{/str}}">
+                <li class="nav-item" role="presentation">
+                    <button type="button"
+                            class="nav-link active"
+                            id="slms-tab-components"
+                            role="tab"
+                            data-slms-tab="components"
+                            aria-selected="true"
+                            aria-controls="slms-library-grid">
+                        {{#str}} tab_components, tiny_studiolms {{/str}}
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button type="button"
+                            class="nav-link"
+                            id="slms-tab-official"
+                            role="tab"
+                            data-slms-tab="global"
+                            aria-selected="false"
+                            aria-controls="slms-library-grid">
+                        {{#str}} tab_official, tiny_studiolms {{/str}}
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button type="button"
+                            class="nav-link"
+                            id="slms-tab-mine"
+                            role="tab"
+                            data-slms-tab="mine"
+                            aria-selected="false"
+                            aria-controls="slms-library-grid">
+                        {{#str}} tab_mine, tiny_studiolms {{/str}}
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button type="button"
+                            class="nav-link"
+                            id="slms-tab-favourites"
+                            role="tab"
+                            data-slms-tab="favourites"
+                            aria-selected="false"
+                            aria-controls="slms-library-grid">
+                        {{#str}} tab_favourites, tiny_studiolms {{/str}}
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button type="button"
+                            class="nav-link"
+                            id="slms-tab-ai"
+                            role="tab"
+                            data-slms-tab="ai"
+                            aria-selected="false"
+                            aria-controls="slms-library-grid">
+                        <span aria-hidden="true">✨</span>
+                        {{#str}} tab_ai, tiny_studiolms {{/str}}
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button type="button"
+                            class="nav-link"
+                            id="slms-tab-ai-keys"
+                            role="tab"
+                            data-slms-tab="ai-keys"
+                            aria-selected="false"
+                            aria-controls="slms-library-grid">
+                        <span aria-hidden="true">🔑</span>
+                        {{#str}} tab_ai_keys, tiny_studiolms {{/str}}
+                    </button>
+                </li>
+            </ul>
+            <div id="slms-tab-toolbar" class="d-none slms-sidebar-tab-toolbar px-2 py-2">
+                <button type="button" id="slms-btn-export" class="btn btn-sm btn-outline-secondary">
+                    <span aria-hidden="true">⬇️</span> {{#str}} btn_export, tiny_studiolms {{/str}}
+                </button>
+                <button type="button" id="slms-btn-import" class="btn btn-sm btn-outline-secondary ms-1">
+                    <span aria-hidden="true">⬆️</span> {{#str}} btn_import, tiny_studiolms {{/str}}
+                </button>
+            </div>
+            <div class="slms-sidebar-search-wrap px-2 py-2">
+                <input type="text"
+                       id="slms-sidebar-search"
+                       class="slms-sidebar-search"
+                       placeholder="{{#str}} sidebar_search_placeholder, tiny_studiolms {{/str}}"
+                       aria-label="{{#str}} sidebar_search_placeholder, tiny_studiolms {{/str}}">
+            </div>
+            <div id="slms-feedback-area" class="px-2" aria-live="polite"></div>
+            <div class="slms-library-grid" id="slms-library-grid" role="tabpanel"></div>
+        </aside>
+
+        <button type="button"
+                id="slms-sidebar-toggle"
+                class="slms-sidebar-toggle"
+                aria-label="{{#str}} sidebar_toggle, tiny_studiolms {{/str}}"
+                title="{{#str}} sidebar_toggle, tiny_studiolms {{/str}}">
+            <span aria-hidden="true" id="slms-sidebar-toggle-icon">◀</span>
         </button>
-        <nav id="slms-breadcrumb" class="slms-breadcrumb d-none" aria-label="breadcrumb">
-            <span class="slms-bc-sep" aria-hidden="true">›</span>
-            <button type="button" id="slms-bc-library" class="slms-bc-library-btn">
-                {{#str}} library, tiny_studiolms {{/str}}
-            </button>
-            <span class="slms-bc-sep" aria-hidden="true">›</span>
-            <span id="slms-bc-component" class="slms-bc-component"></span>
-        </nav>
-    </div>
-    <div id="slms-view-library">
-        <ul class="nav nav-tabs slms-tabs px-3 pt-2" role="tablist" aria-label="{{#str}} library, tiny_studiolms {{/str}}">
-            <li class="nav-item" role="presentation">
-                <button type="button"
-                        class="nav-link active"
-                        id="slms-tab-components"
-                        role="tab"
-                        data-slms-tab="components"
-                        aria-selected="true"
-                        aria-controls="slms-library-grid">
-                    {{#str}} tab_components, tiny_studiolms {{/str}}
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button type="button"
-                        class="nav-link"
-                        id="slms-tab-official"
-                        role="tab"
-                        data-slms-tab="global"
-                        aria-selected="false"
-                        aria-controls="slms-library-grid">
-                    {{#str}} tab_official, tiny_studiolms {{/str}}
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button type="button"
-                        class="nav-link"
-                        id="slms-tab-mine"
-                        role="tab"
-                        data-slms-tab="mine"
-                        aria-selected="false"
-                        aria-controls="slms-library-grid">
-                    {{#str}} tab_mine, tiny_studiolms {{/str}}
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button type="button"
-                        class="nav-link"
-                        id="slms-tab-favourites"
-                        role="tab"
-                        data-slms-tab="favourites"
-                        aria-selected="false"
-                        aria-controls="slms-library-grid">
-                    {{#str}} tab_favourites, tiny_studiolms {{/str}}
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button type="button"
-                        class="nav-link"
-                        id="slms-tab-ai"
-                        role="tab"
-                        data-slms-tab="ai"
-                        aria-selected="false"
-                        aria-controls="slms-library-grid">
-                    <span aria-hidden="true">✨</span>
-                    {{#str}} tab_ai, tiny_studiolms {{/str}}
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button type="button"
-                        class="nav-link"
-                        id="slms-tab-ai-keys"
-                        role="tab"
-                        data-slms-tab="ai-keys"
-                        aria-selected="false"
-                        aria-controls="slms-library-grid">
-                    <span aria-hidden="true">🔑</span>
-                    {{#str}} tab_ai_keys, tiny_studiolms {{/str}}
-                </button>
-            </li>
-        </ul>
-        <div id="slms-tab-toolbar" class="d-none px-3 py-2 border-bottom">
-            <button type="button" id="slms-btn-save-template" class="btn btn-sm btn-outline-primary">
-                <span aria-hidden="true">💾</span> {{#str}} btn_save_template, tiny_studiolms {{/str}}
-            </button>
-            <button type="button" id="slms-btn-export" class="btn btn-sm btn-outline-secondary ms-2">
-                <span aria-hidden="true">⬇️</span> {{#str}} btn_export, tiny_studiolms {{/str}}
-            </button>
-            <button type="button" id="slms-btn-import" class="btn btn-sm btn-outline-secondary ms-1">
-                <span aria-hidden="true">⬆️</span> {{#str}} btn_import, tiny_studiolms {{/str}}
-            </button>
-        </div>
-        <div id="slms-feedback-area" class="px-3" aria-live="polite"></div>
-        <div class="slms-library-grid" id="slms-library-grid" role="tabpanel"></div>
-    </div>
-    <div id="slms-view-editor" class="d-none position-relative">
-        <div id="slms-top-toolbar" class="slms-toolbar d-flex align-items-center gap-2 mb-3" role="toolbar"
-             aria-label="{{#str}} configuration, tiny_studiolms {{/str}}">
-        </div>
-        <div class="slms-canvas-area position-relative">
-            <div class="slms-preview-panel" role="region" aria-label="{{#str}} preview, tiny_studiolms {{/str}}">
-                <div id="slms-live-preview" class="w-100 shadow-sm bg-white rounded p-4 slms-live-preview-box"></div>
+
+        <div class="slms-composer-main">
+            <div id="slms-top-toolbar"
+                 class="slms-toolbar slms-toolbar-row d-flex align-items-center gap-2"
+                 role="toolbar"
+                 aria-label="{{#str}} configuration, tiny_studiolms {{/str}}">
+                <span class="slms-toolbar-empty-hint" id="slms-toolbar-hint">
+                    {{#str}} toolbar_select_hint, tiny_studiolms {{/str}}
+                </span>
             </div>
 
-            <div class="slms-zoom-controls shadow-sm" role="group" aria-label="{{#str}} zoom_controls, tiny_studiolms {{/str}}">
-                <button type="button" id="slms-zoom-out"
-                        title="{{#str}} zoom_out, tiny_studiolms {{/str}}"
-                        aria-label="{{#str}} zoom_out, tiny_studiolms {{/str}}">
-                    <span aria-hidden="true">−</span>
-                </button>
-                <span id="slms-zoom-level" aria-live="polite">100%</span>
-                <button type="button" id="slms-zoom-in"
-                        title="{{#str}} zoom_in, tiny_studiolms {{/str}}"
-                        aria-label="{{#str}} zoom_in, tiny_studiolms {{/str}}">
-                    <span aria-hidden="true">+</span>
-                </button>
+            <div class="slms-canvas-wrapper">
+                <div class="slms-canvas-area"
+                     id="slms-canvas-area"
+                     role="region"
+                     aria-label="{{#str}} canvas_area, tiny_studiolms {{/str}}">
+                    <div id="slms-canvas-blocks" class="slms-canvas-blocks-list"></div>
+                </div>
+                <div class="slms-zoom-controls shadow-sm"
+                     role="group"
+                     aria-label="{{#str}} zoom_controls, tiny_studiolms {{/str}}">
+                    <button type="button"
+                            id="slms-zoom-out"
+                            title="{{#str}} zoom_out, tiny_studiolms {{/str}}"
+                            aria-label="{{#str}} zoom_out, tiny_studiolms {{/str}}">
+                        <span aria-hidden="true">−</span>
+                    </button>
+                    <span id="slms-zoom-level" aria-live="polite">100%</span>
+                    <button type="button"
+                            id="slms-zoom-in"
+                            title="{{#str}} zoom_in, tiny_studiolms {{/str}}"
+                            aria-label="{{#str}} zoom_in, tiny_studiolms {{/str}}">
+                        <span aria-hidden="true">+</span>
+                    </button>
+                </div>
             </div>
-        </div>
-        <div id="slms-popup-anchor" class="d-none" aria-hidden="true"></div>
-        <div id="slms-editor-footer" class="slms-editor-footer d-flex justify-content-between align-items-center">
-            <div id="slms-footer-left"></div>
-            <button id="slms-btn-insert" class="btn btn-primary px-4 shadow-sm rounded-pill btn-sm">
-                <span class="slms-state-insert">
-                    <span aria-hidden="true">🚀</span> {{#str}} btn_insert, tiny_studiolms {{/str}}
-                </span>
-                <span class="slms-state-update d-none">
-                    <span aria-hidden="true">💾</span> {{#str}} btn_update, tiny_studiolms {{/str}}
-                </span>
-            </button>
+
+            <div id="slms-popup-anchor" class="d-none" aria-hidden="true"></div>
+
+            <div id="slms-editor-footer"
+                 class="slms-editor-footer d-flex justify-content-between align-items-center">
+                <div id="slms-footer-left"></div>
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" id="slms-btn-save-template"
+                            class="btn btn-sm btn-outline-primary">
+                        <span aria-hidden="true">💾</span>
+                        {{#str}} btn_save_template, tiny_studiolms {{/str}}
+                    </button>
+                    <button id="slms-btn-insert"
+                            class="btn btn-primary px-4 shadow-sm rounded-pill btn-sm">
+                        <span class="slms-state-insert">
+                            <span aria-hidden="true">🚀</span>
+                            {{#str}} btn_insert, tiny_studiolms {{/str}}
+                        </span>
+                        <span class="slms-state-update d-none">
+                            <span aria-hidden="true">💾</span>
+                            {{#str}} btn_update, tiny_studiolms {{/str}}
+                        </span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
