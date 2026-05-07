@@ -59,6 +59,23 @@ const StateManager = {
     }
 };
 
+const setInsertButtonAsUpdate = () => {
+    const btnInsert = document.getElementById('slms-btn-insert');
+    if (!btnInsert) {
+        return;
+    }
+    const stateInsert = btnInsert.querySelector('.slms-state-insert');
+    const stateUpdate = btnInsert.querySelector('.slms-state-update');
+    if (stateInsert) {
+        stateInsert.classList.add('d-none');
+    }
+    if (stateUpdate) {
+        stateUpdate.classList.remove('d-none');
+    }
+    btnInsert.classList.remove('btn-primary');
+    btnInsert.classList.add('btn-success');
+};
+
 export const initStudioApp = (
     editor,
     modal,
@@ -106,20 +123,7 @@ export const initStudioApp = (
                     }
 
                     await addBlockToCanvas(blockDef, mergedConfig);
-
-                    const btnInsert = document.getElementById('slms-btn-insert');
-                    if (btnInsert) {
-                        const stateInsert = btnInsert.querySelector('.slms-state-insert');
-                        const stateUpdate = btnInsert.querySelector('.slms-state-update');
-                        if (stateInsert) {
-                            stateInsert.classList.add('d-none');
-                        }
-                        if (stateUpdate) {
-                            stateUpdate.classList.remove('d-none');
-                        }
-                        btnInsert.classList.remove('btn-primary');
-                        btnInsert.classList.add('btn-success');
-                    }
+                    setInsertButtonAsUpdate();
 
                     const footerLeft = document.getElementById('slms-footer-left');
                     if (footerLeft && targetEditNode) {
@@ -368,7 +372,8 @@ const showToolbarHint = () => {
         span.id = 'slms-toolbar-hint';
         getString('toolbar_select_hint', 'tiny_studiolms').then((str) => {
             span.textContent = str;
-        });
+            return str;
+        }).catch(() => undefined);
         toolbarContainer.appendChild(span);
     }
 };
@@ -450,7 +455,8 @@ const showCanvasEmptyState = () => {
         empty.appendChild(icon);
         empty.appendChild(text);
         blocksList.appendChild(empty);
-    });
+        return empty;
+    }).catch(() => undefined);
 };
 
 /**
