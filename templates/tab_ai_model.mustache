@@ -1,0 +1,105 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_studiolms/tab_ai_model
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Example context (json): {}
+}}
+<div class="slms-ai-preset-section p-4">
+    <div class="mb-3">
+        <h6 class="fw-bold mb-1">{{#str}} ai_preset_title, tiny_studiolms {{/str}}</h6>
+        <p class="text-muted small mb-0">{{#str}} ai_preset_desc, tiny_studiolms {{/str}}</p>
+    </div>
+    <div class="mb-2">
+        <label for="slms-ai-preset-name" class="form-label small fw-semibold mb-1">
+            {{#str}} ai_preset_name_label, tiny_studiolms {{/str}}
+        </label>
+        <input type="text"
+               id="slms-ai-preset-name"
+               class="form-control form-control-sm"
+               placeholder="{{#str}} ai_preset_name_placeholder, tiny_studiolms {{/str}}">
+    </div>
+    <div class="mb-2">
+        <label for="slms-ai-preset-context" class="form-label small fw-semibold mb-1">
+            {{#str}} ai_preset_context_label, tiny_studiolms {{/str}}
+        </label>
+        <textarea id="slms-ai-preset-context"
+                  class="form-control form-control-sm"
+                  rows="3"
+                  placeholder="{{#str}} ai_preset_context_placeholder, tiny_studiolms {{/str}}"></textarea>
+    </div>
+    <div class="mb-2">
+        <label for="slms-ai-preset-blocks" class="form-label small fw-semibold mb-1">
+            {{#str}} ai_preset_blocks_label, tiny_studiolms {{/str}}
+        </label>
+        <input type="text"
+               id="slms-ai-preset-blocks"
+               class="form-control form-control-sm"
+               placeholder="{{#str}} ai_preset_blocks_placeholder, tiny_studiolms {{/str}}">
+    </div>
+    <div class="mb-3">
+        <label for="slms-ai-preset-palette" class="form-label small fw-semibold mb-1">
+            {{#str}} ai_preset_palette_label, tiny_studiolms {{/str}}
+        </label>
+        <select id="slms-ai-preset-palette" class="form-select form-select-sm">
+            <option value="blue">{{#str}} ai_preset_palette_blue, tiny_studiolms {{/str}}</option>
+            <option value="green">{{#str}} ai_preset_palette_green, tiny_studiolms {{/str}}</option>
+            <option value="purple">{{#str}} ai_preset_palette_purple, tiny_studiolms {{/str}}</option>
+            <option value="orange">{{#str}} ai_preset_palette_orange, tiny_studiolms {{/str}}</option>
+            <option value="neutral">{{#str}} ai_preset_palette_neutral, tiny_studiolms {{/str}}</option>
+        </select>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <button type="button" id="slms-ai-preset-generate" class="btn btn-sm btn-success">
+            <span aria-hidden="true">🪄</span>
+            <span class="ms-1">{{#str}} ai_preset_generate, tiny_studiolms {{/str}}</span>
+        </button>
+        <span id="slms-ai-preset-spinner" class="d-none" aria-live="polite">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span class="ms-1 small text-muted">{{#str}} ai_preset_generating, tiny_studiolms {{/str}}</span>
+        </span>
+    </div>
+    <div id="slms-ai-preset-error" class="mt-2 text-danger small" role="alert" aria-live="assertive"></div>
+</div>
+<div id="slms-ai-preview-section" class="d-none slms-ai-preview-section p-4 border-top">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="fw-bold mb-0">{{#str}} ai_preview_title, tiny_studiolms {{/str}}</h6>
+        <button type="button"
+                id="slms-ai-preview-discard"
+                class="btn btn-sm btn-outline-secondary">
+            {{#str}} ai_preview_discard, tiny_studiolms {{/str}}
+        </button>
+    </div>
+    <div id="slms-ai-preview-content"
+         class="border rounded p-3 bg-white mb-3 slms-ai-preview-box"></div>
+    <div class="d-flex align-items-center flex-wrap mb-2" id="slms-ai-preview-actions">
+        <button type="button"
+                id="slms-ai-preview-insert"
+                class="btn btn-sm btn-primary me-2 mb-1">
+            <span aria-hidden="true">🚀</span>
+            <span class="ms-1">{{#str}} ai_preview_insert, tiny_studiolms {{/str}}</span>
+        </button>
+        <button type="button"
+                id="slms-ai-preview-save"
+                class="btn btn-sm btn-outline-success me-2 mb-1">
+            <span aria-hidden="true">💾</span>
+            <span class="ms-1">{{#str}} ai_preview_save, tiny_studiolms {{/str}}</span>
+        </button>
+    </div>
+    <div id="slms-ai-preview-save-form" class="d-none"></div>
+</div>

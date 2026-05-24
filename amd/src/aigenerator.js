@@ -206,13 +206,14 @@ const showPreview = (container, htmlContent, type, data, callbacks) => {
 };
 
 /**
- * Initialise the AI generator panel inside the given container.
+ * Renders the AI tab content or shows a "not configured" message.
  *
- * @param {HTMLElement} container Target DOM element (the library grid).
- * @param {boolean}     hasAi     Whether an AI provider is configured site-wide.
- * @param {object}      callbacks Action callbacks: { onConfigure, onInsert, onSave }.
+ * @param {HTMLElement} container
+ * @param {boolean}     hasAi
+ * @param {string}      templateName  Mustache template to render.
+ * @returns {Promise<boolean>} True if the template was rendered, false if not configured.
  */
-export const init = async(container, hasAi, callbacks = {}) => {
+const renderAiTab = async(container, hasAi, templateName) => {
     container.innerHTML = '';
 
     if (!hasAi) {
@@ -224,19 +225,46 @@ export const init = async(container, hasAi, callbacks = {}) => {
             msg.textContent = 'AI generation is not configured.';
         }
         container.appendChild(msg);
-        return;
+        return false;
     }
 
     try {
-        const {html, js} = await Templates.renderForPromise('tiny_studiolms/tab_ai', {});
+        const {html, js} = await Templates.renderForPromise(templateName, {});
         Templates.replaceNodeContents(container, html, js);
     } catch (renderError) {
         Notification.exception(renderError);
-        return;
+        return false;
     }
 
-    setupBlockGenerator(container, callbacks);
-    setupPresetGenerator(container, callbacks);
+    return true;
+};
+
+/**
+ * Initialise the single-block AI generator tab.
+ *
+ * @param {HTMLElement} container Target DOM element (the library grid).
+ * @param {boolean}     hasAi     Whether an AI provider is configured site-wide.
+ * @param {object}      callbacks Action callbacks: { onConfigure, onInsert, onSave }.
+ */
+export const initBlock = async(container, hasAi, callbacks = {}) => {
+    const ready = await renderAiTab(container, hasAi, 'tiny_studiolms/tab_ai_block');
+    if (ready) {
+        setupBlockGenerator(container, callbacks);
+    }
+};
+
+/**
+ * Initialise the multi-block model (layout) AI generator tab.
+ *
+ * @param {HTMLElement} container Target DOM element (the library grid).
+ * @param {boolean}     hasAi     Whether an AI provider is configured site-wide.
+ * @param {object}      callbacks Action callbacks: { onInsert, onSave }.
+ */
+export const initModel = async(container, hasAi, callbacks = {}) => {
+    const ready = await renderAiTab(container, hasAi, 'tiny_studiolms/tab_ai_model');
+    if (ready) {
+        setupPresetGenerator(container, callbacks);
+    }
 };
 
 /**

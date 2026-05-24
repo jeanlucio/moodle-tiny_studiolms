@@ -203,8 +203,9 @@ export const importTemplatesFromFile = () => {
  * @param {Array} templates
  * @param {object} editor - TinyMCE editor instance
  * @param {object} modal - Moodle modal instance
+ * @param {object} options - Optional callbacks e.g. {onLoadToCanvas}
  */
-export const renderTemplateGrid = async(container, templates, editor, modal) => {
+export const renderTemplateGrid = async(container, templates, editor, modal, options = {}) => {
     container.innerHTML = '';
 
     if (!templates || templates.length === 0) {
@@ -216,23 +217,33 @@ export const renderTemplateGrid = async(container, templates, editor, modal) => 
         return;
     }
 
-    for (const tpl of templates) {
+    const htmlParts = await Promise.all(
+        templates.map((tpl) => Templates.render('tiny_studiolms/template_card', tpl))
+    );
+
+    for (let i = 0; i < templates.length; i++) {
+        const tpl = templates[i];
         try {
-            const html = await Templates.render('tiny_studiolms/template_card', tpl);
             const wrapper = document.createElement('div');
-            wrapper.innerHTML = html;
+            wrapper.innerHTML = htmlParts[i];
             const card = wrapper.firstElementChild;
             const insertTrigger = card.querySelector('.slms-tpl-insert');
 
             if (insertTrigger) {
-                insertTrigger.addEventListener('click', () => {
-                    handleInsertTemplate(tpl, editor, modal);
-                });
+                const handleClick = () => {
+                    if (options.onLoadToCanvas) {
+                        options.onLoadToCanvas(tpl.content || '', tpl.name || '');
+                    } else {
+                        handleInsertTemplate(tpl, editor, modal);
+                    }
+                };
+
+                insertTrigger.addEventListener('click', handleClick);
 
                 insertTrigger.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        handleInsertTemplate(tpl, editor, modal);
+                        handleClick();
                     }
                 });
             }
@@ -241,7 +252,7 @@ export const renderTemplateGrid = async(container, templates, editor, modal) => 
             if (btnFav) {
                 btnFav.addEventListener('click', async(e) => {
                     e.stopPropagation();
-                    await handleToggleFavourite(btnFav, tpl);
+                    await handleToggleFavourite(btnFav, tpl, options.onInvalidateCache);
                 });
             }
 
@@ -249,7 +260,7 @@ export const renderTemplateGrid = async(container, templates, editor, modal) => 
             if (btnDel) {
                 btnDel.addEventListener('click', async(e) => {
                     e.stopPropagation();
-                    await handleDeleteTemplate(card, tpl);
+                    await handleDeleteTemplate(card, tpl, options.onInvalidateCache);
                 });
             }
 
@@ -304,17 +315,23 @@ const handleInsertTemplate = (tpl, editor, modal) => {
  *
  * @param {HTMLElement} btnFav
  * @param {object} tpl
+ * @param {Function|undefined} onInvalidateCache
  */
-const handleToggleFavourite = async(btnFav, tpl) => {
+const handleToggleFavourite = async(btnFav, tpl, onInvalidateCache) => {
     try {
         const result = await toggleFavourite(tpl.id);
         const isFav = result.favourited;
 
         btnFav.classList.toggle('active', isFav);
         btnFav.setAttribute('aria-pressed', String(isFav));
-        const icon = btnFav.querySelector('span[aria-hidden]');
+        const icon = btnFav.querySelector('i[aria-hidden]');
         if (icon) {
-            icon.textContent = isFav ? '★' : '☆';
+            icon.classList.toggle('fa-solid', isFav);
+            icon.classList.toggle('fa-regular', !isFav);
+        }
+
+        if (onInvalidateCache) {
+            onInvalidateCache('favourites', 'mine');
         }
 
         const msgKey = isFav ? 'fav_added' : 'fav_removed';
@@ -329,8 +346,9 @@ const handleToggleFavourite = async(btnFav, tpl) => {
  *
  * @param {HTMLElement} card
  * @param {object} tpl
+ * @param {Function|undefined} onInvalidateCache
  */
-const handleDeleteTemplate = async(card, tpl) => {
+const handleDeleteTemplate = async(card, tpl, onInvalidateCache) => {
     try {
         const [strTitle, strMsg, strYes, strNo] = await Promise.all([
             getString('confirm', 'core'),
@@ -343,6 +361,9 @@ const handleDeleteTemplate = async(card, tpl) => {
             try {
                 await deleteTemplate(tpl.id);
                 card.remove();
+                if (onInvalidateCache) {
+                    onInvalidateCache('mine', 'favourites');
+                }
                 showInlineFeedback(await getString('tpl_deleted', 'tiny_studiolms'), 'info');
             } catch (error) {
                 Notification.exception(error);

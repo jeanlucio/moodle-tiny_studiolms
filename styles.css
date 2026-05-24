@@ -27,20 +27,39 @@
     color: #0d47a1;
 }
 
-/* Logo bar — global navigation, persistent across both views */
+/* Logo bar — persistent header above the composer layout */
 .tiny_studiolms .slms-logo-bar {
     background: linear-gradient(90deg, #e9f3ff 0%, var(--bs-white, #fff) 55%);
     border-bottom: 1px solid rgba(13, 71, 161, 0.06);
-    padding: 0.5rem 1.5rem;
+    padding: 0.375rem 1rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex: 0 0 auto;
 }
 
 .tiny_studiolms .slms-logo-bar img {
     height: 34px;
     width: auto;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
+}
+
+/* AI Keys / settings icon button in the logo bar */
+.tiny_studiolms .slms-logo-settings-btn {
+    background: transparent;
+    border: 1px solid rgba(13, 71, 161, 0.18);
+    border-radius: 6px;
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    color: rgba(13, 71, 161, 0.7);
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.tiny_studiolms .slms-logo-settings-btn:hover {
+    background: rgba(13, 71, 161, 0.07);
+    border-color: rgba(13, 71, 161, 0.38);
 }
 
 /* Logo as home button */
@@ -103,18 +122,389 @@
     text-decoration: underline;
 }
 
-/* Editor footer — action bar at bottom of editor view */
+/* Editor footer — action bar at bottom of the composer */
 .tiny_studiolms .slms-editor-footer {
     border-top: 1px solid rgba(13, 71, 161, 0.1);
-    padding: 0.625rem 1.25rem;
+    padding: 0.5rem 1rem;
     background: linear-gradient(90deg, var(--bs-white, #fff) 45%, #e9f3ff 100%);
+    flex: 0 0 auto;
+}
+
+/* -----------------------------------------
+   COMPOSER LAYOUT (SIDEBAR + CANVAS)
+   ----------------------------------------- */
+
+#studiolms-app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.tiny_studiolms .slms-composer-layout {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.tiny_studiolms .slms-sidebar {
+    width: 270px;
+    min-width: 240px;
+    flex: 0 0 270px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--bs-border-color, #dee2e6);
+    background: var(--bs-white, #fff);
+    overflow: hidden;
+}
+
+/* Tabs — now live in the logo bar, inline with logo and search */
+.tiny_studiolms .slms-sidebar-tabs {
+    flex: 0 1 auto;
+    flex-wrap: nowrap;
+    padding: 0;
+    gap: 0;
+    overflow: hidden;
+}
+
+.tiny_studiolms .slms-sidebar-tabs .nav-link {
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 0.3rem 0.4rem;
+    white-space: nowrap;
+    color: var(--bs-body-color, #343a40);
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.tiny_studiolms .slms-sidebar-tabs .nav-link:hover {
+    color: #0d47a1;
+    border-bottom-color: rgba(13, 71, 161, 0.25);
+    background: transparent;
+}
+
+.tiny_studiolms .slms-sidebar-tabs .nav-link:focus,
+.tiny_studiolms .slms-sidebar-tabs .nav-link:focus-visible {
+    outline: none;
+    box-shadow: none;
+}
+
+.tiny_studiolms .slms-sidebar-tabs .nav-link.active {
+    color: #0d47a1;
+    font-weight: 600;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 2px solid #0d47a1;
+    background: transparent;
+    outline: none;
+    box-shadow: none;
+}
+
+.tiny_studiolms .slms-sidebar-tab-toolbar {
+    flex: 0 0 auto;
+    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+/* Search bar — now in the logo bar, pushed to the right */
+.tiny_studiolms .slms-sidebar-search-wrap {
+    flex: 0 1 210px;
+    min-width: 130px;
+    margin-inline-start: auto;
+}
+
+.tiny_studiolms .slms-sidebar-search {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.375rem;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.78rem;
+    background: var(--bs-white, #fff);
+    color: var(--bs-body-color, #212529);
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tiny_studiolms .slms-sidebar-search:focus {
+    border-color: rgba(13, 71, 161, 0.4);
+    box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.08);
+}
+
+/* -----------------------------------------
+   PROPERTIES PANEL (sidebar contextual)
+   ----------------------------------------- */
+.tiny_studiolms .slms-properties-panel {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.tiny_studiolms .slms-properties-content {
+    flex: 1;
+    padding: 1rem;
+}
+
+.tiny_studiolms .slms-properties-content label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--bs-body-color, #343a40);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.tiny_studiolms .slms-properties-content .form-control,
+.tiny_studiolms .slms-properties-content .form-select {
+    font-size: 0.82rem;
 }
 
 .tiny_studiolms .slms-library-grid {
+    flex: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
     align-items: start;
+    align-content: start;
+    padding: 0.625rem;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+/* Sidebar component cards — v1 thumbnail style */
+.slms-sidebar .slms-card {
+    display: flex;
+    flex-direction: column;
+    height: 110px;
+    padding: 0;
+    text-align: center;
+    background: var(--bs-white, #fff);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.slms-sidebar .slms-card:hover,
+.slms-sidebar .slms-card:focus {
+    box-shadow: 0 2px 8px rgba(13, 71, 161, 0.1);
+    border-color: rgba(13, 71, 161, 0.4);
+    background: #f0f6ff;
+}
+
+.slms-sidebar .slms-card .slms-card-thumb-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding: 8px;
+    background: var(--bs-white, #fff);
+    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+.slms-sidebar .slms-card .slms-card-thumb-content {
+    transform: scale(0.38);
+    transform-origin: top left;
+    width: 263%;
+    pointer-events: none;
+}
+
+.slms-sidebar .slms-card .slms-card-thumb-label {
+    flex: 0 0 auto;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--bs-body-color, #212529);
+    padding: 0.25rem 0.375rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.3;
+}
+
+/* Sidebar template cards — show HTML thumbnail at compact scale */
+.slms-sidebar .slms-tpl-thumb {
+    display: block;
+    flex: 1;
+    padding: 8px;
+    overflow: hidden;
+    background: var(--bs-white, #fff);
+}
+
+.slms-sidebar .slms-tpl-thumb .slms-tpl-thumb-content {
+    transform: scale(0.26);
+    transform-origin: top left;
+    width: 385%;
+}
+
+.slms-sidebar .slms-tpl-card {
+    display: flex;
+    flex-direction: column;
+    height: 110px;
+    overflow: hidden;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.5rem;
+    background: var(--bs-white, #fff);
+}
+
+.slms-sidebar .slms-tpl-insert {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    cursor: pointer;
+}
+
+.slms-sidebar .slms-tpl-meta {
+    flex: 0 0 auto;
+    padding: 0.25rem 0.375rem;
+    border-top: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+.tiny_studiolms .slms-sidebar .slms-tpl-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--bs-body-color, #212529);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.3;
+    margin: 0;
+}
+
+.slms-sidebar .slms-tpl-icon {
+    display: none;
+}
+
+.slms-sidebar .slms-preset-badge {
+    display: none;
+}
+
+.slms-sidebar .slms-tpl-card .slms-tpl-actions {
+    display: none;
+}
+
+/* Mine and favourites: auto height to accommodate the action row */
+.slms-sidebar.slms-tab-mine .slms-tpl-card,
+.slms-sidebar.slms-tab-favourites .slms-tpl-card {
+    height: auto;
+}
+
+.slms-sidebar.slms-tab-mine .slms-tpl-thumb,
+.slms-sidebar.slms-tab-favourites .slms-tpl-thumb {
+    flex: 0 0 88px;
+}
+
+.slms-sidebar.slms-tab-mine .slms-tpl-card .slms-tpl-actions,
+.slms-sidebar.slms-tab-favourites .slms-tpl-card .slms-tpl-actions {
+    display: inline-flex;
+    padding: 0.25rem 0.375rem;
+}
+
+.slms-sidebar.slms-tab-mine .slms-btn-fav,
+.slms-sidebar.slms-tab-mine .slms-btn-tpl-delete,
+.slms-sidebar.slms-tab-favourites .slms-btn-fav {
+    width: 22px;
+    height: 22px;
+    font-size: 0.7rem;
+}
+
+.slms-sidebar.slms-tab-mine .slms-tpl-select {
+    width: 0.85rem;
+    height: 0.85rem;
+}
+
+.slms-sidebar.slms-tab-favourites .slms-tpl-select,
+.slms-sidebar.slms-tab-favourites .slms-btn-tpl-delete {
+    display: none;
+}
+
+/* Sidebar collapse toggle — thin handle with floating pill chevron */
+.tiny_studiolms .slms-sidebar-toggle {
+    flex: 0 0 18px;
+    width: 18px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    position: relative;
+    outline: none;
+}
+
+.tiny_studiolms .slms-sidebar-toggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: var(--bs-border-color, #dee2e6);
+    transform: translateX(-50%);
+    transition: background 0.2s ease, width 0.2s ease;
+}
+
+.tiny_studiolms .slms-sidebar-toggle:hover::before {
+    background: rgba(13, 71, 161, 0.35);
+    width: 2px;
+}
+
+.tiny_studiolms #slms-sidebar-toggle-icon {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 26px;
+    border-radius: 4px;
+    background: var(--bs-white, #fff);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    font-size: 0.6rem;
+    color: var(--bs-secondary-color, #6c757d);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+    user-select: none;
+    pointer-events: none;
+}
+
+.tiny_studiolms .slms-sidebar-toggle:focus-visible #slms-sidebar-toggle-icon {
+    border-color: rgba(13, 71, 161, 0.5);
+    box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.2);
+}
+
+.tiny_studiolms .slms-sidebar-toggle:hover #slms-sidebar-toggle-icon {
+    background: #e9f3ff;
+    color: #0d47a1;
+    border-color: rgba(13, 71, 161, 0.35);
+    box-shadow: 0 2px 8px rgba(13, 71, 161, 0.15);
+    transform: scale(1.15);
+}
+
+/* Sidebar collapsed state */
+.tiny_studiolms .slms-sidebar {
+    transition: flex-basis 0.25s ease, min-width 0.25s ease;
+    overflow: hidden;
+}
+
+.tiny_studiolms .slms-sidebar.slms-sidebar-collapsed {
+    flex-basis: 0;
+    width: 0;
+    min-width: 0;
+    border-right: none;
 }
 
 .tiny_studiolms .slms-card {
@@ -251,42 +641,198 @@
     justify-content: center;
     line-height: 1;
     cursor: pointer;
+    color: var(--bs-secondary, #6c757d);
 }
 
 .tiny_studiolms .slms-btn-fav.active {
     border-color: var(--bs-warning, #ffc107);
     background: var(--bs-warning-bg-subtle, #fff3cd);
+    color: var(--bs-warning, #ffc107);
 }
 
-.tiny_studiolms .slms-btn-fav:hover,
-.tiny_studiolms .slms-btn-tpl-delete:hover {
+.tiny_studiolms .slms-btn-fav:hover {
     background: var(--bs-gray-100, #f8f9fa);
+    color: var(--bs-warning, #ffc107);
+}
+
+.tiny_studiolms .slms-btn-tpl-delete:hover {
+    background: var(--bs-danger-bg-subtle, #f8d7da);
+    border-color: var(--bs-danger, #dc3545);
+    color: var(--bs-danger, #dc3545);
 }
 
 /* -----------------------------------------
-   NEW: CANVA-STYLE EDITOR & TOOLBAR
+   COMPOSER MAIN AREA
    ----------------------------------------- */
 
-/* Top Toolbar */
-.tiny_studiolms #slms-top-toolbar {
-    margin-top: 0.875rem;
+.tiny_studiolms .slms-composer-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    background: var(--bs-gray-100, #f8f9fa);
 }
 
-.tiny_studiolms .slms-toolbar {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid #e0f2fe;
-    border-radius: 50px;
-    padding: 0.5rem 1.25rem;
-    box-shadow: 0 10px 40px rgba(13, 71, 161, 0.12), 0 0 0 1px rgba(13, 71, 161, 0.05);
+/* Top Toolbar row — contextual per selected block */
+.tiny_studiolms .slms-toolbar-row {
+    flex: 0 0 auto;
+    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+    background: var(--bs-white, #fff);
+    padding: 0.4rem 1rem;
     flex-wrap: wrap;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    min-height: 46px;
 }
 
-.tiny_studiolms .slms-toolbar:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 50px rgba(13, 71, 161, 0.18), 0 0 0 1px rgba(13, 71, 161, 0.08);
+.tiny_studiolms .slms-toolbar-empty-hint {
+    font-size: 0.78rem;
+    color: var(--bs-secondary-color, #6c757d);
+    font-style: italic;
+}
+
+/* Canvas wrapper — holds scrollable area + zoom overlay */
+.tiny_studiolms .slms-canvas-wrapper {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Scrollable canvas area */
+.tiny_studiolms .slms-canvas-area {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-image: radial-gradient(var(--bs-border-color, #dee2e6) 1px, transparent 0);
+    background-size: 20px 20px;
+    background-color: var(--bs-gray-100, #f1f3f5);
+    padding: 1.25rem;
+}
+
+/* List of canvas blocks */
+.tiny_studiolms .slms-canvas-blocks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 860px;
+    margin: 0 auto;
+    transform-origin: top center;
+    transition: transform 0.15s ease-out;
+}
+
+/* Single canvas block wrapper */
+.tiny_studiolms .slms-canvas-block {
+    position: relative;
+    border: 2px solid transparent;
+    border-radius: 0.5rem;
+    background: var(--bs-white, #fff);
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tiny_studiolms .slms-canvas-block:hover {
+    border-color: rgba(13, 71, 161, 0.25);
+    box-shadow: 0 2px 8px rgba(13, 71, 161, 0.07);
+}
+
+.tiny_studiolms .slms-canvas-block.slms-active-block {
+    border-color: #0d47a1;
+    box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1);
+}
+
+/* Block header — visible on hover / active */
+.tiny_studiolms .slms-canvas-block-header {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.3rem 0.6rem;
+    background: #e9f3ff;
+    border-bottom: 1px solid rgba(13, 71, 161, 0.12);
+    border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.tiny_studiolms .slms-canvas-block:hover .slms-canvas-block-header,
+.tiny_studiolms .slms-canvas-block.slms-active-block .slms-canvas-block-header {
+    display: flex;
+}
+
+.tiny_studiolms .slms-canvas-block-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #0d47a1;
+    user-select: none;
+}
+
+.tiny_studiolms .slms-canvas-block-actions {
+    display: flex;
+    gap: 0.2rem;
+}
+
+.tiny_studiolms .slms-canvas-block-action-btn {
+    background: transparent;
+    border: 1px solid rgba(13, 71, 161, 0.2);
+    border-radius: 4px;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: #0d47a1;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    transition: background 0.15s ease;
+}
+
+.tiny_studiolms .slms-canvas-block-action-btn:hover {
+    background: rgba(13, 71, 161, 0.1);
+}
+
+.tiny_studiolms .slms-canvas-block-action-btn.slms-btn-block-remove {
+    border-color: rgba(220, 53, 69, 0.3);
+    color: #dc3545;
+}
+
+.tiny_studiolms .slms-canvas-block-action-btn.slms-btn-block-remove:hover {
+    background: rgba(220, 53, 69, 0.08);
+}
+
+/* Block preview area */
+.tiny_studiolms .slms-canvas-block-preview {
+    padding: 0.75rem;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Empty canvas state */
+.tiny_studiolms .slms-canvas-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+    text-align: center;
+    padding: 2rem;
+    color: var(--bs-secondary-color, #6c757d);
+}
+
+.tiny_studiolms .slms-canvas-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.tiny_studiolms .slms-canvas-empty-text {
+    font-size: 0.9rem;
+    max-width: 280px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Toolbar (shared styles for buttons inside toolbar row) */
+.tiny_studiolms .slms-toolbar {
+    flex-wrap: wrap;
 }
 
 /* Toolbar Buttons */
@@ -313,41 +859,27 @@
     box-shadow: none;
 }
 
-/* Canvas Area (Where the preview lives) */
-.tiny_studiolms .slms-canvas-area {
-    background-image: radial-gradient(var(--bs-border-color, #dee2e6) 1px, transparent 0);
-    background-size: 20px 20px;
-    background-color: var(--bs-gray-100, #f1f3f5);
-    padding: 10rem 2rem 2rem 2rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--bs-border-color, #dee2e6);
-    min-height: 55vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    overflow-y: auto;
-}
-
+/* slms-preview-panel kept for backward compatibility with any lingering references */
 .tiny_studiolms .slms-preview-panel {
     width: 100%;
-    max-width: 900px;
+    max-width: 860px;
     margin: 0 auto;
 }
 
 /* -----------------------------------------
-   ZOOM CONTROLS (CANVA STYLE)
+   ZOOM CONTROLS
    ----------------------------------------- */
 .tiny_studiolms .slms-zoom-controls {
     position: absolute;
-    bottom: 1.5rem;
-    right: 2rem;
+    bottom: 1rem;
+    right: 1rem;
     background: var(--bs-white, #fff);
     border: 1px solid var(--bs-border-color, #dee2e6);
     border-radius: 2rem;
     display: flex;
     align-items: center;
     padding: 0.25rem;
-    z-index: 1050;
+    z-index: 10;
 }
 
 .tiny_studiolms .slms-zoom-controls button {
@@ -380,22 +912,6 @@
 }
 
 /* -----------------------------------------
-   FLOATING POPUPS
-   ----------------------------------------- */
-.tiny_studiolms .slms-popup-container {
-    position: absolute;
-    background: var(--bs-white, #fff);
-    border: 1px solid var(--bs-border-color, #dee2e6);
-    border-radius: 0.5rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    padding: 1.25rem;
-    z-index: 1060; /* Above modal native */
-    min-width: 280px;
-    max-width: 360px;
-    animation: slms-fade-in 0.15s ease-out;
-}
-
-/* -----------------------------------------
    NAVIGATION TABS
    ----------------------------------------- */
 .tiny_studiolms .slms-tabs .nav-link {
@@ -416,31 +932,6 @@
     font-weight: 600;
     border-bottom: 3px solid #0d47a1;
     background-color: transparent;
-}
-
-/* Caret pointing up to the toolbar button that triggered this popup. */
-.tiny_studiolms .slms-popup-container::before {
-    content: '';
-    position: absolute;
-    top: -6px;
-    left: 24px;
-    width: 12px;
-    height: 12px;
-    background: var(--bs-white, #fff);
-    border-top: 1px solid var(--bs-border-color, #dee2e6);
-    border-left: 1px solid var(--bs-border-color, #dee2e6);
-    transform: rotate(45deg);
-}
-
-@keyframes slms-fade-in {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 /* -----------------------------------------
@@ -466,6 +957,23 @@
         max-width: 1320px;
     }
 }
+
+.studiolms-modal-dialog .modal-content {
+    height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.studiolms-modal-dialog .modal-body.studiolms-modal-body {
+    padding: 0;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
 
 /* Student-facing: accordion and webteca icons animate on toggle.
    Base state = -90deg so ▼ renders as ▶ (closed); open state = 0deg so ▼ shows naturally. */
