@@ -236,6 +236,35 @@
     box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.08);
 }
 
+/* -----------------------------------------
+   PROPERTIES PANEL (sidebar contextual)
+   ----------------------------------------- */
+.tiny_studiolms .slms-properties-panel {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.tiny_studiolms .slms-properties-content {
+    flex: 1;
+    padding: 1rem;
+}
+
+.tiny_studiolms .slms-properties-content label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--bs-body-color, #343a40);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.tiny_studiolms .slms-properties-content .form-control,
+.tiny_studiolms .slms-properties-content .form-select {
+    font-size: 0.82rem;
+}
+
 .tiny_studiolms .slms-library-grid {
     flex: 1;
     display: grid;
@@ -883,22 +912,6 @@
 }
 
 /* -----------------------------------------
-   FLOATING POPUPS
-   ----------------------------------------- */
-.tiny_studiolms .slms-popup-container {
-    position: absolute;
-    background: var(--bs-white, #fff);
-    border: 1px solid var(--bs-border-color, #dee2e6);
-    border-radius: 0.5rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    padding: 1.25rem;
-    z-index: 100;
-    min-width: 280px;
-    max-width: 360px;
-    animation: slms-fade-in 0.15s ease-out;
-}
-
-/* -----------------------------------------
    NAVIGATION TABS
    ----------------------------------------- */
 .tiny_studiolms .slms-tabs .nav-link {
@@ -919,31 +932,6 @@
     font-weight: 600;
     border-bottom: 3px solid #0d47a1;
     background-color: transparent;
-}
-
-/* Caret pointing up to the toolbar button that triggered this popup. */
-.tiny_studiolms .slms-popup-container::before {
-    content: '';
-    position: absolute;
-    top: -6px;
-    left: 24px;
-    width: 12px;
-    height: 12px;
-    background: var(--bs-white, #fff);
-    border-top: 1px solid var(--bs-border-color, #dee2e6);
-    border-left: 1px solid var(--bs-border-color, #dee2e6);
-    transform: rotate(45deg);
-}
-
-@keyframes slms-fade-in {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 /* -----------------------------------------

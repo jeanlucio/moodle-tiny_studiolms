@@ -33,7 +33,6 @@ import {init as initAiKeys} from './aikeys';
 
 // Canvas state — array of {id, blockDef, config, element, previewEl}
 let canvasBlocks = [];
-let activeBlockId = null;
 let canvasBlockCounter = 0;
 
 let tinyEditorInstance = null;
@@ -98,7 +97,6 @@ export const initStudioApp = (
     presetsData = presets;
     hasAiEnabled = hasAi;
     canvasBlocks = [];
-    activeBlockId = null;
     canvasBlockCounter = 0;
 
     if (editData && editData.node) {
@@ -337,7 +335,6 @@ const selectCanvasBlock = async(blockId) => {
     }
 
     if (blockId === null) {
-        activeBlockId = null;
         showToolbarHint();
         return;
     }
@@ -346,8 +343,6 @@ const selectCanvasBlock = async(blockId) => {
     if (!entry) {
         return;
     }
-
-    activeBlockId = blockId;
 
     if (entry.element) {
         entry.element.classList.add('slms-active-block');
@@ -476,7 +471,6 @@ const clearCanvas = () => {
         blocksList.innerHTML = '';
     }
     canvasBlocks = [];
-    activeBlockId = null;
     selectCanvasBlock(null);
     showCanvasEmptyState();
 };
@@ -743,6 +737,8 @@ const renderPresetsAsTemplates = async(presets) => {
 };
 
 const switchTab = async(tabName) => {
+    PopupManager.closeAll();
+
     const grid = document.getElementById('slms-library-grid');
     const tabToolbar = document.getElementById('slms-tab-toolbar');
     const sidebar = document.getElementById('slms-sidebar');
@@ -1149,101 +1145,61 @@ const setupImportExportButtons = () => {
 
 export const PopupManager = {
     closeAll: () => {
-        const anchor = document.getElementById('slms-popup-anchor');
-        if (anchor) {
-            anchor.innerHTML = '';
-            anchor.classList.add('d-none');
+        const panel = document.getElementById('slms-properties-panel');
+        const content = document.getElementById('slms-properties-content');
+        const grid = document.getElementById('slms-library-grid');
+        const feedback = document.getElementById('slms-feedback-area');
+        const tabToolbar = document.getElementById('slms-tab-toolbar');
+
+        if (panel) {
+            panel.classList.add('d-none');
+        }
+        if (content) {
+            content.innerHTML = '';
+        }
+        if (grid) {
+            grid.classList.remove('d-none');
+        }
+        if (feedback) {
+            feedback.classList.remove('d-none');
+        }
+        if (tabToolbar) {
+            const activeTabEl = document.querySelector('[data-slms-tab].active');
+            const activeTab = activeTabEl ? activeTabEl.getAttribute('data-slms-tab') : '';
+            tabToolbar.classList.toggle('d-none', activeTab !== 'mine');
         }
     },
     open: async(btnElement, templateName, templateData, setupListeners) => {
-        const anchor = document.getElementById('slms-popup-anchor');
-        if (!anchor) {
+        const panel = document.getElementById('slms-properties-panel');
+        const content = document.getElementById('slms-properties-content');
+        const grid = document.getElementById('slms-library-grid');
+        const feedback = document.getElementById('slms-feedback-area');
+        const tabToolbar = document.getElementById('slms-tab-toolbar');
+
+        if (!panel || !content) {
             return;
         }
 
-        PopupManager.closeAll();
+        content.innerHTML = '';
 
-        const activeEntry = activeBlockId !== null
-            ? canvasBlocks.find((b) => b.id === activeBlockId)
-            : null;
-        const snapshot = activeEntry
-            ? JSON.parse(JSON.stringify(activeEntry.config))
-            : null;
+        if (grid) {
+            grid.classList.add('d-none');
+        }
+        if (feedback) {
+            feedback.classList.add('d-none');
+        }
+        if (tabToolbar) {
+            tabToolbar.classList.add('d-none');
+        }
 
         try {
             const {html, js} = await Templates.renderForPromise(templateName, templateData);
-            const strCancel = await getString('cancel', 'core');
-            const strOk = await getString('ok', 'core');
-
-            Templates.replaceNodeContents(anchor, html, js);
-
-            const footerContainer = document.createElement('div');
-            footerContainer.className =
-                'd-flex justify-content-end gap-2 mt-3 pt-3 border-top slms-popup-footer';
-
-            const btnCancel = document.createElement('button');
-            btnCancel.type = 'button';
-            btnCancel.className = 'btn btn-sm btn-outline-secondary slms-btn-cancel';
-            btnCancel.textContent = strCancel;
-
-            const btnOk = document.createElement('button');
-            btnOk.type = 'button';
-            btnOk.className = 'btn btn-sm btn-primary slms-btn-ok px-3';
-            btnOk.textContent = strOk;
-
-            footerContainer.appendChild(btnCancel);
-            footerContainer.appendChild(btnOk);
-            anchor.appendChild(footerContainer);
-
-            anchor.classList.remove('d-none');
-            anchor.classList.add('slms-popup-container');
-
-            const btnRect = btnElement.getBoundingClientRect();
-            const mainEl = document.querySelector('.slms-composer-main');
-            const mainRect = mainEl
-                ? mainEl.getBoundingClientRect()
-                : document.getElementById('studiolms-app').getBoundingClientRect();
-
-            let topPos = (btnRect.bottom - mainRect.top) + 8;
-            let leftPos = btnRect.left - mainRect.left;
-
-            if (leftPos + 320 > mainRect.width) {
-                leftPos = mainRect.width - 340;
-            }
-
-            anchor.style.top = `${topPos}px`;
-            anchor.style.left = `${Math.max(10, leftPos)}px`;
+            Templates.replaceNodeContents(content, html, js);
+            panel.classList.remove('d-none');
 
             if (setupListeners) {
-                setupListeners(anchor);
+                setupListeners(content);
             }
-
-            anchor.querySelector('.slms-btn-cancel').addEventListener('click', () => {
-                if (snapshot && activeEntry) {
-                    Object.keys(activeEntry.config).forEach((k) => {
-                        delete activeEntry.config[k];
-                    });
-                    Object.assign(activeEntry.config, snapshot);
-                    renderBlockPreview(activeEntry);
-                }
-                PopupManager.closeAll();
-            });
-
-            anchor.querySelector('.slms-btn-ok').addEventListener('click', () => {
-                PopupManager.closeAll();
-            });
-
-            const outClick = (e) => {
-                if (!anchor.contains(e.target) && !btnElement.contains(e.target)) {
-                    PopupManager.closeAll();
-                    document.removeEventListener('click', outClick);
-                }
-            };
-
-            setTimeout(() => {
-                document.addEventListener('click', outClick);
-            }, 50);
-
         } catch (error) {
             Notification.exception(error);
         }

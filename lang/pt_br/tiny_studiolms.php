@@ -259,6 +259,7 @@ $string['profilecard_links'] = 'Links';
 $string['profilecard_name'] = 'Nome';
 $string['profilecard_photo_url'] = 'URL da foto';
 $string['profilecard_role'] = 'Cargo / Função';
+$string['properties_panel'] = 'Propriedades';
 $string['remove'] = 'Remover';
 $string['resource_name'] = 'Nome do recurso';
 $string['resource_url'] = 'URL do recurso';
