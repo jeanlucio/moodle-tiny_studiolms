@@ -23,6 +23,13 @@
 <div class="tiny_studiolms" id="studiolms-app">
     <div class="slms-logo-bar">
         {{#pix}} logo, tiny_studiolms, StudioLMS {{/pix}}
+        <button type="button"
+                id="slms-btn-ai-keys"
+                class="slms-logo-settings-btn ms-auto"
+                title="{{#str}} tab_ai_keys, tiny_studiolms {{/str}}"
+                aria-label="{{#str}} tab_ai_keys, tiny_studiolms {{/str}}">
+            <span aria-hidden="true">🔑</span>
+        </button>
     </div>
     <div class="slms-composer-layout">
         <aside class="slms-sidebar" id="slms-sidebar">
@@ -84,18 +91,7 @@
                         {{#str}} tab_ai, tiny_studiolms {{/str}}
                     </button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button type="button"
-                            class="nav-link"
-                            id="slms-tab-ai-keys"
-                            role="tab"
-                            data-slms-tab="ai-keys"
-                            aria-selected="false"
-                            aria-controls="slms-library-grid">
-                        <span aria-hidden="true">🔑</span>
-                        {{#str}} tab_ai_keys, tiny_studiolms {{/str}}
-                    </button>
-                </li>
+
             </ul>
             <div id="slms-tab-toolbar" class="d-none slms-sidebar-tab-toolbar px-2 py-2">
                 <button type="button" id="slms-btn-export" class="btn btn-sm btn-outline-secondary">

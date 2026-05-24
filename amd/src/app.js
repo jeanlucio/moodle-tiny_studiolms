@@ -25,6 +25,7 @@ import {Blocks} from './blocks/registry';
 import {getString} from 'core/str';
 import Templates from 'core/templates';
 import Notification from 'core/notification';
+import Modal from 'core/modal';
 import {loadTemplates, renderTemplateGrid, saveTemplate, showInlineFeedback,
     exportTemplates, importTemplatesFromFile} from './templateslibrary';
 import {init as initAiGenerator} from './aigenerator';
@@ -105,6 +106,7 @@ export const initStudioApp = (
         setupTabs();
         setupSidebarToggle();
         setupSidebarSearch();
+        setupAiKeysButton();
         setupImportExportButtons();
 
         if (editData && editData.type && editData.state) {
@@ -736,9 +738,14 @@ const renderPresetsAsTemplates = async(presets) => {
 const switchTab = async(tabName) => {
     const grid = document.getElementById('slms-library-grid');
     const tabToolbar = document.getElementById('slms-tab-toolbar');
+    const sidebar = document.getElementById('slms-sidebar');
 
     if (tabToolbar) {
         tabToolbar.classList.toggle('d-none', tabName !== 'mine');
+    }
+
+    if (sidebar) {
+        sidebar.classList.toggle('slms-tab-mine', tabName === 'mine');
     }
 
     if (grid) {
@@ -778,12 +785,6 @@ const switchTab = async(tabName) => {
                 showInlineFeedback(await getString('tpl_saved', 'tiny_studiolms'), 'success');
             },
         });
-        return;
-    }
-
-    if (tabName === 'ai-keys') {
-        grid.style.gridTemplateColumns = '1fr';
-        await initAiKeys(grid);
         return;
     }
 
@@ -1034,6 +1035,31 @@ const setupSaveTemplateButton = (canManageGlobal = false) => {
                     form.remove();
                 }
             });
+        } catch (error) {
+            Notification.exception(error);
+        }
+    });
+};
+
+/**
+ * Wire up the AI Keys button in the logo bar to open a centred modal.
+ */
+const setupAiKeysButton = () => {
+    const btn = document.getElementById('slms-btn-ai-keys');
+    if (!btn) {
+        return;
+    }
+    btn.addEventListener('click', async() => {
+        try {
+            const titleStr = await getString('tab_ai_keys', 'tiny_studiolms');
+            const modal = await Modal.create({
+                title: titleStr,
+                body: '<div></div>',
+                removeOnClose: true,
+            });
+            const bodyEl = modal.getBody()[0];
+            await initAiKeys(bodyEl);
+            modal.show();
         } catch (error) {
             Notification.exception(error);
         }
