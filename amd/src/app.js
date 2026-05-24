@@ -741,6 +741,10 @@ const switchTab = async(tabName) => {
         tabToolbar.classList.toggle('d-none', tabName !== 'mine');
     }
 
+    if (grid) {
+        grid.style.gridTemplateColumns = '';
+    }
+
     if (tabName === 'components') {
         renderLibrary();
         return;
@@ -753,6 +757,7 @@ const switchTab = async(tabName) => {
     grid.innerHTML = '';
 
     if (tabName === 'ai') {
+        grid.style.gridTemplateColumns = '1fr';
         await initAiGenerator(grid, hasAiEnabled, {
             onConfigure: async(blockDef, mergedConfig) => {
                 await addBlockToCanvas(blockDef, mergedConfig);
@@ -777,6 +782,7 @@ const switchTab = async(tabName) => {
     }
 
     if (tabName === 'ai-keys') {
+        grid.style.gridTemplateColumns = '1fr';
         await initAiKeys(grid);
         return;
     }
@@ -807,6 +813,7 @@ const renderLibrary = () => {
     }
 
     grid.innerHTML = '';
+    grid.style.gridTemplateColumns = '';
 
     Object.values(Blocks).forEach(async(blockDef) => {
         const card = document.createElement('div');

@@ -219,34 +219,30 @@
 .slms-sidebar .slms-card {
     display: flex;
     flex-direction: column;
+    height: 110px;
     padding: 0;
-    align-items: stretch;
-    justify-content: flex-start;
     text-align: center;
-    gap: 0;
-    min-height: 0;
     background: var(--bs-white, #fff);
     border: 1px solid var(--bs-border-color, #dee2e6);
     border-radius: 0.5rem;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .slms-sidebar .slms-card:hover,
 .slms-sidebar .slms-card:focus {
-    transform: none;
     box-shadow: 0 2px 8px rgba(13, 71, 161, 0.1);
     border-color: rgba(13, 71, 161, 0.4);
     background: #f0f6ff;
 }
 
 .slms-sidebar .slms-card .slms-card-thumb-wrapper {
-    display: block;
-    height: 82px;
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
     padding: 8px;
     background: var(--bs-white, #fff);
     border-bottom: 1px solid var(--bs-border-color, #dee2e6);
-    flex: 0 0 auto;
 }
 
 .slms-sidebar .slms-card .slms-card-thumb-content {
@@ -257,6 +253,7 @@
 }
 
 .slms-sidebar .slms-card .slms-card-thumb-label {
+    flex: 0 0 auto;
     font-size: 0.65rem;
     font-weight: 500;
     color: var(--bs-body-color, #212529);
@@ -265,7 +262,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     line-height: 1.3;
-    flex: 0 0 auto;
 }
 
 /* Sidebar template cards — show HTML thumbnail at compact scale */
@@ -307,10 +303,10 @@
     border-top: 1px solid var(--bs-border-color, #dee2e6);
 }
 
-.slms-sidebar .slms-tpl-name {
+.tiny_studiolms .slms-sidebar .slms-tpl-name {
     flex: 1;
     min-width: 0;
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     font-weight: 500;
     color: var(--bs-body-color, #212529);
     overflow: hidden;

@@ -60,7 +60,6 @@ const initVisibilityToggles = (container) => {
  */
 export const init = async(container) => {
     container.innerHTML = '';
-    container.style.gridTemplateColumns = '1fr';
 
     try {
         const {html, js} = await Templates.renderForPromise('tiny_studiolms/tab_ai_keys', {});
