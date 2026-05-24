@@ -43,6 +43,12 @@ let targetEditNode = null;
 let presetsData = [];
 let hasAiEnabled = false;
 
+const tabDataCache = new Map();
+
+const invalidateTabCache = (...tabNames) => {
+    tabNames.forEach((t) => tabDataCache.delete(t));
+};
+
 const StateManager = {
     encode: (data, excludeKeys = []) => {
         const state = Object.assign({}, data);
@@ -746,6 +752,7 @@ const switchTab = async(tabName) => {
 
     if (sidebar) {
         sidebar.classList.toggle('slms-tab-mine', tabName === 'mine');
+        sidebar.classList.toggle('slms-tab-favourites', tabName === 'favourites');
     }
 
     if (grid) {
@@ -789,18 +796,21 @@ const switchTab = async(tabName) => {
     }
 
     try {
-        let templates = [];
-        if (tabName === 'global') {
-            const [dbTemplates, presetTemplates] = await Promise.all([
-                loadTemplates('global'),
-                renderPresetsAsTemplates(presetsData),
-            ]);
-            templates = [...presetTemplates, ...dbTemplates];
-        } else {
-            templates = await loadTemplates(tabName);
+        if (!tabDataCache.has(tabName)) {
+            if (tabName === 'global') {
+                const [dbTemplates, presetTemplates] = await Promise.all([
+                    loadTemplates('global'),
+                    renderPresetsAsTemplates(presetsData),
+                ]);
+                tabDataCache.set('global', [...presetTemplates, ...dbTemplates]);
+            } else {
+                tabDataCache.set(tabName, await loadTemplates(tabName));
+            }
         }
+        const templates = tabDataCache.get(tabName) ?? [];
         await renderTemplateGrid(grid, templates, tinyEditorInstance, moodleModalInstance, {
             onLoadToCanvas: loadTemplateToCanvas,
+            onInvalidateCache: invalidateTabCache,
         });
     } catch (error) {
         Notification.exception(error);
@@ -1013,6 +1023,7 @@ const setupSaveTemplateButton = (canManageGlobal = false) => {
                     const content = parts.join('<p><br></p>');
                     await saveTemplate(name, content, isglobal);
                     showInlineFeedback(await getString('tpl_saved', 'tiny_studiolms'), 'success');
+                    invalidateTabCache(isglobal ? 'global' : 'mine');
                     await switchTab(isglobal ? 'global' : 'mine');
                     const mineTab = document.getElementById('slms-tab-mine');
                     if (mineTab && !isglobal) {
@@ -1102,6 +1113,7 @@ const setupImportExportButtons = () => {
                         await getString('import_success', 'tiny_studiolms'),
                         'success'
                     );
+                    invalidateTabCache('mine');
                     await switchTab('mine');
                 }
             } catch (error) {

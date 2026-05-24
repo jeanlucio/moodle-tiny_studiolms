@@ -160,12 +160,13 @@
     overflow: hidden;
 }
 
+/* Tabs — now live in the logo bar, inline with logo and search */
 .tiny_studiolms .slms-sidebar-tabs {
-    flex: 0 0 auto;
-    flex-wrap: wrap;
-    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
-    padding: 0.25rem 0.375rem 0;
+    flex: 0 1 auto;
+    flex-wrap: nowrap;
+    padding: 0;
     gap: 0;
+    overflow: hidden;
 }
 
 .tiny_studiolms .slms-sidebar-tabs .nav-link {
@@ -197,10 +198,11 @@
     border-bottom: 1px solid var(--bs-border-color, #dee2e6);
 }
 
-/* Sidebar search bar */
+/* Search bar — now in the logo bar, pushed to the right */
 .tiny_studiolms .slms-sidebar-search-wrap {
-    flex: 0 0 auto;
-    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+    flex: 0 1 210px;
+    min-width: 130px;
+    margin-inline-start: auto;
 }
 
 .tiny_studiolms .slms-sidebar-search {
@@ -228,6 +230,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 0.5rem;
     align-items: start;
+    align-content: start;
     padding: 0.625rem;
     overflow-y: auto;
     min-height: 0;
@@ -346,21 +349,26 @@
     display: none;
 }
 
-.slms-sidebar.slms-tab-mine .slms-tpl-card {
+/* Mine and favourites: auto height to accommodate the action row */
+.slms-sidebar.slms-tab-mine .slms-tpl-card,
+.slms-sidebar.slms-tab-favourites .slms-tpl-card {
     height: auto;
 }
 
-.slms-sidebar.slms-tab-mine .slms-tpl-thumb {
+.slms-sidebar.slms-tab-mine .slms-tpl-thumb,
+.slms-sidebar.slms-tab-favourites .slms-tpl-thumb {
     flex: 0 0 88px;
 }
 
-.slms-sidebar.slms-tab-mine .slms-tpl-card .slms-tpl-actions {
+.slms-sidebar.slms-tab-mine .slms-tpl-card .slms-tpl-actions,
+.slms-sidebar.slms-tab-favourites .slms-tpl-card .slms-tpl-actions {
     display: inline-flex;
     padding: 0.25rem 0.375rem;
 }
 
 .slms-sidebar.slms-tab-mine .slms-btn-fav,
-.slms-sidebar.slms-tab-mine .slms-btn-tpl-delete {
+.slms-sidebar.slms-tab-mine .slms-btn-tpl-delete,
+.slms-sidebar.slms-tab-favourites .slms-btn-fav {
     width: 22px;
     height: 22px;
     font-size: 0.7rem;
@@ -369,6 +377,11 @@
 .slms-sidebar.slms-tab-mine .slms-tpl-select {
     width: 0.85rem;
     height: 0.85rem;
+}
+
+.slms-sidebar.slms-tab-favourites .slms-tpl-select,
+.slms-sidebar.slms-tab-favourites .slms-btn-tpl-delete {
+    display: none;
 }
 
 /* Sidebar collapse toggle — thin handle with floating pill chevron */

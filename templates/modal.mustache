@@ -23,9 +23,75 @@
 <div class="tiny_studiolms" id="studiolms-app">
     <div class="slms-logo-bar">
         {{#pix}} logo, tiny_studiolms, StudioLMS {{/pix}}
+        <ul class="nav slms-sidebar-tabs" role="tablist"
+            aria-label="{{#str}} library, tiny_studiolms {{/str}}">
+            <li class="nav-item" role="presentation">
+                <button type="button"
+                        class="nav-link active"
+                        id="slms-tab-components"
+                        role="tab"
+                        data-slms-tab="components"
+                        aria-selected="true"
+                        aria-controls="slms-library-grid">
+                    {{#str}} tab_components, tiny_studiolms {{/str}}
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button type="button"
+                        class="nav-link"
+                        id="slms-tab-official"
+                        role="tab"
+                        data-slms-tab="global"
+                        aria-selected="false"
+                        aria-controls="slms-library-grid">
+                    {{#str}} tab_official, tiny_studiolms {{/str}}
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button type="button"
+                        class="nav-link"
+                        id="slms-tab-mine"
+                        role="tab"
+                        data-slms-tab="mine"
+                        aria-selected="false"
+                        aria-controls="slms-library-grid">
+                    {{#str}} tab_mine, tiny_studiolms {{/str}}
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button type="button"
+                        class="nav-link"
+                        id="slms-tab-favourites"
+                        role="tab"
+                        data-slms-tab="favourites"
+                        aria-selected="false"
+                        aria-controls="slms-library-grid">
+                    {{#str}} tab_favourites, tiny_studiolms {{/str}}
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button type="button"
+                        class="nav-link"
+                        id="slms-tab-ai"
+                        role="tab"
+                        data-slms-tab="ai"
+                        aria-selected="false"
+                        aria-controls="slms-library-grid">
+                    <span aria-hidden="true">✨</span>
+                    {{#str}} tab_ai, tiny_studiolms {{/str}}
+                </button>
+            </li>
+        </ul>
+        <div class="slms-sidebar-search-wrap">
+            <input type="text"
+                   id="slms-sidebar-search"
+                   class="slms-sidebar-search"
+                   placeholder="{{#str}} sidebar_search_placeholder, tiny_studiolms {{/str}}"
+                   aria-label="{{#str}} sidebar_search_placeholder, tiny_studiolms {{/str}}">
+        </div>
         <button type="button"
                 id="slms-btn-ai-keys"
-                class="slms-logo-settings-btn ms-auto"
+                class="slms-logo-settings-btn"
                 title="{{#str}} tab_ai_keys, tiny_studiolms {{/str}}"
                 aria-label="{{#str}} tab_ai_keys, tiny_studiolms {{/str}}">
             <span aria-hidden="true">🔑</span>
@@ -33,66 +99,6 @@
     </div>
     <div class="slms-composer-layout">
         <aside class="slms-sidebar" id="slms-sidebar">
-            <ul class="nav slms-sidebar-tabs" role="tablist"
-                aria-label="{{#str}} library, tiny_studiolms {{/str}}">
-                <li class="nav-item" role="presentation">
-                    <button type="button"
-                            class="nav-link active"
-                            id="slms-tab-components"
-                            role="tab"
-                            data-slms-tab="components"
-                            aria-selected="true"
-                            aria-controls="slms-library-grid">
-                        {{#str}} tab_components, tiny_studiolms {{/str}}
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button type="button"
-                            class="nav-link"
-                            id="slms-tab-official"
-                            role="tab"
-                            data-slms-tab="global"
-                            aria-selected="false"
-                            aria-controls="slms-library-grid">
-                        {{#str}} tab_official, tiny_studiolms {{/str}}
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button type="button"
-                            class="nav-link"
-                            id="slms-tab-mine"
-                            role="tab"
-                            data-slms-tab="mine"
-                            aria-selected="false"
-                            aria-controls="slms-library-grid">
-                        {{#str}} tab_mine, tiny_studiolms {{/str}}
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button type="button"
-                            class="nav-link"
-                            id="slms-tab-favourites"
-                            role="tab"
-                            data-slms-tab="favourites"
-                            aria-selected="false"
-                            aria-controls="slms-library-grid">
-                        {{#str}} tab_favourites, tiny_studiolms {{/str}}
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button type="button"
-                            class="nav-link"
-                            id="slms-tab-ai"
-                            role="tab"
-                            data-slms-tab="ai"
-                            aria-selected="false"
-                            aria-controls="slms-library-grid">
-                        <span aria-hidden="true">✨</span>
-                        {{#str}} tab_ai, tiny_studiolms {{/str}}
-                    </button>
-                </li>
-
-            </ul>
             <div id="slms-tab-toolbar" class="d-none slms-sidebar-tab-toolbar px-2 py-2">
                 <button type="button" id="slms-btn-export" class="btn btn-sm btn-outline-secondary">
                     <span aria-hidden="true">⬇️</span> {{#str}} btn_export, tiny_studiolms {{/str}}
@@ -100,13 +106,6 @@
                 <button type="button" id="slms-btn-import" class="btn btn-sm btn-outline-secondary ms-1">
                     <span aria-hidden="true">⬆️</span> {{#str}} btn_import, tiny_studiolms {{/str}}
                 </button>
-            </div>
-            <div class="slms-sidebar-search-wrap px-2 py-2">
-                <input type="text"
-                       id="slms-sidebar-search"
-                       class="slms-sidebar-search"
-                       placeholder="{{#str}} sidebar_search_placeholder, tiny_studiolms {{/str}}"
-                       aria-label="{{#str}} sidebar_search_placeholder, tiny_studiolms {{/str}}">
             </div>
             <div id="slms-feedback-area" class="px-2" aria-live="polite"></div>
             <div class="slms-library-grid" id="slms-library-grid" role="tabpanel"></div>
