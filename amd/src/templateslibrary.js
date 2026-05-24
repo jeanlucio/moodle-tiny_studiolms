@@ -324,9 +324,10 @@ const handleToggleFavourite = async(btnFav, tpl, onInvalidateCache) => {
 
         btnFav.classList.toggle('active', isFav);
         btnFav.setAttribute('aria-pressed', String(isFav));
-        const icon = btnFav.querySelector('span[aria-hidden]');
+        const icon = btnFav.querySelector('i[aria-hidden]');
         if (icon) {
-            icon.textContent = isFav ? '★' : '☆';
+            icon.classList.toggle('fa-solid', isFav);
+            icon.classList.toggle('fa-regular', !isFav);
         }
 
         if (onInvalidateCache) {

@@ -612,16 +612,24 @@
     justify-content: center;
     line-height: 1;
     cursor: pointer;
+    color: var(--bs-secondary, #6c757d);
 }
 
 .tiny_studiolms .slms-btn-fav.active {
     border-color: var(--bs-warning, #ffc107);
     background: var(--bs-warning-bg-subtle, #fff3cd);
+    color: var(--bs-warning, #ffc107);
 }
 
-.tiny_studiolms .slms-btn-fav:hover,
-.tiny_studiolms .slms-btn-tpl-delete:hover {
+.tiny_studiolms .slms-btn-fav:hover {
     background: var(--bs-gray-100, #f8f9fa);
+    color: var(--bs-warning, #ffc107);
+}
+
+.tiny_studiolms .slms-btn-tpl-delete:hover {
+    background: var(--bs-danger-bg-subtle, #f8d7da);
+    border-color: var(--bs-danger, #dc3545);
+    color: var(--bs-danger, #dc3545);
 }
 
 /* -----------------------------------------

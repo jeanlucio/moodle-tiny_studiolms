@@ -148,9 +148,9 @@ export const initStudioApp = (
                         btnDelete.id = 'slms-btn-delete-block';
                         btnDelete.className = 'btn btn-danger px-3 shadow-sm rounded-pill btn-sm';
 
-                        const delIcon = document.createElement('span');
+                        const delIcon = document.createElement('i');
+                        delIcon.className = 'fa-solid fa-trash';
                         delIcon.setAttribute('aria-hidden', 'true');
-                        delIcon.textContent = '🗑️ ';
                         btnDelete.appendChild(delIcon);
                         btnDelete.appendChild(document.createTextNode(strDelete));
 
@@ -237,21 +237,21 @@ const addBlockToCanvas = async(blockDef, config = null) => {
     btnUp.className = 'slms-canvas-block-action-btn slms-btn-block-up';
     btnUp.setAttribute('aria-label', strUp);
     btnUp.title = strUp;
-    btnUp.innerHTML = '<span aria-hidden="true">↑</span>';
+    btnUp.innerHTML = '<i class="fa-solid fa-arrow-up" aria-hidden="true"></i>';
 
     const btnDown = document.createElement('button');
     btnDown.type = 'button';
     btnDown.className = 'slms-canvas-block-action-btn slms-btn-block-down';
     btnDown.setAttribute('aria-label', strDown);
     btnDown.title = strDown;
-    btnDown.innerHTML = '<span aria-hidden="true">↓</span>';
+    btnDown.innerHTML = '<i class="fa-solid fa-arrow-down" aria-hidden="true"></i>';
 
     const btnRemove = document.createElement('button');
     btnRemove.type = 'button';
     btnRemove.className = 'slms-canvas-block-action-btn slms-btn-block-remove';
     btnRemove.setAttribute('aria-label', strRemove);
     btnRemove.title = strRemove;
-    btnRemove.innerHTML = '<span aria-hidden="true">×</span>';
+    btnRemove.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
 
     actions.appendChild(btnUp);
     actions.appendChild(btnDown);
@@ -454,7 +454,7 @@ const showCanvasEmptyState = () => {
         const icon = document.createElement('div');
         icon.className = 'slms-canvas-empty-icon';
         icon.setAttribute('aria-hidden', 'true');
-        icon.textContent = '🎨';
+        icon.innerHTML = '<i class="fa-solid fa-palette" aria-hidden="true"></i>';
 
         const text = document.createElement('p');
         text.className = 'slms-canvas-empty-text';
@@ -653,7 +653,8 @@ const setupSidebarToggle = () => {
     btn.addEventListener('click', () => {
         const collapsed = sidebar.classList.toggle('slms-sidebar-collapsed');
         if (icon) {
-            icon.textContent = collapsed ? '▶' : '◀';
+            icon.classList.toggle('fa-chevron-right', collapsed);
+            icon.classList.toggle('fa-chevron-left', !collapsed);
         }
     });
 };
@@ -866,7 +867,9 @@ const renderLibrary = () => {
             } catch (renderErr) {
                 const icon = document.createElement('span');
                 icon.setAttribute('aria-hidden', 'true');
-                icon.textContent = blockDef.icon || '📦';
+                icon.innerHTML = blockDef.icon
+                    ? `<span aria-hidden="true">${blockDef.icon}</span>`
+                    : '<i class="fa-solid fa-cube" aria-hidden="true"></i>';
                 thumbContent.appendChild(icon);
             }
 
