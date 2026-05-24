@@ -28,7 +28,7 @@ import Notification from 'core/notification';
 import Modal from 'core/modal';
 import {loadTemplates, renderTemplateGrid, saveTemplate, showInlineFeedback,
     exportTemplates, importTemplatesFromFile} from './templateslibrary';
-import {init as initAiGenerator} from './aigenerator';
+import {initBlock as initAiBlock, initModel as initAiModel} from './aigenerator';
 import {init as initAiKeys} from './aikeys';
 
 // Canvas state — array of {id, blockDef, config, element, previewEl}
@@ -770,9 +770,9 @@ const switchTab = async(tabName) => {
 
     grid.innerHTML = '';
 
-    if (tabName === 'ai') {
+    if (tabName === 'ai-block' || tabName === 'ai-model') {
         grid.style.gridTemplateColumns = '1fr';
-        await initAiGenerator(grid, hasAiEnabled, {
+        const aiCallbacks = {
             onConfigure: async(blockDef, mergedConfig) => {
                 await addBlockToCanvas(blockDef, mergedConfig);
             },
@@ -791,7 +791,12 @@ const switchTab = async(tabName) => {
                 await saveTemplate(name, html, 0);
                 showInlineFeedback(await getString('tpl_saved', 'tiny_studiolms'), 'success');
             },
-        });
+        };
+        if (tabName === 'ai-block') {
+            await initAiBlock(grid, hasAiEnabled, aiCallbacks);
+        } else {
+            await initAiModel(grid, hasAiEnabled, aiCallbacks);
+        }
         return;
     }
 
