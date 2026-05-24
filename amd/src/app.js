@@ -189,9 +189,10 @@ export const initStudioApp = (
  *
  * @param {object} blockDef Block definition from the Blocks registry.
  * @param {object|null} config Initial configuration, or null for defaults.
+ * @param {boolean} skipScroll Skip scrollIntoView after adding the block.
  * @returns {Promise<void>}
  */
-const addBlockToCanvas = async(blockDef, config = null) => {
+const addBlockToCanvas = async(blockDef, config = null, skipScroll = false) => {
     const blockId = ++canvasBlockCounter;
     const blockConfig = config
         ? JSON.parse(JSON.stringify(config))
@@ -294,7 +295,9 @@ const addBlockToCanvas = async(blockDef, config = null) => {
 
     selectCanvasBlock(blockId);
 
-    blockEl.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+    if (!skipScroll) {
+        blockEl.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+    }
 };
 
 /**
@@ -463,19 +466,6 @@ const showCanvasEmptyState = () => {
 };
 
 /**
- * Clear all blocks from the canvas.
- */
-const clearCanvas = () => {
-    const blocksList = document.getElementById('slms-canvas-blocks');
-    if (blocksList) {
-        blocksList.innerHTML = '';
-    }
-    canvasBlocks = [];
-    selectCanvasBlock(null);
-    showCanvasEmptyState();
-};
-
-/**
  * Parse template HTML and load each SLMS block into the canvas.
  *
  * @param {string} htmlContent Raw HTML with data-slms-block-type elements.
@@ -496,7 +486,7 @@ export const loadTemplateToCanvas = async(htmlContent, tplName = '') => {
         return;
     }
 
-    clearCanvas();
+    const firstNewIdx = canvasBlocks.length;
 
     for (const el of blockElements) {
         const type = el.getAttribute('data-slms-block-type');
@@ -520,7 +510,11 @@ export const loadTemplateToCanvas = async(htmlContent, tplName = '') => {
             blockDef.extractDOM(el, blockConfig);
         }
 
-        await addBlockToCanvas(blockDef, blockConfig);
+        await addBlockToCanvas(blockDef, blockConfig, true);
+    }
+
+    if (canvasBlocks[firstNewIdx]) {
+        canvasBlocks[firstNewIdx].element.scrollIntoView({behavior: 'smooth', block: 'nearest'});
     }
 
     if (tplName) {
