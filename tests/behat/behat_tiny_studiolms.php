@@ -25,7 +25,6 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class behat_tiny_studiolms extends behat_base {
-
     /**
      * Opens the StudioLMS dialog by clicking the toolbar button via JavaScript.
      *

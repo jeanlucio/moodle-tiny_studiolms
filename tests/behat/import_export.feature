@@ -1,4 +1,4 @@
-@editor @editor_tiny @tiny_studiolms @tiny_studiolms_import_export @javascript
+@editor @editor_tiny @tiny @tiny_studiolms @tiny_studiolms_import_export @javascript
 Feature: Import and export controls are present in StudioLMS
   As a teacher
   I want to see the Import, Export and Save as Template buttons in the My Templates tab
@@ -18,7 +18,7 @@ Feature: Import and export controls are present in StudioLMS
       | activity | name      | course | idnumber | content  |
       | page     | Test page | C1     | page1    | <p>Hi</p> |
     And I log in as "teacher1"
-    And I am on the "Test page" "page" activity editing page
+    And I am on the "Test page" "page activity editing" page
     And I open the StudioLMS dialog
     And I click on the StudioLMS "mine" tab
 

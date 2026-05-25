@@ -1,4 +1,4 @@
-@editor @editor_tiny @tiny_studiolms @tiny_studiolms_manage_templates @javascript
+@editor @editor_tiny @tiny @tiny_studiolms @tiny_studiolms_manage_templates @javascript
 Feature: Manage layout templates in StudioLMS
   As a teacher or manager
   I want the StudioLMS toolbar button to be visible in TinyMCE
@@ -24,7 +24,7 @@ Feature: Manage layout templates in StudioLMS
 
   Scenario: Teacher sees the StudioLMS toolbar button in TinyMCE
     Given I log in as "teacher1"
-    When I am on the "Test page" "page" activity editing page
+    When I am on the "Test page" "page activity editing" page
     Then the StudioLMS toolbar button is visible
 
   Scenario: Manager also sees the StudioLMS toolbar button
@@ -33,12 +33,12 @@ Feature: Manage layout templates in StudioLMS
     And the following "activities" exist:
       | activity | name        | course | idnumber | content   |
       | page     | Manager page | C1    | mpage1   | <p>Hi</p> |
-    When I am on the "Manager page" "page" activity editing page
+    When I am on the "Manager page" "page activity editing" page
     Then the StudioLMS toolbar button is visible
 
   Scenario: Switching between tabs works correctly
     Given I log in as "teacher1"
-    And I am on the "Test page" "page" activity editing page
+    And I am on the "Test page" "page activity editing" page
     And I open the StudioLMS dialog
     When I click on the StudioLMS "global" tab
     Then the StudioLMS "global" tab is active
@@ -49,7 +49,7 @@ Feature: Manage layout templates in StudioLMS
 
   Scenario: All six tabs exist in the dialog
     Given I log in as "teacher1"
-    And I am on the "Test page" "page" activity editing page
+    And I am on the "Test page" "page activity editing" page
     And I open the StudioLMS dialog
     Then the StudioLMS dialog contains the "#slms-tab-components" element
     And the StudioLMS dialog contains the "#slms-tab-official" element

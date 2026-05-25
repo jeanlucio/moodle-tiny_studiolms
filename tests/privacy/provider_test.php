@@ -97,11 +97,9 @@ final class provider_test extends provider_testcase {
 
         $contextlist = provider::get_contexts_for_userid($this->user1->id);
 
-        $this->assertNotEmpty($contextlist->get_contextids());
-        $this->assertContains(
-            \context_system::instance()->id,
-            $contextlist->get_contextids()
-        );
+        $contextids = array_map('intval', $contextlist->get_contextids());
+        $this->assertNotEmpty($contextids);
+        $this->assertContains((int)\context_system::instance()->id, $contextids);
     }
 
     /**
@@ -205,9 +203,9 @@ final class provider_test extends provider_testcase {
         $userlist = new userlist($context, 'tiny_studiolms');
         provider::get_users_in_context($userlist);
 
-        $userids = $userlist->get_userids();
-        $this->assertContains($this->user1->id, $userids);
-        $this->assertContains($this->user2->id, $userids);
+        $userids = array_map('intval', $userlist->get_userids());
+        $this->assertContains((int) $this->user1->id, $userids);
+        $this->assertContains((int) $this->user2->id, $userids);
     }
 
     /**

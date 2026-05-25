@@ -1,4 +1,4 @@
-@editor @editor_tiny @tiny_studiolms @tiny_studiolms_favourites @javascript
+@editor @editor_tiny @tiny @tiny_studiolms @tiny_studiolms_favourites @javascript
 Feature: Favourites tab is accessible in StudioLMS
   As a teacher
   I want to navigate to the Favourites tab in the StudioLMS dialog
@@ -18,7 +18,7 @@ Feature: Favourites tab is accessible in StudioLMS
       | activity | name      | course | idnumber | content  |
       | page     | Test page | C1     | page1    | <p>Hi</p> |
     And I log in as "teacher1"
-    And I am on the "Test page" "page" activity editing page
+    And I am on the "Test page" "page activity editing" page
     And I open the StudioLMS dialog
 
   Scenario: Favourites tab button exists in the dialog

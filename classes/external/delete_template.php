@@ -66,7 +66,7 @@ class delete_template extends external_api {
 
         $canmanageglobal = has_capability('tiny/studiolms:manageglobaltemplates', $context);
 
-        if ((int) $template->userid !== $USER->id && !$canmanageglobal) {
+        if ((int) $template->userid !== (int) $USER->id && !$canmanageglobal) {
             throw new moodle_exception('nopermissions', 'error', '', 'delete template');
         }
 

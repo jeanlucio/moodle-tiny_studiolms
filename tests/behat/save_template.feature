@@ -1,4 +1,4 @@
-@editor @editor_tiny @tiny_studiolms @tiny_studiolms_save_template @javascript
+@editor @editor_tiny @tiny @tiny_studiolms @tiny_studiolms_save_template @javascript
 Feature: Save a layout template in StudioLMS
   As a teacher
   I want to open the StudioLMS dialog and navigate its tabs
@@ -20,13 +20,13 @@ Feature: Save a layout template in StudioLMS
 
   Scenario: Teacher can open the StudioLMS dialog
     Given I log in as "teacher1"
-    And I am on the "Test page" "page" activity editing page
+    And I am on the "Test page" "page activity editing" page
     When I open the StudioLMS dialog
     Then the StudioLMS dialog is open
 
   Scenario: StudioLMS dialog shows all required tab buttons
     Given I log in as "teacher1"
-    And I am on the "Test page" "page" activity editing page
+    And I am on the "Test page" "page activity editing" page
     And I open the StudioLMS dialog
     Then the StudioLMS dialog contains the "#slms-tab-components" element
     And the StudioLMS dialog contains the "#slms-tab-mine" element
@@ -35,14 +35,14 @@ Feature: Save a layout template in StudioLMS
 
   Scenario: Clicking the My Templates tab activates it
     Given I log in as "teacher1"
-    And I am on the "Test page" "page" activity editing page
+    And I am on the "Test page" "page activity editing" page
     And I open the StudioLMS dialog
     When I click on the StudioLMS "mine" tab
     Then the StudioLMS "mine" tab is active
 
   Scenario: The library grid is visible after clicking a tab
     Given I log in as "teacher1"
-    And I am on the "Test page" "page" activity editing page
+    And I am on the "Test page" "page activity editing" page
     And I open the StudioLMS dialog
     When I click on the StudioLMS "mine" tab
     Then the StudioLMS dialog contains the "#slms-library-grid" element
