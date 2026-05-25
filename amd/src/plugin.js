@@ -121,7 +121,7 @@ export default Promise.all([
                     };
                 }
 
-                const [modalBodyHtml] = await Templates.render(`${component}/modal`, {});
+                const modalBodyHtml = await Templates.render(`${component}/modal`, {});
 
                 const modal = await Modal.create({
                     title: modalTitle,
