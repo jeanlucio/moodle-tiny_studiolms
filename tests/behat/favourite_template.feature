@@ -15,8 +15,8 @@ Feature: Favourites tab is accessible in StudioLMS
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
     And the following "activities" exist:
-      | activity | name      | course | idnumber | content  |
-      | page     | Test page | C1     | page1    | <p>Hi</p> |
+      | activity | name      | course | idnumber | content   | contentformat |
+      | page     | Test page | C1     | page1    | <p>Hi</p> | 1             |
     And I log in as "teacher1"
     And I am on the "Test page" "page activity editing" page
     And I open the StudioLMS dialog

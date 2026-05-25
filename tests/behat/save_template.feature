@@ -15,8 +15,8 @@ Feature: Save a layout template in StudioLMS
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
     And the following "activities" exist:
-      | activity | name      | course | idnumber | content          |
-      | page     | Test page | C1     | page1    | <p>Test page</p> |
+      | activity | name      | course | idnumber | content          | contentformat |
+      | page     | Test page | C1     | page1    | <p>Test page</p> | 1             |
 
   Scenario: Teacher can open the StudioLMS dialog
     Given I log in as "teacher1"

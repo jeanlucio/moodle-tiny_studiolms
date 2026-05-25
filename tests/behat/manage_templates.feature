@@ -19,8 +19,8 @@ Feature: Manage layout templates in StudioLMS
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
     And the following "activities" exist:
-      | activity | name      | course | idnumber | content  |
-      | page     | Test page | C1     | page1    | <p>Hi</p> |
+      | activity | name      | course | idnumber | content   | contentformat |
+      | page     | Test page | C1     | page1    | <p>Hi</p> | 1             |
 
   Scenario: Teacher sees the StudioLMS toolbar button in TinyMCE
     Given I log in as "teacher1"
@@ -31,8 +31,8 @@ Feature: Manage layout templates in StudioLMS
     Given I log in as "manager1"
     And I am on "Course 1" course homepage with editing mode on
     And the following "activities" exist:
-      | activity | name        | course | idnumber | content   |
-      | page     | Manager page | C1    | mpage1   | <p>Hi</p> |
+      | activity | name        | course | idnumber | content   | contentformat |
+      | page     | Manager page | C1    | mpage1   | <p>Hi</p> | 1             |
     When I am on the "Manager page" "page activity editing" page
     Then the StudioLMS toolbar button is visible
 
