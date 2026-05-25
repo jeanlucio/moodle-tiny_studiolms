@@ -171,24 +171,13 @@ export default Promise.all([
         return pluginMetadata;
     });
 
-    const configure = (instanceConfig, options) => {
-        const pluginOptions = options?.plugins?.[pluginName]?.config ?? {};
-        if (!pluginOptions.enabled) {
-            return instanceConfig;
-        }
-
-        instanceConfig.toolbar = addToolbarButton(instanceConfig.toolbar, 'content', buttonName);
-        instanceConfig.menu = addMenubarItem(instanceConfig.menu, 'tools', buttonName);
-
+    const configure = (instanceConfig) => {
         const customAttrs = '*[data-slms-block-type|data-slms-state|contenteditable|aria-hidden]';
 
-        if (instanceConfig.extended_valid_elements) {
-            // eslint-disable-next-line camelcase
-            instanceConfig.extended_valid_elements += ',' + customAttrs;
-        } else {
-            // eslint-disable-next-line camelcase
-            instanceConfig.extended_valid_elements = customAttrs;
-        }
+        // eslint-disable-next-line camelcase
+        const extendedValid = instanceConfig.extended_valid_elements
+            ? instanceConfig.extended_valid_elements + ',' + customAttrs
+            : customAttrs;
 
         const editorCss = `
             body.mce-content-body div.slms-grid-slot {
@@ -428,15 +417,19 @@ export default Promise.all([
                 text-decoration: none; }
         `;
 
-        if (instanceConfig.content_style) {
-            // eslint-disable-next-line camelcase
-            instanceConfig.content_style += editorCss;
-        } else {
-            // eslint-disable-next-line camelcase
-            instanceConfig.content_style = editorCss;
-        }
+        // eslint-disable-next-line camelcase
+        const contentStyle = instanceConfig.content_style
+            ? instanceConfig.content_style + editorCss
+            : editorCss;
 
-        return instanceConfig;
+        return {
+            toolbar: addToolbarButton(instanceConfig.toolbar, 'content', buttonName),
+            menu: addMenubarItem(instanceConfig.menu, 'tools', buttonName),
+            // eslint-disable-next-line camelcase
+            extended_valid_elements: extendedValid,
+            // eslint-disable-next-line camelcase
+            content_style: contentStyle,
+        };
     };
 
     return [pluginName, {configure}];

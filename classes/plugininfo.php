@@ -25,6 +25,7 @@
 namespace tiny_studiolms;
 
 use context;
+use editor_tiny\editor;
 use editor_tiny\plugin;
 use editor_tiny\plugin_with_buttons;
 use editor_tiny\plugin_with_configuration;
@@ -38,6 +39,30 @@ use editor_tiny\plugin_with_menuitems;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class plugininfo extends plugin implements plugin_with_buttons, plugin_with_configuration, plugin_with_menuitems {
+    /**
+     * Enable the plugin for any logged-in, non-guest user.
+     *
+     * The capability tiny/studiolms:use controls which users can manage
+     * templates (checked server-side in web services). We load the plugin
+     * toolbar button for all authenticated users so the button is always
+     * visible regardless of which context level the editor is initialised in.
+     *
+     * @param context $context
+     * @param array $options
+     * @param array $fpoptions
+     * @param editor|null $editor
+     * @return bool
+     */
+    #[\Override]
+    public static function is_enabled(
+        context $context,
+        array $options,
+        array $fpoptions,
+        ?editor $editor = null
+    ): bool {
+        return isloggedin() && !isguestuser();
+    }
+
     /**
      * Returns plugin configuration for the current context.
      *
