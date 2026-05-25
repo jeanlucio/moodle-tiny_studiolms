@@ -103,15 +103,16 @@ export const initStudioApp = (
         targetEditNode = editData.node;
     }
 
+    setupNavigation(canManageGlobal);
+    setupZoomControls();
+    setupTabs();
+    setupSidebarToggle();
+    setupSidebarSearch();
+    setupAiKeysButton();
+    setupImportExportButtons();
+
     setTimeout(async() => {
         showCanvasEmptyState();
-        setupNavigation(canManageGlobal);
-        setupZoomControls();
-        setupTabs();
-        setupSidebarToggle();
-        setupSidebarSearch();
-        setupAiKeysButton();
-        setupImportExportButtons();
 
         if (editData && editData.type && editData.state) {
             const blockDef = Blocks[editData.type];
