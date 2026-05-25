@@ -72,7 +72,7 @@ class save_template extends external_api {
 
         $context = context_system::instance();
         self::validate_context($context);
-        require_capability('tiny/studiolms:use', $context);
+        require_login(null, false);
 
         if ($params['isglobal']) {
             require_capability('tiny/studiolms:manageglobaltemplates', $context);

@@ -67,7 +67,7 @@ class export_templates extends external_api {
 
         $context = context_system::instance();
         self::validate_context($context);
-        require_capability('tiny/studiolms:use', $context);
+        require_login(null, false);
 
         $canmanageglobal = has_capability('tiny/studiolms:manageglobaltemplates', $context);
         $userid = $USER->id;

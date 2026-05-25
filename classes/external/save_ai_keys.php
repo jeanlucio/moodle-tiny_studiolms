@@ -84,7 +84,7 @@ class save_ai_keys extends external_api {
 
         $context = context_system::instance();
         self::validate_context($context);
-        require_capability('tiny/studiolms:use', $context);
+        require_login(null, false);
 
         if (!empty($params['custom_url']) && !self::is_safe_url($params['custom_url'])) {
             throw new \moodle_exception('ai_generator_error', 'tiny_studiolms');

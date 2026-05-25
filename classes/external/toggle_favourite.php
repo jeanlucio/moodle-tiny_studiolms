@@ -58,7 +58,7 @@ class toggle_favourite extends external_api {
 
         $context = context_system::instance();
         self::validate_context($context);
-        require_capability('tiny/studiolms:use', $context);
+        require_login(null, false);
 
         $DB->get_record('tiny_studiolms_templates', ['id' => $params['templateid']], 'id', MUST_EXIST);
 

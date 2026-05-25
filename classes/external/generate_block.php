@@ -64,7 +64,7 @@ class generate_block extends external_api {
 
         $context = context_system::instance();
         self::validate_context($context);
-        require_capability('tiny/studiolms:use', $context);
+        require_login(null, false);
 
         try {
             $result = generator::generate_block($params['prompt']);
