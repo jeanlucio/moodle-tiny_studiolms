@@ -40,7 +40,10 @@ class behat_tiny_studiolms extends behat_base {
             'css_element',
         ]);
 
-        $this->find('css', '#studiolms-app');
+        $this->execute('behat_general::should_exist', [
+            '#studiolms-app',
+            'css_element',
+        ]);
     }
 
     /**
@@ -64,16 +67,10 @@ class behat_tiny_studiolms extends behat_base {
      * @Then the StudioLMS dialog is open
      */
     public function the_studiolms_dialog_is_open(): void {
-        $found = $this->getSession()->evaluateScript(
-            "return document.querySelector('#studiolms-app') !== null;"
-        );
-
-        if (!$found) {
-            throw new \Behat\Mink\Exception\ExpectationException(
-                'The StudioLMS dialog (#studiolms-app) was not found in the DOM.',
-                $this->getSession()
-            );
-        }
+        $this->execute('behat_general::should_exist', [
+            '#studiolms-app',
+            'css_element',
+        ]);
     }
 
     /**
@@ -83,15 +80,10 @@ class behat_tiny_studiolms extends behat_base {
      * @param string $selector CSS selector relative to #studiolms-app.
      */
     public function studiolms_dialog_contains_element(string $selector): void {
-        $js = "return document.querySelector('#studiolms-app " . addslashes($selector) . "') !== null;";
-        $found = $this->getSession()->evaluateScript($js);
-
-        if (!$found) {
-            throw new \Behat\Mink\Exception\ExpectationException(
-                "Element '{$selector}' was not found inside the StudioLMS dialog.",
-                $this->getSession()
-            );
-        }
+        $this->execute('behat_general::should_exist', [
+            '#studiolms-app ' . $selector,
+            'css_element',
+        ]);
     }
 
     /**
@@ -101,18 +93,22 @@ class behat_tiny_studiolms extends behat_base {
      * @param string $tab The data-slms-tab attribute value.
      */
     public function studiolms_tab_is_active(string $tab): void {
-        $js = "
-            const btn = document.querySelector('[data-slms-tab=\"{$tab}\"]');
-            return btn && (btn.classList.contains('active') || btn.getAttribute('aria-selected') === 'true');
-        ";
-        $active = $this->getSession()->evaluateScript($js);
+        $this->spin(function () use ($tab) {
+            $js = "
+                const btn = document.querySelector('[data-slms-tab=\"{$tab}\"]');
+                return btn && (btn.classList.contains('active') || btn.getAttribute('aria-selected') === 'true');
+            ";
+            $active = $this->getSession()->evaluateScript($js);
 
-        if (!$active) {
-            throw new \Behat\Mink\Exception\ExpectationException(
-                "StudioLMS tab '{$tab}' is not active.",
-                $this->getSession()
-            );
-        }
+            if (!$active) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    "StudioLMS tab '{$tab}' is not active.",
+                    $this->getSession()
+                );
+            }
+
+            return true;
+        });
     }
 
     /**
