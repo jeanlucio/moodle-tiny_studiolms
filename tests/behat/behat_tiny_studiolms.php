@@ -28,15 +28,13 @@ class behat_tiny_studiolms extends behat_base {
     /**
      * Opens the StudioLMS dialog by clicking the toolbar button.
      *
-     * Expands the TinyMCE toolbar first so the button is always interactable,
-     * even when TinyMCE is in sliding (overflow) toolbar mode.
-     * The toolbar button has aria-label equal to the `button_tooltip` lang string.
+     * The toolbar button has aria-label equal to the `button_tooltip` lang string
+     * ("StudioLMS Library"). Uses behat_general::i_click_on with spin retry, so
+     * it waits for TinyMCE to finish initialising before clicking.
      *
      * @When I open the StudioLMS dialog
      */
     public function i_open_the_studiolms_dialog(): void {
-        $this->execute('behat_editor_tiny::expand_all_toolbars', ['Page content']);
-
         $this->execute('behat_general::i_click_on', [
             '[aria-label="StudioLMS Library"]',
             'css_element',
