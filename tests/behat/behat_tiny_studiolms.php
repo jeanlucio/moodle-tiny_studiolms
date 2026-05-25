@@ -35,7 +35,8 @@ class behat_tiny_studiolms extends behat_base {
      * @When I open the StudioLMS dialog
      */
     public function i_open_the_studiolms_dialog(): void {
-        $this->getSession()->wait(20000,
+        $this->getSession()->wait(
+            20000,
             'document.querySelector(\'[aria-label="StudioLMS Library"]\') !== null'
         );
 
@@ -43,7 +44,8 @@ class behat_tiny_studiolms extends behat_base {
             'document.querySelector(\'[aria-label="StudioLMS Library"]\').click();'
         );
 
-        $this->getSession()->wait(10000,
+        $this->getSession()->wait(
+            10000,
             'document.querySelector(\'#studiolms-app\') !== null'
         );
     }
