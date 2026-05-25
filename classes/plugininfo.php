@@ -143,7 +143,7 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
      */
     public static function get_available_buttons(): array {
         return [
-            'tiny_studiolms/studiolms' => [
+            'tiny_studiolms' => [
                 'image' => 'icon', // Looks for pix/icon.svg.
             ],
         ];
@@ -157,7 +157,7 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
     public static function get_available_menuitems(): array {
         return [
             'tools' => [ // Places the item in the Tools menu.
-                'tiny_studiolms/studiolms',
+                'tiny_studiolms',
             ],
         ];
     }

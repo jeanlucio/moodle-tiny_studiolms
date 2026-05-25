@@ -33,7 +33,7 @@ import Notification from 'core/notification';
 
 const component = 'tiny_studiolms';
 const pluginName = `${component}/plugin`;
-const buttonName = `${component}/studiolms`;
+const buttonName = component;
 const enabledOption = getPluginOptionName(pluginName, 'enabled');
 const canManageGlobalOption = getPluginOptionName(pluginName, 'canmanageglobaltemplates');
 const presetsOption = getPluginOptionName(pluginName, 'presets');
@@ -174,7 +174,6 @@ export default Promise.all([
     const configure = (instanceConfig) => {
         const customAttrs = '*[data-slms-block-type|data-slms-state|contenteditable|aria-hidden]';
 
-        // eslint-disable-next-line camelcase
         const extendedValid = instanceConfig.extended_valid_elements
             ? instanceConfig.extended_valid_elements + ',' + customAttrs
             : customAttrs;
@@ -417,7 +416,6 @@ export default Promise.all([
                 text-decoration: none; }
         `;
 
-        // eslint-disable-next-line camelcase
         const contentStyle = instanceConfig.content_style
             ? instanceConfig.content_style + editorCss
             : editorCss;
