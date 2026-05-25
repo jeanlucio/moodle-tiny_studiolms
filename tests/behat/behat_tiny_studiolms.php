@@ -35,21 +35,17 @@ class behat_tiny_studiolms extends behat_base {
      * @When I open the StudioLMS dialog
      */
     public function i_open_the_studiolms_dialog(): void {
-        $this->spin(function (): bool {
-            return (bool) $this->getSession()->evaluateScript(
-                'return document.querySelector(\'[aria-label="StudioLMS Library"]\') !== null;'
-            );
-        }, false, 20);
+        $this->getSession()->wait(20000,
+            'document.querySelector(\'[aria-label="StudioLMS Library"]\') !== null'
+        );
 
         $this->getSession()->executeScript(
             'document.querySelector(\'[aria-label="StudioLMS Library"]\').click();'
         );
 
-        $this->spin(function (): bool {
-            return (bool) $this->getSession()->evaluateScript(
-                "return document.querySelector('#studiolms-app') !== null;"
-            );
-        }, false, 10);
+        $this->getSession()->wait(10000,
+            'document.querySelector(\'#studiolms-app\') !== null'
+        );
     }
 
     /**
