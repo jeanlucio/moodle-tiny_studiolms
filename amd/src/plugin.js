@@ -58,14 +58,12 @@ export default Promise.all([
     getString('button_tooltip', component),
     getString('modal_title', component),
     getString('pluginname', component),
-    Templates.render(`${component}/modal`, {})
 ]).then(([
     tinyMCE,
     pluginMetadata,
     tooltip,
     modalTitle,
     pluginNameStr,
-    modalBodyHtml
 ]) => {
 
     tinyMCE.PluginManager.add(pluginName, (editor) => {
@@ -122,6 +120,8 @@ export default Promise.all([
                         tplName: slmsBlock.getAttribute('data-slms-tpl-name') || null
                     };
                 }
+
+                const [modalBodyHtml] = await Templates.render(`${component}/modal`, {});
 
                 const modal = await Modal.create({
                     title: modalTitle,
