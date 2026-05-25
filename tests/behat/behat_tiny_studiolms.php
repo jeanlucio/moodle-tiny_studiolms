@@ -118,13 +118,45 @@ class behat_tiny_studiolms extends behat_base {
     /**
      * Asserts that the StudioLMS toolbar button is present in the TinyMCE toolbar.
      *
+     * On failure, throws an exception that includes a diagnostic dump of all
+     * TinyMCE instances on the page, the plugins each has loaded, and the
+     * buttons each has registered. This makes it possible to see from CI logs
+     * whether TinyMCE itself is initialised at all, whether tiny_studiolms is
+     * in its plugins list, and whether the studiolms button is in its registry.
+     *
      * @Then the StudioLMS toolbar button is visible
      */
     public function studiolms_toolbar_button_is_visible(): void {
-        $this->execute('behat_general::should_exist', [
-            '[aria-label="StudioLMS Library"]',
-            'css_element',
-        ]);
+        try {
+            $this->execute('behat_general::should_exist', [
+                '[aria-label="StudioLMS Library"]',
+                'css_element',
+            ]);
+        } catch (\Exception $e) {
+            $diagnostic = $this->getSession()->evaluateScript(
+                'return (function() {' .
+                'try {' .
+                '  if (typeof tinymce === "undefined") return "tinymce global is undefined";' .
+                '  var editors = tinymce.editors || [];' .
+                '  var info = { editorCount: editors.length, editors: [] };' .
+                '  for (var i = 0; i < editors.length; i++) {' .
+                '    var ed = editors[i];' .
+                '    var pluginKeys = ed.plugins ? Object.keys(ed.plugins) : [];' .
+                '    var buttonKeys = []; try { buttonKeys = Object.keys(ed.ui.registry.getAll().buttons || {}); } catch(e) {}' .
+                '    info.editors.push({' .
+                '      id: ed.id, initialized: !!ed.initialized,' .
+                '      plugins: pluginKeys, buttons: buttonKeys' .
+                '    });' .
+                '  }' .
+                '  return JSON.stringify(info);' .
+                '} catch(e) { return "diag error: " + e.message; }' .
+                '})();'
+            );
+            throw new \Behat\Mink\Exception\ExpectationException(
+                $e->getMessage() . ' | DIAG: ' . $diagnostic,
+                $this->getSession()
+            );
+        }
     }
 
     /**
