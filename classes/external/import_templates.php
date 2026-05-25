@@ -74,7 +74,9 @@ class import_templates extends external_api {
 
         $context = context_system::instance();
         self::validate_context($context);
-        require_login(null, false);
+        if (!isloggedin() || isguestuser()) {
+            throw new \required_capability_exception($context, 'tiny/studiolms:use', 'nopermissions', '');
+        }
 
         $canmanageglobal = has_capability('tiny/studiolms:manageglobaltemplates', $context);
         $now = time();

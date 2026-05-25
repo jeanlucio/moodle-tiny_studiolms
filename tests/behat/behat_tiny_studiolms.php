@@ -49,16 +49,36 @@ class behat_tiny_studiolms extends behat_base {
     /**
      * Clicks a StudioLMS tab button by its data-slms-tab attribute value.
      *
+     * Uses a spin loop: clicks via Selenium and immediately verifies the tab
+     * is active. This ensures the click lands after setupTabs() has attached
+     * its event listeners (which run inside a setTimeout in app.js).
+     *
      * Tab values: components, global, mine, favourites, ai-block, ai-model.
      *
      * @When I click on the StudioLMS :tab tab
      * @param string $tab The data-slms-tab attribute value.
      */
     public function i_click_on_studiolms_tab(string $tab): void {
-        $js = "document.querySelector('[data-slms-tab=\"{$tab}\"]').click();";
-        $this->getSession()->executeScript($js);
+        $this->spin(function () use ($tab) {
+            $this->execute('behat_general::i_click_on', [
+                '[data-slms-tab="' . $tab . '"]',
+                'css_element',
+            ]);
 
-        $this->getSession()->wait(500);
+            $js = "
+                const btn = document.querySelector('[data-slms-tab=\"{$tab}\"]');
+                return btn && (btn.classList.contains('active') || btn.getAttribute('aria-selected') === 'true');
+            ";
+
+            if (!$this->getSession()->evaluateScript($js)) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    "StudioLMS tab '{$tab}' is not active after click.",
+                    $this->getSession()
+                );
+            }
+
+            return true;
+        });
     }
 
     /**

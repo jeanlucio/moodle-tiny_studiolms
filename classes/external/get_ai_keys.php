@@ -58,7 +58,9 @@ class get_ai_keys extends external_api {
     public static function execute(): array {
         $context = context_system::instance();
         self::validate_context($context);
-        require_login(null, false);
+        if (!isloggedin() || isguestuser()) {
+            throw new \required_capability_exception($context, 'tiny/studiolms:use', 'nopermissions', '');
+        }
 
         $geminikey  = (string)get_user_preferences('tiny_studiolms_gemini_key', '');
         $groqkey    = (string)get_user_preferences('tiny_studiolms_groq_key', '');

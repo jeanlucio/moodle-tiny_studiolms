@@ -60,7 +60,7 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
         array $fpoptions,
         ?editor $editor = null
     ): bool {
-        return isloggedin() && !isguestuser();
+        return has_capability('tiny/studiolms:use', $context);
     }
 
     /**

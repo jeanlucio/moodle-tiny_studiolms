@@ -65,7 +65,9 @@ class get_templates extends external_api {
 
         $context = context_system::instance();
         self::validate_context($context);
-        require_login(null, false);
+        if (!isloggedin() || isguestuser()) {
+            throw new \required_capability_exception($context, 'tiny/studiolms:use', 'nopermissions', '');
+        }
 
         $userid = $USER->id;
 
