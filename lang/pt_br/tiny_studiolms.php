@@ -305,6 +305,7 @@ $string['sound_opt_pop'] = 'Pop';
 $string['state_closed'] = 'Fechado';
 $string['state_open'] = 'Aberto';
 $string['studiolms:manageglobaltemplates'] = 'Gerenciar templates oficiais';
+$string['studiolms:use'] = 'Usar o plugin de editor StudioLMS';
 $string['tab_ai'] = 'Gerador IA';
 $string['tab_ai_block'] = 'Bloco IA';
 $string['tab_ai_keys'] = 'AI Keys';
