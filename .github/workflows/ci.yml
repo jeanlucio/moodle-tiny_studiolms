@@ -1,9 +1,54 @@
 name: Moodle Plugin CI
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]] || \
+             [[ "${{ github.event_name }}" == "pull_request" ]] || \
+             [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo 'matrix<<EOF' >> $GITHUB_OUTPUT
+            echo '[
+              {"moodle-branch":"MOODLE_502_STABLE","php":"8.3","database":"pgsql","runchecks":"all"},
+              {"moodle-branch":"MOODLE_502_STABLE","php":"8.4","database":"mariadb"},
+              {"moodle-branch":"MOODLE_501_STABLE","php":"8.3","database":"pgsql"},
+              {"moodle-branch":"MOODLE_501_STABLE","php":"8.2","database":"mariadb"},
+              {"moodle-branch":"MOODLE_500_STABLE","php":"8.2","database":"pgsql"},
+              {"moodle-branch":"MOODLE_500_STABLE","php":"8.2","database":"mariadb"},
+              {"moodle-branch":"MOODLE_405_STABLE","php":"8.2","database":"pgsql"},
+              {"moodle-branch":"MOODLE_405_STABLE","php":"8.2","database":"mariadb"}
+            ]' >> $GITHUB_OUTPUT
+            echo 'EOF' >> $GITHUB_OUTPUT
+          else
+            echo 'matrix<<EOF' >> $GITHUB_OUTPUT
+            echo '[
+              {"moodle-branch":"MOODLE_502_STABLE","php":"8.3","database":"pgsql","runchecks":"all"},
+              {"moodle-branch":"MOODLE_405_STABLE","php":"8.2","database":"mariadb"}
+            ]' >> $GITHUB_OUTPUT
+            echo 'EOF' >> $GITHUB_OUTPUT
+          fi
+
   test:
+    needs: setup
     runs-on: ubuntu-22.04
 
     services:
@@ -30,15 +75,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - {moodle-branch: 'MOODLE_502_STABLE', php: '8.3', database: 'pgsql', runchecks: 'all'}
-          - {moodle-branch: 'MOODLE_502_STABLE', php: '8.4', database: 'mariadb'}
-          - {moodle-branch: 'MOODLE_501_STABLE', php: '8.3', database: 'pgsql'}
-          - {moodle-branch: 'MOODLE_501_STABLE', php: '8.2', database: 'mariadb'}
-          - {moodle-branch: 'MOODLE_500_STABLE', php: '8.2', database: 'pgsql'}
-          - {moodle-branch: 'MOODLE_500_STABLE', php: '8.2', database: 'mariadb'}
-          - {moodle-branch: 'MOODLE_405_STABLE', php: '8.2', database: 'pgsql'}
-          - {moodle-branch: 'MOODLE_405_STABLE', php: '8.2', database: 'mariadb'}
+        include: ${{ fromJSON(needs.setup.outputs.matrix) }}
 
     steps:
       - name: Check out repository code
