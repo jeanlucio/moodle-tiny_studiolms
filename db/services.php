@@ -115,4 +115,13 @@ $functions = [
         'loginrequired' => true,
         'capabilities'  => 'tiny/studiolms:use',
     ],
+    'tiny_studiolms_chat_message' => [
+        'classname'   => 'tiny_studiolms\external\chat_message',
+        'methodname'  => 'execute',
+        'description' => 'Send a chat message to the AI assistant and receive a reply with an optional action.',
+        'type'        => 'write',
+        'ajax'        => true,
+        'loginrequired' => true,
+        'capabilities'  => 'tiny/studiolms:use',
+    ],
 ];

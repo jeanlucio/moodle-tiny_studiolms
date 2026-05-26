@@ -30,6 +30,7 @@ import {loadTemplates, renderTemplateGrid, saveTemplate, showInlineFeedback,
     exportTemplates, importTemplatesFromFile} from './templateslibrary';
 import {initBlock as initAiBlock, initModel as initAiModel} from './aigenerator';
 import {init as initAiKeys} from './aikeys';
+import {init as initAiChat} from './aichat';
 
 // Canvas state — array of {id, blockDef, config, element, previewEl}
 let canvasBlocks = [];
@@ -776,8 +777,26 @@ const switchTab = async(tabName) => {
 
     grid.innerHTML = '';
 
-    if (tabName === 'ai-block' || tabName === 'ai-model') {
+    if (tabName === 'ai-block' || tabName === 'ai-model' || tabName === 'ai-chat') {
         grid.style.gridTemplateColumns = '1fr';
+
+        if (tabName === 'ai-chat') {
+            await initAiChat(grid, hasAiEnabled, presetsData, {
+                onApplyPreset: async(presetName) => {
+                    const found = presetsData.find((p) => p.name === presetName);
+                    if (found) {
+                        const html = await renderPresetToHtml(found);
+                        await loadTemplateToCanvas(html, found.name);
+                    }
+                },
+                onGenerateTemplate: async(preset) => {
+                    const html = await renderPresetToHtml(preset);
+                    await loadTemplateToCanvas(html, preset.name);
+                },
+            });
+            return;
+        }
+
         const aiCallbacks = {
             onConfigure: async(blockDef, mergedConfig) => {
                 await addBlockToCanvas(blockDef, mergedConfig);

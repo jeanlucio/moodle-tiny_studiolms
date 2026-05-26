@@ -509,6 +509,110 @@ class generator {
     }
 
     /**
+     * Sends a multi-turn conversation to the AI provider chain and returns the raw text reply.
+     *
+     * Each entry in $messages must have 'role' (user|assistant) and 'content' (string).
+     * The caller is responsible for building the system prompt via chat::build_system_prompt().
+     *
+     * @param string $systemprompt System instruction sent to all providers.
+     * @param array  $messages     Conversation history [{role, content}, ...].
+     * @return array With keys 'data' (string) and 'provider' (string).
+     * @throws \moodle_exception If no provider is configured or all calls fail.
+     */
+    public static function call_chat(string $systemprompt, array $messages): array {
+        $keys = self::resolve_keys();
+
+        if (empty($keys['geminikey']) && empty($keys['groqkey']) && empty($keys['customkey'])) {
+            throw new \moodle_exception('ai_generator_no_config', 'tiny_studiolms');
+        }
+
+        $result = ['success' => false, 'data' => ''];
+        $failures = [];
+
+        if (!empty($keys['geminikey'])) {
+            $contents = [];
+            foreach ($messages as $msg) {
+                $role = $msg['role'] === 'assistant' ? 'model' : 'user';
+                $contents[] = ['role' => $role, 'parts' => [['text' => $msg['content']]]];
+            }
+            $url = 'https://generativelanguage.googleapis.com/v1beta/models/'
+                . 'gemini-1.5-flash:generateContent?key=' . $keys['geminikey'];
+            $data = [
+                'system_instruction' => ['parts' => [['text' => $systemprompt]]],
+                'contents'           => $contents,
+                'generationConfig'   => [
+                    'responseMimeType' => 'application/json',
+                    'maxOutputTokens'  => 1500,
+                ],
+            ];
+            $result = self::curl_request($url, json_encode($data), ['Content-Type: application/json'], 'Gemini');
+            if (!$result['success']) {
+                $failures[] = 'Gemini: HTTP ' . ($result['httpcode'] ?? '?')
+                    . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
+            }
+        }
+
+        if (!$result['success'] && !empty($keys['groqkey'])) {
+            $msgs = [['role' => 'system', 'content' => $systemprompt]];
+            foreach ($messages as $msg) {
+                $msgs[] = ['role' => $msg['role'], 'content' => $msg['content']];
+            }
+            $data = [
+                'model'           => 'llama-3.3-70b-versatile',
+                'messages'        => $msgs,
+                'response_format' => ['type' => 'json_object'],
+                'max_tokens'      => 1500,
+                'temperature'     => 0.7,
+            ];
+            $result = self::curl_request(
+                'https://api.groq.com/openai/v1/chat/completions',
+                json_encode($data),
+                ['Authorization: Bearer ' . $keys['groqkey'], 'Content-Type: application/json'],
+                'Groq'
+            );
+            if (!$result['success']) {
+                $failures[] = 'Groq: HTTP ' . ($result['httpcode'] ?? '?')
+                    . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
+            }
+        }
+
+        if (!$result['success'] && !empty($keys['customkey']) && !empty($keys['customurl'])) {
+            if (self::is_safe_url((string)$keys['customurl'])) {
+                $msgs = [['role' => 'system', 'content' => $systemprompt]];
+                foreach ($messages as $msg) {
+                    $msgs[] = ['role' => $msg['role'], 'content' => $msg['content']];
+                }
+                $model = !empty($keys['custommodel']) ? (string)$keys['custommodel'] : 'gpt-4o-mini';
+                $data = [
+                    'model'           => $model,
+                    'messages'        => $msgs,
+                    'response_format' => ['type' => 'json_object'],
+                    'max_tokens'      => 1500,
+                    'temperature'     => 0.7,
+                ];
+                $result = self::curl_request(
+                    (string)$keys['customurl'],
+                    json_encode($data),
+                    ['Authorization: Bearer ' . $keys['customkey'], 'Content-Type: application/json'],
+                    'Custom'
+                );
+                if (!$result['success']) {
+                    $failures[] = 'Custom: HTTP ' . ($result['httpcode'] ?? '?')
+                        . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
+                }
+            } else {
+                $failures[] = 'Custom: unsafe URL';
+            }
+        }
+
+        if (!$result['success']) {
+            throw new \moodle_exception('ai_chat_error', 'tiny_studiolms', '', null, implode(' | ', $failures));
+        }
+
+        return ['data' => $result['data'], 'provider' => $result['provider']];
+    }
+
+    /**
      * Validates and normalises the raw JSON string returned by the LLM.
      *
      * @param string $content Raw text from the LLM response.

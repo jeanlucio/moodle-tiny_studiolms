@@ -1412,3 +1412,74 @@ a.studiolms-webteca-item:hover {
     color: #fff;
     text-decoration: none;
 }
+
+/* -----------------------------------------
+   AI CHAT TAB
+   ----------------------------------------- */
+
+.tiny_studiolms .slms-chat-section {
+    height: 100%;
+    min-height: 0;
+}
+
+.tiny_studiolms .slms-chat-messages-area {
+    min-height: 120px;
+    max-height: 340px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    scroll-behavior: smooth;
+}
+
+.tiny_studiolms .slms-chat-message {
+    display: flex;
+    flex-direction: column;
+    max-width: 90%;
+}
+
+.tiny_studiolms .slms-chat-message-user {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.tiny_studiolms .slms-chat-message-assistant {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.tiny_studiolms .slms-chat-bubble {
+    padding: 0.5rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.tiny_studiolms .slms-chat-message-user .slms-chat-bubble {
+    background: var(--bs-primary, #0d6efd);
+    color: #fff;
+    border-bottom-right-radius: 3px;
+}
+
+.tiny_studiolms .slms-chat-message-assistant .slms-chat-bubble {
+    background: var(--bs-light, #f8f9fa);
+    color: var(--bs-body-color, #212529);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-bottom-left-radius: 3px;
+}
+
+.tiny_studiolms .slms-chat-action-card {
+    background: var(--bs-primary-bg-subtle, #cfe2ff);
+    border-top: 1px solid var(--bs-primary-border-subtle, #9ec5fe);
+}
+
+.tiny_studiolms .slms-chat-input {
+    resize: none;
+    font-size: 0.875rem;
+}
+
+.tiny_studiolms .slms-chat-send-btn {
+    flex-shrink: 0;
+    align-self: flex-end;
+}
