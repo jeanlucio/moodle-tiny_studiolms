@@ -34,7 +34,9 @@
   * **My Templates** — Teacher's personal layouts with Save, Export and Import actions.
   * **Favourites** — Curated mix of starred templates from all tabs.
 * ⭐ **Favourites System:** Toggle any template as favourite for quick access.
-* 🤖 **AI Content Generation (Optional):** Teacher types a plain-language prompt ("Create a red warning card about the exam") and the block is generated ready to insert. Supports Gemini, Groq and any OpenAI-compatible provider.
+* 🤖 **AI Content Generation (Optional):** Two complementary AI modes powered by Gemini, Groq or any OpenAI-compatible provider:
+  * **AI Block Generator** — Teacher types a plain-language prompt ("Create a red warning card about the exam") and the block is generated ready to insert.
+  * **AI Chat Assistant** — Conversational multi-turn chat where the teacher pastes a syllabus, lesson plan or any course content. The AI immediately generates a complete visual template with the real content populated, or asks whether to use Grid Cards vs Webteca when the content is a list of resources. The AI provider used is shown below each reply for transparency.
 * 📤 **Export / Import:** Templates travel as `.json` files, portable across Moodle instances.
 * 📊 **Audit Logs:** Template created, updated and deleted events recorded in Moodle's standard log store.
 * 🔒 **Privacy API:** Full GDPR/LGPD compliance — user data export and deletion covered.
@@ -97,11 +99,20 @@ Suitable for:
 2. Open the StudioLMS modal and go to **My Templates**.
 3. Click **Save as Template**, give it a name and confirm.
 
-**Using the AI generator:**
+**Using the AI generator (single block):**
 
-1. Open the **AI** tab inside the modal.
+1. Open the **AI Layout** tab inside the modal.
 2. Type a plain-language description of the block you want.
 3. Review the generated block and click **Insert** to add it to the editor.
+
+**Using the AI Chat assistant:**
+
+1. Open the **Chat IA** tab inside the modal.
+2. Paste a syllabus, activity list, lesson plan or any course content into the chat.
+3. The AI will immediately generate a complete template with your real content populated.
+4. For resource lists (links, videos, PDFs) the AI will ask whether you prefer Grid Cards or Webteca.
+5. Review the action card and click **Apply** to load the template onto the canvas.
+6. Edit blocks as needed and click **Insert**.
 
 ---
 
@@ -152,7 +163,7 @@ API keys are configured globally by the Moodle site administrator under **Site a
 
 #### Data Transmission
 
-When the AI feature is used, the teacher's prompt is transmitted to the selected provider for processing.
+When the AI feature is used, the teacher's prompt or chat message is transmitted to the selected provider for processing.
 
 The plugin:
 * Does not store prompts or AI responses
@@ -194,7 +205,9 @@ O **StudioLMS** é um sub-plugin TinyMCE 6 para Moodle que traz uma experiência
   * **Meus Templates** — Layouts pessoais do professor com ações de Salvar, Exportar e Importar.
   * **Favoritos** — Mix curado de templates marcados como favoritos em todas as abas.
 * ⭐ **Sistema de Favoritos:** Marque qualquer template como favorito para acesso rápido.
-* 🤖 **Geração de Conteúdo com IA (Opcional):** O professor digita uma descrição em linguagem natural ("Crie um card de aviso vermelho sobre a prova") e o bloco é gerado pronto para inserir. Suporta Gemini, Groq e qualquer API compatível com OpenAI.
+* 🤖 **Geração de Conteúdo com IA (Opcional):** Dois modos complementares de IA com suporte a Gemini, Groq e qualquer API compatível com OpenAI:
+  * **Gerador de Blocos IA** — O professor digita uma descrição em linguagem natural ("Crie um card de aviso vermelho sobre a prova") e o bloco é gerado pronto para inserir.
+  * **Chat Assistente IA** — Chat conversacional multi-turno onde o professor cola uma ementa, plano de aula ou qualquer conteúdo do curso. A IA gera imediatamente um template visual completo com o conteúdo real preenchido, ou pergunta se deve usar Grid de Cards ou Webteca quando o conteúdo é uma lista de recursos. O provedor de IA utilizado é exibido abaixo de cada resposta para transparência.
 * 📤 **Exportar / Importar:** Templates viajam como arquivos `.json`, portáveis entre instâncias do Moodle.
 * 📊 **Logs de Auditoria:** Eventos de criação, atualização e exclusão de templates registrados no log padrão do Moodle.
 * 🔒 **Privacy API:** Conformidade total com LGPD/GDPR — exportação e exclusão de dados do usuário cobertas.
@@ -257,11 +270,20 @@ Indicado para:
 2. Abra o modal do StudioLMS e acesse **Meus Templates**.
 3. Clique em **Salvar como Template**, dê um nome e confirme.
 
-**Usando o gerador de IA:**
+**Usando o gerador de IA (bloco único):**
 
-1. Abra a aba **IA** dentro do modal.
+1. Abra a aba **AI Layout** dentro do modal.
 2. Digite uma descrição em linguagem natural do bloco que deseja.
 3. Revise o bloco gerado e clique em **Inserir** para adicioná-lo ao editor.
+
+**Usando o Chat Assistente IA:**
+
+1. Abra a aba **Chat IA** dentro do modal.
+2. Cole uma ementa, lista de atividades, plano de aula ou qualquer conteúdo do curso no chat.
+3. A IA gerará imediatamente um template completo com seu conteúdo real preenchido.
+4. Para listas de recursos (links, vídeos, PDFs) a IA perguntará se prefere Grid de Cards ou Webteca.
+5. Revise o card de ação e clique em **Aplicar** para carregar o template no canvas.
+6. Edite os blocos conforme necessário e clique em **Inserir**.
 
 ---
 
@@ -312,7 +334,7 @@ As chaves de API são configuradas globalmente pelo administrador do Moodle em *
 
 #### Transmissão de dados
 
-Quando o recurso de IA é utilizado, o prompt do professor é enviado ao provedor selecionado para processamento.
+Quando o recurso de IA é utilizado, o prompt ou mensagem de chat do professor é enviado ao provedor selecionado para processamento.
 
 O plugin:
 * Não armazena prompts nem respostas da IA

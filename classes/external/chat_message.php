@@ -41,6 +41,22 @@ use stdClass;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class chat_message extends external_api {
+    /** @var int Maximum conversation history entries accepted per request. */
+    const MAX_HISTORY = 30;
+
+    /**
+     * Filters a raw history array to only include valid roles (user, assistant).
+     *
+     * @param array $history Raw history entries [{role, content}, ...].
+     * @return array History with only user and assistant entries, re-indexed.
+     */
+    public static function filter_history(array $history): array {
+        $allowed = ['user', 'assistant'];
+        return array_values(
+            array_filter($history, fn($m) => in_array($m['role'] ?? '', $allowed, true))
+        );
+    }
+
     /**
      * Declares the parameters accepted by execute().
      *
@@ -86,10 +102,9 @@ class chat_message extends external_api {
         }
 
         $cleanhistory = [];
-        foreach ($params['history'] as $msg) {
-            $role = in_array($msg['role'], ['user', 'assistant'], true) ? $msg['role'] : 'user';
+        foreach (self::filter_history($params['history']) as $msg) {
             $cleanhistory[] = [
-                'role'    => $role,
+                'role'    => $msg['role'],
                 'content' => clean_param($msg['content'], PARAM_RAW),
             ];
         }
