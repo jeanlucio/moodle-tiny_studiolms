@@ -70,6 +70,7 @@ class get_templates extends external_api {
         }
 
         $userid = $USER->id;
+        $canmanageglobal = has_capability('tiny/studiolms:manageglobaltemplates', $context);
 
         $sql = "SELECT t.id,
                        t.name,
@@ -104,7 +105,8 @@ class get_templates extends external_api {
                 'name'        => $row->name,
                 'content'     => $row->content,
                 'isglobal'    => (int) $row->isglobal,
-                'ismine'      => ((int) $row->userid === (int) $userid),
+                'ismine'      => ((int) $row->userid === (int) $userid)
+                                  || ($canmanageglobal && (int) $row->isglobal === 1),
                 'isfavourite' => (bool) $row->isfavourite,
             ];
         }
