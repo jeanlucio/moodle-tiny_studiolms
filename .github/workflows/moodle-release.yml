@@ -12,6 +12,8 @@ on:
   workflow_run:
     workflows: ["Moodle Plugin CI"]
     types: [completed]
+    branches:
+      - 'v*'
   workflow_dispatch:
     inputs:
       tag:
