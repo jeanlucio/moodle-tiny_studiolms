@@ -97,9 +97,7 @@ class chat_message extends external_api {
 
         $context = context_system::instance();
         self::validate_context($context);
-        if (!isloggedin() || isguestuser()) {
-            throw new \required_capability_exception($context, 'tiny/studiolms:use', 'nopermissions', '');
-        }
+        require_capability('tiny/studiolms:use', $context);
 
         $cleanhistory = [];
         foreach (self::filter_history($params['history']) as $msg) {
