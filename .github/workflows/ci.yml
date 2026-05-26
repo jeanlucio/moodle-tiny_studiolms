@@ -171,7 +171,3 @@ jobs:
           path: ${{ github.workspace }}/moodledata/behat_dump
           retention-days: 7
           if-no-files-found: ignore
-
-      - name: Mark cancelled jobs as failed
-        if: ${{ cancelled() }}
-        run: exit 1
