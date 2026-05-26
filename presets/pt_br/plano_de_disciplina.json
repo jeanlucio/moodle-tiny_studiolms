@@ -1,0 +1,190 @@
+{
+  "name": "Plano de Disciplina",
+  "description": "Modelo completo de plano de disciplina para EaD: ementa, objetivos, metodologia, cronograma semanal, tabela de avaliação e bibliografia.",
+  "blocks": [
+    {
+      "type": "stylizedHeading",
+      "config": {
+        "text": "Plano da Disciplina — [Nome da Disciplina]",
+        "level": "h3",
+        "icon": "📚",
+        "bgColor": "#1F4E79",
+        "textColor": "#ffffff"
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "📋",
+        "backgroundColor": "#e3f2fd",
+        "textColor": "#0d47a1",
+        "borderColor": "#1F4E79",
+        "borderLeftWidth": 6,
+        "borderRadius": 6,
+        "hoverEffect": "none",
+        "contentHtml": "<strong>Ementa:</strong><ol style=\"text-align: justify; margin-top: 8px;\"><li><span aria-hidden=\"true\">📖</span> <strong>[Tópico 1]</strong> — descrição breve;</li><li><span aria-hidden=\"true\">🧠</span> <strong>[Tópico 2]</strong> — descrição breve;</li><li><span aria-hidden=\"true\">🔬</span> <strong>[Tópico 3]</strong> — descrição breve;</li><li><span aria-hidden=\"true\">👩‍🎓</span> <strong>[Tópico 4]</strong> — descrição breve;</li><li><span aria-hidden=\"true\">🗓️</span> <strong>[Tópico 5]</strong> — descrição breve;</li><li><span aria-hidden=\"true\">🚀</span> <strong>[Tópico 6]</strong> — descrição breve.</li></ol>"
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "🎯",
+        "backgroundColor": "#f0f4ff",
+        "textColor": "#1a237e",
+        "borderColor": "#3949ab",
+        "borderLeftWidth": 6,
+        "borderRadius": 6,
+        "hoverEffect": "none",
+        "contentHtml": "<strong>Objetivos da Disciplina:</strong><p style=\"margin: 8px 0 4px;\"><strong><span aria-hidden=\"true\">🎓</span> Objetivo Geral:</strong></p><p style=\"text-align: justify;\">Desenvolver a capacidade de compreender e aplicar [descreva o objetivo geral da disciplina]. <span aria-hidden=\"true\">📌</span> Ao final, espera-se que o estudante seja capaz de [resultado esperado].</p><p style=\"margin: 8px 0 4px;\"><strong><span aria-hidden=\"true\">✅</span> Objetivos Específicos:</strong></p><ol style=\"text-align: justify;\"><li><span aria-hidden=\"true\">📖</span> [Objetivo específico 1];</li><li><span aria-hidden=\"true\">💡</span> [Objetivo específico 2];</li><li><span aria-hidden=\"true\">🧩</span> [Objetivo específico 3];</li><li><span aria-hidden=\"true\">🔬</span> [Objetivo específico 4];</li><li><span aria-hidden=\"true\">🗓️</span> [Objetivo específico 5];</li><li><span aria-hidden=\"true\">🚀</span> [Objetivo específico 6].</li></ol>"
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "⚙️",
+        "backgroundColor": "#f3f4f6",
+        "textColor": "#1f2937",
+        "borderColor": "#6b7280",
+        "borderLeftWidth": 6,
+        "borderRadius": 6,
+        "hoverEffect": "none",
+        "contentHtml": "<strong>Metodologia:</strong><p style=\"text-align: justify; margin-top: 8px;\">A disciplina está organizada em <strong>[N] semanas temáticas</strong>, com estratégias pedagógicas que articulam momentos síncronos e assíncronos:</p><ul style=\"text-align: justify;\"><li><span aria-hidden=\"true\">📡</span> <strong>[N] Encontros Síncronos</strong> ao vivo — datas a definir;</li><li><span aria-hidden=\"true\">📝</span> <strong>Fóruns avaliativos semanais</strong> — reflexão e debate sobre o conteúdo;</li><li><span aria-hidden=\"true\">📚</span> <strong>Leitura do material digital, ebooks e videoaulas</strong> — disponíveis no AVA;</li><li><span aria-hidden=\"true\">❓</span> <strong>Fórum de Dúvidas</strong> aberto em cada semana;</li><li><span aria-hidden=\"true\">📋</span> <strong>Avaliação Final</strong> — abrangendo todos os capítulos.</li></ul>"
+      }
+    },
+    {
+      "type": "stylizedHeading",
+      "config": {
+        "text": "Organização das Semanas",
+        "level": "h3",
+        "icon": "🗓️",
+        "bgColor": "#e3f2fd",
+        "textColor": "#0d47a1"
+      }
+    },
+    {
+      "type": "gridcards",
+      "config": {
+        "columns": "4",
+        "gap": 16,
+        "containerTitle": "",
+        "containerTitleSize": "24px",
+        "titleColor": "#333333",
+        "background": "transparent",
+        "borderColor": "#e2e8f0",
+        "borderWidth": 0,
+        "borderRadius": 0,
+        "shadow": "none",
+        "padding": "none",
+        "slots": [
+          "<div style=\"border: 2px solid #1F4E79; border-radius: 8px; padding: 14px; background-color: #f0f7ff; height: 100%; box-sizing: border-box;\"><h4 style=\"color: #1F4E79; margin-top: 0; font-size: 1em; border-bottom: 1px solid #1F4E79; padding-bottom: 6px;\"><span aria-hidden=\"true\">📅</span> Semana 1<br><small style=\"font-size: 12px; font-weight: 400;\">[Data início] a [Data fim]</small></h4><p style=\"font-size: 13px; margin-bottom: 8px;\"><strong>Cap. 1 — [Título do Capítulo]</strong></p><p style=\"font-size: 12px; margin-bottom: 8px; color: #444;\">[Breve descrição do conteúdo da semana 1.]</p><p style=\"font-size: 12px; margin: 0;\"><span aria-hidden=\"true\">✅</span> Fórum Avaliativo 1 — <strong>[X] pts</strong><br>Prazo: [data]</p></div>",
+          "<div style=\"border: 2px solid #1F4E79; border-radius: 8px; padding: 14px; background-color: #f0f7ff; height: 100%; box-sizing: border-box;\"><h4 style=\"color: #1F4E79; margin-top: 0; font-size: 1em; border-bottom: 1px solid #1F4E79; padding-bottom: 6px;\"><span aria-hidden=\"true\">📅</span> Semana 2<br><small style=\"font-size: 12px; font-weight: 400;\">[Data início] a [Data fim]</small></h4><p style=\"font-size: 13px; margin-bottom: 8px;\"><strong>Cap. 2 — [Título do Capítulo]</strong></p><p style=\"font-size: 12px; margin-bottom: 8px; color: #444;\">[Breve descrição do conteúdo da semana 2.]</p><p style=\"font-size: 12px; margin: 0;\"><span aria-hidden=\"true\">✅</span> Fórum Avaliativo 2 — <strong>[X] pts</strong><br>Prazo: [data]</p></div>",
+          "<div style=\"border: 2px solid #1F4E79; border-radius: 8px; padding: 14px; background-color: #f0f7ff; height: 100%; box-sizing: border-box;\"><h4 style=\"color: #1F4E79; margin-top: 0; font-size: 1em; border-bottom: 1px solid #1F4E79; padding-bottom: 6px;\"><span aria-hidden=\"true\">📅</span> Semana 3<br><small style=\"font-size: 12px; font-weight: 400;\">[Data início] a [Data fim]</small></h4><p style=\"font-size: 13px; margin-bottom: 8px;\"><strong>Cap. 3 — [Título do Capítulo]</strong></p><p style=\"font-size: 12px; margin-bottom: 8px; color: #444;\">[Breve descrição do conteúdo da semana 3.]</p><p style=\"font-size: 12px; margin: 0;\"><span aria-hidden=\"true\">✅</span> Fórum Avaliativo 3 — <strong>[X] pts</strong><br>Prazo: [data]</p></div>",
+          "<div style=\"border: 2px solid #1F4E79; border-radius: 8px; padding: 14px; background-color: #f0f7ff; height: 100%; box-sizing: border-box;\"><h4 style=\"color: #1F4E79; margin-top: 0; font-size: 1em; border-bottom: 1px solid #1F4E79; padding-bottom: 6px;\"><span aria-hidden=\"true\">📅</span> Semana 4<br><small style=\"font-size: 12px; font-weight: 400;\">[Data início] a [Data fim]</small></h4><p style=\"font-size: 13px; margin-bottom: 8px;\"><strong>Cap. 4 — [Título do Capítulo]</strong></p><p style=\"font-size: 12px; margin-bottom: 8px; color: #444;\">[Breve descrição do conteúdo da semana 4.]</p><p style=\"font-size: 12px; margin: 0;\"><span aria-hidden=\"true\">✅</span> Fórum Avaliativo 4 — <strong>[X] pts</strong><br>Prazo: [data]<br><span aria-hidden=\"true\">📋</span> Avaliação Final — <strong>[Y] pts</strong><br>Prazo: [data]</p></div>"
+        ]
+      }
+    },
+    {
+      "type": "stylizedHeading",
+      "config": {
+        "text": "Sistema de Avaliação",
+        "level": "h3",
+        "icon": "📊",
+        "bgColor": "#e3f2fd",
+        "textColor": "#0d47a1"
+      }
+    },
+    {
+      "type": "table",
+      "config": {
+        "cols": 4,
+        "rows": 7,
+        "style": "striped",
+        "headerBg": "#1F4E79",
+        "headerText": "#ffffff",
+        "cellData": [
+          [
+            "Atividade",
+            "Tipo",
+            "Semana",
+            "Pontuação"
+          ],
+          [
+            "Fórum Avaliativo 1",
+            "Online",
+            "1ª",
+            "[X] pts"
+          ],
+          [
+            "Fórum Avaliativo 2",
+            "Online",
+            "2ª",
+            "[X] pts"
+          ],
+          [
+            "Fórum Avaliativo 3",
+            "Online",
+            "3ª",
+            "[X] pts"
+          ],
+          [
+            "Fórum Avaliativo 4",
+            "Online",
+            "4ª",
+            "[X] pts"
+          ],
+          [
+            "<strong>Avaliação Final</strong>",
+            "Online",
+            "4ª",
+            "<strong>[Y] pts</strong>"
+          ],
+          [
+            "<strong>TOTAL</strong>",
+            "—",
+            "—",
+            "<strong>100 pts</strong>"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "📚",
+        "backgroundColor": "#f8fafc",
+        "textColor": "#1e293b",
+        "borderColor": "#94a3b8",
+        "borderLeftWidth": 4,
+        "borderRadius": 6,
+        "hoverEffect": "none",
+        "contentHtml": "<strong>Material de Base:</strong><ul style=\"text-align: justify; margin-top: 8px;\"><li>AUTOR, Nome. <em>Título da Obra</em>. Cidade: Editora, ano. <a href=\"#\" target=\"_blank\">Acesse aqui</a>.</li><li>AUTOR, Nome. <em>Título da Obra</em>. Cidade: Editora, ano.</li><li>AUTOR, Nome. <em>Título da Obra</em>. Periódico, v. X, p. XX-XX, ano.</li></ul>"
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "📖",
+        "backgroundColor": "#f8fafc",
+        "textColor": "#1e293b",
+        "borderColor": "#94a3b8",
+        "borderLeftWidth": 4,
+        "borderRadius": 6,
+        "hoverEffect": "none",
+        "contentHtml": "<strong>Bibliografia Complementar:</strong><ul style=\"text-align: justify; margin-top: 8px;\"><li>AUTOR, Nome. <em>Título da Obra</em>. Cidade: Editora, ano.</li><li>AUTOR, Nome. <em>Título da Obra</em>. Cidade: Editora, ano.</li><li>AUTOR, Nome. <em>Título da Obra</em>. Cidade: Editora, ano.</li></ul>"
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "⚠️",
+        "backgroundColor": "#fff8e1",
+        "textColor": "#5d4037",
+        "borderColor": "#ffc107",
+        "borderLeftWidth": 6,
+        "borderRadius": 6,
+        "hoverEffect": "none",
+        "contentHtml": "<strong>Atenção:</strong> Leia atentamente o Plano de Disciplina completo disponível no AVA antes de iniciar as atividades. Em caso de dúvidas, utilize o <strong>Fórum de Dúvidas</strong> de cada semana. Bons estudos! <span aria-hidden=\"true\">🎓</span>"
+      }
+    }
+  ]
+}
