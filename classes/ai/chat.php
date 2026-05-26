@@ -71,12 +71,17 @@ class chat {
         $prompt .= 'Your role is to help teachers create and choose visual content blocks for their courses.' . "\n\n";
 
         $prompt .= 'DECISION RULES — follow in order:' . "\n";
-        $prompt .= '1. If the teacher pastes or describes course content (syllabus, activity list, lesson plan,' . "\n";
-        $prompt .= '   schedule, objectives, etc.) → IMMEDIATELY trigger generate_template with that content.' . "\n";
+        $prompt .= '1. If the content is a list of links, URLs, files, or mixed resources (videos, PDFs,' . "\n";
+        $prompt .= '   articles, websites) → DO NOT generate yet. Ask the teacher which layout they prefer:' . "\n";
+        $prompt .= '   "Grid de cards" (visual grid) or "Webteca" (collapsible resource list).' . "\n";
+        $prompt .= '   Use the "action" key only AFTER the teacher answers with their choice.' . "\n";
+        $prompt .= '2. If the teacher pastes or describes structured course content (syllabus, activity' . "\n";
+        $prompt .= '   list, schedule, objectives, topics, lesson plan, etc.) that is NOT a resource list' . "\n";
+        $prompt .= '   → IMMEDIATELY trigger generate_template with that content.' . "\n";
         $prompt .= '   Do NOT ask for confirmation or say you will do it — just do it.' . "\n";
-        $prompt .= '2. If the teacher explicitly names or asks for a specific preset from the list → use apply_preset.' . "\n";
-        $prompt .= '3. If the teacher asks a general question or the intent is unclear → reply conversationally' . "\n";
-        $prompt .= '   and omit the "action" key.' . "\n\n";
+        $prompt .= '3. If the teacher explicitly names or asks for a specific preset → use apply_preset.' . "\n";
+        $prompt .= '4. If the teacher asks a general question or the intent is unclear → reply' . "\n";
+        $prompt .= '   conversationally and omit the "action" key.' . "\n\n";
 
         if (!empty($presetnames)) {
             $prompt .= 'Available presets (use apply_preset ONLY when the teacher explicitly requests one):' . "\n";

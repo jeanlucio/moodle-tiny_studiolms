@@ -94,7 +94,46 @@ class generator {
         $s .= '   - desc: string (short description, plain text)' . "\n";
         $s .= '   - isOpen: boolean' . "\n";
         $s .= '   - layout: "list" or "grid"' . "\n";
-        $s .= '   - resources: array of {type: "pdf"|"video"|"link", title: string, url: string}' . "\n\n";
+        $s .= '   - resources: array of {type: "pdf"|"video"|"link", title: string, url: string}' . "\n";
+        $s .= '   IMPORTANT: ALL resources go into the resources array of ONE webteca block.' . "\n\n";
+
+        $s .= '7. gridcards — A responsive grid where each slot is an HTML card.' . "\n";
+        $s .= '   config keys:' . "\n";
+        $s .= '   - columns: "2", "3", or "4"' . "\n";
+        $s .= '   - gap: number (spacing between cards in px, e.g. 16)' . "\n";
+        $s .= '   - containerTitle: string (optional section heading; use "" if not needed)' . "\n";
+        $s .= '   - titleColor: string (hex for container title text, e.g. "#333333")' . "\n";
+        $s .= '   - background: string (hex or "transparent")' . "\n";
+        $s .= '   - borderColor: string (hex for card borders)' . "\n";
+        $s .= '   - borderWidth: number (0–4)' . "\n";
+        $s .= '   - borderRadius: number (0–20)' . "\n";
+        $s .= '   - shadow: "none", "sm", "md", or "lg"' . "\n";
+        $s .= '   - slots: array of HTML strings (one per card; use <h4>, <p>, <a href="...">' . "\n";
+        $s .= '     inside each slot to represent the card content)' . "\n";
+        $s .= '   IMPORTANT: ALL cards go inside the slots array of ONE gridcards block.' . "\n";
+        $s .= '   Never create multiple gridcards blocks — one block holds all cards.' . "\n\n";
+
+        $s .= '8. profileCard — A presenter or teacher profile card.' . "\n";
+        $s .= '   config keys:' . "\n";
+        $s .= '   - photoUrl: string (image URL; use "" if none)' . "\n";
+        $s .= '   - name: string' . "\n";
+        $s .= '   - role: string (job title or role)' . "\n";
+        $s .= '   - bio: string (short biography, plain text)' . "\n";
+        $s .= '   - link0label / link0url: string (optional contact link 1)' . "\n";
+        $s .= '   - link1label / link1url: string (optional contact link 2)' . "\n";
+        $s .= '   - link2label / link2url: string (optional contact link 3)' . "\n";
+        $s .= '   - bgColor: string (hex background)' . "\n";
+        $s .= '   - accentColor: string (hex accent for name and links)' . "\n\n";
+
+        $s .= '9. table — A styled data table with a header row.' . "\n";
+        $s .= '   config keys:' . "\n";
+        $s .= '   - cols: number (2–6)' . "\n";
+        $s .= '   - rows: number (total rows including header, 2–10)' . "\n";
+        $s .= '   - style: "striped" or "bordered"' . "\n";
+        $s .= '   - headerBg: string (hex for header row background)' . "\n";
+        $s .= '   - headerText: string (hex for header row text)' . "\n";
+        $s .= '   - cellData: array of arrays (rows × cols of HTML strings;' . "\n";
+        $s .= '     cellData[0] = header row, cellData[1..n] = data rows)' . "\n\n";
 
         return $s;
     }
