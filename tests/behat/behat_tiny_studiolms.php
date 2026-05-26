@@ -65,12 +65,12 @@ class behat_tiny_studiolms extends behat_base {
                 'css_element',
             ]);
 
-            $js = "
-                const btn = document.querySelector('[data-slms-tab=\"{$tab}\"]');
-                return btn && (btn.classList.contains('active') || btn.getAttribute('aria-selected') === 'true');
-            ";
+            $nodes = $this->getSession()->getPage()->findAll(
+                'css',
+                '[data-slms-tab="' . $tab . '"].active'
+            );
 
-            if (!$this->getSession()->evaluateScript($js)) {
+            if (empty($nodes)) {
                 throw new \Behat\Mink\Exception\ExpectationException(
                     "StudioLMS tab '{$tab}' is not active after click.",
                     $this->getSession()
@@ -114,13 +114,12 @@ class behat_tiny_studiolms extends behat_base {
      */
     public function studiolms_tab_is_active(string $tab): void {
         $this->spin(function () use ($tab) {
-            $js = "
-                const btn = document.querySelector('[data-slms-tab=\"{$tab}\"]');
-                return btn && (btn.classList.contains('active') || btn.getAttribute('aria-selected') === 'true');
-            ";
-            $active = $this->getSession()->evaluateScript($js);
+            $nodes = $this->getSession()->getPage()->findAll(
+                'css',
+                '[data-slms-tab="' . $tab . '"].active'
+            );
 
-            if (!$active) {
+            if (empty($nodes)) {
                 throw new \Behat\Mink\Exception\ExpectationException(
                     "StudioLMS tab '{$tab}' is not active.",
                     $this->getSession()

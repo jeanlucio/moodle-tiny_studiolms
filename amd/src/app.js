@@ -41,6 +41,7 @@ let currentZoom = 1;
 let targetEditNode = null;
 let presetsData = [];
 let hasAiEnabled = false;
+let tabsListenerAttached = false;
 
 const tabDataCache = new Map();
 
@@ -686,13 +687,21 @@ const setupZoomControls = () => {
 };
 
 const setupTabs = () => {
-    const app = document.getElementById('studiolms-app');
-    if (!app) {
+    if (tabsListenerAttached) {
         return;
     }
-    app.addEventListener('click', (e) => {
+    tabsListenerAttached = true;
+
+    // Use document-level capture delegation so the listener fires regardless of
+    // where in the DOM #studiolms-app ends up (modal attachment point, fullscreen
+    // element, etc.) and before any inner handler can stop propagation.
+    document.addEventListener('click', (e) => {
         const btn = e.target.closest('[data-slms-tab]');
         if (!btn) {
+            return;
+        }
+        const app = btn.closest('#studiolms-app');
+        if (!app) {
             return;
         }
         app.querySelectorAll('[data-slms-tab]').forEach((t) => {
@@ -702,7 +711,7 @@ const setupTabs = () => {
         btn.classList.add('active');
         btn.setAttribute('aria-selected', 'true');
         switchTab(btn.getAttribute('data-slms-tab'));
-    });
+    }, true);
 };
 
 // -----------------------------------------
