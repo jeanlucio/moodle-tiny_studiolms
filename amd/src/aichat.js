@@ -69,7 +69,7 @@ export const init = async(container, hasAi, presets = [], callbacks = {}) => {
     const actionSpinner = container.querySelector('#slms-chat-action-spinner');
     const errorEl = container.querySelector('#slms-chat-error');
 
-    const appendMessage = (role, text) => {
+    const appendMessage = (role, text, provider = null) => {
         const wrapper = document.createElement('div');
         wrapper.className = `slms-chat-message slms-chat-message-${role}`;
 
@@ -84,6 +84,14 @@ export const init = async(container, hasAi, presets = [], callbacks = {}) => {
         bubble.innerHTML = escaped;
 
         wrapper.appendChild(bubble);
+
+        if (role === 'assistant' && provider) {
+            const label = document.createElement('span');
+            label.className = 'slms-chat-provider';
+            label.textContent = provider;
+            wrapper.appendChild(label);
+        }
+
         messagesEl.appendChild(wrapper);
         messagesEl.scrollTop = messagesEl.scrollHeight;
     };
@@ -151,7 +159,7 @@ export const init = async(container, hasAi, presets = [], callbacks = {}) => {
             }])[0];
 
             history.push({role: 'assistant', content: result.reply});
-            appendMessage('assistant', result.reply);
+            appendMessage('assistant', result.reply, result.provider);
 
             if (result.action) {
                 try {

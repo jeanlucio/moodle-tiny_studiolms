@@ -1469,6 +1469,14 @@ a.studiolms-webteca-item:hover {
     border-bottom-left-radius: 3px;
 }
 
+.tiny_studiolms .slms-chat-provider {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--bs-secondary, #6c757d);
+    margin-top: 3px;
+    padding-inline-start: 2px;
+}
+
 .tiny_studiolms .slms-chat-action-card {
     background: var(--bs-primary-bg-subtle, #cfe2ff);
     border-top: 1px solid var(--bs-primary-border-subtle, #9ec5fe);
