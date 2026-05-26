@@ -686,17 +686,22 @@ const setupZoomControls = () => {
 };
 
 const setupTabs = () => {
-    const tabs = document.querySelectorAll('[data-slms-tab]');
-    tabs.forEach((btn) => {
-        btn.addEventListener('click', () => {
-            tabs.forEach((t) => {
-                t.classList.remove('active');
-                t.setAttribute('aria-selected', 'false');
-            });
-            btn.classList.add('active');
-            btn.setAttribute('aria-selected', 'true');
-            switchTab(btn.getAttribute('data-slms-tab'));
+    const app = document.getElementById('studiolms-app');
+    if (!app) {
+        return;
+    }
+    app.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-slms-tab]');
+        if (!btn) {
+            return;
+        }
+        app.querySelectorAll('[data-slms-tab]').forEach((t) => {
+            t.classList.remove('active');
+            t.setAttribute('aria-selected', 'false');
         });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        switchTab(btn.getAttribute('data-slms-tab'));
     });
 };
 
