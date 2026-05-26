@@ -1,0 +1,28 @@
+{
+  "name": "Encontros Síncronos",
+  "description": "Card com datas, gravações e slides de encontros síncronos, com botão de acesso à sala ao vivo.",
+  "blocks": [
+    {
+      "type": "advancedCard",
+      "config": {
+        "bg": "#f3e5f5",
+        "text": "#4a148c",
+        "border": "#ce93d8",
+        "radius": 12,
+        "shadow": "sm",
+        "mediaType": "none",
+        "mediaUrl": "",
+        "layout": "vertical",
+        "content": "<h3 style=\"background-color:#e1bee7;color:#6a1b9a;padding:10px;border-radius:8px;margin-top:0;\" aria-label=\"Encontros síncronos da disciplina\"><span aria-hidden=\"true\">📅</span> <strong>Encontros Síncronos</strong></h3><p style=\"text-align:justify;color:#4a148c;\">Olá <strong>[firstname]</strong>! Aqui você encontra as datas dos encontros síncronos, além das gravações e slides das apresentações.</p><div style=\"background-color:#ede7f6;padding:14px;border-radius:10px;margin-bottom:15px;border:1px solid #d1c4e9;\"><p style=\"margin-top:0;margin-bottom:10px;color:#4a148c;\"><strong><span aria-hidden=\"true\">🟣</span> Encontro 1:</strong> <span style=\"color:#d81b60;\">[DD/MM/AAAA]</span></p><a style=\"display:inline-block;background-color:#7e57c2;color:white;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold;margin:5px 10px 5px 0;\" href=\"#\" target=\"_blank\" rel=\"noopener\"><span aria-hidden=\"true\">🎥</span> Assistir Gravação</a> <a style=\"display:inline-block;background-color:#5e35b1;color:white;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold;margin:5px 0;\" href=\"#\" target=\"_blank\" rel=\"noopener\"><span aria-hidden=\"true\">📥</span> Acessar Slides</a></div><div style=\"background-color:#ede7f6;padding:14px;border-radius:10px;margin-bottom:0;border:1px solid #d1c4e9;\"><p style=\"margin-top:0;margin-bottom:10px;color:#4a148c;\"><strong><span aria-hidden=\"true\">🟣</span> Encontro 2:</strong> <span style=\"color:#d81b60;\">[DD/MM/AAAA]</span></p><a style=\"display:inline-block;background-color:#7e57c2;color:white;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold;margin:5px 10px 5px 0;\" href=\"#\" target=\"_blank\" rel=\"noopener\"><span aria-hidden=\"true\">🎥</span> Assistir Gravação</a> <a style=\"display:inline-block;background-color:#5e35b1;color:white;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold;margin:5px 0;\" href=\"#\" target=\"_blank\" rel=\"noopener\"><span aria-hidden=\"true\">📥</span> Acessar Slides</a></div>",
+        "btnText": "▶️ Entrar no Encontro ao Vivo",
+        "btnUrl": "#",
+        "btnBg": "#8e24aa",
+        "btnTextCol": "#ffffff",
+        "btnAlign": "center",
+        "hoverEffect": "none",
+        "btnHoverEffect": "lift",
+        "btnClickSound": "none"
+      }
+    }
+  ]
+}

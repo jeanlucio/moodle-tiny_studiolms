@@ -1,0 +1,28 @@
+{
+  "name": "Card Acesso ao Plano",
+  "description": "Card com botão de acesso rápido ao Plano da Disciplina. Ideal na página inicial do curso.",
+  "blocks": [
+    {
+      "type": "advancedCard",
+      "config": {
+        "bg": "#fffde7",
+        "text": "#5d4037",
+        "border": "#fbc02d",
+        "radius": 10,
+        "shadow": "sm",
+        "mediaType": "none",
+        "mediaUrl": "",
+        "layout": "vertical",
+        "content": "<h3 style=\"margin-top:0;color:#f57f17;\"><span aria-hidden=\"true\">🗂️</span> <strong>Plano da Disciplina</strong></h3><p style=\"text-align:justify;margin-bottom:0;\">Aqui você encontra o cronograma completo com as atividades, datas e critérios de avaliação definidos para a disciplina.</p>",
+        "btnText": "📅 Acessar Plano",
+        "btnUrl": "#",
+        "btnBg": "#fbc02d",
+        "btnTextCol": "#ffffff",
+        "btnAlign": "left",
+        "hoverEffect": "none",
+        "btnHoverEffect": "lift",
+        "btnClickSound": "none"
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Contatos do Professor",
+  "description": "Card com foto circular, dados de contato (e-mail, telefone, Lattes, ORCID) e botões de WhatsApp e Telegram.",
+  "blocks": [
+    {
+      "type": "advancedCard",
+      "config": {
+        "bg": "#f4e7e9",
+        "text": "#4b1b23",
+        "border": "#c4a2a9",
+        "radius": 10,
+        "shadow": "sm",
+        "mediaType": "none",
+        "mediaUrl": "",
+        "layout": "vertical",
+        "content": "<div style=\"display:flex;flex-wrap:wrap;align-items:flex-start;gap:16px;\"><div style=\"flex:0 0 auto;\"><img src=\"\" alt=\"Foto do professor\" style=\"width:120px;height:120px;border-radius:50%;border:2px solid #7e2634;display:block;\"></div><div style=\"flex:1;min-width:200px;\"><h3 style=\"margin-top:0;color:#7e2634;\"><span aria-hidden=\"true\">👨‍💻</span> <strong>[Nome do Professor]</strong></h3><p style=\"color:#4b1b23;margin:0;text-align:justify;line-height:1.6;\"><strong><span aria-hidden=\"true\">📨</span> Email:</strong> prof@instituicao.edu.br<br><strong><span aria-hidden=\"true\">📞</span> Telefone:</strong> (XX) XXXXX-XXXX<br><strong><span aria-hidden=\"true\">📄</span> Lattes:</strong> <a href=\"#\" target=\"_blank\" rel=\"noopener\">http://lattes.cnpq.br/...</a><br><strong><span aria-hidden=\"true\">🧾</span> ORCID:</strong> <a href=\"#\" target=\"_blank\" rel=\"noopener\">https://orcid.org/...</a></p><div style=\"margin-top:12px;display:flex;flex-wrap:wrap;gap:10px;\"><a style=\"background-color:#25d366;color:white;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold;\" href=\"#\" target=\"_blank\" rel=\"noopener\"><span aria-hidden=\"true\">🟢</span> WhatsApp</a> <a style=\"background-color:#0088cc;color:white;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold;\" href=\"#\" target=\"_blank\" rel=\"noopener\"><span aria-hidden=\"true\">✈️</span> Telegram</a></div></div></div>",
+        "btnText": "",
+        "btnUrl": "#",
+        "btnBg": "#7e2634",
+        "btnTextCol": "#ffffff",
+        "btnAlign": "left",
+        "hoverEffect": "none",
+        "btnHoverEffect": "none",
+        "btnClickSound": "none"
+      }
+    }
+  ]
+}
