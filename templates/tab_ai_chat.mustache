@@ -1,0 +1,106 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_studiolms/tab_ai_chat
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Example context (json): {"hasai": true}
+}}
+{{^hasai}}
+<div class="p-4">
+    <div class="alert alert-warning mb-0" role="alert">
+        <span aria-hidden="true">🔑</span>
+        <span class="ms-1">{{#str}} ai_chat_nokey, tiny_studiolms {{/str}}</span>
+    </div>
+</div>
+{{/hasai}}
+{{#hasai}}
+<div class="slms-chat-section d-flex flex-column h-100">
+    <div class="px-4 pt-4 pb-2 border-bottom">
+        <h6 class="fw-bold mb-1">
+            <span aria-hidden="true">🤖</span>
+            <span class="ms-1">{{#str}} ai_chat_title, tiny_studiolms {{/str}}</span>
+        </h6>
+        <p id="slms-chat-desc" class="text-muted small mb-0">{{#str}} ai_chat_desc, tiny_studiolms {{/str}}</p>
+    </div>
+
+    <div id="slms-chat-messages"
+         class="flex-grow-1 overflow-auto px-4 py-3 slms-chat-messages-area"
+         role="log"
+         aria-live="polite"
+         aria-label="{{#str}} ai_chat_title, tiny_studiolms {{/str}}">
+    </div>
+
+    <div id="slms-chat-action-card"
+         class="d-none px-4 py-3 border-top slms-chat-action-card">
+        <div class="d-flex align-items-start gap-2">
+            <span class="badge bg-primary align-self-start mt-1" aria-hidden="true">✨</span>
+            <div class="flex-grow-1">
+                <p id="slms-chat-action-label"
+                   class="small fw-semibold mb-2 text-primary"></p>
+                <div class="d-flex gap-2">
+                    <button type="button"
+                            id="slms-chat-confirm"
+                            class="btn btn-sm btn-primary">
+                        {{#str}} ai_chat_confirm, tiny_studiolms {{/str}}
+                    </button>
+                    <button type="button"
+                            id="slms-chat-cancel"
+                            class="btn btn-sm btn-outline-secondary">
+                        {{#str}} ai_chat_cancel, tiny_studiolms {{/str}}
+                    </button>
+                    <span id="slms-chat-action-spinner" class="d-none align-self-center">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="px-4 py-3 border-top">
+        <div id="slms-chat-error"
+             class="mb-2 text-danger small d-none"
+             role="alert"
+             aria-live="assertive"></div>
+        <div class="d-flex gap-2 align-items-end">
+            <textarea id="slms-chat-input"
+                      class="form-control form-control-sm flex-grow-1 slms-chat-input"
+                      rows="3"
+                      placeholder="{{#str}} ai_chat_placeholder, tiny_studiolms {{/str}}"
+                      aria-label="{{#str}} ai_chat_placeholder, tiny_studiolms {{/str}}"></textarea>
+            <div class="d-flex flex-column gap-1">
+                <button type="button"
+                        id="slms-chat-send"
+                        class="btn btn-sm btn-success slms-chat-send-btn"
+                        aria-label="{{#str}} ai_chat_send, tiny_studiolms {{/str}}">
+                    <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                    <span id="slms-chat-send-spinner" class="d-none">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    </span>
+                </button>
+                <button type="button"
+                        id="slms-chat-clear"
+                        class="btn btn-sm btn-outline-secondary"
+                        title="{{#str}} ai_chat_clear, tiny_studiolms {{/str}}"
+                        aria-label="{{#str}} ai_chat_clear, tiny_studiolms {{/str}}">
+                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{{/hasai}}

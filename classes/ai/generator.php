@@ -94,7 +94,46 @@ class generator {
         $s .= '   - desc: string (short description, plain text)' . "\n";
         $s .= '   - isOpen: boolean' . "\n";
         $s .= '   - layout: "list" or "grid"' . "\n";
-        $s .= '   - resources: array of {type: "pdf"|"video"|"link", title: string, url: string}' . "\n\n";
+        $s .= '   - resources: array of {type: "pdf"|"video"|"link", title: string, url: string}' . "\n";
+        $s .= '   IMPORTANT: ALL resources go into the resources array of ONE webteca block.' . "\n\n";
+
+        $s .= '7. gridcards — A responsive grid where each slot is an HTML card.' . "\n";
+        $s .= '   config keys:' . "\n";
+        $s .= '   - columns: "2", "3", or "4"' . "\n";
+        $s .= '   - gap: number (spacing between cards in px, e.g. 16)' . "\n";
+        $s .= '   - containerTitle: string (optional section heading; use "" if not needed)' . "\n";
+        $s .= '   - titleColor: string (hex for container title text, e.g. "#333333")' . "\n";
+        $s .= '   - background: string (hex or "transparent")' . "\n";
+        $s .= '   - borderColor: string (hex for card borders)' . "\n";
+        $s .= '   - borderWidth: number (0–4)' . "\n";
+        $s .= '   - borderRadius: number (0–20)' . "\n";
+        $s .= '   - shadow: "none", "sm", "md", or "lg"' . "\n";
+        $s .= '   - slots: array of HTML strings (one per card; use <h4>, <p>, <a href="...">' . "\n";
+        $s .= '     inside each slot to represent the card content)' . "\n";
+        $s .= '   IMPORTANT: ALL cards go inside the slots array of ONE gridcards block.' . "\n";
+        $s .= '   Never create multiple gridcards blocks — one block holds all cards.' . "\n\n";
+
+        $s .= '8. profileCard — A presenter or teacher profile card.' . "\n";
+        $s .= '   config keys:' . "\n";
+        $s .= '   - photoUrl: string (image URL; use "" if none)' . "\n";
+        $s .= '   - name: string' . "\n";
+        $s .= '   - role: string (job title or role)' . "\n";
+        $s .= '   - bio: string (short biography, plain text)' . "\n";
+        $s .= '   - link0label / link0url: string (optional contact link 1)' . "\n";
+        $s .= '   - link1label / link1url: string (optional contact link 2)' . "\n";
+        $s .= '   - link2label / link2url: string (optional contact link 3)' . "\n";
+        $s .= '   - bgColor: string (hex background)' . "\n";
+        $s .= '   - accentColor: string (hex accent for name and links)' . "\n\n";
+
+        $s .= '9. table — A styled data table with a header row.' . "\n";
+        $s .= '   config keys:' . "\n";
+        $s .= '   - cols: number (2–6)' . "\n";
+        $s .= '   - rows: number (total rows including header, 2–10)' . "\n";
+        $s .= '   - style: "striped" or "bordered"' . "\n";
+        $s .= '   - headerBg: string (hex for header row background)' . "\n";
+        $s .= '   - headerText: string (hex for header row text)' . "\n";
+        $s .= '   - cellData: array of arrays (rows × cols of HTML strings;' . "\n";
+        $s .= '     cellData[0] = header row, cellData[1..n] = data rows)' . "\n\n";
 
         return $s;
     }
@@ -506,6 +545,110 @@ class generator {
             }
         }
         return true;
+    }
+
+    /**
+     * Sends a multi-turn conversation to the AI provider chain and returns the raw text reply.
+     *
+     * Each entry in $messages must have 'role' (user|assistant) and 'content' (string).
+     * The caller is responsible for building the system prompt via chat::build_system_prompt().
+     *
+     * @param string $systemprompt System instruction sent to all providers.
+     * @param array  $messages     Conversation history [{role, content}, ...].
+     * @return array With keys 'data' (string) and 'provider' (string).
+     * @throws \moodle_exception If no provider is configured or all calls fail.
+     */
+    public static function call_chat(string $systemprompt, array $messages): array {
+        $keys = self::resolve_keys();
+
+        if (empty($keys['geminikey']) && empty($keys['groqkey']) && empty($keys['customkey'])) {
+            throw new \moodle_exception('ai_generator_no_config', 'tiny_studiolms');
+        }
+
+        $result = ['success' => false, 'data' => ''];
+        $failures = [];
+
+        if (!empty($keys['geminikey'])) {
+            $contents = [];
+            foreach ($messages as $msg) {
+                $role = $msg['role'] === 'assistant' ? 'model' : 'user';
+                $contents[] = ['role' => $role, 'parts' => [['text' => $msg['content']]]];
+            }
+            $url = 'https://generativelanguage.googleapis.com/v1beta/models/'
+                . 'gemini-1.5-flash:generateContent?key=' . $keys['geminikey'];
+            $data = [
+                'system_instruction' => ['parts' => [['text' => $systemprompt]]],
+                'contents'           => $contents,
+                'generationConfig'   => [
+                    'responseMimeType' => 'application/json',
+                    'maxOutputTokens'  => 1500,
+                ],
+            ];
+            $result = self::curl_request($url, json_encode($data), ['Content-Type: application/json'], 'Gemini');
+            if (!$result['success']) {
+                $failures[] = 'Gemini: HTTP ' . ($result['httpcode'] ?? '?')
+                    . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
+            }
+        }
+
+        if (!$result['success'] && !empty($keys['groqkey'])) {
+            $msgs = [['role' => 'system', 'content' => $systemprompt]];
+            foreach ($messages as $msg) {
+                $msgs[] = ['role' => $msg['role'], 'content' => $msg['content']];
+            }
+            $data = [
+                'model'           => 'llama-3.3-70b-versatile',
+                'messages'        => $msgs,
+                'response_format' => ['type' => 'json_object'],
+                'max_tokens'      => 1500,
+                'temperature'     => 0.7,
+            ];
+            $result = self::curl_request(
+                'https://api.groq.com/openai/v1/chat/completions',
+                json_encode($data),
+                ['Authorization: Bearer ' . $keys['groqkey'], 'Content-Type: application/json'],
+                'Groq'
+            );
+            if (!$result['success']) {
+                $failures[] = 'Groq: HTTP ' . ($result['httpcode'] ?? '?')
+                    . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
+            }
+        }
+
+        if (!$result['success'] && !empty($keys['customkey']) && !empty($keys['customurl'])) {
+            if (self::is_safe_url((string)$keys['customurl'])) {
+                $msgs = [['role' => 'system', 'content' => $systemprompt]];
+                foreach ($messages as $msg) {
+                    $msgs[] = ['role' => $msg['role'], 'content' => $msg['content']];
+                }
+                $model = !empty($keys['custommodel']) ? (string)$keys['custommodel'] : 'gpt-4o-mini';
+                $data = [
+                    'model'           => $model,
+                    'messages'        => $msgs,
+                    'response_format' => ['type' => 'json_object'],
+                    'max_tokens'      => 1500,
+                    'temperature'     => 0.7,
+                ];
+                $result = self::curl_request(
+                    (string)$keys['customurl'],
+                    json_encode($data),
+                    ['Authorization: Bearer ' . $keys['customkey'], 'Content-Type: application/json'],
+                    'Custom'
+                );
+                if (!$result['success']) {
+                    $failures[] = 'Custom: HTTP ' . ($result['httpcode'] ?? '?')
+                        . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
+                }
+            } else {
+                $failures[] = 'Custom: unsafe URL';
+            }
+        }
+
+        if (!$result['success']) {
+            throw new \moodle_exception('ai_chat_error', 'tiny_studiolms', '', null, implode(' | ', $failures));
+        }
+
+        return ['data' => $result['data'], 'provider' => $result['provider']];
     }
 
     /**
