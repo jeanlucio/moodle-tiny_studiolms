@@ -70,13 +70,16 @@ class chat {
         $prompt .= 'The plugin lets teachers build rich visual content blocks directly inside the Moodle TinyMCE editor.' . "\n";
         $prompt .= 'Your role is to help teachers create and choose visual content blocks for their courses.' . "\n\n";
 
-        $prompt .= 'When the teacher shares content (syllabus, lesson plan, topic description), you must:' . "\n";
-        $prompt .= '1. Analyse the content.' . "\n";
-        $prompt .= '2. Either suggest an existing preset that matches, or propose generating a new template.' . "\n";
-        $prompt .= '3. Always explain briefly WHY you chose that option.' . "\n\n";
+        $prompt .= 'DECISION RULES — follow in order:' . "\n";
+        $prompt .= '1. If the teacher pastes or describes course content (syllabus, activity list, lesson plan,' . "\n";
+        $prompt .= '   schedule, objectives, etc.) → IMMEDIATELY trigger generate_template with that content.' . "\n";
+        $prompt .= '   Do NOT ask for confirmation or say you will do it — just do it.' . "\n";
+        $prompt .= '2. If the teacher explicitly names or asks for a specific preset from the list → use apply_preset.' . "\n";
+        $prompt .= '3. If the teacher asks a general question or the intent is unclear → reply conversationally' . "\n";
+        $prompt .= '   and omit the "action" key.' . "\n\n";
 
         if (!empty($presetnames)) {
-            $prompt .= 'Available presets (suggest one of these when appropriate):' . "\n";
+            $prompt .= 'Available presets (use apply_preset ONLY when the teacher explicitly requests one):' . "\n";
             foreach ($presetnames as $name) {
                 $prompt .= '  - ' . $name . "\n";
             }
@@ -110,8 +113,8 @@ class chat {
         $prompt .= 'Rules:' . "\n";
         $prompt .= '- Respond ONLY with valid JSON — no markdown, no code fences.' . "\n";
         $prompt .= '- Always match the language of the teacher\'s message.' . "\n";
-        $prompt .= '- Prefer apply_preset when an existing preset clearly fits.' . "\n";
-        $prompt .= '- Use generate_template only when no existing preset matches well.' . "\n";
+        $prompt .= '- Default action is generate_template whenever educational content is present.' . "\n";
+        $prompt .= '- Never ask the teacher if they want you to generate — just generate.' . "\n";
         $prompt .= '- When using generate_template, the "contexttext" field MUST contain the actual' . "\n";
         $prompt .= '  content provided by the teacher (activities, schedule, topics, objectives, etc.).' . "\n";
         $prompt .= '  Never put generic placeholders — the content will be used to fill the blocks with' . "\n";
