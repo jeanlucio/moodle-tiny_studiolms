@@ -25,14 +25,13 @@
 }}
 <div class="studiolms-callout-wrap mceNonEditable"
      data-slms-hover="{{hoverEffect}}"
-     style="--slms-bg: {{backgroundColor}}; --slms-border-w: {{borderLeftWidth}}px;
-            --slms-border-c: {{borderColor}}; --slms-radius: {{borderRadius}}px;">
+     style="background-color: {{backgroundColor}}; border-left: {{borderLeftWidth}}px solid {{borderColor}}; border-radius: {{borderRadius}}px;">
     {{#hasIcon}}
     <div class="slms-callout-icon" aria-hidden="true">
         {{{icon}}}
     </div>
     {{/hasIcon}}
-    <div class="slms-callout-content mceEditable" style="--slms-text: {{textColor}};">
+    <div class="slms-callout-content mceEditable" style="color: {{textColor}};">
         {{{contentHtml}}}
     </div>
 </div>

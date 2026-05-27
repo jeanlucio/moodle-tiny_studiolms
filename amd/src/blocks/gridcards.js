@@ -142,9 +142,6 @@ export default {
             `border-radius: ${data.borderRadius}px; padding: ${pad}; ` +
             `width: 100%; box-sizing: border-box; margin-bottom: 1.5rem;`;
 
-        tData.contentStyle = `display: grid; gap: ${data.gap}px; ` +
-            `grid-template-columns: repeat(${data.columns}, 1fr);`;
-
         const colCount = parseInt(data.columns) || 2;
         const slotsArray = [];
 
@@ -156,8 +153,7 @@ export default {
             }
 
             slotsArray.push(
-                `<div class="slms-grid-slot mceEditable" style="outline: none; display: flex; ` +
-                `flex-direction: column; min-width: 0; height: 100%;">${content}</div>`
+                `<div class="slms-grid-slot mceEditable" style="min-width: 0; height: 100%;">${content}</div>`
             );
         }
 

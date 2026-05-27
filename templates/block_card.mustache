@@ -26,16 +26,11 @@
     }
 }}
 <div class="studiolms-card-wrap" contenteditable="false">
-    <div class="studiolms-card"
+    <div class="studiolms-card {{#isHorizontal}}slms-horizontal{{/isHorizontal}}"
          data-slms-hover="{{hoverEffect}}"
-         style="--slms-dir: {{#isHorizontal}}row{{/isHorizontal}}{{^isHorizontal}}column{{/isHorizontal}};
-                --slms-bg: {{bg}}; --slms-color: {{text}}; --slms-border-c: {{border}};
-                --slms-radius: {{radius}}px; --slms-shadow: {{shadowCss}};">
+         style="background-color: {{bg}}; color: {{text}}; border-left-color: {{border}}; border-radius: {{radius}}px;">
         {{#hasMedia}}
-        <div class="studiolms-card-media"
-             style="--slms-media-flex: {{#isHorizontal}}0 0 35%{{/isHorizontal}}{{^isHorizontal}}1 1 auto{{/isHorizontal}};
-                    --slms-media-border-r: {{#isHorizontal}}1px solid #e2e8f0{{/isHorizontal}}{{^isHorizontal}}none{{/isHorizontal}};
-                    --slms-media-border-b: {{^isHorizontal}}1px solid #e2e8f0{{/isHorizontal}}{{#isHorizontal}}none{{/isHorizontal}};">
+        <div class="studiolms-card-media">
             {{#isImage}}
                 <img src="{{mediaUrl}}" alt="" class="w-100 h-100 object-fit-cover d-block">
             {{/isImage}}
@@ -54,8 +49,7 @@
             <div class="mt-4{{#isAlignLeft}} text-start{{/isAlignLeft}}{{#isAlignCenter}} text-center{{/isAlignCenter}}{{#isAlignRight}} text-end{{/isAlignRight}}" contenteditable="false">
                 <a href="{{btnUrl}}" class="studiolms-btn" target="_blank" rel="noopener noreferrer"
                    data-slms-hover="{{btnHoverEffect}}" data-slms-sound="{{btnClickSound}}"
-                   style="--slms-display: {{btnDisplayMode}}; --slms-w: {{#isBtnFullWidth}}100%{{/isBtnFullWidth}}{{^isBtnFullWidth}}auto{{/isBtnFullWidth}};
-                          --slms-bg: {{btnBg}}; --slms-color: {{btnTextCol}}; --slms-radius: {{radius}}px;">
+                   style="width: {{#isBtnFullWidth}}100%{{/isBtnFullWidth}}{{^isBtnFullWidth}}auto{{/isBtnFullWidth}}; background-color: {{btnBg}}; color: {{btnTextCol}}; border-radius: {{radius}}px;">
                     {{btnText}}
                 </a>
             </div>

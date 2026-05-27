@@ -24,9 +24,9 @@
     }
 }}
 <div class="studiolms-accordion-wrap mb-4 w-100">
-    <details class="studiolms-accordion" data-initial-state="{{state}}" data-slms-sound="{{openSound}}" open style="--slms-bg: {{bg}};">
+    <details class="studiolms-accordion" data-initial-state="{{state}}" data-slms-sound="{{openSound}}" {{#isOpen}}open{{/isOpen}} style="background-color: {{bg}};">
         <summary class="studiolms-accordion-summary" data-slms-hover="{{hoverEffect}}">
-            <span class="studiolms-accordion-header" style="--slms-color: {{color}};">
+            <span class="studiolms-accordion-header" style="color: {{color}};">
                 <span class="slms-acc-title flex-grow-1" contenteditable="true">{{title}}</span>
                 <span contenteditable="false" aria-hidden="true" class="ms-3 user-select-none">{{iconFirst}}</span>
             </span>

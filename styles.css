@@ -1168,6 +1168,17 @@ a.studiolms-btn:focus {
     flex-direction: column;
 }
 
+/* Card horizontal layout class — survives HTML Purifier */
+.studiolms-card.slms-horizontal {
+    flex-direction: row;
+}
+
+.studiolms-card.slms-horizontal .studiolms-card-media {
+    flex: 0 0 35%;
+    border-right: 1px solid var(--bs-border-color, #e2e8f0);
+    border-bottom: none;
+}
+
 /* Grid Container */
 .studiolms-grid-wrap {
     background: var(--slms-bg, transparent);
@@ -1184,6 +1195,22 @@ a.studiolms-btn:focus {
     gap: var(--slms-gap, 20px);
     grid-template-columns: var(--slms-cols, repeat(2, 1fr));
 }
+
+/* Grid column utility classes — survive HTML Purifier (class attr preserved, inline CSS vars stripped) */
+.studiolms-grid-content.slms-cols-1 { grid-template-columns: 1fr; }
+.studiolms-grid-content.slms-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.studiolms-grid-content.slms-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.studiolms-grid-content.slms-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* Grid gap utility classes */
+.studiolms-grid-content.slms-gap-0  { gap: 0; }
+.studiolms-grid-content.slms-gap-4  { gap: 4px; }
+.studiolms-grid-content.slms-gap-8  { gap: 8px; }
+.studiolms-grid-content.slms-gap-12 { gap: 12px; }
+.studiolms-grid-content.slms-gap-16 { gap: 16px; }
+.studiolms-grid-content.slms-gap-20 { gap: 20px; }
+.studiolms-grid-content.slms-gap-24 { gap: 24px; }
+.studiolms-grid-content.slms-gap-32 { gap: 32px; }
 
 /* Heading */
 .studiolms-heading-h3 {
@@ -1245,6 +1272,12 @@ a.studiolms-btn:focus {
     flex-direction: var(--slms-dir, column);
     flex-wrap: var(--slms-wrap, nowrap);
     gap: 0.75rem;
+}
+
+/* Webteca grid layout class — survives HTML Purifier */
+.studiolms-webteca-list.slms-dir-row {
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .studiolms-webteca-list li {
