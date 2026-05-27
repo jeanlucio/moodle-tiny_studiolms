@@ -20,9 +20,13 @@
 
     Example context (json): {}
 }}
-<button type="button" class="slms-toolbar-btn" id="tb-web-general">
-    <span aria-hidden="true">⚙️</span> {{#str}} toolbar_general, tiny_studiolms {{/str}}
-</button>
-<button type="button" class="slms-toolbar-btn" id="tb-web-resources">
-    <span aria-hidden="true">📎</span> {{#str}} toolbar_resources, tiny_studiolms {{/str}}
-</button>
+<div class="slms-toolbar-seg">
+    <button type="button" class="slms-toolbar-btn" id="tb-web-general">
+        <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+        {{#str}} toolbar_general, tiny_studiolms {{/str}}
+    </button>
+    <button type="button" class="slms-toolbar-btn" id="tb-web-resources">
+        <i class="fa-solid fa-paperclip" aria-hidden="true"></i>
+        {{#str}} toolbar_resources, tiny_studiolms {{/str}}
+    </button>
+</div>

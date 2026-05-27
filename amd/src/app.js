@@ -1187,6 +1187,8 @@ export const PopupManager = {
         const feedback = document.getElementById('slms-feedback-area');
         const tabToolbar = document.getElementById('slms-tab-toolbar');
 
+        document.querySelectorAll('.slms-toolbar-btn.active').forEach(b => b.classList.remove('active'));
+
         if (panel) {
             panel.classList.add('d-none');
         }
@@ -1217,6 +1219,11 @@ export const PopupManager = {
         }
 
         content.innerHTML = '';
+
+        document.querySelectorAll('.slms-toolbar-btn.active').forEach(b => b.classList.remove('active'));
+        if (btnElement) {
+            btnElement.classList.add('active');
+        }
 
         if (grid) {
             grid.classList.add('d-none');
