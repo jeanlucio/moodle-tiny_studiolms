@@ -270,6 +270,14 @@ const addBlockToCanvas = async(blockDef, config = null, skipScroll = false) => {
     entry.element = blockEl;
     entry.previewEl = previewEl;
 
+    // Re-check: the empty state may have been injected by showCanvasEmptyState during
+    // the awaits above (getString calls yield the event loop, allowing the async
+    // Promise in showCanvasEmptyState to resolve and append the placeholder).
+    const raceEmptyState = blocksList.querySelector('.slms-canvas-empty');
+    if (raceEmptyState) {
+        raceEmptyState.remove();
+    }
+
     blocksList.appendChild(blockEl);
 
     await renderBlockPreview(entry);

@@ -1199,20 +1199,54 @@ a.studiolms-btn:focus {
 }
 
 /* Grid column utility classes — survive HTML Purifier (class attr preserved, inline CSS vars stripped) */
-.studiolms-grid-content.slms-cols-1 { grid-template-columns: 1fr; }
-.studiolms-grid-content.slms-cols-2 { grid-template-columns: repeat(2, 1fr); }
-.studiolms-grid-content.slms-cols-3 { grid-template-columns: repeat(3, 1fr); }
-.studiolms-grid-content.slms-cols-4 { grid-template-columns: repeat(4, 1fr); }
+.studiolms-grid-content.slms-cols-1 {
+    grid-template-columns: 1fr;
+}
+
+.studiolms-grid-content.slms-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.studiolms-grid-content.slms-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.studiolms-grid-content.slms-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
 
 /* Grid gap utility classes */
-.studiolms-grid-content.slms-gap-0  { gap: 0; }
-.studiolms-grid-content.slms-gap-4  { gap: 4px; }
-.studiolms-grid-content.slms-gap-8  { gap: 8px; }
-.studiolms-grid-content.slms-gap-12 { gap: 12px; }
-.studiolms-grid-content.slms-gap-16 { gap: 16px; }
-.studiolms-grid-content.slms-gap-20 { gap: 20px; }
-.studiolms-grid-content.slms-gap-24 { gap: 24px; }
-.studiolms-grid-content.slms-gap-32 { gap: 32px; }
+.studiolms-grid-content.slms-gap-0 {
+    gap: 0;
+}
+
+.studiolms-grid-content.slms-gap-4 {
+    gap: 4px;
+}
+
+.studiolms-grid-content.slms-gap-8 {
+    gap: 8px;
+}
+
+.studiolms-grid-content.slms-gap-12 {
+    gap: 12px;
+}
+
+.studiolms-grid-content.slms-gap-16 {
+    gap: 16px;
+}
+
+.studiolms-grid-content.slms-gap-20 {
+    gap: 20px;
+}
+
+.studiolms-grid-content.slms-gap-24 {
+    gap: 24px;
+}
+
+.studiolms-grid-content.slms-gap-32 {
+    gap: 32px;
+}
 
 /* Heading */
 .studiolms-heading-h3 {
