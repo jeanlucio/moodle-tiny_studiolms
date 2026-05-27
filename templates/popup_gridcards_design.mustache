@@ -21,12 +21,12 @@
     Example context (json): {}
 }}
 <div class="mb-3">
-    <label for="pop_grid_title" class="form-label small fw-bold text-muted">{{#str}} grid_container_title, tiny_studiolms {{/str}}</label>
+    <label for="pop_grid_title" class="form-label small fw-bold">{{#str}} grid_container_title, tiny_studiolms {{/str}}</label>
     <input type="text" class="form-control form-control-sm" id="pop_grid_title" value="{{containerTitle}}">
 </div>
 <div class="d-flex gap-2 mb-3 pb-3 border-bottom">
     <div class="flex-grow-1">
-        <label for="pop_grid_title_size" class="form-label small fw-bold text-muted">{{#str}} grid_title_size, tiny_studiolms {{/str}}</label>
+        <label for="pop_grid_title_size" class="form-label small fw-bold">{{#str}} grid_title_size, tiny_studiolms {{/str}}</label>
         <select class="form-select form-select-sm" id="pop_grid_title_size">
             <option value="18px" {{#size18}}selected{{/size18}}>{{#str}} size_small, tiny_studiolms {{/str}}</option>
             <option value="24px" {{#size24}}selected{{/size24}}>{{#str}} size_medium, tiny_studiolms {{/str}}</option>
@@ -34,19 +34,19 @@
         </select>
     </div>
     <div>
-        <label for="pop_grid_title_color" class="form-label small fw-bold text-muted">{{#str}} text_color, tiny_studiolms {{/str}}</label>
+        <label for="pop_grid_title_color" class="form-label small fw-bold">{{#str}} text_color, tiny_studiolms {{/str}}</label>
         <input type="color" class="slms-color-picker d-block" id="pop_grid_title_color" value="{{titleColor}}">
     </div>
 </div>
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <label for="pop_grid_bg" class="form-label m-0 small fw-bold text-muted">{{#str}} bg_color, tiny_studiolms {{/str}}</label>
+    <label for="pop_grid_bg" class="form-label m-0 small fw-bold">{{#str}} bg_color, tiny_studiolms {{/str}}</label>
     <input type="color" class="slms-color-picker" id="pop_grid_bg" value="{{background}}">
 </div>
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <label for="pop_grid_border" class="form-label m-0 small fw-bold text-muted">{{#str}} border_color, tiny_studiolms {{/str}}</label>
+    <label for="pop_grid_border" class="form-label m-0 small fw-bold">{{#str}} border_color, tiny_studiolms {{/str}}</label>
     <input type="color" class="slms-color-picker" id="pop_grid_border" value="{{borderColor}}">
 </div>
 <div class="d-flex justify-content-between align-items-center">
-    <label for="pop_grid_radius" class="form-label m-0 small fw-bold text-muted">{{#str}} border_radius, tiny_studiolms {{/str}}</label>
+    <label for="pop_grid_radius" class="form-label m-0 small fw-bold">{{#str}} border_radius, tiny_studiolms {{/str}}</label>
     <input type="number" class="form-control form-control-sm slms-input-number" id="pop_grid_radius" value="{{borderRadius}}" min="0" max="50">
 </div>

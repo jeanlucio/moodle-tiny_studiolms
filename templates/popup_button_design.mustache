@@ -25,7 +25,7 @@
     }
 }}
 <div class="mb-3 pb-3 border-bottom">
-    <label for="pop_btn_align" class="form-label small fw-bold text-muted">{{#str}} alignment, tiny_studiolms {{/str}}</label>
+    <label for="pop_btn_align" class="form-label small fw-bold">{{#str}} alignment, tiny_studiolms {{/str}}</label>
     <select class="form-select form-select-sm" id="pop_btn_align">
         <option value="left" {{#isAlignLeft}}selected{{/isAlignLeft}}>{{#str}} align_left, tiny_studiolms {{/str}}</option>
         <option value="center" {{#isAlignCenter}}selected{{/isAlignCenter}}>{{#str}} align_center, tiny_studiolms {{/str}}</option>
@@ -35,21 +35,21 @@
 </div>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <label for="pop_btn_bg" class="form-label m-0 small fw-bold text-muted">{{#str}} button_bg, tiny_studiolms {{/str}}</label>
+    <label for="pop_btn_bg" class="form-label m-0 small fw-bold">{{#str}} button_bg, tiny_studiolms {{/str}}</label>
     <input type="color" class="slms-color-picker" id="pop_btn_bg" value="{{btnBg}}">
 </div>
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <label for="pop_btn_text_col" class="form-label m-0 small fw-bold text-muted">{{#str}} text_color, tiny_studiolms {{/str}}</label>
+    <label for="pop_btn_text_col" class="form-label m-0 small fw-bold">{{#str}} text_color, tiny_studiolms {{/str}}</label>
     <input type="color" class="slms-color-picker" id="pop_btn_text_col" value="{{btnTextCol}}">
 </div>
 <div class="d-flex justify-content-between align-items-center">
-    <label for="pop_btn_radius" class="form-label m-0 small fw-bold text-muted">{{#str}} border_radius, tiny_studiolms {{/str}}</label>
+    <label for="pop_btn_radius" class="form-label m-0 small fw-bold">{{#str}} border_radius, tiny_studiolms {{/str}}</label>
     <input type="number" class="form-control form-control-sm slms-input-number" id="pop_btn_radius" value="{{radius}}" min="0" max="50">
 </div>
 <div class="mt-3 pt-3 border-top">
-    <div class="small fw-bold text-muted mb-2">{{#str}} interactivity_sounds, tiny_studiolms {{/str}}</div>
+    <div class="small fw-bold mb-2">{{#str}} interactivity_sounds, tiny_studiolms {{/str}}</div>
     <div class="d-flex justify-content-between align-items-center mb-2">
-        <label for="pop_btn_hover" class="form-label m-0 small text-muted">{{#str}} hover_effect, tiny_studiolms {{/str}}</label>
+        <label for="pop_btn_hover" class="form-label m-0 small">{{#str}} hover_effect, tiny_studiolms {{/str}}</label>
         <select class="form-select form-select-sm" id="pop_btn_hover" style="max-width: 140px;">
             <option value="none" {{#hover_none}}selected{{/hover_none}}>{{#str}} hover_none, tiny_studiolms {{/str}}</option>
             <option value="scale" {{#hover_scale}}selected{{/hover_scale}}>{{#str}} hover_scale, tiny_studiolms {{/str}}</option>
@@ -58,7 +58,7 @@
         </select>
     </div>
     <div class="d-flex justify-content-between align-items-center">
-        <label for="pop_btn_sound" class="form-label m-0 small text-muted">{{#str}} click_sound, tiny_studiolms {{/str}}</label>
+        <label for="pop_btn_sound" class="form-label m-0 small">{{#str}} click_sound, tiny_studiolms {{/str}}</label>
         <select class="form-select form-select-sm" id="pop_btn_sound" style="max-width: 140px;">
             <option value="none" {{#sound_opt_none}}selected{{/sound_opt_none}}>{{#str}} sound_opt_none, tiny_studiolms {{/str}}</option>
             <option value="click" {{#sound_opt_click}}selected{{/sound_opt_click}}>{{#str}} sound_opt_click, tiny_studiolms {{/str}}</option>

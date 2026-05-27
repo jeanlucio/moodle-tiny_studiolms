@@ -21,7 +21,7 @@
     Example context (json): {"gap": 20}
 }}
 <div class="mb-3">
-    <label for="pop_grid_cols" class="form-label small fw-bold text-muted">{{#str}} grid_columns, tiny_studiolms {{/str}}</label>
+    <label for="pop_grid_cols" class="form-label small fw-bold">{{#str}} grid_columns, tiny_studiolms {{/str}}</label>
     <select class="form-select form-select-sm" id="pop_grid_cols">
         <option value="1" {{#col1}}selected{{/col1}}>{{#str}} col_1, tiny_studiolms {{/str}}</option>
         <option value="2" {{#col2}}selected{{/col2}}>{{#str}} col_2, tiny_studiolms {{/str}}</option>
@@ -30,6 +30,6 @@
     </select>
 </div>
 <div class="mb-1">
-    <label for="pop_grid_gap" class="form-label small fw-bold text-muted">{{#str}} grid_gap, tiny_studiolms {{/str}}</label>
+    <label for="pop_grid_gap" class="form-label small fw-bold">{{#str}} grid_gap, tiny_studiolms {{/str}}</label>
     <input type="range" class="form-range" id="pop_grid_gap" min="0" max="60" step="5" value="{{gap}}">
 </div>

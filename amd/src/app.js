@@ -153,7 +153,7 @@ export const initStudioApp = (
                         delIcon.className = 'fa-solid fa-trash';
                         delIcon.setAttribute('aria-hidden', 'true');
                         btnDelete.appendChild(delIcon);
-                        btnDelete.appendChild(document.createTextNode(strDelete));
+                        btnDelete.appendChild(document.createTextNode(' ' + strDelete));
 
                         btnDelete.onclick = (e) => {
                             e.preventDefault();

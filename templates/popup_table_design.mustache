@@ -21,17 +21,17 @@
     Example context (json): {}
 }}
 <div class="mb-3 pb-3 border-bottom">
-    <label for="pop_table_style" class="form-label small fw-bold text-muted">{{#str}} table_style, tiny_studiolms {{/str}}</label>
+    <label for="pop_table_style" class="form-label small fw-bold">{{#str}} table_style, tiny_studiolms {{/str}}</label>
     <select class="form-select form-select-sm" id="pop_table_style">
         <option value="striped" {{#isStriped}}selected{{/isStriped}}>{{#str}} table_style_striped, tiny_studiolms {{/str}}</option>
         <option value="default" {{#isDefault}}selected{{/isDefault}}>{{#str}} table_style_default, tiny_studiolms {{/str}}</option>
     </select>
 </div>
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <label for="pop_table_header_bg" class="form-label m-0 small fw-bold text-muted">{{#str}} table_header_bg, tiny_studiolms {{/str}}</label>
+    <label for="pop_table_header_bg" class="form-label m-0 small fw-bold">{{#str}} table_header_bg, tiny_studiolms {{/str}}</label>
     <input type="color" class="slms-color-picker" id="pop_table_header_bg" value="{{headerBg}}">
 </div>
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <label for="pop_table_header_text" class="form-label m-0 small fw-bold text-muted">{{#str}} table_header_text, tiny_studiolms {{/str}}</label>
+    <label for="pop_table_header_text" class="form-label m-0 small fw-bold">{{#str}} table_header_text, tiny_studiolms {{/str}}</label>
     <input type="color" class="slms-color-picker" id="pop_table_header_text" value="{{headerText}}">
 </div>
