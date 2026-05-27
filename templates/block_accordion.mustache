@@ -19,21 +19,23 @@
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
 
     Example context (json): {
-        "state": "open", "bg": "#ffffff", "color": "#3b82f6", "title": "Topic",
+        "state": "open", "isOpen": true, "bg": "#ffffff", "color": "#3b82f6", "title": "Topic",
+        "openSound": "none", "hoverEffect": "none",
         "iconFirst": "▼", "content": "<p>Content</p>"
     }
 }}
 <div class="studiolms-accordion-wrap mb-4 w-100">
-    <details class="studiolms-accordion" data-initial-state="{{state}}" data-slms-sound="{{openSound}}" {{#isOpen}}open{{/isOpen}} style="background-color: {{bg}};">
-        <summary class="studiolms-accordion-summary" data-slms-hover="{{hoverEffect}}">
+    <div class="studiolms-accordion slms-snd-{{openSound}} {{^isOpen}}slms-closed{{/isOpen}}"
+         style="background-color: {{bg}};">
+        <div class="studiolms-accordion-summary slms-hov-{{hoverEffect}}">
             <span class="studiolms-accordion-header" style="color: {{color}};">
                 <span class="slms-acc-title flex-grow-1" contenteditable="true">{{title}}</span>
                 <span contenteditable="false" aria-hidden="true" class="ms-3 user-select-none">{{iconFirst}}</span>
             </span>
-        </summary>
+        </div>
         <div class="studiolms-editable-area studiolms-accordion-content" contenteditable="true">
             {{{content}}}
         </div>
-    </details>
+    </div>
 </div>
 <p><br></p>

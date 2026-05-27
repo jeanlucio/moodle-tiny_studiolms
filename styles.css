@@ -976,7 +976,9 @@
 
 
 /* Student-facing: accordion and webteca icons animate on toggle.
-   Base state = -90deg so ▼ renders as ▶ (closed); open state = 0deg so ▼ shows naturally. */
+   Base state = -90deg so ▼ renders as ▶ (closed); open state = 0deg so ▼ shows naturally.
+   Uses .slms-closed class instead of [open] attribute — details/summary are stripped
+   by Moodle's HTMLPurifier (XHTML 1.0 Transitional doctype). */
 .studiolms-accordion-header .user-select-none,
 .studiolms-webteca-summary .user-select-none {
     display: inline-block;
@@ -984,9 +986,15 @@
     transform: rotate(-90deg);
 }
 
-.studiolms-accordion[open] .studiolms-accordion-header .user-select-none,
-.studiolms-webteca[open] .studiolms-webteca-summary .user-select-none {
+.studiolms-accordion:not(.slms-closed) .studiolms-accordion-header .user-select-none,
+.studiolms-webteca:not(.slms-closed) .studiolms-webteca-summary .user-select-none {
     transform: rotate(0deg);
+}
+
+/* Hide content when accordion is closed — student view only (not in TinyMCE editor). */
+body:not(.mce-content-body) .studiolms-accordion.slms-closed > .studiolms-accordion-content,
+body:not(.mce-content-body) .studiolms-webteca.slms-closed > .studiolms-webteca-content {
+    display: none;
 }
 
 /* Webteca Component Styles */
@@ -1046,17 +1054,11 @@ body.mce-content-body div.slms-grid-slot,
     background-color: var(--slms-bg, #fff);
 }
 
-.studiolms-accordion summary {
-    display: block;
-    list-style: none;
+.studiolms-accordion-summary {
     outline: none;
     cursor: pointer;
     margin: 0;
     padding: 0;
-}
-
-.studiolms-accordion summary::-webkit-details-marker {
-    display: none;
 }
 
 .studiolms-accordion-header {
@@ -1262,6 +1264,7 @@ a.studiolms-btn:focus {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
 }
 
 .studiolms-webteca-list {
@@ -1307,31 +1310,32 @@ a.studiolms-webteca-item:hover {
 }
 
 /* =========================================
-   STUDIOLMS: HOVER EFFECTS (data-slms-hover)
+   STUDIOLMS: HOVER EFFECTS (.slms-hov-*)
+   Class-based — survives Moodle HTMLPurifier.
    ========================================= */
 
-[data-slms-hover="scale"] {
+.slms-hov-scale {
     transition: transform 0.2s ease;
 }
 
-[data-slms-hover="scale"]:hover {
+.slms-hov-scale:hover {
     transform: scale(1.04);
 }
 
-[data-slms-hover="glow"] {
+.slms-hov-glow {
     transition: filter 0.2s ease, box-shadow 0.2s ease;
 }
 
-[data-slms-hover="glow"]:hover {
+.slms-hov-glow:hover {
     filter: brightness(1.06);
     box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
-[data-slms-hover="lift"] {
+.slms-hov-lift {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-[data-slms-hover="lift"]:hover {
+.slms-hov-lift:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
 }

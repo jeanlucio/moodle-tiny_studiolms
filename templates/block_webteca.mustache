@@ -20,13 +20,16 @@
 
     Example context (json): {
         "bg": "#ffffff", "headerBg": "#f8f9fa", "color": "#0d47a1", "title": "Title", "desc": "Desc",
+        "isOpen": true, "openSound": "none", "hoverEffect": "none",
         "listFlexDirection": "column", "listFlexWrap": "nowrap",
         "mappedResources": [{"url": "#", "typeColor": "#0d6efd", "icon": "🔗", "title": "Resource"}]
     }
 }}
 <div class="studiolms-webteca-wrap my-4 w-100" style="max-width: 900px;">
-    <details class="studiolms-webteca" {{#isOpen}}open{{/isOpen}} data-initial-state="{{#isOpen}}open{{/isOpen}}{{^isOpen}}closed{{/isOpen}}" data-slms-sound="{{openSound}}" style="background-color: {{bg}};">
-        <summary class="studiolms-webteca-summary" data-slms-hover="{{hoverEffect}}" style="background-color: {{headerBg}};">
+    <div class="studiolms-webteca slms-snd-{{openSound}} {{^isOpen}}slms-closed{{/isOpen}}"
+         style="background-color: {{bg}};">
+        <div class="studiolms-webteca-summary slms-hov-{{hoverEffect}}"
+             style="background-color: {{headerBg}};">
             <span class="d-flex flex-column gap-1">
                 <span class="fw-bold fs-5" style="color: {{color}};">
                     <span aria-hidden="true" class="me-2">📚</span><span class="slms-wt-title">{{title}}</span>
@@ -34,8 +37,8 @@
                 <span class="slms-wt-desc text-secondary small">{{desc}}</span>
             </span>
             <span contenteditable="false" aria-hidden="true" class="ms-3 fs-5 user-select-none" style="color: {{color}};">▼</span>
-        </summary>
-        <div contenteditable="false" class="p-4">
+        </div>
+        <div contenteditable="false" class="studiolms-webteca-content p-4">
             <ul class="studiolms-webteca-list {{#isGrid}}slms-dir-row{{/isGrid}}">
                 {{#mappedResources}}
                 <li {{#isGrid}}style="min-width: 250px; width: calc(50% - 0.375rem);"{{/isGrid}}>
@@ -53,6 +56,6 @@
                 {{/mappedResources}}
             </ul>
         </div>
-    </details>
+    </div>
 </div>
 <p><br></p>

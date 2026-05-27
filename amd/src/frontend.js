@@ -17,7 +17,12 @@
  * Student-facing frontend engine for StudioLMS blocks.
  *
  * Loaded on course/module pages. Handles runtime block behaviours
- * (accordion initial state) that need JavaScript on the student view.
+ * (accordion toggle, sounds, hover effects) that need JavaScript.
+ *
+ * Templates use <div> instead of <details>/<summary> because Moodle's
+ * HTMLPurifier (XHTML 1.0 Transitional) strips those HTML5 elements.
+ * State is encoded via the .slms-closed CSS class; sounds via .slms-snd-*;
+ * hover effects via .slms-hov-* — all class-based to survive purification.
  *
  * @module     tiny_studiolms/frontend
  * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
@@ -25,8 +30,8 @@
  */
 
 const SELECTORS = {
-    ACCORDION: 'details.studiolms-accordion',
-    WEBTECA: 'details.studiolms-webteca',
+    ACCORDION_SUMMARY: '.studiolms-accordion-summary',
+    WEBTECA_SUMMARY: '.studiolms-webteca-summary',
     ANY_BLOCK: '.studiolms-accordion, .studiolms-webteca, .studiolms-card, .studiolms-callout-wrap',
 };
 
@@ -90,42 +95,61 @@ const playSound = (type) => {
 };
 
 /**
- * Remove the `open` attribute from details elements whose initial state is "closed".
- * The mustache templates render all details as open so the HTML is valid and
- * predictable; this function applies the author-configured state on page load.
+ * Read the configured sound from the .slms-snd-* class on an element.
+ *
+ * @param {Element} el
+ * @returns {string} Sound type, or 'none'.
  */
-const applyInitialStates = () => {
-    const selector =
-        `${SELECTORS.ACCORDION}[data-initial-state="closed"],` +
-        `${SELECTORS.WEBTECA}[data-initial-state="closed"]`;
+const getSoundClass = (el) => {
+    const match = [...el.classList].find(c => c.startsWith('slms-snd-'));
+    return match ? match.replace('slms-snd-', '') : 'none';
+};
 
-    document.querySelectorAll(selector).forEach(details => {
-        details.removeAttribute('open');
+/**
+ * Wire up click and keyboard toggle handlers for all accordion and webteca
+ * summary divs. Each toggle flips the .slms-closed class on the container
+ * and plays the configured open sound.
+ */
+const initToggles = () => {
+    const summarySelector = `${SELECTORS.ACCORDION_SUMMARY}, ${SELECTORS.WEBTECA_SUMMARY}`;
+    document.querySelectorAll(summarySelector).forEach(summary => {
+        const container = summary.closest('.studiolms-accordion, .studiolms-webteca');
+        if (!container) {
+            return;
+        }
+
+        summary.setAttribute('role', 'button');
+        summary.setAttribute('tabindex', '0');
+        summary.setAttribute('aria-expanded', container.classList.contains('slms-closed') ? 'false' : 'true');
+
+        const toggle = () => {
+            const wasClosed = container.classList.contains('slms-closed');
+            container.classList.toggle('slms-closed');
+            summary.setAttribute('aria-expanded', wasClosed ? 'true' : 'false');
+            if (wasClosed) {
+                playSound(getSoundClass(container));
+            }
+        };
+
+        summary.addEventListener('click', toggle);
+        summary.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggle();
+            }
+        });
     });
 };
 
 /**
- * Attach click-sound handlers to buttons and open-sound handlers to accordions.
- * Only wires up elements that carry a data-slms-sound attribute with a non-"none" value.
+ * Attach click-sound handlers to button <a> elements.
+ * Only wires up elements whose class includes slms-snd-* with a non-"none" value.
  */
-const initSounds = () => {
-    document.querySelectorAll('a.studiolms-btn[data-slms-sound]').forEach(el => {
-        const sound = el.dataset.slmsSound;
+const initButtonSounds = () => {
+    document.querySelectorAll('a.studiolms-btn').forEach(el => {
+        const sound = getSoundClass(el);
         if (sound && sound !== 'none') {
             el.addEventListener('click', () => playSound(sound));
-        }
-    });
-
-    const detailsSelector =
-        `${SELECTORS.ACCORDION}[data-slms-sound], ${SELECTORS.WEBTECA}[data-slms-sound]`;
-    document.querySelectorAll(detailsSelector).forEach(el => {
-        const sound = el.dataset.slmsSound;
-        if (sound && sound !== 'none') {
-            el.addEventListener('toggle', () => {
-                if (el.open) {
-                    playSound(sound);
-                }
-            });
         }
     });
 };
@@ -149,7 +173,7 @@ export const init = () => {
     if (!document.querySelector(SELECTORS.ANY_BLOCK)) {
         return;
     }
-    applyInitialStates();
+    initToggles();
     fixLegacyButtons();
-    initSounds();
+    initButtonSounds();
 };
