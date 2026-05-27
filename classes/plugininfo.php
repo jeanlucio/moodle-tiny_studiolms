@@ -40,12 +40,10 @@ use editor_tiny\plugin_with_menuitems;
  */
 class plugininfo extends plugin implements plugin_with_buttons, plugin_with_configuration, plugin_with_menuitems {
     /**
-     * Enable the plugin for any logged-in, non-guest user.
+     * Enable the plugin only for users who hold tiny/studiolms:use in the given context.
      *
-     * The capability tiny/studiolms:use controls which users can manage
-     * templates (checked server-side in web services). We load the plugin
-     * toolbar button for all authenticated users so the button is always
-     * visible regardless of which context level the editor is initialised in.
+     * By default this grants access to editing teachers, teachers, and managers.
+     * Students receive no access and will not see the Studio toolbar button.
      *
      * @param context $context
      * @param array $options
