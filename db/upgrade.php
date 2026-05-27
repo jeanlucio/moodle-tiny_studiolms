@@ -54,5 +54,34 @@ function xmldb_tiny_studiolms_upgrade(int $oldversion): bool {
         upgrade_plugin_savepoint(true, 2026050101, 'tiny', 'studiolms');
     }
 
+    if ($oldversion < 2026052700) {
+        // Remove the stale capability grant that allowed all authenticated users
+        // to see the Studio button. The 'user' archetype was removed from
+        // db/access.php but the row in mdl_role_capabilities persists until
+        // explicitly deleted, so students still saw the button after that change.
+        $userroleid = $DB->get_field('role', 'id', ['archetype' => 'user']);
+        if ($userroleid) {
+            unassign_capability('tiny/studiolms:use', $userroleid);
+        }
+
+        upgrade_plugin_savepoint(true, 2026052700, 'tiny', 'studiolms');
+    }
+
+    if ($oldversion < 2026052701) {
+        // Grant tiny/studiolms:use to the roles that should have it.
+        // These grants were never created for installs where the plugin was
+        // first installed with the 'user' archetype (all users) and the
+        // archetypes were later restricted to teaching roles in db/access.php.
+        $systemcontext = \context_system::instance();
+        foreach (['editingteacher', 'teacher', 'manager'] as $archetype) {
+            $roleid = $DB->get_field('role', 'id', ['archetype' => $archetype]);
+            if ($roleid) {
+                assign_capability('tiny/studiolms:use', CAP_ALLOW, $roleid, $systemcontext->id, true);
+            }
+        }
+
+        upgrade_plugin_savepoint(true, 2026052701, 'tiny', 'studiolms');
+    }
+
     return true;
 }
