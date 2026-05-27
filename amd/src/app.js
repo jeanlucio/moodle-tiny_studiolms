@@ -1220,11 +1220,6 @@ export const PopupManager = {
 
         content.innerHTML = '';
 
-        document.querySelectorAll('.slms-toolbar-btn.active').forEach(b => b.classList.remove('active'));
-        if (btnElement) {
-            btnElement.classList.add('active');
-        }
-
         if (grid) {
             grid.classList.add('d-none');
         }
@@ -1239,6 +1234,11 @@ export const PopupManager = {
             const {html, js} = await Templates.renderForPromise(templateName, templateData);
             Templates.replaceNodeContents(content, html, js);
             panel.classList.remove('d-none');
+
+            document.querySelectorAll('.slms-toolbar-btn.active').forEach(b => b.classList.remove('active'));
+            if (btnElement) {
+                btnElement.classList.add('active');
+            }
 
             if (setupListeners) {
                 setupListeners(content);
