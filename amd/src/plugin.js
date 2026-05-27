@@ -134,6 +134,22 @@ export default Promise.all([
                 modalRoot.find('.modal-header').addClass('slms-modal-header-branded');
                 modalRoot.find('.modal-body').addClass('studiolms-modal-body');
                 modalRoot.on(ModalEvents.hidden, () => modal.destroy());
+
+                // Prevent modal from closing when the user starts a drag inside the
+                // dialog and releases the mouse on the backdrop (Moodle closes on click
+                // whose target is the .modal root element).
+                const modalDomEl = modalRoot[0];
+                const dialogDomEl = modalRoot.find('.modal-dialog')[0];
+                if (modalDomEl && dialogDomEl) {
+                    dialogDomEl.addEventListener('mousedown', () => {
+                        modalDomEl.addEventListener('click', (e) => {
+                            if (e.target === modalDomEl) {
+                                e.stopImmediatePropagation();
+                            }
+                        }, {once: true, capture: true});
+                    });
+                }
+
                 modal.show();
 
                 const canManageGlobal = editor.options.get(canManageGlobalOption);
