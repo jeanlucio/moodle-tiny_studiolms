@@ -1389,6 +1389,40 @@ a.studiolms-webteca-item:hover {
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
 }
 
+/* -----------------------------------------
+   PROPERTIES PANEL — SECTION GROUPS
+   ----------------------------------------- */
+
+/* Card wrapper for sub-sections (e.g. Interatividade e sons) */
+.tiny_studiolms .slms-section-group {
+    background: #f0f6ff;
+    border: 1px solid rgba(13, 71, 161, 0.1);
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.75rem;
+    margin-top: 0.75rem;
+}
+
+/* Uppercase micro-label for section group headings */
+.tiny_studiolms .slms-section-title {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: rgba(13, 71, 161, 0.7);
+    margin-bottom: 0.5rem;
+}
+
+/* Compact select used in inline label-control rows */
+.tiny_studiolms .slms-select-compact {
+    max-width: 150px;
+}
+
+/* Short label input in side-by-side pairs (e.g. profilecard links) */
+.tiny_studiolms .slms-input-label {
+    max-width: 90px;
+    flex-shrink: 0;
+}
+
 /* =========================================
    STUDIOLMS: MODAL & POPUP UI (NO INLINE CSS)
    ========================================= */

@@ -45,11 +45,11 @@
     <label for="pop_card_btnTextCol" class="form-label m-0 small fw-bold">{{#str}} text_color, tiny_studiolms {{/str}}</label>
     <input type="color" class="slms-color-picker" id="pop_card_btnTextCol" value="{{btnTextCol}}">
 </div>
-<div class="mt-3 pt-3 border-top">
-    <div class="small fw-bold mb-2">{{#str}} interactivity_sounds, tiny_studiolms {{/str}}</div>
+<div class="slms-section-group">
+    <div class="slms-section-title">{{#str}} interactivity_sounds, tiny_studiolms {{/str}}</div>
     <div class="d-flex justify-content-between align-items-center mb-2">
         <label for="pop_card_btn_hover" class="form-label m-0 small">{{#str}} hover_effect, tiny_studiolms {{/str}}</label>
-        <select class="form-select form-select-sm" id="pop_card_btn_hover" style="max-width: 140px;">
+        <select class="form-select form-select-sm slms-select-compact" id="pop_card_btn_hover">
             <option value="none" {{#btn_hover_none}}selected{{/btn_hover_none}}>{{#str}} hover_none, tiny_studiolms {{/str}}</option>
             <option value="scale" {{#btn_hover_scale}}selected{{/btn_hover_scale}}>{{#str}} hover_scale, tiny_studiolms {{/str}}</option>
             <option value="glow" {{#btn_hover_glow}}selected{{/btn_hover_glow}}>{{#str}} hover_glow, tiny_studiolms {{/str}}</option>
@@ -58,7 +58,7 @@
     </div>
     <div class="d-flex justify-content-between align-items-center">
         <label for="pop_card_btn_sound" class="form-label m-0 small">{{#str}} click_sound, tiny_studiolms {{/str}}</label>
-        <select class="form-select form-select-sm" id="pop_card_btn_sound" style="max-width: 140px;">
+        <select class="form-select form-select-sm slms-select-compact" id="pop_card_btn_sound">
             <option value="none" {{#btn_sound_opt_none}}selected{{/btn_sound_opt_none}}>{{#str}} sound_opt_none, tiny_studiolms {{/str}}</option>
             <option value="click" {{#btn_sound_opt_click}}selected{{/btn_sound_opt_click}}>{{#str}} sound_opt_click, tiny_studiolms {{/str}}</option>
             <option value="chime" {{#btn_sound_opt_chime}}selected{{/btn_sound_opt_chime}}>{{#str}} sound_opt_chime, tiny_studiolms {{/str}}</option>
