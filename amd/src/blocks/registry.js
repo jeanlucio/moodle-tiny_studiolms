@@ -30,6 +30,7 @@ import gridcards from './gridcards';
 import callout from './callout';
 import table from './table';
 import profileCard from './profilecard';
+import mindmap from './mindmap';
 
 export const Blocks = {
     stylizedHeading,
@@ -41,4 +42,5 @@ export const Blocks = {
     callout,
     table,
     profileCard,
+    mindmap,
 };

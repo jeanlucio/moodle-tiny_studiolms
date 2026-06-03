@@ -548,6 +548,72 @@ class generator {
     }
 
     /**
+     * Returns the system prompt for mind map generation.
+     *
+     * @return string
+     */
+    private static function mindmap_system_prompt(): string {
+        $p = 'You are a mind map generator for educational content.' . "\n";
+        $p .= 'Given a topic, generate a structured mind map.' . "\n\n";
+        $p .= 'Respond ONLY with a valid JSON object — no markdown, no code fences, no explanation.' . "\n\n";
+        $p .= 'Schema: {"topic": "string", "branches": [{"label": "string", "children": ["string", ...]}, ...]}' . "\n\n";
+        $p .= 'Rules:' . "\n";
+        $p .= '- Generate 4 to 6 main branches' . "\n";
+        $p .= '- Each branch must have 2 to 4 children' . "\n";
+        $p .= '- Keep all labels concise (1–4 words each)' . "\n";
+        $p .= '- All text must be in the SAME LANGUAGE as the user\'s topic' . "\n";
+        $p .= '- Respond ONLY with JSON.' . "\n";
+        return $p;
+    }
+
+    /**
+     * Generates a mind map node structure from a topic description.
+     *
+     * @param string $topic Topic description from the teacher.
+     * @return array With keys 'topic' (string), 'branches' (JSON string), 'provider' (string).
+     * @throws \moodle_exception If no provider is configured, all calls fail, or the response is invalid.
+     */
+    public static function generate_mindmap(string $topic): array {
+        $result = self::call_providers($topic, self::mindmap_system_prompt(), 'mindmap_ai_error');
+
+        $raw = trim($result['data']);
+        $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
+        $raw = preg_replace('/\s*\x60{3}$/i', '', $raw);
+
+        $data = json_decode(trim($raw), true);
+
+        if (!is_array($data) || empty($data['branches']) || !is_array($data['branches'])) {
+            throw new \moodle_exception('mindmap_ai_error', 'tiny_studiolms');
+        }
+
+        $safetopic = clean_param($data['topic'] ?? $topic, PARAM_TEXT);
+        $safebranches = [];
+        foreach ($data['branches'] as $branch) {
+            if (!is_array($branch) || empty($branch['label'])) {
+                continue;
+            }
+            $safechildren = [];
+            foreach (($branch['children'] ?? []) as $child) {
+                $safechildren[] = clean_param((string)$child, PARAM_TEXT);
+            }
+            $safebranches[] = [
+                'label'    => clean_param((string)$branch['label'], PARAM_TEXT),
+                'children' => $safechildren,
+            ];
+        }
+
+        if (empty($safebranches)) {
+            throw new \moodle_exception('mindmap_ai_error', 'tiny_studiolms');
+        }
+
+        return [
+            'topic'    => $safetopic,
+            'branches' => json_encode($safebranches),
+            'provider' => $result['provider'],
+        ];
+    }
+
+    /**
      * Sends a multi-turn conversation to the AI provider chain and returns the raw text reply.
      *
      * Each entry in $messages must have 'role' (user|assistant) and 'content' (string).

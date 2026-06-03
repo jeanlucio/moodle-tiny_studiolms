@@ -115,6 +115,15 @@ $functions = [
         'loginrequired' => true,
         'capabilities'  => 'tiny/studiolms:use',
     ],
+    'tiny_studiolms_generate_mindmap' => [
+        'classname'   => 'tiny_studiolms\external\generate_mindmap',
+        'methodname'  => 'execute',
+        'description' => 'Generate a mind map node structure via a configured LLM provider.',
+        'type'        => 'write',
+        'ajax'        => true,
+        'loginrequired' => true,
+        'capabilities'  => 'tiny/studiolms:use',
+    ],
     'tiny_studiolms_chat_message' => [
         'classname'   => 'tiny_studiolms\external\chat_message',
         'methodname'  => 'execute',

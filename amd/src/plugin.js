@@ -88,12 +88,24 @@ export default Promise.all([
             'default': false,
         });
 
+        // Tracks the last block clicked when the cursor cannot land inside it (e.g. SVG-based blocks).
+        // evt.target always reports the actual clicked element, even inside SVG namespaced nodes,
+        // so this is more reliable than editor.selection.getNode() for non-editable content.
+        let activeNonEditableBlock = null;
+
         const getActiveSlmsBlock = () => {
             const selectedNode = editor.selection.getNode();
             let slmsBlock = selectedNode.closest('[data-slms-block-type]');
 
             if (!slmsBlock && selectedNode.hasAttribute('data-slms-block-type')) {
                 slmsBlock = selectedNode;
+            }
+
+            // Fallback for fully non-editable blocks (no inner contenteditable="true") such as
+            // SVG-based blocks where TinyMCE cannot position the cursor and getNode() lands
+            // outside the block.
+            if (!slmsBlock && activeNonEditableBlock && activeNonEditableBlock.isConnected) {
+                slmsBlock = activeNonEditableBlock;
             }
 
             // When cursor is inside a grid slot, the intent is to insert a new block, not edit the grid.
@@ -106,6 +118,29 @@ export default Promise.all([
 
             return slmsBlock;
         };
+
+        const SELECTED_CLASS = 'slms-noneditable-selected';
+
+        // Detect clicks on fully non-editable blocks (SVG, images, etc.) that TinyMCE cannot
+        // select via cursor placement. evt.target traverses SVG namespaced nodes correctly.
+        editor.on('click', (evt) => {
+            const block = evt.target.closest('[data-slms-block-type]');
+            const isFullyNonEditable = block && !block.querySelector('[contenteditable="true"]');
+
+            // Remove highlight from the previously selected block.
+            if (activeNonEditableBlock && activeNonEditableBlock !== block) {
+                activeNonEditableBlock.classList.remove(SELECTED_CLASS);
+            }
+
+            if (isFullyNonEditable) {
+                activeNonEditableBlock = block;
+                block.classList.add(SELECTED_CLASS);
+                editor.nodeChanged();
+            } else {
+                activeNonEditableBlock = null;
+            }
+        });
+
 
         const openStudioModal = async() => {
             try {
@@ -195,6 +230,10 @@ export default Promise.all([
             : customAttrs;
 
         const editorCss = `
+            body.mce-content-body .slms-noneditable-selected {
+                outline: 2px solid #2276d2;
+                outline-offset: 2px;
+                border-radius: 4px; }
             body.mce-content-body div.slms-grid-slot {
                 border: 2px dashed #cbd5e1;
                 background-color: rgba(241, 245, 249, 0.4);
