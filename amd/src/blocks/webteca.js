@@ -22,6 +22,7 @@
  */
 
 import Templates from 'core/templates';
+import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
 
 export default {
@@ -98,6 +99,61 @@ export default {
                             elOpen.addEventListener('input', (ev) => {
                                 data.isOpen = ev.target.value === 'true';
                                 onUpdate(data);
+                            });
+                        }
+
+                        const aiBtnEl = popup.querySelector('#webteca-ai-btn');
+                        const aiPromptEl = popup.querySelector('#webteca_ai_prompt');
+                        const aiSpinner = popup.querySelector('#webteca-ai-spinner');
+                        const aiError = popup.querySelector('#webteca-ai-error');
+
+                        if (aiBtnEl && aiPromptEl) {
+                            aiBtnEl.addEventListener('click', async() => {
+                                const prompt = aiPromptEl.value.trim();
+                                if (!prompt) {
+                                    return;
+                                }
+                                aiBtnEl.disabled = true;
+                                aiSpinner?.classList.remove('d-none');
+                                if (aiError) {
+                                    aiError.textContent = '';
+                                    aiError.classList.add('d-none');
+                                }
+                                try {
+                                    const [promise] = ajaxCall([{
+                                        methodname: 'tiny_studiolms_generate_webteca',
+                                        args: {topic: prompt},
+                                    }]);
+                                    const result = await promise;
+                                    const titleEl = popup.querySelector('#pop_web_title');
+                                    const descEl = popup.querySelector('#pop_web_desc');
+                                    if (titleEl && result.title) {
+                                        titleEl.value = result.title;
+                                        data.title = result.title;
+                                    }
+                                    if (descEl && result.desc) {
+                                        descEl.value = result.desc;
+                                        data.desc = result.desc;
+                                    }
+                                    if (result.resources) {
+                                        data.resources = JSON.parse(result.resources);
+                                    }
+                                    onUpdate(data);
+                                } catch (err) {
+                                    if (aiError) {
+                                        let msg = '';
+                                        try {
+                                            msg = await getString('webteca_ai_error', 'tiny_studiolms');
+                                        } catch (_) {
+                                            msg = 'Erro ao gerar webteca. Tente novamente.';
+                                        }
+                                        aiError.textContent = msg;
+                                        aiError.classList.remove('d-none');
+                                    }
+                                } finally {
+                                    aiBtnEl.disabled = false;
+                                    aiSpinner?.classList.add('d-none');
+                                }
                             });
                         }
                     });

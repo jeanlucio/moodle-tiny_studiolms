@@ -22,6 +22,7 @@
  */
 
 import Templates from 'core/templates';
+import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
 
 export default {
@@ -83,6 +84,54 @@ export default {
                                 });
                             }
                         });
+
+                        const aiBtnEl = popup.querySelector('#accordion-ai-btn');
+                        const aiPromptEl = popup.querySelector('#accordion_ai_prompt');
+                        const aiSpinner = popup.querySelector('#accordion-ai-spinner');
+                        const aiError = popup.querySelector('#accordion-ai-error');
+
+                        if (aiBtnEl && aiPromptEl) {
+                            aiBtnEl.addEventListener('click', async() => {
+                                const prompt = aiPromptEl.value.trim();
+                                if (!prompt) {
+                                    return;
+                                }
+                                aiBtnEl.disabled = true;
+                                aiSpinner?.classList.remove('d-none');
+                                if (aiError) {
+                                    aiError.textContent = '';
+                                    aiError.classList.add('d-none');
+                                }
+                                try {
+                                    const [promise] = ajaxCall([{
+                                        methodname: 'tiny_studiolms_generate_accordion',
+                                        args: {topic: prompt},
+                                    }]);
+                                    const result = await promise;
+                                    const titleEl = popup.querySelector('#pop_acc_title');
+                                    if (titleEl && result.title) {
+                                        titleEl.value = result.title;
+                                        data.title = result.title;
+                                    }
+                                    data.content = result.content || '';
+                                    onUpdate(data);
+                                } catch (err) {
+                                    if (aiError) {
+                                        let msg = '';
+                                        try {
+                                            msg = await getString('accordion_ai_error', 'tiny_studiolms');
+                                        } catch (_) {
+                                            msg = 'Erro ao gerar acordeão. Tente novamente.';
+                                        }
+                                        aiError.textContent = msg;
+                                        aiError.classList.remove('d-none');
+                                    }
+                                } finally {
+                                    aiBtnEl.disabled = false;
+                                    aiSpinner?.classList.add('d-none');
+                                }
+                            });
+                        }
                     });
                 });
             }

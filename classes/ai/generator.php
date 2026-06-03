@@ -686,6 +686,209 @@ class generator {
     }
 
     /**
+     * Returns the system prompt for callout content generation.
+     *
+     * @return string
+     */
+    private static function callout_system_prompt(): string {
+        $p = 'You are an educational content assistant generating callout box content.' . "\n";
+        $p .= 'Given a topic or instruction, produce a short icon and rich HTML content for a callout box.' . "\n\n";
+        $p .= 'Respond ONLY with a valid JSON object — no markdown, no code fences, no explanation.' . "\n\n";
+        $p .= 'Schema: {"icon": "string", "contentHtml": "string"}' . "\n\n";
+        $p .= 'Rules:' . "\n";
+        $p .= '- "icon" must be a single emoji appropriate for the tone (💡 tip, ⚠️ warning, ✅ success, 📌 note)' . "\n";
+        $p .= '- "contentHtml" must use only <p>, <strong>, <ul>, <li> tags; keep it concise (2–5 sentences)' . "\n";
+        $p .= '- All text must be in the SAME LANGUAGE as the user\'s request' . "\n";
+        $p .= '- Respond ONLY with JSON.' . "\n";
+        return $p;
+    }
+
+    /**
+     * Generates icon and HTML content for a callout block.
+     *
+     * @param string $topic Teacher's description of the callout content.
+     * @return array With keys 'icon' (string), 'contenthtml' (string), 'provider' (string).
+     * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
+     */
+    public static function generate_callout(string $topic): array {
+        $result = self::call_providers($topic, self::callout_system_prompt(), 'callout_ai_error');
+
+        $raw = trim($result['data']);
+        $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
+        $raw = preg_replace('/\s*\x60{3}$/i', '', $raw);
+
+        $data = json_decode(trim($raw), true);
+
+        if (!is_array($data) || empty($data['contentHtml'])) {
+            throw new \moodle_exception('callout_ai_error', 'tiny_studiolms');
+        }
+
+        return [
+            'icon'        => clean_param((string)($data['icon'] ?? '💡'), PARAM_TEXT),
+            'contenthtml' => clean_param((string)$data['contentHtml'], PARAM_CLEANHTML),
+            'provider'    => $result['provider'],
+        ];
+    }
+
+    /**
+     * Returns the system prompt for advanced card content generation.
+     *
+     * @return string
+     */
+    private static function card_system_prompt(): string {
+        $p = 'You are an educational content assistant generating rich card content.' . "\n";
+        $p .= 'Given a topic or context, produce HTML content and an optional button label for a card block.' . "\n\n";
+        $p .= 'Respond ONLY with a valid JSON object — no markdown, no code fences, no explanation.' . "\n\n";
+        $p .= 'Schema: {"content": "string", "btnText": "string"}' . "\n\n";
+        $p .= 'Rules:' . "\n";
+        $p .= '- "content" must use only <h4>, <p>, <strong>, <ul>, <li> tags; 3–6 sentences' . "\n";
+        $p .= '- "btnText" must be a short action label (max 5 words); use empty string if no action fits' . "\n";
+        $p .= '- All text must be in the SAME LANGUAGE as the user\'s request' . "\n";
+        $p .= '- Respond ONLY with JSON.' . "\n";
+        return $p;
+    }
+
+    /**
+     * Generates HTML content and button text for an advanced card block.
+     *
+     * @param string $topic Teacher's description of the card content.
+     * @return array With keys 'content' (string), 'btntext' (string), 'provider' (string).
+     * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
+     */
+    public static function generate_card(string $topic): array {
+        $result = self::call_providers($topic, self::card_system_prompt(), 'card_ai_error');
+
+        $raw = trim($result['data']);
+        $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
+        $raw = preg_replace('/\s*\x60{3}$/i', '', $raw);
+
+        $data = json_decode(trim($raw), true);
+
+        if (!is_array($data) || empty($data['content'])) {
+            throw new \moodle_exception('card_ai_error', 'tiny_studiolms');
+        }
+
+        return [
+            'content'  => clean_param((string)$data['content'], PARAM_CLEANHTML),
+            'btntext'  => clean_param((string)($data['btnText'] ?? ''), PARAM_TEXT),
+            'provider' => $result['provider'],
+        ];
+    }
+
+    /**
+     * Returns the system prompt for accordion content generation.
+     *
+     * @return string
+     */
+    private static function accordion_system_prompt(): string {
+        $p = 'You are an educational content assistant generating accordion section content.' . "\n";
+        $p .= 'Given a topic, produce a title and rich HTML body for a collapsible accordion block.' . "\n\n";
+        $p .= 'Respond ONLY with a valid JSON object — no markdown, no code fences, no explanation.' . "\n\n";
+        $p .= 'Schema: {"title": "string", "content": "string"}' . "\n\n";
+        $p .= 'Rules:' . "\n";
+        $p .= '- "title" must be a concise section heading (max 60 chars, plain text)' . "\n";
+        $p .= '- "content" must use only <p>, <ul>, <li>, <strong> tags; 3–6 sentences' . "\n";
+        $p .= '- All text must be in the SAME LANGUAGE as the user\'s request' . "\n";
+        $p .= '- Respond ONLY with JSON.' . "\n";
+        return $p;
+    }
+
+    /**
+     * Generates title and HTML content for an accordion block.
+     *
+     * @param string $topic Teacher's description of the accordion content.
+     * @return array With keys 'title' (string), 'content' (string), 'provider' (string).
+     * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
+     */
+    public static function generate_accordion(string $topic): array {
+        $result = self::call_providers($topic, self::accordion_system_prompt(), 'accordion_ai_error');
+
+        $raw = trim($result['data']);
+        $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
+        $raw = preg_replace('/\s*\x60{3}$/i', '', $raw);
+
+        $data = json_decode(trim($raw), true);
+
+        if (!is_array($data) || empty($data['content'])) {
+            throw new \moodle_exception('accordion_ai_error', 'tiny_studiolms');
+        }
+
+        return [
+            'title'    => clean_param((string)($data['title'] ?? ''), PARAM_TEXT),
+            'content'  => clean_param((string)$data['content'], PARAM_CLEANHTML),
+            'provider' => $result['provider'],
+        ];
+    }
+
+    /**
+     * Returns the system prompt for webteca resource list generation.
+     *
+     * @return string
+     */
+    private static function webteca_system_prompt(): string {
+        $p = 'You are an educational content assistant generating a curated resource list.' . "\n";
+        $p .= 'Given a topic, produce a title, short description and a list of learning resources.' . "\n\n";
+        $p .= 'Respond ONLY with a valid JSON object — no markdown, no code fences, no explanation.' . "\n\n";
+        $p .= 'Schema: {"title": "string", "desc": "string",'
+            . ' "resources": [{"type": "link"|"pdf"|"video", "title": "string", "url": "string"}, ...]}' . "\n\n";
+        $p .= 'Rules:' . "\n";
+        $p .= '- Generate 3 to 5 resources' . "\n";
+        $p .= '- "type" must be "link", "pdf" or "video"' . "\n";
+        $p .= '- "url" must be "#" (placeholder) because we cannot invent real URLs' . "\n";
+        $p .= '- "title" for each resource must be specific and descriptive (max 60 chars)' . "\n";
+        $p .= '- "title" (top-level) max 60 chars, "desc" max 120 chars' . "\n";
+        $p .= '- All text must be in the SAME LANGUAGE as the user\'s request' . "\n";
+        $p .= '- Respond ONLY with JSON.' . "\n";
+        return $p;
+    }
+
+    /**
+     * Generates title, description and resources for a webteca block.
+     *
+     * @param string $topic Teacher's description of the resource collection.
+     * @return array With keys 'title' (string), 'desc' (string), 'resources' (JSON string), 'provider' (string).
+     * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
+     */
+    public static function generate_webteca(string $topic): array {
+        $result = self::call_providers($topic, self::webteca_system_prompt(), 'webteca_ai_error');
+
+        $raw = trim($result['data']);
+        $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
+        $raw = preg_replace('/\s*\x60{3}$/i', '', $raw);
+
+        $data = json_decode(trim($raw), true);
+
+        if (!is_array($data) || empty($data['resources']) || !is_array($data['resources'])) {
+            throw new \moodle_exception('webteca_ai_error', 'tiny_studiolms');
+        }
+
+        $saferesources = [];
+        $validtypes = ['link', 'pdf', 'video'];
+        foreach ($data['resources'] as $res) {
+            if (!is_array($res) || empty($res['title'])) {
+                continue;
+            }
+            $type = in_array($res['type'] ?? '', $validtypes, true) ? $res['type'] : 'link';
+            $saferesources[] = [
+                'type'  => $type,
+                'title' => clean_param((string)$res['title'], PARAM_TEXT),
+                'url'   => '#',
+            ];
+        }
+
+        if (empty($saferesources)) {
+            throw new \moodle_exception('webteca_ai_error', 'tiny_studiolms');
+        }
+
+        return [
+            'title'     => clean_param((string)($data['title'] ?? ''), PARAM_TEXT),
+            'desc'      => clean_param((string)($data['desc'] ?? ''), PARAM_TEXT),
+            'resources' => json_encode($saferesources),
+            'provider'  => $result['provider'],
+        ];
+    }
+
+    /**
      * Sends a multi-turn conversation to the AI provider chain and returns the raw text reply.
      *
      * Each entry in $messages must have 'role' (user|assistant) and 'content' (string).

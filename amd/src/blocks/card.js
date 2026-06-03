@@ -22,6 +22,7 @@
  */
 
 import Templates from 'core/templates';
+import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
 
 export default {
@@ -98,6 +99,52 @@ export default {
                                 });
                             }
                         });
+
+                        const aiBtnEl = popup.querySelector('#card-ai-btn');
+                        const aiPromptEl = popup.querySelector('#card_ai_prompt');
+                        const aiSpinner = popup.querySelector('#card-ai-spinner');
+                        const aiError = popup.querySelector('#card-ai-error');
+
+                        if (aiBtnEl && aiPromptEl) {
+                            aiBtnEl.addEventListener('click', async() => {
+                                const prompt = aiPromptEl.value.trim();
+                                if (!prompt) {
+                                    return;
+                                }
+                                aiBtnEl.disabled = true;
+                                aiSpinner?.classList.remove('d-none');
+                                if (aiError) {
+                                    aiError.textContent = '';
+                                    aiError.classList.add('d-none');
+                                }
+                                try {
+                                    const [promise] = ajaxCall([{
+                                        methodname: 'tiny_studiolms_generate_card',
+                                        args: {topic: prompt},
+                                    }]);
+                                    const result = await promise;
+                                    data.content = result.content || '';
+                                    if (result.btntext) {
+                                        data.btnText = result.btntext;
+                                    }
+                                    onUpdate(data);
+                                } catch (err) {
+                                    if (aiError) {
+                                        let msg = '';
+                                        try {
+                                            msg = await getString('card_ai_error', 'tiny_studiolms');
+                                        } catch (_) {
+                                            msg = 'Erro ao gerar card. Tente novamente.';
+                                        }
+                                        aiError.textContent = msg;
+                                        aiError.classList.remove('d-none');
+                                    }
+                                } finally {
+                                    aiBtnEl.disabled = false;
+                                    aiSpinner?.classList.add('d-none');
+                                }
+                            });
+                        }
                     });
                 });
             }

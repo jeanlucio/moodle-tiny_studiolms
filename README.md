@@ -17,7 +17,7 @@
 
 ### ✨ Features
 
-* 🧱 **8 Instructional Blocks:** Ready-to-use design blocks insertable from the toolbar:
+* 🧱 **11 Instructional Blocks:** Ready-to-use design blocks insertable from the toolbar:
   * **Action Button** — CTA button with configurable URL, colours, border radius and alignment.
   * **Advanced Card** — Card with image/video media, rich editable body and an internal button.
   * **Webteca** — Resource library (PDF, video, audio, link) in list or grid layout.
@@ -26,6 +26,9 @@
   * **Grid Cards** — Multi-column CSS grid container with editable slots.
   * **Callout** — Highlight box with customisable icon and border colour.
   * **Stylised Heading** — Styled `h3`/`h4` heading with icon and background colour.
+  * **Profile Card** — Presenter card with photo, name, role, bio and up to 3 configurable links; customisable background and accent colour.
+  * **Mind Map** — Pure SVG radial diagram (no external library) with a central topic, up to 8 branches and up to 5 child nodes each. 4 colour themes (blue, green, purple, orange). Optional AI generation from a plain-language description.
+  * **Infographic (Stats)** — Visual stat block with up to 4 items, each combining an icon (picked from a 20-icon visual picker), a value and a label. Optional section title, 4 colour themes and AI generation. Extensible layout system: additional layouts (steps, features, timeline, comparison) can be registered without changing core code.
 * 🛡️ **Shielded Injection:** Blocks use `contenteditable="false"` on the wrapper and `contenteditable="true"` on editable regions for reliable editing.
 * 💾 **Round-Trip State:** Block configuration serialised in Base64 inside `data-slms-state` — reopen and edit any block at any time.
 * 📚 **Template Library:** 4-tab modal for managing reusable layouts:
@@ -188,7 +191,7 @@ O **StudioLMS** é um sub-plugin TinyMCE 6 para Moodle que traz uma experiência
 
 ### ✨ Funcionalidades
 
-* 🧱 **8 Blocos Instrucionais:** Blocos de design prontos para uso, inseríveis pela barra de ferramentas:
+* 🧱 **11 Blocos Instrucionais:** Blocos de design prontos para uso, inseríveis pela barra de ferramentas:
   * **Botão CTA** — Botão com URL, cores, raio e alinhamento configuráveis.
   * **Card Avançado** — Card com mídia de imagem/vídeo, corpo rico editável e botão interno.
   * **Webteca** — Biblioteca de recursos (PDF, vídeo, áudio, link) em layout de lista ou grade.
@@ -197,6 +200,9 @@ O **StudioLMS** é um sub-plugin TinyMCE 6 para Moodle que traz uma experiência
   * **Grid de Cards** — Container CSS grid multi-colunas com slots editáveis.
   * **Callout** — Caixa de destaque com ícone e cor de borda personalizáveis.
   * **Título Estilizado** — Cabeçalho `h3`/`h4` estilizado com ícone e cor de fundo.
+  * **Card de Perfil** — Card de apresentação com foto, nome, cargo, bio e até 3 links configuráveis; cor de fundo e cor de destaque personalizáveis.
+  * **Mapa Mental** — Diagrama radial em SVG puro (sem biblioteca externa) com tópico central, até 8 ramos e até 5 nós filhos por ramo. 4 temas de cor (azul, verde, roxo, laranja). Geração via IA a partir de uma descrição em linguagem natural.
+  * **Infográfico (Stats)** — Bloco visual de estatísticas com até 4 itens, cada um combinando ícone (selecionado em um picker visual de 20 ícones FA6), valor e rótulo. Título de seção opcional, 4 temas de cor e geração via IA. Sistema de layouts extensível: layouts adicionais (passos, funcionalidades, linha do tempo, comparação) podem ser registrados sem alterar o código central.
 * 🛡️ **Injeção Blindada:** Blocos usam `contenteditable="false"` no wrapper e `contenteditable="true"` nas regiões editáveis para uma edição confiável.
 * 💾 **Estado de Ida e Volta:** Configuração do bloco serializada em Base64 dentro de `data-slms-state` — reabra e edite qualquer bloco a qualquer momento.
 * 📚 **Biblioteca de Templates:** Modal com 4 abas para gerenciar layouts reutilizáveis:

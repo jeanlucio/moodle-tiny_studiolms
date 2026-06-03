@@ -22,6 +22,7 @@
  */
 
 import Templates from 'core/templates';
+import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
 
 export default {
@@ -86,6 +87,54 @@ export default {
                                 popup.querySelector('#pop_callout_icon').value = '';
                                 data.icon = '';
                                 onUpdate(data);
+                            });
+                        }
+
+                        const aiBtnEl = popup.querySelector('#callout-ai-btn');
+                        const aiPromptEl = popup.querySelector('#callout_ai_prompt');
+                        const aiSpinner = popup.querySelector('#callout-ai-spinner');
+                        const aiError = popup.querySelector('#callout-ai-error');
+
+                        if (aiBtnEl && aiPromptEl) {
+                            aiBtnEl.addEventListener('click', async() => {
+                                const prompt = aiPromptEl.value.trim();
+                                if (!prompt) {
+                                    return;
+                                }
+                                aiBtnEl.disabled = true;
+                                aiSpinner?.classList.remove('d-none');
+                                if (aiError) {
+                                    aiError.textContent = '';
+                                    aiError.classList.add('d-none');
+                                }
+                                try {
+                                    const [promise] = ajaxCall([{
+                                        methodname: 'tiny_studiolms_generate_callout',
+                                        args: {topic: prompt},
+                                    }]);
+                                    const result = await promise;
+                                    const iconEl = popup.querySelector('#pop_callout_icon');
+                                    if (iconEl && result.icon) {
+                                        iconEl.value = result.icon;
+                                        data.icon = result.icon;
+                                    }
+                                    data.contentHtml = result.contenthtml || '';
+                                    onUpdate(data);
+                                } catch (err) {
+                                    if (aiError) {
+                                        let msg = '';
+                                        try {
+                                            msg = await getString('callout_ai_error', 'tiny_studiolms');
+                                        } catch (_) {
+                                            msg = 'Erro ao gerar callout. Tente novamente.';
+                                        }
+                                        aiError.textContent = msg;
+                                        aiError.classList.remove('d-none');
+                                    }
+                                } finally {
+                                    aiBtnEl.disabled = false;
+                                    aiSpinner?.classList.add('d-none');
+                                }
                             });
                         }
                     });

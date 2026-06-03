@@ -59,3 +59,25 @@
         </select>
     </div>
 </div>
+
+<hr class="my-2"/>
+
+<div>
+    <span class="form-label small fw-semibold d-block mb-2">
+        ✨ {{#str}}card_ai_section, tiny_studiolms{{/str}}
+    </span>
+    <textarea id="card_ai_prompt"
+              class="form-control form-control-sm"
+              rows="2"
+              placeholder="{{#str}}card_ai_prompt, tiny_studiolms{{/str}}"></textarea>
+    <div class="d-flex align-items-center mt-2" style="gap:8px;">
+        <button type="button" class="btn btn-sm btn-primary" id="card-ai-btn">
+            {{#str}}card_ai_generate, tiny_studiolms{{/str}}
+        </button>
+        <div id="card-ai-spinner"
+             class="spinner-border spinner-border-sm text-primary d-none"
+             role="status"
+             aria-hidden="true"></div>
+    </div>
+    <div id="card-ai-error" class="text-danger small mt-1 d-none"></div>
+</div>
