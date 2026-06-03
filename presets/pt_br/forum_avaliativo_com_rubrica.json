@@ -1,0 +1,73 @@
+{
+    "name": "Fórum Avaliativo com Rubrica",
+    "description": "Card de boas-vindas com foto do professor, card com o desafio/questões e tabela de critérios de avaliação com pontuação.",
+    "blocks": [
+        {
+            "type": "advancedCard",
+            "config": {
+                "bg": "#fff3e0",
+                "text": "#333333",
+                "border": "#e65100",
+                "radius": 12,
+                "shadow": "sm",
+                "mediaType": "image",
+                "mediaUrl": "[URL_DA_FOTO_DO_PROFESSOR]",
+                "layout": "horizontal",
+                "btnText": "",
+                "btnUrl": "#",
+                "btnBg": "#e65100",
+                "btnTextCol": "#ffffff",
+                "btnAlign": "left",
+                "content": "<h3 style=\"color: #e65100; margin-top: 0;\"><span aria-hidden=\"true\">📢</span> <strong>Fórum Avaliativo [N]</strong></h3><p style=\"text-align: justify;\">Olá, [firstname]! Tudo bem? Esta é a <strong>[N]ª atividade avaliativa</strong> da disciplina!</p><p style=\"text-align: justify;\">Trata-se de um <strong>fórum individual</strong>. Cada estudante deverá postar sua resposta <strong>nos comentários</strong>. <span aria-hidden=\"true\">💬</span></p>"
+            }
+        },
+        {
+            "type": "advancedCard",
+            "config": {
+                "bg": "#e8f5e9",
+                "text": "#1b5e20",
+                "border": "#4caf50",
+                "radius": 12,
+                "shadow": "sm",
+                "mediaType": "none",
+                "mediaUrl": "",
+                "layout": "vertical",
+                "btnText": "",
+                "btnUrl": "#",
+                "btnBg": "#1b5e20",
+                "btnTextCol": "#ffffff",
+                "btnAlign": "left",
+                "content": "<h3 style=\"color: #1b5e20; margin-top: 0;\"><span aria-hidden=\"true\">🧩</span> <strong>Sobre o Desafio</strong></h3><p style=\"text-align: justify;\">Na aula desta semana o tema foi <strong>[Tema Central]</strong>. Com base no material didático, reflita e responda:</p><ul><li>[Pergunta reflexiva 1]?</li><li>[Pergunta reflexiva 2]?</li><li>[Pergunta reflexiva 3]?</li><li>[Pergunta reflexiva 4]?</li></ul><p style=\"text-align: justify;\">Justifique sua resposta com exemplos da sua prática ou experiência pessoal.</p>"
+            }
+        },
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Painel de Pontuação — Avaliação",
+                "level": "h3",
+                "icon": "🏆",
+                "bgColor": "#01579b",
+                "textColor": "#ffffff"
+            }
+        },
+        {
+            "type": "table",
+            "config": {
+                "cols": 3,
+                "rows": 7,
+                "style": "striped",
+                "headerBg": "#0288d1",
+                "headerText": "#ffffff",
+                "cellData": [
+                    ["🎯 Critério", "📋 Descrição", "💯 Pontuação"],
+                    ["<strong>1. Clareza e organização das ideias</strong>", "A resposta apresenta estrutura lógica e está bem articulada, facilitando a compreensão do leitor.", "4 pts"],
+                    ["<strong>2. Argumentação consistente</strong>", "O estudante expõe sua opinião com coerência e justifica seus pontos de vista com exemplos ou reflexões relevantes.", "4 pts"],
+                    ["<strong>3. Relação com a leitura</strong>", "A resposta demonstra que o estudante estabeleceu conexões com o conteúdo estudado.", "3 pts"],
+                    ["<strong>4. Criatividade e originalidade</strong>", "A resposta traz ideias próprias e novas formas de pensar o tema abordado.", "2 pts"],
+                    ["<strong>5. Correção gramatical</strong>", "O texto segue as normas da língua portuguesa e não apresenta erros ortográficos ou de concordância.", "2 pts"],
+                    ["<strong>TOTAL</strong>", "—", "<strong>15 pts</strong>"]
+                ]
+            }
+        }
+    ]
+}
