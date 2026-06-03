@@ -7,11 +7,11 @@
     Example context (json):
     {
         "topic": "Fotossíntese",
-        "branches_text": "Reagentes: CO2, H2O, Luz\nProdutos: Glicose, Oxigênio\nLocal: Cloroplasto, Folhas",
-        "theme_blue": true,
-        "theme_green": false,
-        "theme_purple": false,
-        "theme_orange": false
+        "branchesText": "Reagentes: CO2, H2O, Luz\nProdutos: Glicose, Oxigênio\nLocal: Cloroplasto, Folhas",
+        "themeBlue": true,
+        "themeGreen": false,
+        "themePurple": false,
+        "themeOrange": false
     }
 }}
 <div class="slms-popup-mindmap-edit p-3">
@@ -33,7 +33,7 @@
         </label>
         <textarea id="mm_branches"
                   class="form-control form-control-sm slms-mm-branches-area"
-                  rows="5">{{branches_text}}</textarea>
+                  rows="5">{{branchesText}}</textarea>
         <div class="form-text mt-1" style="font-size:11px;line-height:1.3;">
             {{#str}}mindmap_branches_help, tiny_studiolms{{/str}}
         </div>
@@ -45,25 +45,25 @@
         </span>
         <div class="d-flex align-items-center" style="gap:10px;">
             <button type="button"
-                    class="slms-mm-theme-btn{{#theme_blue}} selected{{/theme_blue}}"
+                    class="slms-mm-theme-btn{{#themeBlue}} selected{{/themeBlue}}"
                     data-theme="blue"
                     aria-label="{{#str}}mindmap_theme_blue, tiny_studiolms{{/str}}"
                     style="background:#1e3a8a;">
             </button>
             <button type="button"
-                    class="slms-mm-theme-btn{{#theme_green}} selected{{/theme_green}}"
+                    class="slms-mm-theme-btn{{#themeGreen}} selected{{/themeGreen}}"
                     data-theme="green"
                     aria-label="{{#str}}mindmap_theme_green, tiny_studiolms{{/str}}"
                     style="background:#14532d;">
             </button>
             <button type="button"
-                    class="slms-mm-theme-btn{{#theme_purple}} selected{{/theme_purple}}"
+                    class="slms-mm-theme-btn{{#themePurple}} selected{{/themePurple}}"
                     data-theme="purple"
                     aria-label="{{#str}}mindmap_theme_purple, tiny_studiolms{{/str}}"
                     style="background:#581c87;">
             </button>
             <button type="button"
-                    class="slms-mm-theme-btn{{#theme_orange}} selected{{/theme_orange}}"
+                    class="slms-mm-theme-btn{{#themeOrange}} selected{{/themeOrange}}"
                     data-theme="orange"
                     aria-label="{{#str}}mindmap_theme_orange, tiny_studiolms{{/str}}"
                     style="background:#c2410c;">

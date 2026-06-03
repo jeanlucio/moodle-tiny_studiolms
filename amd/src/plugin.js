@@ -477,7 +477,7 @@ export default Promise.all([
 
         return {
             toolbar: addToolbarButton(instanceConfig.toolbar, 'content', buttonName),
-            menu: addMenubarItem(instanceConfig.menu, 'tools', buttonName),
+            menu: addMenubarItem(instanceConfig.menu, 'insert', buttonName),
             // eslint-disable-next-line camelcase
             extended_valid_elements: extendedValid,
             // eslint-disable-next-line camelcase

@@ -113,7 +113,12 @@ const buildSvg = (data) => {
     const N = branches.length;
 
     // Adaptive branch radius so all nodes fit inside the expanded viewport (H=620).
-    const R1 = N <= 4 ? 175 : (N <= 6 ? 158 : 140);
+    let R1 = 140;
+    if (N <= 4) {
+        R1 = 175;
+    } else if (N <= 6) {
+        R1 = 158;
+    }
     // R2 must exceed (BW/2 + KW/2) = 60+52 = 112 to guarantee no overlap between
     // a branch node and its perpendicular-row children on horizontal branches.
     const R2 = 120;
@@ -124,9 +129,9 @@ const buildSvg = (data) => {
 
     const parts = [];
 
-    // aria-hidden="true" because the container div carries role="img" and aria-label
-    // with the full text description. The SVG is purely visual; hiding it prevents
-    // screen readers from reading SVG text nodes in an unstructured order.
+    // The SVG sets aria-hidden="true" because the container div carries role="img"
+    // and aria-label with the full text description. Hiding the SVG prevents screen
+    // readers from traversing SVG text nodes in an unstructured order.
     parts.push(
         `<svg xmlns="http://www.w3.org/2000/svg" `
         + `viewBox="-10 -10 ${W + 20} ${H + 20}" `
@@ -152,7 +157,7 @@ const buildSvg = (data) => {
     // Children are arranged in a straight line perpendicular to the branch direction,
     // centred at distance R2 outward from the branch node. This eliminates overlapping
     // that occurs when a radial fan is used on vertical or near-vertical branches.
-    const CHILD_SPACING = 116; // px between adjacent child centres
+    const CHILD_SPACING = 116; // Pixels between adjacent child centres.
 
     const childPositions = (bx, by, angle, children) => {
         const M = children.length;
@@ -262,7 +267,8 @@ const buildSvg = (data) => {
     });
 
     // Center node — drawn last, always on top.
-    const cw = 144, ch = 52;
+    const cw = 144;
+    const ch = 52;
     parts.push(
         `<rect x="${(CX - cw / 2 + 2).toFixed(1)}" y="${(CY - ch / 2 + 3).toFixed(1)}" `
         + `width="${cw}" height="${ch}" rx="${ch / 2}" fill="rgba(0,0,0,0.15)"/>`
@@ -378,11 +384,11 @@ export default {
             btnEdit.addEventListener('click', () => {
                 const tplData = {
                     topic: data.topic || '',
-                    branches_text: serializeBranchesText(data.branches || []),
-                    theme_blue: (data.theme || 'blue') === 'blue',
-                    theme_green: data.theme === 'green',
-                    theme_purple: data.theme === 'purple',
-                    theme_orange: data.theme === 'orange',
+                    branchesText: serializeBranchesText(data.branches || []),
+                    themeBlue: (data.theme || 'blue') === 'blue',
+                    themeGreen: data.theme === 'green',
+                    themePurple: data.theme === 'purple',
+                    themeOrange: data.theme === 'orange',
                 };
 
                 PopupManager.open(btnEdit, 'tiny_studiolms/popup_mindmap_edit', tplData, (popup) => {
