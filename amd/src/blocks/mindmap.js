@@ -124,10 +124,14 @@ const buildSvg = (data) => {
 
     const parts = [];
 
+    // aria-hidden="true" because the container div carries role="img" and aria-label
+    // with the full text description. The SVG is purely visual; hiding it prevents
+    // screen readers from reading SVG text nodes in an unstructured order.
     parts.push(
         `<svg xmlns="http://www.w3.org/2000/svg" `
         + `viewBox="-10 -10 ${W + 20} ${H + 20}" `
-        + `style="width:100%;max-width:${W}px;height:auto;display:block;">`
+        + `style="width:100%;max-width:${W}px;height:auto;display:block;" `
+        + `aria-hidden="true">`
     );
     parts.push(
         `<rect x="-10" y="-10" width="${W + 20}" height="${H + 20}" rx="10" fill="${c.bg}"/>`
@@ -480,6 +484,16 @@ export default {
 
     renderHtml: async(data) => {
         const svgContent = buildSvg(data);
-        return Templates.render('tiny_studiolms/block_mindmap', {svgContent});
+        const topic = String(data.topic || 'Tópico Principal');
+        const branches = Array.isArray(data.branches) ? data.branches : [];
+        const branchParts = branches.map(b => {
+            const label = String(b.label || '');
+            const kids = Array.isArray(b.children) ? b.children.filter(Boolean) : [];
+            return kids.length > 0 ? `${label} (${kids.join(', ')})` : label;
+        });
+        const textAlt = branchParts.length > 0
+            ? `${topic}: ${branchParts.join('; ')}`
+            : topic;
+        return Templates.render('tiny_studiolms/block_mindmap', {svgContent, textAlt});
     },
 };

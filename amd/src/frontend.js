@@ -35,6 +35,9 @@ const SELECTORS = {
     ANY_BLOCK: '.studiolms-accordion, .studiolms-webteca, .studiolms-card, .studiolms-callout-wrap',
 };
 
+// Counter for unique IDs assigned to accordion/webteca toggle pairs.
+let toggleCounter = 0;
+
 /**
  * Synthesise a short sound using the Web Audio API.
  *
@@ -95,6 +98,19 @@ const playSound = (type) => {
 };
 
 /**
+ * Remove contenteditable from all StudioLMS block elements and their descendants.
+ *
+ * contenteditable is required inside TinyMCE for inline editing, and HTMLPurifier
+ * allows it, so it survives into the student-facing page. Screen readers (NVDA, JAWS,
+ * VoiceOver) announce contenteditable="true" regions as "editable area" or "text",
+ * which confuses students reading course content that should be read-only.
+ */
+const stripEditorAttributes = () => {
+    document.querySelectorAll('[data-slms-block-type] [contenteditable], [data-slms-block-type][contenteditable]')
+        .forEach(el => el.removeAttribute('contenteditable'));
+};
+
+/**
  * Read the configured sound from the .slms-snd-* class on an element.
  *
  * @param {Element} el
@@ -109,6 +125,10 @@ const getSoundClass = (el) => {
  * Wire up click and keyboard toggle handlers for all accordion and webteca
  * summary divs. Each toggle flips the .slms-closed class on the container
  * and plays the configured open sound.
+ *
+ * Each summary/panel pair receives unique IDs so that aria-controls can
+ * associate the button with its controlled panel, following the WAI-ARIA
+ * Accordion pattern (APG).
  */
 const initToggles = () => {
     const summarySelector = `${SELECTORS.ACCORDION_SUMMARY}, ${SELECTORS.WEBTECA_SUMMARY}`;
@@ -118,9 +138,24 @@ const initToggles = () => {
             return;
         }
 
+        const isAccordion = container.classList.contains('studiolms-accordion');
+        const contentEl = container.querySelector(
+            isAccordion ? '.studiolms-accordion-content' : '.studiolms-webteca-content'
+        );
+
+        const uid = ++toggleCounter;
+        const btnId = `slms-toggle-${uid}`;
+        const panelId = `slms-panel-${uid}`;
+
+        summary.setAttribute('id', btnId);
         summary.setAttribute('role', 'button');
         summary.setAttribute('tabindex', '0');
         summary.setAttribute('aria-expanded', container.classList.contains('slms-closed') ? 'false' : 'true');
+
+        if (contentEl) {
+            contentEl.setAttribute('id', panelId);
+            summary.setAttribute('aria-controls', panelId);
+        }
 
         const toggle = () => {
             const wasClosed = container.classList.contains('slms-closed');
@@ -173,6 +208,7 @@ export const init = () => {
     if (!document.querySelector(SELECTORS.ANY_BLOCK)) {
         return;
     }
+    stripEditorAttributes();
     initToggles();
     fixLegacyButtons();
     initButtonSounds();

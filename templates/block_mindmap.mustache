@@ -5,9 +5,10 @@
 
     Example context (json):
     {
-        "svgContent": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"#f0f9ff\" rx=\"4\"/></svg>"
+        "svgContent": "<svg xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"#f0f9ff\" rx=\"4\"/></svg>",
+        "textAlt": "Tópico Principal: Conceito A; Conceito B"
     }
 }}
-<div class="slms-block slms-mindmap-block">
+<div class="slms-block slms-mindmap-block" role="img" tabindex="0" aria-label="{{textAlt}}">
     {{{svgContent}}}
 </div>

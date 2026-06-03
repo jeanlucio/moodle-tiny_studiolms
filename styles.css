@@ -1070,10 +1070,14 @@ body.mce-content-body div.slms-grid-slot,
 }
 
 .studiolms-accordion-summary {
-    outline: none;
     cursor: pointer;
     margin: 0;
     padding: 0;
+}
+
+.studiolms-accordion-summary:focus-visible {
+    outline: 2px solid var(--bs-primary, #0d47a1);
+    outline-offset: -2px;
 }
 
 .studiolms-accordion-header {
@@ -1115,7 +1119,6 @@ a.studiolms-btn {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     transition: all 0.2s ease;
     cursor: pointer;
-    outline: none;
 }
 
 a.studiolms-btn:hover,
@@ -1123,6 +1126,12 @@ a.studiolms-btn:focus {
     text-decoration: none;
     color: var(--slms-color, #fff);
     opacity: 0.88;
+}
+
+a.studiolms-btn:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 3px;
+    opacity: 1;
 }
 
 /* Callout */
@@ -1316,6 +1325,11 @@ a.studiolms-btn:focus {
     cursor: pointer;
 }
 
+.studiolms-webteca-summary:focus-visible {
+    outline: 2px solid var(--bs-primary, #0d47a1);
+    outline-offset: -2px;
+}
+
 .studiolms-webteca-list {
     list-style: none;
     padding: 0;
@@ -1356,6 +1370,11 @@ a.studiolms-webteca-item:hover {
     transform: translateX(2px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     color: var(--bs-body-color, #212529);
+}
+
+a.studiolms-webteca-item:focus-visible {
+    outline: 2px solid var(--slms-type-c, #0d47a1);
+    outline-offset: 2px;
 }
 
 /* =========================================
@@ -1650,4 +1669,10 @@ a.studiolms-webteca-item:hover {
     display: block;
     margin: 1rem 0;
     line-height: 0;
+}
+
+.slms-mindmap-block:focus-visible {
+    outline: 2px solid var(--bs-primary, #0d47a1);
+    outline-offset: 4px;
+    border-radius: 4px;
 }
