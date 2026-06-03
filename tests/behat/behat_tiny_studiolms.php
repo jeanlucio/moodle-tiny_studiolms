@@ -29,14 +29,14 @@ class behat_tiny_studiolms extends behat_base {
      * Opens the StudioLMS dialog by clicking the toolbar button.
      *
      * The toolbar button has aria-label equal to the `button_tooltip` lang string
-     * ("StudioLMS Library"). Uses behat_general::i_click_on with spin retry, so
+     * ("StudioLMS"). Uses behat_general::i_click_on with spin retry, so
      * it waits for TinyMCE to finish initialising before clicking.
      *
      * @When I open the StudioLMS dialog
      */
     public function i_open_the_studiolms_dialog(): void {
         $this->execute('behat_general::i_click_on', [
-            '[aria-label="StudioLMS Library"]',
+            '[aria-label="StudioLMS"]',
             'css_element',
         ]);
 
@@ -137,7 +137,7 @@ class behat_tiny_studiolms extends behat_base {
      */
     public function studiolms_toolbar_button_is_visible(): void {
         $this->execute('behat_general::should_exist', [
-            '[aria-label="StudioLMS Library"]',
+            '[aria-label="StudioLMS"]',
             'css_element',
         ]);
     }
@@ -149,7 +149,7 @@ class behat_tiny_studiolms extends behat_base {
      */
     public function studiolms_toolbar_button_is_not_visible(): void {
         $this->execute('behat_general::should_not_exist', [
-            '[aria-label="StudioLMS Library"]',
+            '[aria-label="StudioLMS"]',
             'css_element',
         ]);
     }
