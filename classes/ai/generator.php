@@ -614,6 +614,78 @@ class generator {
     }
 
     /**
+     * Returns the system prompt for infographic generation.
+     *
+     * @return string
+     */
+    private static function infographic_system_prompt(): string {
+        $p = 'You are an infographic generator for educational content.' . "\n";
+        $p .= 'Given a topic or context, generate a set of stat cards for a "stats" infographic.' . "\n\n";
+        $p .= 'Respond ONLY with a valid JSON object — no markdown, no code fences, no explanation.' . "\n\n";
+        $p .= 'Schema: {"title": "string", "items": [{"icon": "string", "value": "string",'
+            . ' "label": "string"}, ...]}' . "\n\n";
+        $p .= 'Rules:' . "\n";
+        $p .= '- Generate 3 or 4 items' . "\n";
+        $p .= '- Each "icon" must be a valid Font Awesome 6 Free class string, e.g. "fa-solid fa-users"' . "\n";
+        $p .= '- Choose icons from this curated list: fa-solid fa-users, fa-solid fa-chart-line,'
+            . ' fa-solid fa-book-open, fa-solid fa-star, fa-solid fa-trophy, fa-solid fa-circle-check,'
+            . ' fa-solid fa-clock, fa-solid fa-graduation-cap, fa-solid fa-lightbulb,'
+            . ' fa-solid fa-percent, fa-solid fa-arrow-up, fa-solid fa-calendar,'
+            . ' fa-solid fa-brain, fa-solid fa-medal, fa-solid fa-bullseye,'
+            . ' fa-solid fa-flag-checkered, fa-solid fa-fire, fa-solid fa-heart' . "\n";
+        $p .= '- "value" must be a short metric: number, percentage, time or short word (max 8 chars)' . "\n";
+        $p .= '- "label" must be a short description (max 30 chars)' . "\n";
+        $p .= '- "title" should be a short headline (max 50 chars), or empty string if not needed' . "\n";
+        $p .= '- All text must be in the SAME LANGUAGE as the user\'s topic' . "\n";
+        $p .= '- Respond ONLY with JSON.' . "\n";
+        return $p;
+    }
+
+    /**
+     * Generates an infographic stat structure from a topic description.
+     *
+     * @param string $topic Topic or context description from the teacher.
+     * @return array With keys 'title' (string), 'items' (JSON string), 'provider' (string).
+     * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
+     */
+    public static function generate_infographic(string $topic): array {
+        $result = self::call_providers($topic, self::infographic_system_prompt(), 'infographic_ai_error');
+
+        $raw = trim($result['data']);
+        $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
+        $raw = preg_replace('/\s*\x60{3}$/i', '', $raw);
+
+        $data = json_decode(trim($raw), true);
+
+        if (!is_array($data) || empty($data['items']) || !is_array($data['items'])) {
+            throw new \moodle_exception('infographic_ai_error', 'tiny_studiolms');
+        }
+
+        $safetitle = clean_param($data['title'] ?? '', PARAM_TEXT);
+        $safeitems = [];
+        foreach ($data['items'] as $item) {
+            if (!is_array($item) || (empty($item['value']) && empty($item['label']))) {
+                continue;
+            }
+            $safeitems[] = [
+                'icon'  => clean_param((string)($item['icon'] ?? 'fa-solid fa-circle-info'), PARAM_TEXT),
+                'value' => clean_param((string)($item['value'] ?? ''), PARAM_TEXT),
+                'label' => clean_param((string)($item['label'] ?? ''), PARAM_TEXT),
+            ];
+        }
+
+        if (empty($safeitems)) {
+            throw new \moodle_exception('infographic_ai_error', 'tiny_studiolms');
+        }
+
+        return [
+            'title'    => $safetitle,
+            'items'    => json_encode($safeitems),
+            'provider' => $result['provider'],
+        ];
+    }
+
+    /**
      * Sends a multi-turn conversation to the AI provider chain and returns the raw text reply.
      *
      * Each entry in $messages must have 'role' (user|assistant) and 'content' (string).

@@ -229,7 +229,14 @@ export default Promise.all([
             ? instanceConfig.extended_valid_elements + ',' + customAttrs
             : customAttrs;
 
-        const editorCss = `
+        const wwwroot = (window.M && window.M.cfg && window.M.cfg.wwwroot) || '';
+        const fa6FontFace = wwwroot
+            ? `@font-face{font-family:'Font Awesome 6 Free';font-weight:900;font-style:normal;`
+              + `font-display:block;src:url('${wwwroot}/lib/fonts/fa-solid-900.woff2') format('woff2'),`
+              + `url('${wwwroot}/lib/fonts/fa-solid-900.ttf') format('truetype');}`
+            : '';
+
+        const editorCss = fa6FontFace + `
             body.mce-content-body .slms-noneditable-selected {
                 outline: 2px solid #2276d2;
                 outline-offset: 2px;
@@ -469,6 +476,50 @@ export default Promise.all([
                 font-size: 0.8rem;
                 font-weight: 600;
                 text-decoration: none; }
+            body.mce-content-body .slms-infographic-block {
+                display: block;
+                margin: 1rem 0;
+                font-family: system-ui, -apple-system, sans-serif; }
+            body.mce-content-body .slms-infographic__title {
+                font-size: 1.1rem;
+                font-weight: 700;
+                margin-bottom: 0.75rem;
+                text-align: center; }
+            body.mce-content-body .slms-infographic--stats .slms-infographic__grid {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+                justify-content: center; }
+            body.mce-content-body .slms-infographic--stats .slms-infographic__stat {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 1rem 1.25rem;
+                border-radius: 0.75rem;
+                border: 1px solid transparent;
+                flex: 1 1 140px;
+                max-width: 200px;
+                min-width: 120px;
+                gap: 0.4rem; }
+            body.mce-content-body .slms-infographic--stats .slms-infographic__icon {
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.35rem;
+                flex-shrink: 0; }
+            body.mce-content-body .slms-infographic--stats .slms-infographic__value {
+                font-size: 1.6rem;
+                font-weight: 800;
+                line-height: 1.1; }
+            body.mce-content-body .slms-infographic--stats .slms-infographic__label {
+                font-size: 0.8rem;
+                font-weight: 500;
+                line-height: 1.3;
+                opacity: 0.9; }
         `;
 
         const contentStyle = instanceConfig.content_style

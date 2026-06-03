@@ -1676,3 +1676,174 @@ a.studiolms-webteca-item:focus-visible {
     outline-offset: 4px;
     border-radius: 4px;
 }
+
+/* ── Infographic popup ─────────────────────────────────────────────────── */
+
+/* No extra padding — the parent slms-properties-content already has 1rem */
+.tiny_studiolms .slms-popup-infographic-edit {
+    min-width: 240px;
+}
+
+/* Item rows: tight vertical rhythm */
+.tiny_studiolms .slms-ig-item-row {
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+/* Visual icon-picker trigger button — same height as form-control-sm (26px) */
+.tiny_studiolms .slms-ig-icon-btn {
+    width: 30px;
+    height: 26px;
+    border-radius: 4px;
+    border: 1px solid var(--bs-border-color, #ced4da);
+    background: var(--bs-tertiary-bg, #f8f9fa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--bs-primary, #1d4ed8);
+    flex-shrink: 0;
+    padding: 0;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.tiny_studiolms .slms-ig-icon-btn:hover {
+    background: var(--bs-secondary-bg, #e9ecef);
+    border-color: var(--bs-primary, #1d4ed8);
+}
+
+/* Value input: fixed narrow width */
+.tiny_studiolms .slms-ig-value-col {
+    flex: 0 0 58px;
+    min-width: 0;
+}
+
+/* Label input: fills remaining space */
+.tiny_studiolms .slms-ig-label-col {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Icon picker overlay (appended to document.body, position:fixed) */
+.slms-ig-icon-picker {
+    position: fixed;
+    z-index: 99999;
+    background: var(--bs-body-bg, #fff);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 10px;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(5, 32px);
+    gap: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.slms-ig-icon-option {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    background: transparent;
+    color: var(--bs-body-color, #495057);
+    padding: 0;
+    transition: background 0.1s ease, border-color 0.1s ease;
+}
+
+.slms-ig-icon-option:hover {
+    background: var(--bs-secondary-bg, #e9ecef);
+    border-color: var(--bs-border-color, #ced4da);
+    color: var(--bs-primary, #1d4ed8);
+}
+
+.tiny_studiolms .slms-ig-theme-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.tiny_studiolms .slms-ig-theme-btn:hover {
+    transform: scale(1.15);
+}
+
+.tiny_studiolms .slms-ig-theme-btn.selected {
+    border-color: var(--bs-body-color, #212529);
+    box-shadow: 0 0 0 2px var(--bs-body-bg, #fff);
+}
+
+/* ── Infographic block (rendered in content area) ──────────────────────── */
+.slms-infographic-block {
+    display: block;
+    margin: 1rem 0;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.slms-infographic-block:focus-visible {
+    outline: 2px solid var(--bs-primary, #0d47a1);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.slms-infographic__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    letter-spacing: -0.01em;
+}
+
+/* Stats layout */
+.slms-infographic--stats .slms-infographic__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.slms-infographic--stats .slms-infographic__stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+    flex: 1 1 140px;
+    max-width: 200px;
+    min-width: 120px;
+    gap: 0.4rem;
+}
+
+.slms-infographic--stats .slms-infographic__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+}
+
+.slms-infographic--stats .slms-infographic__value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.slms-infographic--stats .slms-infographic__label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.3;
+    opacity: 0.9;
+}

@@ -124,6 +124,15 @@ $functions = [
         'loginrequired' => true,
         'capabilities'  => 'tiny/studiolms:use',
     ],
+    'tiny_studiolms_generate_infographic' => [
+        'classname'   => 'tiny_studiolms\external\generate_infographic',
+        'methodname'  => 'execute',
+        'description' => 'Generate an infographic stat structure via a configured LLM provider.',
+        'type'        => 'write',
+        'ajax'        => true,
+        'loginrequired' => true,
+        'capabilities'  => 'tiny/studiolms:use',
+    ],
     'tiny_studiolms_chat_message' => [
         'classname'   => 'tiny_studiolms\external\chat_message',
         'methodname'  => 'execute',

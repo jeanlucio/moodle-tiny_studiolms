@@ -31,6 +31,7 @@ import callout from './callout';
 import table from './table';
 import profileCard from './profilecard';
 import mindmap from './mindmap';
+import infographic from './infographic';
 
 export const Blocks = {
     stylizedHeading,
@@ -43,4 +44,5 @@ export const Blocks = {
     table,
     profileCard,
     mindmap,
+    infographic,
 };

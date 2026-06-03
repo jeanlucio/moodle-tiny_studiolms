@@ -1,0 +1,202 @@
+{{!
+    @template tiny_studiolms/popup_infographic_edit
+
+    Edit popup for the StudioLMS infographic block.
+    Each item row has a visual icon-picker button instead of a text field,
+    plus a value input and a label input. Up to 4 items; blank rows are ignored on render.
+
+    Example context (json):
+    {
+        "title": "Resultados do Curso",
+        "item1_icon": "fa-solid fa-chart-line",
+        "item1_value": "85%",
+        "item1_label": "Taxa de aprovação",
+        "item2_icon": "fa-solid fa-book-open",
+        "item2_value": "12",
+        "item2_label": "Módulos concluídos",
+        "item3_icon": "fa-solid fa-users",
+        "item3_value": "240",
+        "item3_label": "Participantes",
+        "item4_icon": "fa-solid fa-circle-info",
+        "item4_value": "",
+        "item4_label": "",
+        "themeBlue": true,
+        "themeGreen": false,
+        "themePurple": false,
+        "themeOrange": false
+    }
+}}
+<div class="slms-popup-infographic-edit">
+
+    {{! Optional title }}
+    <div class="mb-2">
+        <label for="ig_title" class="form-label small fw-semibold">
+            {{#str}}infographic_title, tiny_studiolms{{/str}}
+        </label>
+        <input type="text"
+               id="ig_title"
+               class="form-control form-control-sm"
+               value="{{title}}"
+               maxlength="80"/>
+    </div>
+
+    {{! Item rows: [icon-btn] [value] [label] }}
+    <div class="mb-2">
+        <span class="form-label small fw-semibold d-block mb-1">
+            {{#str}}infographic_items, tiny_studiolms{{/str}}
+        </span>
+
+        {{! Item 1 }}
+        <div class="slms-ig-item-row d-flex align-items-center">
+            <button type="button"
+                    class="slms-ig-icon-btn"
+                    data-item="1"
+                    aria-label="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}"
+                    title="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}">
+                <i class="{{item1_icon}}" aria-hidden="true"></i>
+            </button>
+            <input type="hidden" id="ig_item1_icon" value="{{item1_icon}}"/>
+            <input type="text"
+                   id="ig_item1_value"
+                   class="form-control form-control-sm slms-ig-value-col"
+                   value="{{item1_value}}"
+                   placeholder="85%"
+                   aria-label="{{#str}}infographic_item_value, tiny_studiolms{{/str}} 1"/>
+            <input type="text"
+                   id="ig_item1_label"
+                   class="form-control form-control-sm slms-ig-label-col"
+                   value="{{item1_label}}"
+                   placeholder="{{#str}}infographic_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}infographic_item_label, tiny_studiolms{{/str}} 1"/>
+        </div>
+
+        {{! Item 2 }}
+        <div class="slms-ig-item-row d-flex align-items-center">
+            <button type="button"
+                    class="slms-ig-icon-btn"
+                    data-item="2"
+                    aria-label="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}"
+                    title="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}">
+                <i class="{{item2_icon}}" aria-hidden="true"></i>
+            </button>
+            <input type="hidden" id="ig_item2_icon" value="{{item2_icon}}"/>
+            <input type="text"
+                   id="ig_item2_value"
+                   class="form-control form-control-sm slms-ig-value-col"
+                   value="{{item2_value}}"
+                   placeholder="12"
+                   aria-label="{{#str}}infographic_item_value, tiny_studiolms{{/str}} 2"/>
+            <input type="text"
+                   id="ig_item2_label"
+                   class="form-control form-control-sm slms-ig-label-col"
+                   value="{{item2_label}}"
+                   placeholder="{{#str}}infographic_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}infographic_item_label, tiny_studiolms{{/str}} 2"/>
+        </div>
+
+        {{! Item 3 }}
+        <div class="slms-ig-item-row d-flex align-items-center">
+            <button type="button"
+                    class="slms-ig-icon-btn"
+                    data-item="3"
+                    aria-label="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}"
+                    title="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}">
+                <i class="{{item3_icon}}" aria-hidden="true"></i>
+            </button>
+            <input type="hidden" id="ig_item3_icon" value="{{item3_icon}}"/>
+            <input type="text"
+                   id="ig_item3_value"
+                   class="form-control form-control-sm slms-ig-value-col"
+                   value="{{item3_value}}"
+                   placeholder="3"
+                   aria-label="{{#str}}infographic_item_value, tiny_studiolms{{/str}} 3"/>
+            <input type="text"
+                   id="ig_item3_label"
+                   class="form-control form-control-sm slms-ig-label-col"
+                   value="{{item3_label}}"
+                   placeholder="{{#str}}infographic_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}infographic_item_label, tiny_studiolms{{/str}} 3"/>
+        </div>
+
+        {{! Item 4 — optional }}
+        <div class="slms-ig-item-row d-flex align-items-center">
+            <button type="button"
+                    class="slms-ig-icon-btn"
+                    data-item="4"
+                    aria-label="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}"
+                    title="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}">
+                <i class="{{item4_icon}}" aria-hidden="true"></i>
+            </button>
+            <input type="hidden" id="ig_item4_icon" value="{{item4_icon}}"/>
+            <input type="text"
+                   id="ig_item4_value"
+                   class="form-control form-control-sm slms-ig-value-col"
+                   value="{{item4_value}}"
+                   placeholder="–"
+                   aria-label="{{#str}}infographic_item_value, tiny_studiolms{{/str}} 4"/>
+            <input type="text"
+                   id="ig_item4_label"
+                   class="form-control form-control-sm slms-ig-label-col"
+                   value="{{item4_label}}"
+                   placeholder="{{#str}}infographic_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}infographic_item_label, tiny_studiolms{{/str}} 4"/>
+        </div>
+    </div>
+
+    {{! Theme picker }}
+    <div class="mb-2">
+        <span class="form-label small fw-semibold d-block mb-1">
+            {{#str}}infographic_theme, tiny_studiolms{{/str}}
+        </span>
+        <div class="d-flex align-items-center" style="gap:8px;">
+            <button type="button"
+                    class="slms-ig-theme-btn{{#themeBlue}} selected{{/themeBlue}}"
+                    data-theme="blue"
+                    aria-label="{{#str}}infographic_theme_blue, tiny_studiolms{{/str}}"
+                    style="background:#1d4ed8;">
+            </button>
+            <button type="button"
+                    class="slms-ig-theme-btn{{#themeGreen}} selected{{/themeGreen}}"
+                    data-theme="green"
+                    aria-label="{{#str}}infographic_theme_green, tiny_studiolms{{/str}}"
+                    style="background:#15803d;">
+            </button>
+            <button type="button"
+                    class="slms-ig-theme-btn{{#themePurple}} selected{{/themePurple}}"
+                    data-theme="purple"
+                    aria-label="{{#str}}infographic_theme_purple, tiny_studiolms{{/str}}"
+                    style="background:#7c3aed;">
+            </button>
+            <button type="button"
+                    class="slms-ig-theme-btn{{#themeOrange}} selected{{/themeOrange}}"
+                    data-theme="orange"
+                    aria-label="{{#str}}infographic_theme_orange, tiny_studiolms{{/str}}"
+                    style="background:#c2410c;">
+            </button>
+        </div>
+    </div>
+
+    <hr class="my-2"/>
+
+    {{! AI generation }}
+    <div>
+        <span class="form-label small fw-semibold d-block mb-1">
+            ✨ {{#str}}infographic_ai_section, tiny_studiolms{{/str}}
+        </span>
+        <textarea id="ig_ai_prompt"
+                  class="form-control form-control-sm"
+                  rows="2"
+                  placeholder="{{#str}}infographic_ai_prompt, tiny_studiolms{{/str}}"></textarea>
+        <div class="d-flex align-items-center mt-2" style="gap:8px;">
+            <button type="button" class="btn btn-sm btn-primary" id="ig-ai-btn">
+                {{#str}}infographic_ai_generate, tiny_studiolms{{/str}}
+            </button>
+            <div id="ig-ai-spinner"
+                 class="spinner-border spinner-border-sm text-primary d-none"
+                 role="status"
+                 aria-hidden="true"></div>
+        </div>
+        <div id="ig-ai-error" class="text-danger small mt-1 d-none"></div>
+    </div>
+
+</div>
