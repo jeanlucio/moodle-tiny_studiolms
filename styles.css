@@ -2247,12 +2247,10 @@ a.studiolms-webteca-item:focus-visible {
 
 .slms-tl-date-title-row {
     display: flex;
+    flex-direction: column;
     gap: 4px;
-    align-items: center;
 }
 
 .slms-tl-date-input {
-    width: 5.5rem;
-    min-width: 5.5rem;
-    flex-shrink: 0;
+    width: 100%;
 }
