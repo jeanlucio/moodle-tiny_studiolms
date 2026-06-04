@@ -883,7 +883,10 @@ class generator {
             . ' "description": "string"}, ...]}' . "\n\n";
         $p .= 'Rules:' . "\n";
         $p .= '- Generate 3 to 6 items' . "\n";
-        $p .= '- "date" is a short period label (year, month, quarter, or range); max 15 chars; may be empty string' . "\n";
+        $p .= '- "date" must always include the year; use a consistent format throughout:'
+            . ' year only (e.g. "1822"), month + year (e.g. "Sep 1822"),'
+            . ' or year range (e.g. "1808–1822"); never use just a day or month without the year;'
+            . ' max 15 chars; may be empty string only if no date is relevant' . "\n";
         $p .= '- "title" is the event or milestone name; max 50 chars' . "\n";
         $p .= '- "description" is an optional brief explanation; max 100 chars; use empty string if not needed' . "\n";
         $p .= '- "title" at the top level should be a short headline for the timeline; max 60 chars;'
