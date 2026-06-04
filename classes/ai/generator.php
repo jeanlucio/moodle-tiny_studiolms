@@ -946,6 +946,82 @@ class generator {
     }
 
     /**
+     * Returns the system prompt for comparison infographic generation.
+     *
+     * @return string
+     */
+    private static function infographic_comparison_system_prompt(): string {
+        $p = 'You are an educational content assistant generating comparison infographics.' . "\n";
+        $p .= 'Given a topic, produce a side-by-side comparison of two options or concepts.' . "\n\n";
+        $p .= 'Respond ONLY with a valid JSON object — no markdown, no code fences, no explanation.' . "\n\n";
+        $p .= 'Schema: {"title": "string", "col1": "string", "col2": "string",' . "\n";
+        $p .= '"items": [{"label": "string", "col1": true/false, "col2": true/false}, ...]}' . "\n\n";
+        $p .= 'Rules:' . "\n";
+        $p .= '- Generate 3 to 6 items' . "\n";
+        $p .= '- "col1" and "col2" at the top level are the option names; max 20 chars each' . "\n";
+        $p .= '- "title" is an optional short headline; max 60 chars; or empty string if not needed' . "\n";
+        $p .= '- Each item "label" is a feature or criterion; max 50 chars' . "\n";
+        $p .= '- Each item "col1" and "col2" are booleans: true means the option has that feature,'
+            . ' false means it does not; avoid having every item be true for both options' . "\n";
+        $p .= '- Items must be varied: show real differences between the two options' . "\n";
+        $p .= '- No HTML tags. Plain text only.' . "\n";
+        $p .= self::language_instruction() . "\n";
+        return $p;
+    }
+
+    /**
+     * Generates a comparison infographic structure from a topic description.
+     *
+     * @param string $topic Teacher's topic or subject description.
+     * @return array{title: string, col1: string, col2: string, items: string, provider: string}
+     * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
+     */
+    public static function generate_infographic_comparison(string $topic): array {
+        $result = self::call_providers(
+            $topic,
+            self::infographic_comparison_system_prompt(),
+            'infographic_comparison_ai_error'
+        );
+
+        $raw = trim($result['data']);
+        $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
+        $raw = preg_replace('/\s*\x60{3}$/i', '', $raw);
+
+        $data = json_decode(trim($raw), true);
+
+        if (!is_array($data) || empty($data['items']) || !is_array($data['items'])) {
+            throw new \moodle_exception('infographic_comparison_ai_error', 'tiny_studiolms');
+        }
+
+        $safetitle = clean_param($data['title'] ?? '', PARAM_TEXT);
+        $safecol1 = clean_param($data['col1'] ?? 'A', PARAM_TEXT);
+        $safecol2 = clean_param($data['col2'] ?? 'B', PARAM_TEXT);
+        $safeitems = [];
+        foreach ($data['items'] as $item) {
+            if (!is_array($item) || empty($item['label'])) {
+                continue;
+            }
+            $safeitems[] = [
+                'label' => clean_param((string)($item['label'] ?? ''), PARAM_TEXT),
+                'col1'  => (bool)($item['col1'] ?? true),
+                'col2'  => (bool)($item['col2'] ?? true),
+            ];
+        }
+
+        if (empty($safeitems)) {
+            throw new \moodle_exception('infographic_comparison_ai_error', 'tiny_studiolms');
+        }
+
+        return [
+            'title'    => $safetitle,
+            'col1'     => $safecol1,
+            'col2'     => $safecol2,
+            'items'    => json_encode($safeitems),
+            'provider' => $result['provider'],
+        ];
+    }
+
+    /**
      * Returns the system prompt for callout content generation.
      *
      * @return string

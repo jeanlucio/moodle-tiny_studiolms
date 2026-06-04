@@ -35,6 +35,7 @@ import infographic from './infographic';
 import infographicFeatures from './infographic_features';
 import infographicSteps from './infographic_steps';
 import infographicTimeline from './infographic_timeline';
+import infographicComparison from './infographic_comparison';
 
 export const Blocks = {
     stylizedHeading,
@@ -51,4 +52,5 @@ export const Blocks = {
     infographicFeatures,
     infographicSteps,
     infographicTimeline,
+    infographicComparison,
 };

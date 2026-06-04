@@ -2254,3 +2254,121 @@ a.studiolms-webteca-item:focus-visible {
 .slms-tl-date-input {
     width: 100%;
 }
+
+/* ============================================================
+   Infographic — Comparison block
+   ============================================================ */
+
+.slms-infographic-comparison-block {
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+.slms-comparison__title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.3;
+}
+
+.slms-comparison__table {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.slms-comparison__header {
+    display: flex;
+}
+
+.slms-comparison__header-label {
+    flex: 1;
+    padding: 10px 12px;
+}
+
+.slms-comparison__header-col {
+    width: 80px;
+    flex-shrink: 0;
+    text-align: center;
+    padding: 10px 8px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    line-height: 1.3;
+}
+
+.slms-comparison__row {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid;
+}
+
+.slms-comparison__row:last-child {
+    border-bottom: 0;
+}
+
+.slms-comparison__row-label {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.slms-comparison__row-cell {
+    width: 80px;
+    flex-shrink: 0;
+    text-align: center;
+    padding: 8px 4px;
+    font-size: 1.125rem;
+}
+
+.slms-comparison__no {
+    color: var(--bs-secondary, #6c757d);
+}
+
+/* Comparison popup */
+.slms-cmp-header-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.slms-cmp-header-label {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.slms-cmp-col-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--bs-secondary, #6c757d);
+    text-transform: uppercase;
+}
+
+.slms-cmp-item-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.slms-cmp-label-input {
+    flex: 1;
+    min-width: 0;
+}
+
+.slms-cmp-check-col {
+    width: 36px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slms-cmp-checkbox {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+}
