@@ -34,8 +34,9 @@ use tiny_studiolms\ai\generator;
  * Generates a timeline infographic via a configured LLM provider.
  */
 class generate_infographic_timeline extends external_api {
-
     /**
+     * Declares the parameters accepted by execute().
+     *
      * @return external_function_parameters
      */
     public static function execute_parameters(): external_function_parameters {
@@ -45,7 +46,9 @@ class generate_infographic_timeline extends external_api {
     }
 
     /**
-     * @param string $topic
+     * Generates a timeline infographic from the given topic.
+     *
+     * @param string $topic Topic or context for the timeline.
      * @return array{title: string, items: string, provider: string}
      */
     public static function execute(string $topic): array {
@@ -57,6 +60,8 @@ class generate_infographic_timeline extends external_api {
     }
 
     /**
+     * Describes the return value of execute().
+     *
      * @return external_single_structure
      */
     public static function execute_returns(): external_single_structure {
