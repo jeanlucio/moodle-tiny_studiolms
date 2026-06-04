@@ -142,6 +142,15 @@ $functions = [
         'loginrequired' => true,
         'capabilities'  => 'tiny/studiolms:use',
     ],
+    'tiny_studiolms_generate_infographic_features' => [
+        'classname'   => 'tiny_studiolms\external\generate_infographic_features',
+        'methodname'  => 'execute',
+        'description' => 'Generate a feature cards infographic via a configured LLM provider.',
+        'type'        => 'write',
+        'ajax'        => true,
+        'loginrequired' => true,
+        'capabilities'  => 'tiny/studiolms:use',
+    ],
     'tiny_studiolms_generate_callout' => [
         'classname'   => 'tiny_studiolms\external\generate_callout',
         'methodname'  => 'execute',

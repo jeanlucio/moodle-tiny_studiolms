@@ -1,0 +1,307 @@
+{{!
+    @template tiny_studiolms/popup_infographic_features_edit
+
+    Edit popup for the StudioLMS infographic features block.
+    Each item row has a visual icon-picker button, a title input and a description input.
+    Up to 6 features; blank rows are ignored on render.
+
+    Example context (json):
+    {
+        "title": "Why choose us",
+        "item1_icon": "fa-solid fa-star",
+        "item1_title": "High quality",
+        "item1_description": "Our courses meet international standards.",
+        "item2_icon": "fa-solid fa-bolt",
+        "item2_title": "Fast delivery",
+        "item2_description": "Self-paced, learn whenever you want.",
+        "item3_icon": "fa-solid fa-globe",
+        "item3_title": "Global access",
+        "item3_description": "Available in multiple languages.",
+        "item4_icon": "fa-solid fa-users",
+        "item4_title": "",
+        "item4_description": "",
+        "item5_icon": "fa-solid fa-gear",
+        "item5_title": "",
+        "item5_description": "",
+        "item6_icon": "fa-solid fa-lightbulb",
+        "item6_title": "",
+        "item6_description": "",
+        "themeBlue": true,
+        "themeGreen": false,
+        "themePurple": false,
+        "themeOrange": false,
+        "themeRed": false,
+        "themeBlack": false,
+        "columns2": false,
+        "columns3": true
+    }
+}}
+<div class="slms-popup-infographic-features-edit">
+
+    {{! Optional title }}
+    <div class="mb-2">
+        <label for="ft_title" class="form-label small fw-semibold">
+            {{#str}}infographic_features_title, tiny_studiolms{{/str}}
+        </label>
+        <input type="text"
+               id="ft_title"
+               class="form-control form-control-sm"
+               value="{{title}}"
+               maxlength="80"/>
+    </div>
+
+    {{! Item rows: [icon-btn] [title] / [description] }}
+    <div class="mb-2">
+        <span class="form-label small fw-semibold d-block mb-1">
+            {{#str}}infographic_features_items, tiny_studiolms{{/str}}
+        </span>
+
+        {{! Item 1 }}
+        <div class="slms-st-item-row">
+            <button type="button"
+                    class="slms-ft-icon-btn"
+                    data-item="1"
+                    aria-label="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}"
+                    title="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}">
+                <i class="{{item1_icon}}" aria-hidden="true"></i>
+            </button>
+            <input type="hidden" id="ft_item1_icon" value="{{item1_icon}}"/>
+            <div class="slms-st-item-fields">
+                <input type="text"
+                       id="ft_item1_title"
+                       class="form-control form-control-sm"
+                       value="{{item1_title}}"
+                       placeholder="{{#str}}infographic_features_item_title_ph, tiny_studiolms{{/str}}"
+                       aria-label="{{#str}}infographic_features_item_title, tiny_studiolms{{/str}} 1"/>
+                <input type="text"
+                       id="ft_item1_description"
+                       class="form-control form-control-sm slms-st-desc-input"
+                       value="{{item1_description}}"
+                       placeholder="{{#str}}infographic_features_item_description_ph, tiny_studiolms{{/str}}"
+                       aria-label="{{#str}}infographic_features_item_description, tiny_studiolms{{/str}} 1"/>
+            </div>
+        </div>
+
+        {{! Item 2 }}
+        <div class="slms-st-item-row">
+            <button type="button"
+                    class="slms-ft-icon-btn"
+                    data-item="2"
+                    aria-label="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}"
+                    title="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}">
+                <i class="{{item2_icon}}" aria-hidden="true"></i>
+            </button>
+            <input type="hidden" id="ft_item2_icon" value="{{item2_icon}}"/>
+            <div class="slms-st-item-fields">
+                <input type="text"
+                       id="ft_item2_title"
+                       class="form-control form-control-sm"
+                       value="{{item2_title}}"
+                       placeholder="{{#str}}infographic_features_item_title_ph, tiny_studiolms{{/str}}"
+                       aria-label="{{#str}}infographic_features_item_title, tiny_studiolms{{/str}} 2"/>
+                <input type="text"
+                       id="ft_item2_description"
+                       class="form-control form-control-sm slms-st-desc-input"
+                       value="{{item2_description}}"
+                       placeholder="{{#str}}infographic_features_item_description_ph, tiny_studiolms{{/str}}"
+                       aria-label="{{#str}}infographic_features_item_description, tiny_studiolms{{/str}} 2"/>
+            </div>
+        </div>
+
+        {{! Item 3 }}
+        <div class="slms-st-item-row">
+            <button type="button"
+                    class="slms-ft-icon-btn"
+                    data-item="3"
+                    aria-label="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}"
+                    title="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}">
+                <i class="{{item3_icon}}" aria-hidden="true"></i>
+            </button>
+            <input type="hidden" id="ft_item3_icon" value="{{item3_icon}}"/>
+            <div class="slms-st-item-fields">
+                <input type="text"
+                       id="ft_item3_title"
+                       class="form-control form-control-sm"
+                       value="{{item3_title}}"
+                       placeholder="{{#str}}infographic_features_item_title_ph, tiny_studiolms{{/str}}"
+                       aria-label="{{#str}}infographic_features_item_title, tiny_studiolms{{/str}} 3"/>
+                <input type="text"
+                       id="ft_item3_description"
+                       class="form-control form-control-sm slms-st-desc-input"
+                       value="{{item3_description}}"
+                       placeholder="{{#str}}infographic_features_item_description_ph, tiny_studiolms{{/str}}"
+                       aria-label="{{#str}}infographic_features_item_description, tiny_studiolms{{/str}} 3"/>
+            </div>
+        </div>
+
+        {{! Item 4 }}
+        <div class="slms-st-item-row">
+            <button type="button"
+                    class="slms-ft-icon-btn"
+                    data-item="4"
+                    aria-label="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}"
+                    title="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}">
+                <i class="{{item4_icon}}" aria-hidden="true"></i>
+            </button>
+            <input type="hidden" id="ft_item4_icon" value="{{item4_icon}}"/>
+            <div class="slms-st-item-fields">
+                <input type="text"
+                       id="ft_item4_title"
+                       class="form-control form-control-sm"
+                       value="{{item4_title}}"
+                       placeholder="{{#str}}infographic_features_item_title_ph, tiny_studiolms{{/str}}"
+                       aria-label="{{#str}}infographic_features_item_title, tiny_studiolms{{/str}} 4"/>
+                <input type="text"
+                       id="ft_item4_description"
+                       class="form-control form-control-sm slms-st-desc-input"
+                       value="{{item4_description}}"
+                       placeholder="{{#str}}infographic_features_item_description_ph, tiny_studiolms{{/str}}"
+                       aria-label="{{#str}}infographic_features_item_description, tiny_studiolms{{/str}} 4"/>
+            </div>
+        </div>
+
+        {{! Item 5 }}
+        <div class="slms-st-item-row">
+            <button type="button"
+                    class="slms-ft-icon-btn"
+                    data-item="5"
+                    aria-label="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}"
+                    title="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}">
+                <i class="{{item5_icon}}" aria-hidden="true"></i>
+            </button>
+            <input type="hidden" id="ft_item5_icon" value="{{item5_icon}}"/>
+            <div class="slms-st-item-fields">
+                <input type="text"
+                       id="ft_item5_title"
+                       class="form-control form-control-sm"
+                       value="{{item5_title}}"
+                       placeholder="{{#str}}infographic_features_item_title_ph, tiny_studiolms{{/str}}"
+                       aria-label="{{#str}}infographic_features_item_title, tiny_studiolms{{/str}} 5"/>
+                <input type="text"
+                       id="ft_item5_description"
+                       class="form-control form-control-sm slms-st-desc-input"
+                       value="{{item5_description}}"
+                       placeholder="{{#str}}infographic_features_item_description_ph, tiny_studiolms{{/str}}"
+                       aria-label="{{#str}}infographic_features_item_description, tiny_studiolms{{/str}} 5"/>
+            </div>
+        </div>
+
+        {{! Item 6 — optional }}
+        <div class="slms-st-item-row">
+            <button type="button"
+                    class="slms-ft-icon-btn"
+                    data-item="6"
+                    aria-label="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}"
+                    title="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}">
+                <i class="{{item6_icon}}" aria-hidden="true"></i>
+            </button>
+            <input type="hidden" id="ft_item6_icon" value="{{item6_icon}}"/>
+            <div class="slms-st-item-fields">
+                <input type="text"
+                       id="ft_item6_title"
+                       class="form-control form-control-sm"
+                       value="{{item6_title}}"
+                       placeholder="{{#str}}infographic_features_item_title_ph, tiny_studiolms{{/str}}"
+                       aria-label="{{#str}}infographic_features_item_title, tiny_studiolms{{/str}} 6"/>
+                <input type="text"
+                       id="ft_item6_description"
+                       class="form-control form-control-sm slms-st-desc-input"
+                       value="{{item6_description}}"
+                       placeholder="{{#str}}infographic_features_item_description_ph, tiny_studiolms{{/str}}"
+                       aria-label="{{#str}}infographic_features_item_description, tiny_studiolms{{/str}} 6"/>
+            </div>
+        </div>
+    </div>
+
+    {{! Theme picker }}
+    <div class="mb-2">
+        <span class="form-label small fw-semibold d-block mb-1">
+            {{#str}}infographic_theme, tiny_studiolms{{/str}}
+        </span>
+        <div class="d-flex align-items-center" style="gap:8px;">
+            <button type="button"
+                    class="slms-ig-theme-btn{{#themeBlue}} selected{{/themeBlue}}"
+                    data-theme="blue"
+                    aria-label="{{#str}}infographic_theme_blue, tiny_studiolms{{/str}}"
+                    style="background:#1d4ed8;">
+            </button>
+            <button type="button"
+                    class="slms-ig-theme-btn{{#themeGreen}} selected{{/themeGreen}}"
+                    data-theme="green"
+                    aria-label="{{#str}}infographic_theme_green, tiny_studiolms{{/str}}"
+                    style="background:#15803d;">
+            </button>
+            <button type="button"
+                    class="slms-ig-theme-btn{{#themePurple}} selected{{/themePurple}}"
+                    data-theme="purple"
+                    aria-label="{{#str}}infographic_theme_purple, tiny_studiolms{{/str}}"
+                    style="background:#7c3aed;">
+            </button>
+            <button type="button"
+                    class="slms-ig-theme-btn{{#themeOrange}} selected{{/themeOrange}}"
+                    data-theme="orange"
+                    aria-label="{{#str}}infographic_theme_orange, tiny_studiolms{{/str}}"
+                    style="background:#c2410c;">
+            </button>
+            <button type="button"
+                    class="slms-ig-theme-btn{{#themeRed}} selected{{/themeRed}}"
+                    data-theme="red"
+                    aria-label="{{#str}}infographic_theme_red, tiny_studiolms{{/str}}"
+                    style="background:#be123c;">
+            </button>
+            <button type="button"
+                    class="slms-ig-theme-btn{{#themeBlack}} selected{{/themeBlack}}"
+                    data-theme="black"
+                    aria-label="{{#str}}infographic_theme_black, tiny_studiolms{{/str}}"
+                    style="background:#0f172a;">
+            </button>
+        </div>
+    </div>
+
+    {{! Column picker }}
+    <div class="mb-2">
+        <span class="form-label small fw-semibold d-block mb-1">
+            {{#str}}infographic_features_columns, tiny_studiolms{{/str}}
+        </span>
+        <div class="d-flex align-items-center" style="gap:6px;">
+            <button type="button"
+                    class="slms-ft-col-btn{{#columns2}} selected{{/columns2}}"
+                    data-cols="2"
+                    aria-label="{{#str}}infographic_features_columns_2, tiny_studiolms{{/str}}">
+                <i class="fa-solid fa-table-columns" aria-hidden="true"></i>
+                {{#str}}infographic_features_columns_2, tiny_studiolms{{/str}}
+            </button>
+            <button type="button"
+                    class="slms-ft-col-btn{{#columns3}} selected{{/columns3}}"
+                    data-cols="3"
+                    aria-label="{{#str}}infographic_features_columns_3, tiny_studiolms{{/str}}">
+                <i class="fa-solid fa-table-cells" aria-hidden="true"></i>
+                {{#str}}infographic_features_columns_3, tiny_studiolms{{/str}}
+            </button>
+        </div>
+    </div>
+
+    <hr class="my-2"/>
+
+    {{! AI generation }}
+    <div>
+        <span class="form-label small fw-semibold d-block mb-1">
+            ✨ {{#str}}infographic_ai_section, tiny_studiolms{{/str}}
+        </span>
+        <textarea id="ft_ai_prompt"
+                  class="form-control form-control-sm"
+                  rows="2"
+                  placeholder="{{#str}}infographic_features_ai_prompt, tiny_studiolms{{/str}}"></textarea>
+        <div class="d-flex align-items-center mt-2" style="gap:8px;">
+            <button type="button" class="btn btn-sm btn-primary" id="ft-ai-btn">
+                {{#str}}infographic_ai_generate, tiny_studiolms{{/str}}
+            </button>
+            <div id="ft-ai-spinner"
+                 class="spinner-border spinner-border-sm text-primary d-none"
+                 role="status"
+                 aria-hidden="true"></div>
+        </div>
+        <div id="ft-ai-error" class="text-danger small mt-1 d-none"></div>
+    </div>
+
+</div>

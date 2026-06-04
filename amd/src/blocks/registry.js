@@ -32,6 +32,7 @@ import table from './table';
 import profileCard from './profilecard';
 import mindmap from './mindmap';
 import infographic from './infographic';
+import infographicFeatures from './infographic_features';
 import infographicSteps from './infographic_steps';
 
 export const Blocks = {
@@ -46,5 +47,6 @@ export const Blocks = {
     profileCard,
     mindmap,
     infographic,
+    infographicFeatures,
     infographicSteps,
 };

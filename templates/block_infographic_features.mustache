@@ -1,0 +1,13 @@
+{{!
+    @template tiny_studiolms/block_infographic_features
+
+    Wrapper for the StudioLMS infographic features block.
+
+    Example context (json):
+    {
+        "theme": "blue",
+        "columns": 3,
+        "content": "<div class=\"slms-features__grid slms-features__grid--3\"></div>"
+    }
+}}
+<div class="slms-block slms-infographic-features-block slms-infographic-features--{{theme}} slms-infographic-features--{{columns}}">{{{content}}}</div>

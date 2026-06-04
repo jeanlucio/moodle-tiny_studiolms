@@ -763,6 +763,80 @@ class generator {
     }
 
     /**
+     * Returns the system prompt for feature cards generation.
+     *
+     * @return string
+     */
+    private static function infographic_features_system_prompt(): string {
+        $p = 'You are an educational content assistant generating feature card content.' . "\n";
+        $p .= 'Given a topic, produce 3–6 feature cards highlighting key benefits or aspects.' . "\n\n";
+        $p .= 'Respond ONLY with a valid JSON object — no markdown, no code fences, no explanation.' . "\n\n";
+        $p .= 'Schema:' . "\n";
+        $p .= '{"title": string, "items": [{"icon": string, "title": string, "description": string}]}' . "\n\n";
+        $p .= 'Rules:' . "\n";
+        $p .= '- title: short optional heading for the block (may be empty string).' . "\n";
+        $p .= '- items: 3–6 objects.' . "\n";
+        $p .= '- icon: one of these FA6 class strings (or empty string): "fa-solid fa-star",' . "\n";
+        $p .= '  "fa-solid fa-bolt", "fa-solid fa-globe", "fa-solid fa-users", "fa-solid fa-gear",' . "\n";
+        $p .= '  "fa-solid fa-lightbulb", "fa-solid fa-brain", "fa-solid fa-heart", "fa-solid fa-fire",' . "\n";
+        $p .= '  "fa-solid fa-trophy", "fa-solid fa-graduation-cap", "fa-solid fa-chart-line",' . "\n";
+        $p .= '  "fa-solid fa-lock", "fa-solid fa-key", "fa-solid fa-bullseye", "fa-solid fa-flag",' . "\n";
+        $p .= '  "fa-solid fa-circle-check", "fa-solid fa-clock", "fa-solid fa-magnifying-glass",' . "\n";
+        $p .= '  "fa-solid fa-medal".' . "\n";
+        $p .= '- title (item): 2–5 words, concise feature name.' . "\n";
+        $p .= '- description: 1–2 sentences explaining the feature. May be empty string.' . "\n";
+        $p .= '- No HTML tags. Plain text only.' . "\n";
+        return $p;
+    }
+
+    /**
+     * Generates feature cards content via a configured LLM provider.
+     *
+     * @param string $topic User-supplied topic.
+     * @return array{title: string, items: string, provider: string}
+     */
+    public static function generate_infographic_features(string $topic): array {
+        $result = self::call_providers(
+            $topic,
+            self::infographic_features_system_prompt(),
+            'infographic_features_ai_error'
+        );
+
+        $raw = trim($result['data']);
+        $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
+        $raw = preg_replace('/\s*\x60{3}$/i', '', $raw);
+
+        $data = json_decode(trim($raw), true);
+
+        if (!is_array($data) || empty($data['items']) || !is_array($data['items'])) {
+            throw new \moodle_exception('infographic_features_ai_error', 'tiny_studiolms');
+        }
+
+        $safetitle = clean_param($data['title'] ?? '', PARAM_TEXT);
+        $safeitems = [];
+        foreach ($data['items'] as $item) {
+            if (!is_array($item) || empty($item['title'])) {
+                continue;
+            }
+            $safeitems[] = [
+                'icon'        => clean_param((string)($item['icon'] ?? ''), PARAM_TEXT),
+                'title'       => clean_param((string)($item['title'] ?? ''), PARAM_TEXT),
+                'description' => clean_param((string)($item['description'] ?? ''), PARAM_TEXT),
+            ];
+        }
+
+        if (empty($safeitems)) {
+            throw new \moodle_exception('infographic_features_ai_error', 'tiny_studiolms');
+        }
+
+        return [
+            'title'    => $safetitle,
+            'items'    => json_encode($safeitems),
+            'provider' => $result['provider'],
+        ];
+    }
+
+    /**
      * Returns the system prompt for callout content generation.
      *
      * @return string
