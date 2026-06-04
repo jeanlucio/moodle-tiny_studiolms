@@ -154,8 +154,7 @@ const buildLegend = (slices) => {
         return [
             `<div class="slms-chart__legend-item" style="display:flex;align-items:center;gap:0.4rem;font-size:0.8125rem;">`,
             `<span class="slms-chart__legend-dot"`,
-            ` style="display:inline-block;background-color:${color};width:11px;height:11px;border-radius:50%;flex-shrink:0;"`,
-            ` aria-hidden="true"></span>`,
+            ` style="color:${color};font-size:14px;line-height:1;" aria-hidden="true">&#9679;</span>`,
             `<span class="slms-chart__legend-label">${esc(slice.label)}</span>`,
             `<span class="slms-chart__legend-pct" style="font-weight:600;">${pct}%</span>`,
             `</div>`,
