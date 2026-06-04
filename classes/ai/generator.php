@@ -686,6 +686,83 @@ class generator {
     }
 
     /**
+     * Returns the system prompt for process steps generation.
+     *
+     * @return string
+     */
+    private static function infographic_steps_system_prompt(): string {
+        $p = 'You are an educational content assistant generating process step infographics.' . "\n";
+        $p .= 'Given a topic or process description, generate a numbered list of steps.' . "\n\n";
+        $p .= 'Respond ONLY with a valid JSON object — no markdown, no code fences, no explanation.' . "\n\n";
+        $p .= 'Schema: {"title": "string", "items": [{"icon": "string", "title": "string",'
+            . ' "description": "string"}, ...]}' . "\n\n";
+        $p .= 'Rules:' . "\n";
+        $p .= '- Generate 3 to 6 steps' . "\n";
+        $p .= '- "icon" is optional — use empty string "" when no icon fits;'
+            . ' otherwise choose from: fa-solid fa-magnifying-glass, fa-solid fa-pen, fa-solid fa-check,'
+            . ' fa-solid fa-upload, fa-solid fa-download, fa-solid fa-circle-check, fa-solid fa-arrow-right,'
+            . ' fa-solid fa-play, fa-solid fa-flag, fa-solid fa-star, fa-solid fa-lightbulb,'
+            . ' fa-solid fa-book-open, fa-solid fa-graduation-cap, fa-solid fa-users, fa-solid fa-gear,'
+            . ' fa-solid fa-key, fa-solid fa-lock, fa-solid fa-envelope, fa-solid fa-file,'
+            . ' fa-solid fa-chart-line' . "\n";
+        $p .= '- "title" is the short step name (max 50 chars)' . "\n";
+        $p .= '- "description" is an optional brief explanation (max 100 chars); use empty string if not needed' . "\n";
+        $p .= '- "title" at the top level should be a short headline for the whole flow (max 60 chars),'
+            . ' or empty string if not needed' . "\n";
+        $p .= '- All text must be in the SAME LANGUAGE as the user\'s topic' . "\n";
+        $p .= '- Respond ONLY with JSON.' . "\n";
+        return $p;
+    }
+
+    /**
+     * Generates a process steps structure from a topic description.
+     *
+     * @param string $topic Teacher's process or topic description.
+     * @return array With keys 'title' (string), 'items' (JSON string), 'provider' (string).
+     * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
+     */
+    public static function generate_infographic_steps(string $topic): array {
+        $result = self::call_providers(
+            $topic,
+            self::infographic_steps_system_prompt(),
+            'infographic_steps_ai_error'
+        );
+
+        $raw = trim($result['data']);
+        $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
+        $raw = preg_replace('/\s*\x60{3}$/i', '', $raw);
+
+        $data = json_decode(trim($raw), true);
+
+        if (!is_array($data) || empty($data['items']) || !is_array($data['items'])) {
+            throw new \moodle_exception('infographic_steps_ai_error', 'tiny_studiolms');
+        }
+
+        $safetitle = clean_param($data['title'] ?? '', PARAM_TEXT);
+        $safeitems = [];
+        foreach ($data['items'] as $item) {
+            if (!is_array($item) || empty($item['title'])) {
+                continue;
+            }
+            $safeitems[] = [
+                'icon'        => clean_param((string)($item['icon'] ?? ''), PARAM_TEXT),
+                'title'       => clean_param((string)($item['title'] ?? ''), PARAM_TEXT),
+                'description' => clean_param((string)($item['description'] ?? ''), PARAM_TEXT),
+            ];
+        }
+
+        if (empty($safeitems)) {
+            throw new \moodle_exception('infographic_steps_ai_error', 'tiny_studiolms');
+        }
+
+        return [
+            'title'    => $safetitle,
+            'items'    => json_encode($safeitems),
+            'provider' => $result['provider'],
+        ];
+    }
+
+    /**
      * Returns the system prompt for callout content generation.
      *
      * @return string

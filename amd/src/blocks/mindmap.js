@@ -63,6 +63,22 @@ const COLORS = {
         childFill: '#ffedd5', childText: '#7c2d12',
         lineColor: '#fdba74',
     },
+    red: {
+        bg: '#fff1f2',
+        centerFill: '#881337', centerText: '#ffffff',
+        branchFills: ['#be123c', '#e11d48', '#f43f5e', '#9f1239', '#fb7185', '#be123c'],
+        branchText: '#ffffff',
+        childFill: '#ffe4e6', childText: '#881337',
+        lineColor: '#fda4af',
+    },
+    black: {
+        bg: '#0f172a',
+        centerFill: '#1e293b', centerText: '#f1f5f9',
+        branchFills: ['#334155', '#475569', '#64748b', '#1e293b', '#94a3b8', '#334155'],
+        branchText: '#f1f5f9',
+        childFill: '#1e293b', childText: '#cbd5e1',
+        lineColor: '#475569',
+    },
 };
 
 /**
@@ -389,6 +405,8 @@ export default {
                     themeGreen: data.theme === 'green',
                     themePurple: data.theme === 'purple',
                     themeOrange: data.theme === 'orange',
+                    themeRed: data.theme === 'red',
+                    themeBlack: data.theme === 'black',
                 };
 
                 PopupManager.open(btnEdit, 'tiny_studiolms/popup_mindmap_edit', tplData, (popup) => {

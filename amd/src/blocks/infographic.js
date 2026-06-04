@@ -28,6 +28,7 @@
 import Templates from 'core/templates';
 import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
+import {THEMES, esc, normaliseIcon, iconToSpan, openPicker, closePicker} from './infographic_shared';
 
 /** Curated FA6 Free icons for the visual picker (5 columns × 4 rows = 20 icons). */
 const ICONS = [
@@ -54,196 +55,6 @@ const ICONS = [
 ];
 
 const DEFAULT_ICON = 'fa-solid fa-circle-info';
-
-/**
- * FA6 Free Solid unicode codepoints for each icon in ICONS.
- * Using text content + inline font-family avoids relying on ::before pseudo-elements
- * that may fail when CSS classes are not available in the editor iframe or saved content.
- * @type {Object.<string, string>}
- */
-const ICON_UNICODE = {
-    'fa-solid fa-users': '',
-    'fa-solid fa-chart-line': '',
-    'fa-solid fa-book-open': '',
-    'fa-solid fa-graduation-cap': '',
-    'fa-solid fa-trophy': '',
-    'fa-solid fa-star': '',
-    'fa-solid fa-circle-check': '',
-    'fa-solid fa-clock': '',
-    'fa-solid fa-calendar': '',
-    'fa-solid fa-lightbulb': '',
-    'fa-solid fa-brain': '',
-    'fa-solid fa-medal': '',
-    'fa-solid fa-bullseye': '',
-    'fa-solid fa-fire': '',
-    'fa-solid fa-heart': '',
-    'fa-solid fa-percent': '%',
-    'fa-solid fa-arrow-up': '',
-    'fa-solid fa-flag-checkered': '',
-    'fa-solid fa-globe': '',
-    'fa-solid fa-bolt': '',
-    'fa-solid fa-circle-info': '',
-};
-
-/**
- * Converts an FA6 icon class to a <span> with inline font-family.
- * Embedding the Unicode character as text content is more reliable than
- * relying on ::before pseudo-elements, which require the FA6 CSS rules to
- * cascade correctly in every rendering context (editor iframe, saved content).
- * @param {string} iconClass FA6 class string, e.g. "fa-solid fa-chart-line".
- * @returns {string} HTML string.
- */
-const iconToSpan = (iconClass) => {
-    const ch = ICON_UNICODE[iconClass] || ICON_UNICODE[DEFAULT_ICON] || '';
-    if (!ch) {
-        return `<i class="${esc(iconClass)}" aria-hidden="true"></i>`;
-    }
-    return `<span aria-hidden="true" style="font-family:'Font Awesome 6 Free';`
-        + `font-weight:900;font-style:normal;display:inline-block;">${ch}</span>`;
-};
-
-/** Palette definitions for each named theme. */
-const THEMES = {
-    blue: {
-        bg: '#eff6ff',
-        iconBg: '#dbeafe',
-        iconColor: '#1d4ed8',
-        valuColor: '#1e3a8a',
-        labelColor: '#3b5280',
-        titleColor: '#1e3a8a',
-        borderColor: '#bfdbfe',
-    },
-    green: {
-        bg: '#f0fdf4',
-        iconBg: '#dcfce7',
-        iconColor: '#15803d',
-        valuColor: '#14532d',
-        labelColor: '#2d6a4f',
-        titleColor: '#14532d',
-        borderColor: '#bbf7d0',
-    },
-    purple: {
-        bg: '#faf5ff',
-        iconBg: '#ede9fe',
-        iconColor: '#7c3aed',
-        valuColor: '#4c1d95',
-        labelColor: '#5b3aa5',
-        titleColor: '#4c1d95',
-        borderColor: '#ddd6fe',
-    },
-    orange: {
-        bg: '#fff7ed',
-        iconBg: '#ffedd5',
-        iconColor: '#c2410c',
-        valuColor: '#7c2d12',
-        labelColor: '#9a3412',
-        titleColor: '#7c2d12',
-        borderColor: '#fed7aa',
-    },
-};
-
-/**
- * Escapes a string for safe embedding in HTML attribute values and text nodes.
- * @param {string} text
- * @returns {string}
- */
-const esc = (text) => String(text || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-
-/**
- * Normalises an FA6 icon class string.
- * Accepts "fa-solid fa-users", "fas fa-users" or bare "fa-users".
- * Falls back to DEFAULT_ICON when blank.
- * @param {string} raw
- * @returns {string}
- */
-const normaliseIcon = (raw) => {
-    const s = String(raw || '').trim();
-    if (!s) {
-        return DEFAULT_ICON;
-    }
-    if (/^(fa-solid|fa-regular|fa-brands|fas|far|fab)\s/.test(s)) {
-        return s;
-    }
-    return `fa-solid ${s.startsWith('fa-') ? s : `fa-${s}`}`;
-};
-
-// ---------------------------------------------------------------------------
-// Icon picker overlay (shared singleton across all item rows).
-// ---------------------------------------------------------------------------
-
-let activePickerEl = null;
-let activePickerRemoveOutside = null;
-
-/** Closes and removes the icon picker overlay if open. */
-const closePicker = () => {
-    if (activePickerEl) {
-        activePickerEl.remove();
-        activePickerEl = null;
-    }
-    if (activePickerRemoveOutside) {
-        document.removeEventListener('click', activePickerRemoveOutside, true);
-        document.removeEventListener('keydown', activePickerRemoveOutside, true);
-        activePickerRemoveOutside = null;
-    }
-};
-
-/**
- * Opens the icon picker near triggerBtn and calls onSelect(iconClass) on click.
- * Uses position:fixed so it works inside any stacking context.
- * @param {Element} triggerBtn
- * @param {Function} onSelect
- */
-const openPicker = (triggerBtn, onSelect) => {
-    closePicker();
-
-    const picker = document.createElement('div');
-    picker.className = 'slms-ig-icon-picker';
-
-    ICONS.forEach(cls => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'slms-ig-icon-option';
-        btn.title = cls.replace('fa-solid fa-', '').replace(/-/g, ' ');
-        btn.innerHTML = `<i class="${cls}" aria-hidden="true"></i>`;
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            onSelect(cls);
-            closePicker();
-        });
-        picker.appendChild(btn);
-    });
-
-    document.body.appendChild(picker);
-    activePickerEl = picker;
-
-    // Position with fixed coords so it is not clipped by overflow:hidden parents.
-    const rect = triggerBtn.getBoundingClientRect();
-    const pickerW = 176; // 5 cols × 32px + 4 gaps × 4px + 2×8px padding = 176
-    const left = Math.min(rect.left, window.innerWidth - pickerW - 8);
-    const top = rect.bottom + 4;
-    picker.style.top = `${top}px`;
-    picker.style.left = `${left}px`;
-
-    // Close on outside click or Escape.
-    const dismiss = (e) => {
-        if (e.type === 'keydown' && e.key !== 'Escape') {
-            return;
-        }
-        if (e.type === 'click' && (picker.contains(e.target) || e.target === triggerBtn)) {
-            return;
-        }
-        closePicker();
-    };
-    activePickerRemoveOutside = dismiss;
-    setTimeout(() => {
-        document.addEventListener('click', dismiss, true);
-        document.addEventListener('keydown', dismiss, true);
-    }, 0);
-};
 
 // ---------------------------------------------------------------------------
 // Layout renderers — add future layouts here.
@@ -272,7 +83,7 @@ const buildStatsHtml = (data, c) => {
 
     parts.push(`<div class="slms-infographic__grid">`);
     items.forEach(item => {
-        const iconClass = normaliseIcon(item.icon);
+        const iconClass = normaliseIcon(item.icon) || DEFAULT_ICON;
         parts.push(
             `<div class="slms-infographic__stat" style="background:${c.bg};border-color:${c.borderColor};">`
             + `<div class="slms-infographic__icon" style="background:${c.iconBg};color:${c.iconColor};">`
@@ -314,6 +125,8 @@ const dataToPopupVars = (data) => {
         themeGreen: data.theme === 'green',
         themePurple: data.theme === 'purple',
         themeOrange: data.theme === 'orange',
+        themeRed: data.theme === 'red',
+        themeBlack: data.theme === 'black',
     };
     for (let i = 0; i < 4; i++) {
         const item = items[i] || {};
@@ -420,7 +233,7 @@ export default {
                                         iEl.className = `${cls}`;
                                     }
                                     applyChanges();
-                                });
+                                }, ICONS);
                             });
                         }
                     }

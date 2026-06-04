@@ -1847,3 +1847,183 @@ a.studiolms-webteca-item:focus-visible {
     line-height: 1.3;
     opacity: 0.9;
 }
+
+/* Steps block */
+.slms-infographic-steps-block {
+    display: block;
+    margin: 1rem 0;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.slms-infographic-steps-block:focus-visible {
+    outline: 2px solid var(--bs-primary, #0d47a1);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.slms-infographic-steps-block .slms-steps__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+}
+
+.slms-infographic-steps-block .slms-steps__list {
+    display: flex;
+    flex-direction: column;
+}
+
+.slms-infographic-steps-block .slms-steps__item {
+    display: flex;
+    gap: 1rem;
+}
+
+.slms-infographic-steps-block .slms-steps__left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.slms-infographic-steps-block .slms-steps__badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.slms-infographic-steps-block .slms-steps__connector {
+    flex: 1;
+    width: 2px;
+    min-height: 12px;
+    margin: 4px auto 0;
+}
+
+.slms-infographic-steps-block .slms-steps__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.slms-infographic-steps-block .slms-steps__step-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.3;
+    padding-top: 0.55rem;
+}
+
+.slms-infographic-steps-block .slms-steps__step-desc {
+    font-size: 0.85rem;
+    font-weight: 400;
+    line-height: 1.4;
+    margin-top: 0.2rem;
+    opacity: 0.9;
+}
+
+/* Steps — horizontal layout */
+.slms-infographic-steps-block .slms-steps__list--h {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.slms-infographic-steps-block .slms-steps__item--h {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 70px;
+}
+
+.slms-infographic-steps-block .slms-steps__step-title--h {
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-top: 0.5rem;
+}
+
+.slms-infographic-steps-block .slms-steps__hconnector {
+    flex: 0 0 auto;
+    align-self: flex-start;
+    margin-top: 19px;
+    width: 28px;
+    min-width: 12px;
+    height: 2px;
+}
+
+/* Popup: step item rows */
+.slms-st-item-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.slms-st-icon-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    background: var(--bs-secondary-bg, #f8f9fa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--bs-secondary-color, #6c757d);
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: border-color 0.15s;
+}
+
+.slms-st-icon-btn:hover {
+    border-color: var(--bs-primary, #0d47a1);
+    color: var(--bs-primary, #0d47a1);
+}
+
+.slms-st-item-fields {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.slms-st-desc-input {
+    font-size: 0.8rem;
+}
+
+.slms-st-layout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    background: var(--bs-secondary-bg, #f8f9fa);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--bs-secondary-color, #6c757d);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.slms-st-layout-btn:hover {
+    border-color: var(--bs-primary, #0d47a1);
+    color: var(--bs-primary, #0d47a1);
+}
+
+.slms-st-layout-btn.selected {
+    border-color: var(--bs-primary, #0d47a1);
+    background: var(--bs-primary, #0d47a1);
+    color: #fff;
+}
