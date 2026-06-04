@@ -1,0 +1,200 @@
+{{!
+    @template tiny_studiolms/popup_chart_edit
+
+    Edit popup for the StudioLMS chart block.
+    Shows up to 6 slice rows (label + numeric value). Empty rows are ignored on render.
+    Values are proportional — the JS calculates the percentage of each slice automatically.
+
+    Example context (json):
+    {
+        "title": "",
+        "typePie": false,
+        "typeDonut": true,
+        "ch_color1": "#3b82f6",
+        "ch_label1": "Aprovados",
+        "ch_value1": "75",
+        "ch_color2": "#10b981",
+        "ch_label2": "Em progresso",
+        "ch_value2": "15",
+        "ch_color3": "#f59e0b",
+        "ch_label3": "Reprovados",
+        "ch_value3": "10",
+        "ch_color4": "#ef4444",
+        "ch_label4": "",
+        "ch_value4": "",
+        "ch_color5": "#8b5cf6",
+        "ch_label5": "",
+        "ch_value5": "",
+        "ch_color6": "#f97316",
+        "ch_label6": "",
+        "ch_value6": ""
+    }
+}}
+<div class="slms-popup-chart-edit">
+
+    {{! Optional title }}
+    <div class="mb-2">
+        <label for="ch_title" class="form-label small fw-semibold">
+            {{#str}}chart_title, tiny_studiolms{{/str}}
+        </label>
+        <input type="text"
+               id="ch_title"
+               class="form-control form-control-sm"
+               value="{{title}}"
+               maxlength="80"/>
+    </div>
+
+    {{! Chart type toggle }}
+    <div class="mb-3">
+        <span class="form-label small fw-semibold d-block mb-1">
+            {{#str}}chart_type, tiny_studiolms{{/str}}
+        </span>
+        <div class="d-flex" style="gap:6px;">
+            <button type="button"
+                    class="slms-ch-type-btn{{^typePie}} selected{{/typePie}}"
+                    data-type="donut"
+                    aria-pressed="{{^typePie}}true{{/typePie}}{{#typePie}}false{{/typePie}}">
+                <i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i>
+                {{#str}}chart_donut, tiny_studiolms{{/str}}
+            </button>
+            <button type="button"
+                    class="slms-ch-type-btn{{#typePie}} selected{{/typePie}}"
+                    data-type="pie"
+                    aria-pressed="{{#typePie}}true{{/typePie}}{{^typePie}}false{{/typePie}}">
+                <i class="fa-solid fa-chart-pie" aria-hidden="true"></i>
+                {{#str}}chart_pie, tiny_studiolms{{/str}}
+            </button>
+        </div>
+    </div>
+
+    {{! Slice rows }}
+    <div class="mb-2">
+        <span class="form-label small fw-semibold d-block mb-1">
+            {{#str}}chart_slices, tiny_studiolms{{/str}}
+        </span>
+
+        <div class="slms-ch-header d-flex align-items-center mb-1">
+            <span class="slms-ch-dot-col" aria-hidden="true"></span>
+            <span class="slms-ch-label-col small text-muted">
+                {{#str}}chart_item_label, tiny_studiolms{{/str}}
+            </span>
+            <span class="slms-ch-value-col small text-muted text-end">
+                {{#str}}chart_item_value, tiny_studiolms{{/str}}
+            </span>
+        </div>
+
+        {{! Slice 1 }}
+        <div class="slms-ch-row d-flex align-items-center">
+            <span class="slms-ch-dot" style="background:{{ch_color1}};" aria-hidden="true"></span>
+            <input type="text"
+                   id="ch_label1"
+                   class="form-control form-control-sm slms-ch-label-col"
+                   value="{{ch_label1}}"
+                   placeholder="{{#str}}chart_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}chart_item_label, tiny_studiolms{{/str}} 1"/>
+            <input type="number"
+                   id="ch_value1"
+                   class="form-control form-control-sm slms-ch-value-col"
+                   value="{{ch_value1}}"
+                   min="0"
+                   step="any"
+                   aria-label="{{#str}}chart_item_value, tiny_studiolms{{/str}} 1"/>
+        </div>
+
+        {{! Slice 2 }}
+        <div class="slms-ch-row d-flex align-items-center">
+            <span class="slms-ch-dot" style="background:{{ch_color2}};" aria-hidden="true"></span>
+            <input type="text"
+                   id="ch_label2"
+                   class="form-control form-control-sm slms-ch-label-col"
+                   value="{{ch_label2}}"
+                   placeholder="{{#str}}chart_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}chart_item_label, tiny_studiolms{{/str}} 2"/>
+            <input type="number"
+                   id="ch_value2"
+                   class="form-control form-control-sm slms-ch-value-col"
+                   value="{{ch_value2}}"
+                   min="0"
+                   step="any"
+                   aria-label="{{#str}}chart_item_value, tiny_studiolms{{/str}} 2"/>
+        </div>
+
+        {{! Slice 3 }}
+        <div class="slms-ch-row d-flex align-items-center">
+            <span class="slms-ch-dot" style="background:{{ch_color3}};" aria-hidden="true"></span>
+            <input type="text"
+                   id="ch_label3"
+                   class="form-control form-control-sm slms-ch-label-col"
+                   value="{{ch_label3}}"
+                   placeholder="{{#str}}chart_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}chart_item_label, tiny_studiolms{{/str}} 3"/>
+            <input type="number"
+                   id="ch_value3"
+                   class="form-control form-control-sm slms-ch-value-col"
+                   value="{{ch_value3}}"
+                   min="0"
+                   step="any"
+                   aria-label="{{#str}}chart_item_value, tiny_studiolms{{/str}} 3"/>
+        </div>
+
+        {{! Slice 4 }}
+        <div class="slms-ch-row d-flex align-items-center">
+            <span class="slms-ch-dot" style="background:{{ch_color4}};" aria-hidden="true"></span>
+            <input type="text"
+                   id="ch_label4"
+                   class="form-control form-control-sm slms-ch-label-col"
+                   value="{{ch_label4}}"
+                   placeholder="{{#str}}chart_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}chart_item_label, tiny_studiolms{{/str}} 4"/>
+            <input type="number"
+                   id="ch_value4"
+                   class="form-control form-control-sm slms-ch-value-col"
+                   value="{{ch_value4}}"
+                   min="0"
+                   step="any"
+                   aria-label="{{#str}}chart_item_value, tiny_studiolms{{/str}} 4"/>
+        </div>
+
+        {{! Slice 5 }}
+        <div class="slms-ch-row d-flex align-items-center">
+            <span class="slms-ch-dot" style="background:{{ch_color5}};" aria-hidden="true"></span>
+            <input type="text"
+                   id="ch_label5"
+                   class="form-control form-control-sm slms-ch-label-col"
+                   value="{{ch_label5}}"
+                   placeholder="{{#str}}chart_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}chart_item_label, tiny_studiolms{{/str}} 5"/>
+            <input type="number"
+                   id="ch_value5"
+                   class="form-control form-control-sm slms-ch-value-col"
+                   value="{{ch_value5}}"
+                   min="0"
+                   step="any"
+                   aria-label="{{#str}}chart_item_value, tiny_studiolms{{/str}} 5"/>
+        </div>
+
+        {{! Slice 6 }}
+        <div class="slms-ch-row d-flex align-items-center">
+            <span class="slms-ch-dot" style="background:{{ch_color6}};" aria-hidden="true"></span>
+            <input type="text"
+                   id="ch_label6"
+                   class="form-control form-control-sm slms-ch-label-col"
+                   value="{{ch_label6}}"
+                   placeholder="{{#str}}chart_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}chart_item_label, tiny_studiolms{{/str}} 6"/>
+            <input type="number"
+                   id="ch_value6"
+                   class="form-control form-control-sm slms-ch-value-col"
+                   value="{{ch_value6}}"
+                   min="0"
+                   step="any"
+                   aria-label="{{#str}}chart_item_value, tiny_studiolms{{/str}} 6"/>
+        </div>
+
+    </div>
+
+    <div class="form-text mt-1" style="font-size:11px;">
+        {{#str}}chart_values_hint, tiny_studiolms{{/str}}
+    </div>
+
+</div>
