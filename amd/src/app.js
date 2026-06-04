@@ -372,6 +372,10 @@ const selectCanvasBlock = async(blockId) => {
             },
             PopupManager
         );
+        const firstBtn = toolbarContainer.querySelector('.slms-toolbar-btn');
+        if (firstBtn) {
+            firstBtn.click();
+        }
     } else {
         showToolbarHint();
     }

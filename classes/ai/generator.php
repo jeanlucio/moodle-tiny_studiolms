@@ -36,6 +36,38 @@ namespace tiny_studiolms\ai;
  */
 class generator {
     /**
+     * Returns a language instruction for the system prompt based on the current Moodle user language.
+     *
+     * Replaces the vague "same language as user's topic" heuristic with an explicit directive.
+     * Product names and acronyms (e.g. "Moodle") carry no language signal, so the LLM defaults
+     * to English without this explicit instruction.
+     *
+     * @return string
+     */
+    private static function language_instruction(): string {
+        $lang = current_language();
+        $langnames = [
+            'pt_br' => 'Brazilian Portuguese',
+            'pt'    => 'Portuguese',
+            'es'    => 'Spanish',
+            'fr'    => 'French',
+            'de'    => 'German',
+            'it'    => 'Italian',
+            'nl'    => 'Dutch',
+            'ru'    => 'Russian',
+            'zh_cn' => 'Simplified Chinese',
+            'zh_tw' => 'Traditional Chinese',
+            'ja'    => 'Japanese',
+            'ko'    => 'Korean',
+            'ar'    => 'Arabic',
+            'tr'    => 'Turkish',
+            'pl'    => 'Polish',
+        ];
+        $name = $langnames[$lang] ?? $lang;
+        return '- Write all text in ' . $name . ' (' . $lang . ')';
+    }
+
+    /**
      * Returns the schema description for all available block types (shared between system prompts).
      *
      * @return string
@@ -150,6 +182,7 @@ class generator {
         $prompt .= 'Schema: {"blocktype": "TYPE", "config": {BLOCK_CONFIG_OBJECT}}' . "\n\n";
         $prompt .= 'Available block types:' . "\n\n";
         $prompt .= self::block_types_schema();
+        $prompt .= self::language_instruction() . "\n";
         $prompt .= 'Choose the most appropriate block type for the request. Respond ONLY with JSON.';
 
         return $prompt;
@@ -232,7 +265,7 @@ class generator {
         $prompt .= 'Rules:' . "\n";
         $prompt .= '- Order blocks logically: heading → content blocks → actions.' . "\n";
         $prompt .= '- Use ONLY the hex values from the palette above (no other colours).' . "\n";
-        $prompt .= '- "name" must be in the same language as the request.' . "\n";
+        $prompt .= self::language_instruction() . "\n";
         $prompt .= '- Generate rich, placeholder-quality HTML content in contentHtml/content fields.' . "\n";
         $prompt .= '- Respond ONLY with JSON.' . "\n";
 
@@ -561,7 +594,7 @@ class generator {
         $p .= '- Generate 4 to 6 main branches' . "\n";
         $p .= '- Each branch must have 2 to 4 children' . "\n";
         $p .= '- Keep all labels concise (1–4 words each)' . "\n";
-        $p .= '- All text must be in the SAME LANGUAGE as the user\'s topic' . "\n";
+        $p .= self::language_instruction() . "\n";
         $p .= '- Respond ONLY with JSON.' . "\n";
         return $p;
     }
@@ -636,7 +669,7 @@ class generator {
         $p .= '- "value" must be a short metric: number, percentage, time or short word (max 8 chars)' . "\n";
         $p .= '- "label" must be a short description (max 30 chars)' . "\n";
         $p .= '- "title" should be a short headline (max 50 chars), or empty string if not needed' . "\n";
-        $p .= '- All text must be in the SAME LANGUAGE as the user\'s topic' . "\n";
+        $p .= self::language_instruction() . "\n";
         $p .= '- Respond ONLY with JSON.' . "\n";
         return $p;
     }
@@ -709,7 +742,7 @@ class generator {
         $p .= '- "description" is an optional brief explanation (max 100 chars); use empty string if not needed' . "\n";
         $p .= '- "title" at the top level should be a short headline for the whole flow (max 60 chars),'
             . ' or empty string if not needed' . "\n";
-        $p .= '- All text must be in the SAME LANGUAGE as the user\'s topic' . "\n";
+        $p .= self::language_instruction() . "\n";
         $p .= '- Respond ONLY with JSON.' . "\n";
         return $p;
     }
@@ -786,6 +819,7 @@ class generator {
         $p .= '- title (item): 2–5 words, concise feature name.' . "\n";
         $p .= '- description: 1–2 sentences explaining the feature. May be empty string.' . "\n";
         $p .= '- No HTML tags. Plain text only.' . "\n";
+        $p .= self::language_instruction() . "\n";
         return $p;
     }
 
@@ -849,7 +883,7 @@ class generator {
         $p .= 'Rules:' . "\n";
         $p .= '- "icon" must be a single emoji appropriate for the tone (💡 tip, ⚠️ warning, ✅ success, 📌 note)' . "\n";
         $p .= '- "contentHtml" must use only <p>, <strong>, <ul>, <li> tags; keep it concise (2–5 sentences)' . "\n";
-        $p .= '- All text must be in the SAME LANGUAGE as the user\'s request' . "\n";
+        $p .= self::language_instruction() . "\n";
         $p .= '- Respond ONLY with JSON.' . "\n";
         return $p;
     }
@@ -894,7 +928,7 @@ class generator {
         $p .= 'Rules:' . "\n";
         $p .= '- "content" must use only <h4>, <p>, <strong>, <ul>, <li> tags; 3–6 sentences' . "\n";
         $p .= '- "btnText" must be a short action label (max 5 words); use empty string if no action fits' . "\n";
-        $p .= '- All text must be in the SAME LANGUAGE as the user\'s request' . "\n";
+        $p .= self::language_instruction() . "\n";
         $p .= '- Respond ONLY with JSON.' . "\n";
         return $p;
     }
@@ -939,7 +973,7 @@ class generator {
         $p .= 'Rules:' . "\n";
         $p .= '- "title" must be a concise section heading (max 60 chars, plain text)' . "\n";
         $p .= '- "content" must use only <p>, <ul>, <li>, <strong> tags; 3–6 sentences' . "\n";
-        $p .= '- All text must be in the SAME LANGUAGE as the user\'s request' . "\n";
+        $p .= self::language_instruction() . "\n";
         $p .= '- Respond ONLY with JSON.' . "\n";
         return $p;
     }
@@ -988,7 +1022,7 @@ class generator {
         $p .= '- "url" must be "#" (placeholder) because we cannot invent real URLs' . "\n";
         $p .= '- "title" for each resource must be specific and descriptive (max 60 chars)' . "\n";
         $p .= '- "title" (top-level) max 60 chars, "desc" max 120 chars' . "\n";
-        $p .= '- All text must be in the SAME LANGUAGE as the user\'s request' . "\n";
+        $p .= self::language_instruction() . "\n";
         $p .= '- Respond ONLY with JSON.' . "\n";
         return $p;
     }
