@@ -871,6 +871,78 @@ class generator {
     }
 
     /**
+     * Returns the system prompt for timeline generation.
+     *
+     * @return string
+     */
+    private static function infographic_timeline_system_prompt(): string {
+        $p = 'You are an educational content assistant generating timeline infographics.' . "\n";
+        $p .= 'Given a topic, produce a chronological sequence of events or milestones.' . "\n\n";
+        $p .= 'Respond ONLY with a valid JSON object — no markdown, no code fences, no explanation.' . "\n\n";
+        $p .= 'Schema: {"title": "string", "items": [{"date": "string", "title": "string",'
+            . ' "description": "string"}, ...]}' . "\n\n";
+        $p .= 'Rules:' . "\n";
+        $p .= '- Generate 3 to 6 items' . "\n";
+        $p .= '- "date" is a short period label (year, month, quarter, or range); max 15 chars; may be empty string' . "\n";
+        $p .= '- "title" is the event or milestone name; max 50 chars' . "\n";
+        $p .= '- "description" is an optional brief explanation; max 100 chars; use empty string if not needed' . "\n";
+        $p .= '- "title" at the top level should be a short headline for the timeline; max 60 chars;'
+            . ' or empty string if not needed' . "\n";
+        $p .= '- Items must be in chronological order' . "\n";
+        $p .= '- No HTML tags. Plain text only.' . "\n";
+        $p .= self::language_instruction() . "\n";
+        return $p;
+    }
+
+    /**
+     * Generates a timeline structure from a topic description.
+     *
+     * @param string $topic Teacher's topic or subject description.
+     * @return array{title: string, items: string, provider: string}
+     * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
+     */
+    public static function generate_infographic_timeline(string $topic): array {
+        $result = self::call_providers(
+            $topic,
+            self::infographic_timeline_system_prompt(),
+            'infographic_timeline_ai_error'
+        );
+
+        $raw = trim($result['data']);
+        $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
+        $raw = preg_replace('/\s*\x60{3}$/i', '', $raw);
+
+        $data = json_decode(trim($raw), true);
+
+        if (!is_array($data) || empty($data['items']) || !is_array($data['items'])) {
+            throw new \moodle_exception('infographic_timeline_ai_error', 'tiny_studiolms');
+        }
+
+        $safetitle = clean_param($data['title'] ?? '', PARAM_TEXT);
+        $safeitems = [];
+        foreach ($data['items'] as $item) {
+            if (!is_array($item) || empty($item['title'])) {
+                continue;
+            }
+            $safeitems[] = [
+                'date'        => clean_param((string)($item['date'] ?? ''), PARAM_TEXT),
+                'title'       => clean_param((string)($item['title'] ?? ''), PARAM_TEXT),
+                'description' => clean_param((string)($item['description'] ?? ''), PARAM_TEXT),
+            ];
+        }
+
+        if (empty($safeitems)) {
+            throw new \moodle_exception('infographic_timeline_ai_error', 'tiny_studiolms');
+        }
+
+        return [
+            'title'    => $safetitle,
+            'items'    => json_encode($safeitems),
+            'provider' => $result['provider'],
+        ];
+    }
+
+    /**
      * Returns the system prompt for callout content generation.
      *
      * @return string

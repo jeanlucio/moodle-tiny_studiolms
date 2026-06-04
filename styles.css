@@ -2138,3 +2138,121 @@ a.studiolms-webteca-item:focus-visible {
     background: var(--bs-primary, #0d47a1);
     color: #fff;
 }
+
+/* =========================================================
+   Infographic — Timeline block
+   ========================================================= */
+
+.slms-infographic-timeline-block {
+    font-family: inherit;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    background: var(--card-bg, #fff);
+}
+
+.slms-infographic-timeline-block:focus-visible {
+    outline: 3px solid var(--bs-primary, #0d47a1);
+    outline-offset: 2px;
+}
+
+.slms-timeline__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    line-height: 1.3;
+}
+
+.slms-timeline__list {
+    position: relative;
+}
+
+.slms-timeline__item {
+    display: flex;
+    gap: 1rem;
+    align-items: stretch;
+    margin-bottom: 0;
+}
+
+.slms-timeline__marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 1.125rem;
+    padding-top: 0.75rem;
+}
+
+.slms-timeline__dot {
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.slms-timeline__connector {
+    flex: 1;
+    width: 2px;
+    min-height: 0.75rem;
+    border-radius: 1px;
+    margin-top: 4px;
+}
+
+.slms-timeline__body {
+    flex: 1;
+    border: 1px solid;
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    margin-bottom: 0.75rem;
+}
+
+.slms-timeline__date {
+    display: inline-block;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.025em;
+    line-height: 1.4;
+}
+
+.slms-timeline__event-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 0.2rem;
+}
+
+.slms-timeline__event-desc {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+}
+
+/* Timeline popup — date + title row */
+.slms-tl-item-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+.slms-tl-item-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.slms-tl-date-title-row {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.slms-tl-date-input {
+    width: 5.5rem;
+    min-width: 5.5rem;
+    flex-shrink: 0;
+}

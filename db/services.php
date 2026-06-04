@@ -151,6 +151,15 @@ $functions = [
         'loginrequired' => true,
         'capabilities'  => 'tiny/studiolms:use',
     ],
+    'tiny_studiolms_generate_infographic_timeline' => [
+        'classname'   => 'tiny_studiolms\external\generate_infographic_timeline',
+        'methodname'  => 'execute',
+        'description' => 'Generate a timeline infographic via a configured LLM provider.',
+        'type'        => 'write',
+        'ajax'        => true,
+        'loginrequired' => true,
+        'capabilities'  => 'tiny/studiolms:use',
+    ],
     'tiny_studiolms_generate_callout' => [
         'classname'   => 'tiny_studiolms\external\generate_callout',
         'methodname'  => 'execute',

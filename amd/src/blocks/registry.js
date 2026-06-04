@@ -34,6 +34,7 @@ import mindmap from './mindmap';
 import infographic from './infographic';
 import infographicFeatures from './infographic_features';
 import infographicSteps from './infographic_steps';
+import infographicTimeline from './infographic_timeline';
 
 export const Blocks = {
     stylizedHeading,
@@ -49,4 +50,5 @@ export const Blocks = {
     infographic,
     infographicFeatures,
     infographicSteps,
+    infographicTimeline,
 };
