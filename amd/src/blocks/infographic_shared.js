@@ -109,13 +109,13 @@ export const THEMES = {
         borderColor: '#fecdd3',
     },
     black: {
-        bg: '#0f172a',
+        bg: '#f8fafc',
         iconBg: '#1e293b',
-        iconColor: '#94a3b8',
-        valuColor: '#f1f5f9',
-        labelColor: '#cbd5e1',
-        titleColor: '#f1f5f9',
-        borderColor: '#334155',
+        iconColor: '#f1f5f9',
+        valuColor: '#0f172a',
+        labelColor: '#334155',
+        titleColor: '#0f172a',
+        borderColor: '#cbd5e1',
     },
 };
 

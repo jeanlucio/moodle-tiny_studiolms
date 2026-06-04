@@ -72,12 +72,12 @@ const COLORS = {
         lineColor: '#fda4af',
     },
     black: {
-        bg: '#0f172a',
-        centerFill: '#1e293b', centerText: '#f1f5f9',
-        branchFills: ['#334155', '#475569', '#64748b', '#1e293b', '#94a3b8', '#334155'],
+        bg: '#f8fafc',
+        centerFill: '#0f172a', centerText: '#f1f5f9',
+        branchFills: ['#1e293b', '#334155', '#475569', '#1e293b', '#334155', '#475569'],
         branchText: '#f1f5f9',
-        childFill: '#1e293b', childText: '#cbd5e1',
-        lineColor: '#475569',
+        childFill: '#e2e8f0', childText: '#0f172a',
+        lineColor: '#94a3b8',
     },
 };
 
