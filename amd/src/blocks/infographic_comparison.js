@@ -117,6 +117,41 @@ const dataToPopupVars = (data) => {
 };
 
 /**
+ * Updates popup fields after an AI result is applied to data.
+ * @param {Element} popup
+ * @param {object} data Updated block data.
+ * @param {Element|null} titleEl
+ * @param {Element|null} col1El
+ * @param {Element|null} col2El
+ */
+const applyAiResultToPopup = (popup, data, titleEl, col1El, col2El) => {
+    if (titleEl) {
+        titleEl.value = data.title;
+    }
+    if (col1El) {
+        col1El.value = data.col1;
+    }
+    if (col2El) {
+        col2El.value = data.col2;
+    }
+    for (let i = 1; i <= 6; i++) {
+        const item = data.items[i - 1] || null;
+        const labelEl = popup.querySelector(`#cmp_item${i}_label`);
+        const chk1 = popup.querySelector(`#cmp_item${i}_col1`);
+        const chk2 = popup.querySelector(`#cmp_item${i}_col2`);
+        if (labelEl) {
+            labelEl.value = item ? item.label : '';
+        }
+        if (chk1) {
+            chk1.checked = item ? item.col1 !== false : true;
+        }
+        if (chk2) {
+            chk2.checked = item ? item.col2 !== false : true;
+        }
+    }
+};
+
+/**
  * @param {Element} popup
  * @param {object} data
  */
@@ -247,31 +282,7 @@ export default {
                                     data.col1 = result.col1 || '';
                                     data.col2 = result.col2 || '';
                                     data.items = JSON.parse(result.items || '[]');
-
-                                    if (titleEl) {
-                                        titleEl.value = data.title;
-                                    }
-                                    if (col1El) {
-                                        col1El.value = data.col1;
-                                    }
-                                    if (col2El) {
-                                        col2El.value = data.col2;
-                                    }
-                                    for (let i = 1; i <= 6; i++) {
-                                        const item = data.items[i - 1] || null;
-                                        const labelEl = popup.querySelector(`#cmp_item${i}_label`);
-                                        const chk1 = popup.querySelector(`#cmp_item${i}_col1`);
-                                        const chk2 = popup.querySelector(`#cmp_item${i}_col2`);
-                                        if (labelEl) {
-                                            labelEl.value = item ? item.label : '';
-                                        }
-                                        if (chk1) {
-                                            chk1.checked = item ? item.col1 !== false : true;
-                                        }
-                                        if (chk2) {
-                                            chk2.checked = item ? item.col2 !== false : true;
-                                        }
-                                    }
+                                    applyAiResultToPopup(popup, data, titleEl, col1El, col2El);
                                     onUpdate(data);
                                 } catch (err) {
                                     if (aiError) {
