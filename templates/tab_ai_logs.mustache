@@ -1,0 +1,49 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_studiolms/tab_ai_logs
+    @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+
+    Example context (json): {}
+}}
+<div class="slms-ai-logs-tab p-4">
+    <div class="card border-dark shadow-sm">
+        <div class="card-header bg-dark text-white fw-bold">
+            <i class="fa fa-bar-chart me-2" aria-hidden="true"></i>{{#str}} ai_logs_title, tiny_studiolms {{/str}}
+        </div>
+        <div class="card-body p-0">
+            <div id="slms-logs-spinner" class="text-center py-4">
+                <div class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></div>
+            </div>
+            <div id="slms-logs-empty" class="text-muted text-center py-4 px-3 d-none">
+                {{#str}} ai_logs_empty, tiny_studiolms {{/str}}
+            </div>
+            <div id="slms-logs-table-wrap" class="d-none">
+                <table class="table table-sm table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">{{#str}} ai_logs_date, tiny_studiolms {{/str}}</th>
+                            <th scope="col">{{#str}} ai_logs_blocktype, tiny_studiolms {{/str}}</th>
+                            <th scope="col">{{#str}} ai_logs_provider, tiny_studiolms {{/str}}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="slms-logs-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -214,4 +214,13 @@ $functions = [
         'loginrequired' => true,
         'capabilities'  => 'tiny/studiolms:use',
     ],
+    'tiny_studiolms_get_ai_logs' => [
+        'classname'   => 'tiny_studiolms\external\get_ai_logs',
+        'methodname'  => 'execute',
+        'description' => 'Return the current user\'s last 50 AI generation log entries.',
+        'type'        => 'read',
+        'ajax'        => true,
+        'loginrequired' => true,
+        'capabilities'  => 'tiny/studiolms:use',
+    ],
 ];

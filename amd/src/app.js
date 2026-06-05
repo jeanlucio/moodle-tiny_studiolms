@@ -30,6 +30,7 @@ import {loadTemplates, renderTemplateGrid, saveTemplate, showInlineFeedback,
     exportTemplates, importTemplatesFromFile} from './templateslibrary';
 import {initBlock as initAiBlock, initModel as initAiModel} from './aigenerator';
 import {init as initAiKeys} from './aikeys';
+import {init as initAiLogs} from './ailogs';
 import {init as initAiChat} from './aichat';
 
 // Canvas state — array of {id, blockDef, config, element, previewEl}
@@ -110,6 +111,7 @@ export const initStudioApp = (
     setupTabs();
     setupSidebarToggle();
     setupSidebarSearch();
+    setupAiLogsButton();
     setupAiKeysButton();
     setupImportExportButtons();
 
@@ -1090,6 +1092,31 @@ const setupSaveTemplateButton = (canManageGlobal = false) => {
                     form.remove();
                 }
             });
+        } catch (error) {
+            Notification.exception(error);
+        }
+    });
+};
+
+/**
+ * Wire up the AI Logs button in the logo bar to open a centred modal.
+ */
+const setupAiLogsButton = () => {
+    const btn = document.getElementById('slms-btn-ai-logs');
+    if (!btn) {
+        return;
+    }
+    btn.addEventListener('click', async() => {
+        try {
+            const titleStr = await getString('ai_logs_title', 'tiny_studiolms');
+            const modal = await Modal.create({
+                title: titleStr,
+                body: '<div></div>',
+                removeOnClose: true,
+            });
+            const bodyEl = modal.getBody()[0];
+            await initAiLogs(bodyEl);
+            modal.show();
         } catch (error) {
             Notification.exception(error);
         }
