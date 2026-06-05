@@ -357,27 +357,55 @@ class generator {
     }
 
     /**
-     * Resolves API keys and URLs from user preferences with admin config fallback.
+     * Resolves API keys and URLs with a personal-first resolution strategy.
      *
-     * @return array With keys geminikey, groqkey, customkey, customurl, custommodel.
+     * Personal keys (user preferences) take absolute priority.
+     * When any personal key is configured, institution-wide defaults are ignored entirely
+     * so that a teacher who set a custom provider is never silently overridden by an
+     * institution key with higher provider priority.
+     *
+     * When NO personal keys are set, institution-wide admin config is used.
+     *
+     * @return array With keys geminikey, groqkey, customkey, customurl, custommodel, haspersonalkeys.
      */
     private static function resolve_keys(): array {
+        $personalgemini = (string)get_user_preferences('tiny_studiolms_gemini_key', '');
+        $personalgroq   = (string)get_user_preferences('tiny_studiolms_groq_key', '');
+        $personalcustom = (string)get_user_preferences('tiny_studiolms_custom_key', '');
+        $personalurl    = (string)get_user_preferences('tiny_studiolms_custom_url', '');
+        $personalmodel  = (string)get_user_preferences('tiny_studiolms_custom_model', '');
+
+        $haspersonalkeys = !empty($personalgemini) || !empty($personalgroq) || !empty($personalcustom);
+
+        if ($haspersonalkeys) {
+            return [
+                'geminikey'      => $personalgemini,
+                'groqkey'        => $personalgroq,
+                'customkey'      => $personalcustom,
+                'customurl'      => $personalurl,
+                'custommodel'    => $personalmodel,
+                'haspersonalkeys' => true,
+            ];
+        }
+
         return [
-            'geminikey'   => get_user_preferences('tiny_studiolms_gemini_key', '')
-                ?: get_config('tiny_studiolms', 'apikey_gemini'),
-            'groqkey'     => get_user_preferences('tiny_studiolms_groq_key', '')
-                ?: get_config('tiny_studiolms', 'apikey_groq'),
-            'customkey'   => get_user_preferences('tiny_studiolms_custom_key', '')
-                ?: get_config('tiny_studiolms', 'apikey_custom'),
-            'customurl'   => get_user_preferences('tiny_studiolms_custom_url', '')
-                ?: get_config('tiny_studiolms', 'custom_baseurl'),
-            'custommodel' => get_user_preferences('tiny_studiolms_custom_model', '')
-                ?: get_config('tiny_studiolms', 'custom_model'),
+            'geminikey'      => (string)get_config('tiny_studiolms', 'apikey_gemini'),
+            'groqkey'        => (string)get_config('tiny_studiolms', 'apikey_groq'),
+            'customkey'      => (string)get_config('tiny_studiolms', 'apikey_custom'),
+            'customurl'      => (string)get_config('tiny_studiolms', 'custom_baseurl'),
+            'custommodel'    => (string)get_config('tiny_studiolms', 'custom_model'),
+            'haspersonalkeys' => false,
         ];
     }
 
     /**
      * Tries all configured AI providers in order and returns the first successful response.
+     *
+     * When personal keys are configured:
+     *   Gemini (personal) → Groq (personal) → Custom (personal)
+     *
+     * When only institution keys are available:
+     *   core_ai → Gemini (institution) → Groq (institution) → Custom (institution)
      *
      * @param string $userprompt  The user-facing prompt text.
      * @param string $sysprompt   The system instruction to send.
@@ -387,6 +415,14 @@ class generator {
      */
     private static function call_providers(string $userprompt, string $sysprompt, string $errkey): array {
         $keys = self::resolve_keys();
+
+        // Priority 0: Moodle core_ai — institution default, skipped when personal keys are set.
+        if (!$keys['haspersonalkeys'] && self::has_core_ai_provider()) {
+            $result = self::call_core_ai($sysprompt, $userprompt);
+            if ($result['success']) {
+                return $result;
+            }
+        }
 
         if (empty($keys['geminikey']) && empty($keys['groqkey']) && empty($keys['customkey'])) {
             throw new \moodle_exception('ai_generator_no_config', 'tiny_studiolms');
@@ -412,10 +448,11 @@ class generator {
         }
 
         if (!$result['success'] && !empty($keys['customkey']) && !empty($keys['customurl'])) {
+            $resolvedurl = self::resolve_custom_url((string)$keys['customurl']);
             $result = self::call_openai_compatible(
                 $userprompt,
                 $keys['customkey'],
-                $keys['customurl'],
+                $resolvedurl,
                 (string)$keys['custommodel'],
                 $sysprompt
             );
@@ -486,19 +523,27 @@ class generator {
     /**
      * Calls the Google Gemini API.
      *
+     * API key is sent via the x-goog-api-key header instead of the querystring to
+     * avoid exposing it in server access logs and HTTP referrer headers.
+     *
      * @param string $prompt     User prompt.
      * @param string $key        Gemini API key.
      * @param string $sysprompt  System instruction text.
      * @return array With keys 'success', 'data', 'provider'.
      */
     private static function call_gemini(string $prompt, string $key, string $sysprompt): array {
-        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' . $key;
+        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
         $data = [
             'system_instruction' => ['parts' => [['text' => $sysprompt]]],
             'contents'           => [['parts' => [['text' => $prompt]]]],
             'generationConfig'   => ['responseMimeType' => 'application/json', 'maxOutputTokens' => 2000],
         ];
-        return self::curl_request($url, json_encode($data), ['Content-Type: application/json'], 'Gemini');
+        return self::curl_request(
+            $url,
+            json_encode($data),
+            ['Content-Type: application/json', 'x-goog-api-key: ' . $key],
+            'Gemini'
+        );
     }
 
     /**
@@ -636,22 +681,31 @@ class generator {
     }
 
     /**
-     * Validates that a URL is safe to call: HTTPS only, public IP, no private/localhost ranges.
+     * Returns true only if the URL is safe to use as an external AI endpoint.
      *
-     * @param string $url URL to validate.
-     * @return bool
+     * Enforces HTTPS and blocks loopback, link-local, and RFC-1918 private addresses
+     * to prevent Server-Side Request Forgery (SSRF) via teacher-configured endpoints.
+     * Resolves all A and AAAA DNS records to guard against DNS rebinding attacks where
+     * a public hostname temporarily resolves to an internal IP.
+     *
+     * @param string $url The URL to validate.
+     * @return bool True if safe; false otherwise.
      */
     private static function is_safe_url(string $url): bool {
         $parsed = parse_url($url);
         if (!$parsed || ($parsed['scheme'] ?? '') !== 'https') {
             return false;
         }
-        $host = strtolower($parsed['host'] ?? '');
-        if (in_array($host, ['localhost', '127.0.0.1', '::1'], true)) {
+        $host = $parsed['host'] ?? '';
+        if (empty($host)) {
             return false;
         }
-        $ip = gethostbyname($host);
+        if (in_array(strtolower($host), ['localhost', '127.0.0.1', '::1'], true)) {
+            return false;
+        }
+        $ip = filter_var($host, FILTER_VALIDATE_IP);
         if ($ip !== false) {
+            // Literal IP address in the URL — check directly.
             $ispublic = filter_var(
                 $ip,
                 FILTER_VALIDATE_IP,
@@ -660,8 +714,131 @@ class generator {
             if ($ispublic === false) {
                 return false;
             }
+        } else {
+            // Hostname: resolve all A/AAAA records and re-apply the private/reserved check
+            // to prevent DNS rebinding attacks where a public domain resolves to an internal IP.
+            $resolvedips = [];
+            $arecords = dns_get_record($host, DNS_A);
+            if (is_array($arecords)) {
+                foreach ($arecords as $r) {
+                    if (!empty($r['ip'])) {
+                        $resolvedips[] = $r['ip'];
+                    }
+                }
+            }
+            $aaaarecords = dns_get_record($host, DNS_AAAA);
+            if (is_array($aaaarecords)) {
+                foreach ($aaaarecords as $r) {
+                    if (!empty($r['ipv6'])) {
+                        $resolvedips[] = $r['ipv6'];
+                    }
+                }
+            }
+            foreach ($resolvedips as $resolvedip) {
+                $ispublic = filter_var(
+                    $resolvedip,
+                    FILTER_VALIDATE_IP,
+                    FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+                );
+                if ($ispublic === false) {
+                    return false;
+                }
+            }
         }
         return true;
+    }
+
+    /**
+     * Ensures the custom AI URL ends with /chat/completions.
+     *
+     * Providers that follow the OpenAI-compatible standard always expose this path.
+     * Users who supply only a base URL (e.g. https://integrate.api.nvidia.com/v1)
+     * get the suffix appended automatically; users who already include it are unaffected.
+     *
+     * @param string $url The configured endpoint URL.
+     * @return string URL guaranteed to end with /chat/completions.
+     */
+    private static function resolve_custom_url(string $url): string {
+        if (!str_ends_with($url, '/chat/completions')) {
+            $url = rtrim($url, '/') . '/chat/completions';
+        }
+        return $url;
+    }
+
+    /**
+     * Returns true when Moodle core_ai has at least one provider configured for text generation.
+     *
+     * Compatible with Moodle 4.5 (static API) and 5.x (instance API with DB injection).
+     * Uses get_providers_for_actions as the reflection anchor — the same method used in
+     * call_core_ai — so staticness detection is consistent across both methods.
+     *
+     * @return bool
+     */
+    private static function has_core_ai_provider(): bool {
+        global $DB;
+        if (
+            !class_exists(\core_ai\manager::class)
+            || !class_exists(\core_ai\aiactions\generate_text::class)
+        ) {
+            return false;
+        }
+        try {
+            $actionclass = \core_ai\aiactions\generate_text::class;
+            $reflection = new \ReflectionMethod(\core_ai\manager::class, 'get_providers_for_actions');
+            if ($reflection->isStatic()) {
+                $providers = \core_ai\manager::get_providers_for_actions([$actionclass], true);
+            } else {
+                $providers = (new \core_ai\manager($DB))->get_providers_for_actions([$actionclass], true);
+            }
+            return !empty($providers[$actionclass]);
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Generates text via the Moodle core_ai subsystem.
+     *
+     * Combines system and user prompt parts into a single string (core_ai accepts only
+     * one prompttext field). Compatible with Moodle 4.5 and 5.x via reflection.
+     *
+     * @param string $sysprompt  System instruction text.
+     * @param string $userprompt User-facing prompt text.
+     * @return array Result with keys: success (bool), data (string), provider (string).
+     */
+    private static function call_core_ai(string $sysprompt, string $userprompt): array {
+        global $DB, $USER;
+        try {
+            $fullprompt = trim($sysprompt . "\n\n" . $userprompt);
+            $actionclass = \core_ai\aiactions\generate_text::class;
+            $reflection = new \ReflectionMethod(\core_ai\manager::class, 'get_providers_for_actions');
+            if ($reflection->isStatic()) {
+                $manager = new \core_ai\manager();
+            } else {
+                $manager = new \core_ai\manager($DB);
+            }
+            $providers = $manager->get_providers_for_actions([$actionclass], true);
+            if (empty($providers[$actionclass])) {
+                return ['success' => false, 'data' => '', 'provider' => 'Moodle AI'];
+            }
+            $action = new \core_ai\aiactions\generate_text(
+                contextid: \context_system::instance()->id,
+                userid: (int) $USER->id,
+                prompttext: $fullprompt,
+            );
+            $response = $manager->process_action($action);
+            if (!$response->get_success()) {
+                return ['success' => false, 'data' => '', 'provider' => 'Moodle AI'];
+            }
+            $data = $response->get_response_data();
+            $content = (string) ($data['generatedcontent'] ?? '');
+            if ($content === '') {
+                return ['success' => false, 'data' => '', 'provider' => 'Moodle AI'];
+            }
+            return ['success' => true, 'data' => $content, 'provider' => 'Moodle AI'];
+        } catch (\Throwable $e) {
+            return ['success' => false, 'data' => '', 'provider' => 'Moodle AI'];
+        }
     }
 
     /**
@@ -1323,6 +1500,12 @@ class generator {
      * Each entry in $messages must have 'role' (user|assistant) and 'content' (string).
      * The caller is responsible for building the system prompt via chat::build_system_prompt().
      *
+     * When personal keys are configured:
+     *   Gemini (personal) → Groq (personal) → Custom (personal)
+     *
+     * When only institution keys are available:
+     *   core_ai → Gemini (institution) → Groq (institution) → Custom (institution)
+     *
      * @param string $systemprompt System instruction sent to all providers.
      * @param array  $messages     Conversation history [{role, content}, ...].
      * @return array With keys 'data' (string) and 'provider' (string).
@@ -1330,6 +1513,19 @@ class generator {
      */
     public static function call_chat(string $systemprompt, array $messages): array {
         $keys = self::resolve_keys();
+
+        // Priority 0: Moodle core_ai — institution default, skipped when personal keys are set.
+        if (!$keys['haspersonalkeys'] && self::has_core_ai_provider()) {
+            $chatlines = [];
+            foreach ($messages as $msg) {
+                $role = $msg['role'] === 'assistant' ? 'Assistant' : 'User';
+                $chatlines[] = $role . ': ' . $msg['content'];
+            }
+            $result = self::call_core_ai($systemprompt, implode("\n", $chatlines));
+            if ($result['success']) {
+                return ['data' => $result['data'], 'provider' => $result['provider']];
+            }
+        }
 
         if (empty($keys['geminikey']) && empty($keys['groqkey']) && empty($keys['customkey'])) {
             throw new \moodle_exception('ai_generator_no_config', 'tiny_studiolms');
@@ -1344,8 +1540,7 @@ class generator {
                 $role = $msg['role'] === 'assistant' ? 'model' : 'user';
                 $contents[] = ['role' => $role, 'parts' => [['text' => $msg['content']]]];
             }
-            $url = 'https://generativelanguage.googleapis.com/v1beta/models/'
-                . 'gemini-1.5-flash:generateContent?key=' . $keys['geminikey'];
+            $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
             $data = [
                 'system_instruction' => ['parts' => [['text' => $systemprompt]]],
                 'contents'           => $contents,
@@ -1354,7 +1549,12 @@ class generator {
                     'maxOutputTokens'  => 1500,
                 ],
             ];
-            $result = self::curl_request($url, json_encode($data), ['Content-Type: application/json'], 'Gemini');
+            $result = self::curl_request(
+                $url,
+                json_encode($data),
+                ['Content-Type: application/json', 'x-goog-api-key: ' . $keys['geminikey']],
+                'Gemini'
+            );
             if (!$result['success']) {
                 $failures[] = 'Gemini: HTTP ' . ($result['httpcode'] ?? '?')
                     . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
@@ -1386,7 +1586,8 @@ class generator {
         }
 
         if (!$result['success'] && !empty($keys['customkey']) && !empty($keys['customurl'])) {
-            if (self::is_safe_url((string)$keys['customurl'])) {
+            $resolvedurl = self::resolve_custom_url((string)$keys['customurl']);
+            if (self::is_safe_url($resolvedurl)) {
                 $msgs = [['role' => 'system', 'content' => $systemprompt]];
                 foreach ($messages as $msg) {
                     $msgs[] = ['role' => $msg['role'], 'content' => $msg['content']];
@@ -1400,7 +1601,7 @@ class generator {
                     'temperature'     => 0.7,
                 ];
                 $result = self::curl_request(
-                    (string)$keys['customurl'],
+                    $resolvedurl,
                     json_encode($data),
                     ['Authorization: Bearer ' . $keys['customkey'], 'Content-Type: application/json'],
                     'Custom'

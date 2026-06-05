@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2026060311;
-$plugin->release   = '1.0.1';
+$plugin->version   = 2026060501;
+$plugin->release   = '1.0.2';
 $plugin->requires  = 2024100700; // Requires Moodle 4.5+ (Compatible with 5.x).
 $plugin->component = 'tiny_studiolms';
 $plugin->dependencies = [

@@ -1,5 +1,21 @@
 # Change log
 
+## 1.0.2 (2026-06-05)
+
+- Added: Moodle `core_ai` probed as priority-0 provider when no personal keys are
+  configured; no API key is needed when core_ai is already set up at site level.
+- Added: Custom AI URL is now normalised automatically — supplying a base URL (e.g.
+  `https://integrate.api.nvidia.com/v1`) appends `/chat/completions` transparently.
+- Security: Gemini API key moved from querystring to `x-goog-api-key` request header,
+  preventing exposure in server access logs and HTTP referrer headers.
+- Security: SSRF protection upgraded — `is_safe_url()` now resolves all A and AAAA DNS
+  records via `dns_get_record()` and rejects any record that maps to a private or
+  reserved IP, closing a DNS rebinding attack vector.
+- Security: personal API keys configured by a teacher now always take full priority over
+  institution-level defaults; both sets are no longer silently merged.
+- Updated: Gemini model changed to `gemini-flash-latest`.
+- Updated: `custom_baseurl` admin setting now uses `PARAM_URL` validation.
+
 ## 1.0.0 (2026-05-27)
 
 - Fixed: Studio button was still appearing for students after the capability

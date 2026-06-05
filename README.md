@@ -44,7 +44,7 @@
   * **My Templates** — Teacher's personal layouts with Save, Export and Import actions.
   * **Favourites** — Curated mix of starred templates from all tabs.
 * ⭐ **Favourites System:** Toggle any template as favourite for quick access.
-* 🤖 **AI Content Generation (Optional):** Two complementary AI modes powered by Gemini, Groq or any OpenAI-compatible provider:
+* 🤖 **AI Content Generation (Optional):** Two complementary AI modes with a tiered provider chain. When the teacher has no personal keys configured, the plugin probes **Moodle AI (`core_ai`)** first — no external API key is required when the site already has `core_ai` set up. Falls back automatically to Gemini → Groq → Custom OpenAI-compatible:
   * **AI Block Generator** — Teacher types a plain-language prompt ("Create a red warning card about the exam") and the block is generated ready to insert.
   * **AI Chat Assistant** — Conversational multi-turn chat where the teacher pastes a syllabus, lesson plan or any course content. The AI immediately generates a complete visual template with the real content populated, or asks whether to use Grid Cards vs Webteca when the content is a list of resources. The AI provider used is shown below each reply for transparency.
 * 📤 **Export / Import:** Templates travel as `.json` files, portable across Moodle instances.
@@ -134,6 +134,8 @@ Suitable for:
 * `require_sesskey()` protection on all state-changing web service calls
 * Moodle External API compliant (all services declared in `db/services.php`)
 * Privacy-aware: full GDPR/LGPD data export and deletion via Privacy API
+* **SSRF protection:** custom AI endpoint URLs are validated against HTTPS-only and public-IP rules; all A and AAAA DNS records are resolved and checked, blocking DNS rebinding attacks where a public hostname maps to an internal IP
+* **Personal key isolation:** when a teacher configures personal API keys, institution-level defaults are completely ignored — no silent key mixing
 
 ---
 
@@ -149,11 +151,18 @@ The AI feature is a productivity tool.
 
 #### Supported Providers
 
-* **Google Gemini** — https://ai.google.dev/
-* **Groq** — https://console.groq.com/
-* **OpenAI-compatible APIs** — Any provider that follows the OpenAI API format (e.g. OpenRouter, self-hosted models via LM Studio, Ollama proxy, etc.)
+The plugin tries providers in this priority order when no personal keys are set:
 
-These services operate under their own terms of service and privacy policies.
+| Priority | Provider | Notes |
+|----------|----------|-------|
+| 0 | **Moodle AI (`core_ai`)** | Built-in Moodle AI subsystem (4.5+). No external API key needed. |
+| 1 | **Google Gemini** | https://ai.google.dev/ |
+| 2 | **Groq** | https://console.groq.com/ |
+| 3 | **OpenAI-compatible APIs** | Any provider following the OpenAI format (OpenRouter, LM Studio, Ollama proxy, etc.) |
+
+When a teacher configures personal keys, those take absolute priority and institution defaults are bypassed entirely.
+
+External services operate under their own terms of service and privacy policies.
 
 #### How to obtain an API key
 
@@ -169,7 +178,13 @@ The StudioLMS plugin does not provide API keys.
 
 #### Where API keys are configured
 
-API keys are configured globally by the Moodle site administrator under **Site administration → Plugins → Text editors → TinyMCE → StudioLMS**.
+**No API key is required** if the Moodle site already has `core_ai` configured under **Site administration → AI → AI providers** — StudioLMS will use it automatically.
+
+Otherwise, API keys are configured by the Moodle site administrator under **Site administration → Plugins → Text editors → TinyMCE → StudioLMS**.
+
+Individual teachers can also supply personal keys from the **AI Keys** tab inside the StudioLMS modal, which always override institution-level settings.
+
+The custom AI endpoint URL accepts a base URL (e.g. `https://api.openai.com/v1`) — the `/chat/completions` suffix is appended automatically.
 
 #### Data Transmission
 
@@ -225,7 +240,7 @@ O **StudioLMS** é um sub-plugin TinyMCE 6 para Moodle que traz uma experiência
   * **Meus Templates** — Layouts pessoais do professor com ações de Salvar, Exportar e Importar.
   * **Favoritos** — Mix curado de templates marcados como favoritos em todas as abas.
 * ⭐ **Sistema de Favoritos:** Marque qualquer template como favorito para acesso rápido.
-* 🤖 **Geração de Conteúdo com IA (Opcional):** Dois modos complementares de IA com suporte a Gemini, Groq e qualquer API compatível com OpenAI:
+* 🤖 **Geração de Conteúdo com IA (Opcional):** Dois modos complementares de IA com cadeia de provedores em cascata. Quando o professor não tem chaves pessoais configuradas, o plugin sonda o **Moodle AI (`core_ai`)** primeiro — nenhuma chave de API externa é necessária quando o site já tem o `core_ai` configurado. Cai automaticamente para Gemini → Groq → Personalizado (OpenAI-compatível):
   * **Gerador de Blocos IA** — O professor digita uma descrição em linguagem natural ("Crie um card de aviso vermelho sobre a prova") e o bloco é gerado pronto para inserir.
   * **Chat Assistente IA** — Chat conversacional multi-turno onde o professor cola uma ementa, plano de aula ou qualquer conteúdo do curso. A IA gera imediatamente um template visual completo com o conteúdo real preenchido, ou pergunta se deve usar Grid de Cards ou Webteca quando o conteúdo é uma lista de recursos. O provedor de IA utilizado é exibido abaixo de cada resposta para transparência.
 * 📤 **Exportar / Importar:** Templates viajam como arquivos `.json`, portáveis entre instâncias do Moodle.
@@ -315,6 +330,8 @@ Indicado para:
 * Proteção com `require_sesskey()` em todas as chamadas de web service que alteram estado
 * Compatível com a API externa do Moodle (todos os serviços declarados em `db/services.php`)
 * Privacidade: exportação e exclusão completa de dados via Privacy API (LGPD/GDPR)
+* **Proteção SSRF:** URLs de endpoint de IA personalizadas são validadas contra HTTPS e IP público; todos os registros A e AAAA do DNS são resolvidos e verificados, bloqueando ataques de DNS rebinding onde um hostname público aponta para um IP interno
+* **Isolamento de chaves pessoais:** quando o professor configura chaves de API pessoais, os padrões institucionais são completamente ignorados — sem mistura silenciosa de chaves
 
 ---
 
@@ -330,11 +347,18 @@ O recurso de IA é uma ferramenta de produtividade.
 
 #### Provedores suportados
 
-* **Google Gemini** — https://ai.google.dev/
-* **Groq** — https://console.groq.com/
-* **APIs compatíveis com OpenAI** — Qualquer provedor que siga o formato da API OpenAI (ex.: OpenRouter, modelos locais via LM Studio, proxy Ollama, etc.)
+O plugin tenta os provedores nesta ordem de prioridade quando não há chaves pessoais configuradas:
 
-Esses serviços seguem seus próprios termos de uso e políticas de privacidade.
+| Prioridade | Provedor | Observações |
+|------------|----------|-------------|
+| 0 | **Moodle AI (`core_ai`)** | Subsistema nativo do Moodle (4.5+). Nenhuma chave externa necessária. |
+| 1 | **Google Gemini** | https://ai.google.dev/ |
+| 2 | **Groq** | https://console.groq.com/ |
+| 3 | **APIs compatíveis com OpenAI** | Qualquer provedor no formato OpenAI (OpenRouter, LM Studio, proxy Ollama, etc.) |
+
+Quando o professor configura chaves pessoais, elas têm prioridade absoluta e os padrões institucionais são completamente ignorados.
+
+Os serviços externos seguem seus próprios termos de uso e políticas de privacidade.
 
 #### Como obter a chave de API
 
@@ -350,7 +374,13 @@ O StudioLMS não fornece chaves de API.
 
 #### Onde a chave é configurada
 
-As chaves de API são configuradas globalmente pelo administrador do Moodle em **Administração do site → Plugins → Editores de texto → TinyMCE → StudioLMS**.
+**Nenhuma chave de API é necessária** se o site Moodle já tiver o `core_ai` configurado em **Administração do site → IA → Provedores de IA** — o StudioLMS o utilizará automaticamente.
+
+Caso contrário, as chaves de API são configuradas pelo administrador em **Administração do site → Plugins → Editores de texto → TinyMCE → StudioLMS**.
+
+Professores também podem fornecer chaves pessoais pela aba **Chaves de IA** dentro do modal do StudioLMS, que sempre sobrepõem as configurações institucionais.
+
+A URL do endpoint personalizado aceita uma URL base (ex.: `https://api.openai.com/v1`) — o sufixo `/chat/completions` é adicionado automaticamente.
 
 #### Transmissão de dados
 

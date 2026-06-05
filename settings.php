@@ -68,7 +68,8 @@ if ($hassiteconfig) {
         'tiny_studiolms/custom_baseurl',
         get_string('settings_ai_custom_url', 'tiny_studiolms'),
         get_string('settings_ai_custom_url_desc', 'tiny_studiolms'),
-        ''
+        '',
+        PARAM_URL
     ));
 
     $settings->add(new admin_setting_configtext(
