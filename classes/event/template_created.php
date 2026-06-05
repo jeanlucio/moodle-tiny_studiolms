@@ -40,6 +40,7 @@ class template_created extends \core\event\base {
      *
      * @return string
      */
+    #[\Override]
     public static function get_name(): string {
         return get_string('event_template_created', 'tiny_studiolms');
     }
@@ -49,6 +50,7 @@ class template_created extends \core\event\base {
      *
      * @return string
      */
+    #[\Override]
     public function get_description(): string {
         return "The user with id '{$this->userid}' created the StudioLMS template with id '{$this->objectid}'.";
     }
@@ -58,6 +60,7 @@ class template_created extends \core\event\base {
      *
      * @return \moodle_url
      */
+    #[\Override]
     public function get_url(): \moodle_url {
         return new \moodle_url('/lib/editor/tiny/plugins/studiolms/');
     }

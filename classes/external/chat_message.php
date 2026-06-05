@@ -42,7 +42,7 @@ use stdClass;
  */
 class chat_message extends external_api {
     /** @var int Maximum conversation history entries accepted per request. */
-    const MAX_HISTORY = 30;
+    public const MAX_HISTORY = 30;
 
     /**
      * Filters a raw history array to only include valid roles (user, assistant).

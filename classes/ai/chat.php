@@ -33,7 +33,7 @@ namespace tiny_studiolms\ai;
  */
 class chat {
     /** @var int Maximum messages kept in history per request. */
-    const MAX_HISTORY = 30;
+    public const MAX_HISTORY = 30;
 
     /**
      * Sends the conversation history to the AI and returns a reply with an optional action.
