@@ -2637,44 +2637,33 @@ a.studiolms-webteca-item:focus-visible {
 
 /* ── Gauge popup ──────────────────────────────────────────────────────────── */
 .tiny_studiolms .slms-popup-gauge-edit {
-    min-width: 260px;
+    min-width: 240px;
 }
 
-.tiny_studiolms .slms-gf-slot {
-    padding-block: 0.25rem;
-    border-block-end: 1px solid var(--bs-border-color, #e2e8f0);
-}
-
-.tiny_studiolms .slms-gf-slot:last-of-type {
-    border-block-end: none;
-}
-
-.tiny_studiolms .slms-gf-slot-head {
-    display: flex;
-    align-items: center;
+.tiny_studiolms .slms-gf-row {
     gap: 6px;
-    margin-block-end: 2px;
+    margin-block-end: 5px;
 }
 
-.tiny_studiolms .slms-gf-slot .form-range {
-    height: 20px;
-    padding-block: 0;
+.tiny_studiolms .slms-gf-header {
+    gap: 6px;
 }
 
-.tiny_studiolms .slms-gf-dot {
-    font-size: 14px;
-    line-height: 1;
+.tiny_studiolms .slms-gf-dot-col {
+    width: 14px;
     flex-shrink: 0;
 }
 
-.tiny_studiolms .slms-gf-value-num {
-    flex: 0 0 48px;
-    min-width: 0;
-    text-align: center;
-    padding-block: 2px;
+.tiny_studiolms .slms-gf-dot {
+    flex-shrink: 0;
 }
 
-.tiny_studiolms .slms-gf-label {
-    margin-inline-start: 20px;
-    padding-block: 2px;
+.tiny_studiolms .slms-gf-label-col {
+    flex: 1;
+    min-width: 0;
+}
+
+.tiny_studiolms .slms-gf-value-col {
+    flex: 0 0 52px;
+    min-width: 0;
 }

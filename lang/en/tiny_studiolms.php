@@ -200,6 +200,7 @@ $string['fav_remove_aria'] = 'Remove from favourites';
 $string['fav_removed'] = 'Removed from favourites.';
 $string['gauge_label'] = 'Label';
 $string['gauge_label_ph'] = 'e.g., Approval rate';
+$string['gauge_slots'] = 'Gauges';
 $string['gauge_title'] = 'Title (optional)';
 $string['gauge_value'] = 'Value (%)';
 $string['gauge_values_hint'] = 'Leave the label blank to hide a gauge slot.';

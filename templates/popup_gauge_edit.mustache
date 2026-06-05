@@ -32,85 +32,79 @@
                maxlength="80"/>
     </div>
 
-    {{! Gauge slot 1 }}
-    <div class="slms-gf-slot">
-        <div class="slms-gf-slot-head">
-            <span class="slms-gf-dot" style="color:{{gf_color1}};" aria-hidden="true">&#9679;</span>
-            <div class="d-flex align-items-center flex-grow-1" style="gap:6px;">
-                <input type="range"
-                       id="gf_slider1"
-                       class="form-range flex-grow-1"
-                       min="0" max="100"
-                       value="{{gf_value1}}"
-                       aria-label="{{#str}}gauge_value, tiny_studiolms{{/str}} 1"/>
-                <input type="number"
-                       id="gf_value1"
-                       class="form-control form-control-sm slms-gf-value-num"
-                       min="0" max="100"
-                       value="{{gf_value1}}"
-                       aria-label="{{#str}}gauge_value, tiny_studiolms{{/str}} 1"/>
-            </div>
-        </div>
-        <input type="text"
-               id="gf_label1"
-               class="form-control form-control-sm slms-gf-label"
-               value="{{gf_label1}}"
-               placeholder="{{#str}}gauge_label_ph, tiny_studiolms{{/str}}"
-               aria-label="{{#str}}gauge_label, tiny_studiolms{{/str}} 1"/>
-    </div>
+    {{! Gauge slots }}
+    <div class="mb-2">
+        <span class="form-label small fw-semibold d-block mb-1">
+            {{#str}}gauge_slots, tiny_studiolms{{/str}}
+        </span>
 
-    {{! Gauge slot 2 }}
-    <div class="slms-gf-slot">
-        <div class="slms-gf-slot-head">
-            <span class="slms-gf-dot" style="color:{{gf_color2}};" aria-hidden="true">&#9679;</span>
-            <div class="d-flex align-items-center flex-grow-1" style="gap:6px;">
-                <input type="range"
-                       id="gf_slider2"
-                       class="form-range flex-grow-1"
-                       min="0" max="100"
-                       value="{{gf_value2}}"
-                       aria-label="{{#str}}gauge_value, tiny_studiolms{{/str}} 2"/>
-                <input type="number"
-                       id="gf_value2"
-                       class="form-control form-control-sm slms-gf-value-num"
-                       min="0" max="100"
-                       value="{{gf_value2}}"
-                       aria-label="{{#str}}gauge_value, tiny_studiolms{{/str}} 2"/>
-            </div>
+        <div class="slms-gf-header d-flex align-items-center mb-1">
+            <span class="slms-gf-dot-col" aria-hidden="true"></span>
+            <span class="slms-gf-label-col small text-muted">
+                {{#str}}gauge_label, tiny_studiolms{{/str}}
+            </span>
+            <span class="slms-gf-value-col small text-muted text-end">
+                {{#str}}gauge_value, tiny_studiolms{{/str}}
+            </span>
         </div>
-        <input type="text"
-               id="gf_label2"
-               class="form-control form-control-sm slms-gf-label"
-               value="{{gf_label2}}"
-               placeholder="{{#str}}gauge_label_ph, tiny_studiolms{{/str}}"
-               aria-label="{{#str}}gauge_label, tiny_studiolms{{/str}} 2"/>
-    </div>
 
-    {{! Gauge slot 3 }}
-    <div class="slms-gf-slot">
-        <div class="slms-gf-slot-head">
-            <span class="slms-gf-dot" style="color:{{gf_color3}};" aria-hidden="true">&#9679;</span>
-            <div class="d-flex align-items-center flex-grow-1" style="gap:6px;">
-                <input type="range"
-                       id="gf_slider3"
-                       class="form-range flex-grow-1"
-                       min="0" max="100"
-                       value="{{gf_value3}}"
-                       aria-label="{{#str}}gauge_value, tiny_studiolms{{/str}} 3"/>
-                <input type="number"
-                       id="gf_value3"
-                       class="form-control form-control-sm slms-gf-value-num"
-                       min="0" max="100"
-                       value="{{gf_value3}}"
-                       aria-label="{{#str}}gauge_value, tiny_studiolms{{/str}} 3"/>
-            </div>
+        {{! Slot 1 }}
+        <div class="slms-gf-row d-flex align-items-center">
+            <span class="slms-gf-dot"
+                  style="color:{{gf_color1}};font-size:14px;line-height:1;"
+                  aria-hidden="true">&#9679;</span>
+            <input type="text"
+                   id="gf_label1"
+                   class="form-control form-control-sm slms-gf-label-col"
+                   value="{{gf_label1}}"
+                   placeholder="{{#str}}gauge_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}gauge_label, tiny_studiolms{{/str}} 1"/>
+            <input type="number"
+                   id="gf_value1"
+                   class="form-control form-control-sm slms-gf-value-col"
+                   min="0" max="100"
+                   value="{{gf_value1}}"
+                   aria-label="{{#str}}gauge_value, tiny_studiolms{{/str}} 1"/>
         </div>
-        <input type="text"
-               id="gf_label3"
-               class="form-control form-control-sm slms-gf-label"
-               value="{{gf_label3}}"
-               placeholder="{{#str}}gauge_label_ph, tiny_studiolms{{/str}}"
-               aria-label="{{#str}}gauge_label, tiny_studiolms{{/str}} 3"/>
+
+        {{! Slot 2 }}
+        <div class="slms-gf-row d-flex align-items-center">
+            <span class="slms-gf-dot"
+                  style="color:{{gf_color2}};font-size:14px;line-height:1;"
+                  aria-hidden="true">&#9679;</span>
+            <input type="text"
+                   id="gf_label2"
+                   class="form-control form-control-sm slms-gf-label-col"
+                   value="{{gf_label2}}"
+                   placeholder="{{#str}}gauge_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}gauge_label, tiny_studiolms{{/str}} 2"/>
+            <input type="number"
+                   id="gf_value2"
+                   class="form-control form-control-sm slms-gf-value-col"
+                   min="0" max="100"
+                   value="{{gf_value2}}"
+                   aria-label="{{#str}}gauge_value, tiny_studiolms{{/str}} 2"/>
+        </div>
+
+        {{! Slot 3 }}
+        <div class="slms-gf-row d-flex align-items-center">
+            <span class="slms-gf-dot"
+                  style="color:{{gf_color3}};font-size:14px;line-height:1;"
+                  aria-hidden="true">&#9679;</span>
+            <input type="text"
+                   id="gf_label3"
+                   class="form-control form-control-sm slms-gf-label-col"
+                   value="{{gf_label3}}"
+                   placeholder="{{#str}}gauge_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}gauge_label, tiny_studiolms{{/str}} 3"/>
+            <input type="number"
+                   id="gf_value3"
+                   class="form-control form-control-sm slms-gf-value-col"
+                   min="0" max="100"
+                   value="{{gf_value3}}"
+                   aria-label="{{#str}}gauge_value, tiny_studiolms{{/str}} 3"/>
+        </div>
+
     </div>
 
     <div class="form-text mt-1" style="font-size:11px;">

@@ -200,6 +200,7 @@ $string['fav_remove_aria'] = 'Remover dos favoritos';
 $string['fav_removed'] = 'Removido dos favoritos.';
 $string['gauge_label'] = 'Rótulo';
 $string['gauge_label_ph'] = 'ex: Taxa de aprovação';
+$string['gauge_slots'] = 'Velocímetros';
 $string['gauge_title'] = 'Título (opcional)';
 $string['gauge_value'] = 'Valor (%)';
 $string['gauge_values_hint'] = 'Deixe o rótulo em branco para ocultar um velocímetro.';

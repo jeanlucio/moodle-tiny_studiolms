@@ -221,25 +221,8 @@ export default {
                         titleEl?.addEventListener('input', applyChanges);
 
                         for (let i = 1; i <= MAX_GAUGES; i++) {
-                            const valueEl = popup.querySelector(`#gf_value${i}`);
-                            const sliderEl = popup.querySelector(`#gf_slider${i}`);
-                            const labelEl = popup.querySelector(`#gf_label${i}`);
-
-                            valueEl?.addEventListener('input', () => {
-                                if (sliderEl) {
-                                    sliderEl.value = valueEl.value;
-                                }
-                                applyChanges();
-                            });
-
-                            sliderEl?.addEventListener('input', () => {
-                                if (valueEl) {
-                                    valueEl.value = sliderEl.value;
-                                }
-                                applyChanges();
-                            });
-
-                            labelEl?.addEventListener('input', applyChanges);
+                            popup.querySelector(`#gf_value${i}`)?.addEventListener('input', applyChanges);
+                            popup.querySelector(`#gf_label${i}`)?.addEventListener('input', applyChanges);
                         }
                     }
                 );
