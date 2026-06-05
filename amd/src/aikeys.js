@@ -27,6 +27,7 @@ import {call as ajaxCall} from 'core/ajax';
 import Templates from 'core/templates';
 import {getString} from 'core/str';
 import Notification from 'core/notification';
+import {refreshAiState} from './app';
 
 /**
  * Attaches show/hide handlers to key visibility buttons.
@@ -133,6 +134,14 @@ export const init = async(container) => {
 
             const [savePromise] = ajaxCall([{methodname: 'tiny_studiolms_save_ai_keys', args}]);
             await savePromise;
+
+            // Activate AI tabs immediately — no page reload required.
+            const hasKeys = !!(
+                (inputGemini?.value ?? '').trim() ||
+                (inputGroq?.value ?? '').trim() ||
+                (inputCustomKey?.value ?? '').trim()
+            );
+            refreshAiState(hasKeys);
 
             if (feedback) {
                 feedback.classList.remove('d-none');

@@ -1149,6 +1149,26 @@ const setupAiKeysButton = () => {
 };
 
 /**
+ * Updates the AI-enabled flag and re-renders the active AI tab if one is open.
+ *
+ * Called by aikeys.js after the teacher saves personal API keys so AI features
+ * become immediately usable without closing and reopening the modal.
+ *
+ * @param {boolean} enabled Whether at least one AI provider is now configured.
+ */
+export const refreshAiState = (enabled) => {
+    hasAiEnabled = enabled;
+    const activeTab = document.querySelector('#studiolms-app [data-slms-tab].active');
+    if (!activeTab) {
+        return;
+    }
+    const tabName = activeTab.getAttribute('data-slms-tab');
+    if (['ai-block', 'ai-model', 'ai-chat'].includes(tabName)) {
+        switchTab(tabName);
+    }
+};
+
+/**
  * Wire up the export and import buttons in the "mine" tab toolbar.
  */
 const setupImportExportButtons = () => {
