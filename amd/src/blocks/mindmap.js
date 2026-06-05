@@ -129,19 +129,27 @@ const buildSvg = (data) => {
     const N = branches.length;
 
     // Adaptive branch radius so all nodes fit inside the expanded viewport (H=620).
-    let R1 = 140;
+    let R1 = 145;
     if (N <= 4) {
-        R1 = 175;
+        R1 = 180;
     } else if (N <= 6) {
-        R1 = 158;
+        R1 = 162;
     }
-    // R2 must exceed (BW/2 + KW/2) = 60+52 = 112 to guarantee no overlap between
-    // a branch node and its perpendicular-row children on horizontal branches.
-    const R2 = 120;
+    // R2 must exceed (BW/2 + KW/2) to guarantee no overlap.
+    const R2 = 124;
 
-    // Node dimensions (branch = BW×BH, child = KW×KH; height doubles for 2-line labels).
-    const BW = 120;
-    const KW = 104;
+    // Adaptive node dimensions — wider nodes and larger fonts for fewer branches
+    // (many branches need narrower nodes to avoid overlap at the same R1).
+    const manyBranches = N >= 7;
+    const BW = manyBranches ? 110 : 128;
+    const fontBranch = manyBranches ? 12 : 13;
+    const bh1 = manyBranches ? 38 : 42;
+    const bh2 = manyBranches ? 48 : 54;
+    const KW = 112;
+    const fontChild = 12;
+    const kh1 = 34;
+    const kh2 = 44;
+    const branchLineMax = manyBranches ? 14 : 15;
 
     const parts = [];
 
@@ -173,7 +181,7 @@ const buildSvg = (data) => {
     // Children are arranged in a straight line perpendicular to the branch direction,
     // centred at distance R2 outward from the branch node. This eliminates overlapping
     // that occurs when a radial fan is used on vertical or near-vertical branches.
-    const CHILD_SPACING = 116; // Pixels between adjacent child centres.
+    const CHILD_SPACING = 122;
 
     const childPositions = (bx, by, angle, children) => {
         const M = children.length;
@@ -222,37 +230,38 @@ const buildSvg = (data) => {
         const bFill = c.branchFills[colorIdx];
         const cPos = childPositions(bx, by, angle, b.children || []);
 
-        const bLines = wrapText(b.label, 15);
-        const bh = bLines.length > 1 ? 44 : 36;
+        const bLines = wrapText(b.label, branchLineMax);
+        const bh = bLines.length > 1 ? bh2 : bh1;
         parts.push(
             `<rect x="${(bx - BW / 2).toFixed(1)}" y="${(by - bh / 2).toFixed(1)}" `
             + `width="${BW}" height="${bh}" rx="${(bh / 2).toFixed(0)}" fill="${bFill}"/>`
         );
         if (bLines.length === 1) {
             parts.push(
-                `<text x="${bx.toFixed(1)}" y="${(by + 4).toFixed(1)}" `
+                `<text x="${bx.toFixed(1)}" y="${(by + 5).toFixed(1)}" `
                 + `text-anchor="middle" fill="${c.branchText}" `
-                + `font-size="11" font-weight="600" font-family="system-ui,sans-serif">`
+                + `font-size="${fontBranch}" font-weight="600" font-family="system-ui,sans-serif">`
                 + `${svgEsc(bLines[0])}</text>`
             );
         } else {
+            const yOff = fontBranch <= 12 ? 6 : 7;
             parts.push(
-                `<text x="${bx.toFixed(1)}" y="${(by - 5).toFixed(1)}" `
+                `<text x="${bx.toFixed(1)}" y="${(by - yOff).toFixed(1)}" `
                 + `text-anchor="middle" fill="${c.branchText}" `
-                + `font-size="11" font-weight="600" font-family="system-ui,sans-serif">`
+                + `font-size="${fontBranch}" font-weight="600" font-family="system-ui,sans-serif">`
                 + `${svgEsc(bLines[0])}</text>`
             );
             parts.push(
-                `<text x="${bx.toFixed(1)}" y="${(by + 9).toFixed(1)}" `
+                `<text x="${bx.toFixed(1)}" y="${(by + yOff + 2).toFixed(1)}" `
                 + `text-anchor="middle" fill="${c.branchText}" `
-                + `font-size="11" font-weight="600" font-family="system-ui,sans-serif">`
+                + `font-size="${fontBranch}" font-weight="600" font-family="system-ui,sans-serif">`
                 + `${svgEsc(bLines[1])}</text>`
             );
         }
 
         cPos.forEach(({x: kx, y: ky, label}) => {
-            const kLines = wrapText(label, 13);
-            const kh = kLines.length > 1 ? 36 : 28;
+            const kLines = wrapText(label, 14);
+            const kh = kLines.length > 1 ? kh2 : kh1;
             parts.push(
                 `<rect x="${(kx - KW / 2).toFixed(1)}" y="${(ky - kh / 2).toFixed(1)}" `
                 + `width="${KW}" height="${kh}" rx="${(kh / 2).toFixed(0)}" `
@@ -260,22 +269,22 @@ const buildSvg = (data) => {
             );
             if (kLines.length === 1) {
                 parts.push(
-                    `<text x="${kx.toFixed(1)}" y="${(ky + 4).toFixed(1)}" `
+                    `<text x="${kx.toFixed(1)}" y="${(ky + 5).toFixed(1)}" `
                     + `text-anchor="middle" fill="${c.childText}" `
-                    + `font-size="10" font-family="system-ui,sans-serif">`
+                    + `font-size="${fontChild}" font-family="system-ui,sans-serif">`
                     + `${svgEsc(kLines[0])}</text>`
                 );
             } else {
                 parts.push(
-                    `<text x="${kx.toFixed(1)}" y="${(ky - 4).toFixed(1)}" `
+                    `<text x="${kx.toFixed(1)}" y="${(ky - 5).toFixed(1)}" `
                     + `text-anchor="middle" fill="${c.childText}" `
-                    + `font-size="10" font-family="system-ui,sans-serif">`
+                    + `font-size="${fontChild}" font-family="system-ui,sans-serif">`
                     + `${svgEsc(kLines[0])}</text>`
                 );
                 parts.push(
-                    `<text x="${kx.toFixed(1)}" y="${(ky + 8).toFixed(1)}" `
+                    `<text x="${kx.toFixed(1)}" y="${(ky + 9).toFixed(1)}" `
                     + `text-anchor="middle" fill="${c.childText}" `
-                    + `font-size="10" font-family="system-ui,sans-serif">`
+                    + `font-size="${fontChild}" font-family="system-ui,sans-serif">`
                     + `${svgEsc(kLines[1])}</text>`
                 );
             }
@@ -283,8 +292,8 @@ const buildSvg = (data) => {
     });
 
     // Center node — drawn last, always on top.
-    const cw = 144;
-    const ch = 52;
+    const cw = 158;
+    const ch = 60;
     parts.push(
         `<rect x="${(CX - cw / 2 + 2).toFixed(1)}" y="${(CY - ch / 2 + 3).toFixed(1)}" `
         + `width="${cw}" height="${ch}" rx="${ch / 2}" fill="rgba(0,0,0,0.15)"/>`
@@ -297,9 +306,9 @@ const buildSvg = (data) => {
     const MAX_TOPIC = 14;
     if (topic.length <= MAX_TOPIC) {
         parts.push(
-            `<text x="${CX}" y="${(CY + 5).toFixed(1)}" `
+            `<text x="${CX}" y="${(CY + 6).toFixed(1)}" `
             + `text-anchor="middle" fill="${c.centerText}" `
-            + `font-size="13" font-weight="700" font-family="system-ui,sans-serif">`
+            + `font-size="15" font-weight="700" font-family="system-ui,sans-serif">`
             + `${svgEsc(topic)}</text>`
         );
     } else {
@@ -311,15 +320,15 @@ const buildSvg = (data) => {
         const l1 = topic.substring(0, split).substring(0, MAX_TOPIC);
         const l2 = topic.substring(split).trim().substring(0, MAX_TOPIC);
         parts.push(
-            `<text x="${CX}" y="${(CY - 4).toFixed(1)}" `
+            `<text x="${CX}" y="${(CY - 6).toFixed(1)}" `
             + `text-anchor="middle" fill="${c.centerText}" `
-            + `font-size="12" font-weight="700" font-family="system-ui,sans-serif">`
+            + `font-size="14" font-weight="700" font-family="system-ui,sans-serif">`
             + `${svgEsc(l1)}</text>`
         );
         parts.push(
-            `<text x="${CX}" y="${(CY + 13).toFixed(1)}" `
+            `<text x="${CX}" y="${(CY + 12).toFixed(1)}" `
             + `text-anchor="middle" fill="${c.centerText}" `
-            + `font-size="12" font-weight="700" font-family="system-ui,sans-serif">`
+            + `font-size="14" font-weight="700" font-family="system-ui,sans-serif">`
             + `${svgEsc(l2)}</text>`
         );
     }
