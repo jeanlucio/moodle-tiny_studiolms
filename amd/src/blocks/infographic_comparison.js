@@ -69,19 +69,15 @@ const buildComparisonHtml = (data, c) => {
             + `</div>`
             + `<div class="slms-comparison__row-cell">`
             + (item.col1
-                ? `<i class="fa-solid fa-circle-check slms-comparison__yes"`
-                    + ` role="img" aria-label="✓"`
-                    + ` style="color:${c.iconColor};"></i>`
-                : `<i class="fa-solid fa-circle-xmark slms-comparison__no"`
-                    + ` role="img" aria-label="✗"></i>`)
+                ? `<span class="slms-comparison__yes" role="img" aria-label="✓"`
+                    + ` style="color:${c.iconColor};">✓</span>`
+                : `<span class="slms-comparison__no" role="img" aria-label="✗">✗</span>`)
             + `</div>`
             + `<div class="slms-comparison__row-cell">`
             + (item.col2
-                ? `<i class="fa-solid fa-circle-check slms-comparison__yes"`
-                    + ` role="img" aria-label="✓"`
-                    + ` style="color:${c.iconColor};"></i>`
-                : `<i class="fa-solid fa-circle-xmark slms-comparison__no"`
-                    + ` role="img" aria-label="✗"></i>`)
+                ? `<span class="slms-comparison__yes" role="img" aria-label="✓"`
+                    + ` style="color:${c.iconColor};">✓</span>`
+                : `<span class="slms-comparison__no" role="img" aria-label="✗">✗</span>`)
             + `</div>`
             + `</div>`
         );
@@ -173,7 +169,7 @@ const readItemsFromPopup = (popup, data) => {
 // ---------------------------------------------------------------------------
 
 export default {
-    id: 'infographic_comparison',
+    id: 'infographicComparison',
     titleString: 'block_infographic_comparison_title',
     icon: '⚖️',
 

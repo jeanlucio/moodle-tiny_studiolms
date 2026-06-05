@@ -2321,6 +2321,13 @@ a.studiolms-webteca-item:focus-visible {
     font-size: 1.125rem;
 }
 
+.slms-comparison__yes,
+.slms-comparison__no {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
 .slms-comparison__no {
     color: var(--bs-secondary, #6c757d);
 }

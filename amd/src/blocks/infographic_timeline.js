@@ -127,7 +127,7 @@ const readItemsFromPopup = (popup, data) => {
 // ---------------------------------------------------------------------------
 
 export default {
-    id: 'infographic_timeline',
+    id: 'infographicTimeline',
     titleString: 'block_infographic_timeline_title',
     icon: '📅',
 

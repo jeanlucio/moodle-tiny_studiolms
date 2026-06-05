@@ -195,7 +195,7 @@ const readItemsFromPopup = (popup, data) => {
 // ---------------------------------------------------------------------------
 
 export default {
-    id: 'infographic_steps',
+    id: 'infographicSteps',
     titleString: 'block_infographic_steps_title',
     icon: '🪜',
 

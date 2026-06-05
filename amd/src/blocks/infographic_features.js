@@ -140,7 +140,7 @@ const readItemsFromPopup = (popup, data) => {
 // ---------------------------------------------------------------------------
 
 export default {
-    id: 'infographic_features',
+    id: 'infographicFeatures',
     titleString: 'block_infographic_features_title',
     icon: '✨',
 
