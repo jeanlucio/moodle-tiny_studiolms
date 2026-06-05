@@ -2596,3 +2596,42 @@ a.studiolms-webteca-item:focus-visible {
     flex: 0 0 52px;
     min-width: 0;
 }
+
+/* ── Gauge block ──────────────────────────────────────────────────────────── */
+.slms-gauge-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.slms-gauge__title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--bs-body-color, #1e293b);
+    margin-block-end: 0.5rem;
+    text-align: center;
+}
+
+.slms-gauge__wrap {
+    width: 100%;
+    max-width: 240px;
+}
+
+.slms-gauge__svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ── Gauge popup ──────────────────────────────────────────────────────────── */
+.tiny_studiolms .slms-popup-gauge-edit {
+    min-width: 240px;
+}
+
+.tiny_studiolms .slms-gf-value-num {
+    flex: 0 0 56px;
+    min-width: 0;
+    text-align: center;
+}

@@ -1,0 +1,64 @@
+{{!
+    @template tiny_studiolms/popup_gauge_edit
+
+    Edit popup for the StudioLMS gauge block.
+    Contains a title field, a value slider (0–100) and a label field.
+
+    Example context (json):
+    {
+        "title": "",
+        "value": 75,
+        "label": "Aprovação"
+    }
+}}
+<div class="slms-popup-gauge-edit">
+
+    {{! Optional title }}
+    <div class="mb-2">
+        <label for="gf_title" class="form-label small fw-semibold">
+            {{#str}}gauge_title, tiny_studiolms{{/str}}
+        </label>
+        <input type="text"
+               id="gf_title"
+               class="form-control form-control-sm"
+               value="{{title}}"
+               maxlength="80"/>
+    </div>
+
+    {{! Value slider + number }}
+    <div class="mb-2">
+        <label for="gf_value" class="form-label small fw-semibold">
+            {{#str}}gauge_value, tiny_studiolms{{/str}}
+        </label>
+        <div class="d-flex align-items-center" style="gap:8px;">
+            <input type="range"
+                   id="gf_value_slider"
+                   class="form-range flex-grow-1"
+                   min="0"
+                   max="100"
+                   value="{{value}}"
+                   aria-label="{{#str}}gauge_value, tiny_studiolms{{/str}}"/>
+            <input type="number"
+                   id="gf_value"
+                   class="form-control form-control-sm slms-gf-value-num"
+                   min="0"
+                   max="100"
+                   value="{{value}}"
+                   aria-label="{{#str}}gauge_value, tiny_studiolms{{/str}}"/>
+        </div>
+    </div>
+
+    {{! Label below gauge }}
+    <div class="mb-2">
+        <label for="gf_label" class="form-label small fw-semibold">
+            {{#str}}gauge_label, tiny_studiolms{{/str}}
+        </label>
+        <input type="text"
+               id="gf_label"
+               class="form-control form-control-sm"
+               value="{{label}}"
+               placeholder="{{#str}}gauge_label_ph, tiny_studiolms{{/str}}"
+               maxlength="40"/>
+    </div>
+
+</div>

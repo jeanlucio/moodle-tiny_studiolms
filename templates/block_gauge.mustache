@@ -1,0 +1,17 @@
+{{!
+    @template tiny_studiolms/block_gauge
+
+    Gauge (speedometer) block — SVG semi-circle gauge with automatic traffic-light colour.
+
+    Example context (json):
+    {
+        "title": "Taxa de aprovação",
+        "svg": "<svg></svg>"
+    }
+}}
+<div class="slms-block slms-gauge-block">
+    {{#title}}<div class="slms-gauge__title">{{{title}}}</div>{{/title}}
+    <div class="slms-gauge__wrap">
+        {{{svg}}}
+    </div>
+</div>
