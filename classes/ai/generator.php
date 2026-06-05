@@ -1342,7 +1342,10 @@ class generator {
 
         $block = json_decode(trim($content), true);
 
-        $validtypes = ['callout', 'accordion', 'actionButton', 'advancedCard', 'stylizedHeading'];
+        $validtypes = [
+            'accordion', 'actionButton', 'advancedCard', 'callout',
+            'gridcards', 'profileCard', 'stylizedHeading', 'table', 'webteca',
+        ];
 
         if (
             !is_array($block) ||
@@ -1376,7 +1379,7 @@ class generator {
 
         $validtypes = [
             'accordion', 'actionButton', 'advancedCard', 'callout',
-            'gridcards', 'stylizedHeading', 'table', 'webteca',
+            'gridcards', 'profileCard', 'stylizedHeading', 'table', 'webteca',
         ];
 
         if (
