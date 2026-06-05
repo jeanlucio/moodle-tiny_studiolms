@@ -1,0 +1,200 @@
+{{!
+    @template tiny_studiolms/popup_chart_bar_edit
+
+    Edit popup for the StudioLMS bar chart block.
+    Shows up to 6 item rows (label + numeric value). Empty rows are ignored on render.
+    Values are proportional — the JS converts them to percentages automatically.
+
+    Example context (json):
+    {
+        "title": "",
+        "typeHorizontal": true,
+        "typeVertical": false,
+        "cb_color1": "#3b82f6",
+        "cb_label1": "Aprovados",
+        "cb_value1": "75",
+        "cb_color2": "#10b981",
+        "cb_label2": "Em progresso",
+        "cb_value2": "15",
+        "cb_color3": "#f59e0b",
+        "cb_label3": "Reprovados",
+        "cb_value3": "10",
+        "cb_color4": "#ef4444",
+        "cb_label4": "",
+        "cb_value4": "",
+        "cb_color5": "#8b5cf6",
+        "cb_label5": "",
+        "cb_value5": "",
+        "cb_color6": "#f97316",
+        "cb_label6": "",
+        "cb_value6": ""
+    }
+}}
+<div class="slms-popup-chart-bar-edit">
+
+    {{! Optional title }}
+    <div class="mb-2">
+        <label for="cb_title" class="form-label small fw-semibold">
+            {{#str}}chart_bar_title, tiny_studiolms{{/str}}
+        </label>
+        <input type="text"
+               id="cb_title"
+               class="form-control form-control-sm"
+               value="{{title}}"
+               maxlength="80"/>
+    </div>
+
+    {{! Chart type toggle }}
+    <div class="mb-3">
+        <span class="form-label small fw-semibold d-block mb-1">
+            {{#str}}chart_bar_type, tiny_studiolms{{/str}}
+        </span>
+        <div class="d-flex" style="gap:6px;">
+            <button type="button"
+                    class="slms-cb-type-btn{{#typeHorizontal}} selected{{/typeHorizontal}}"
+                    data-type="horizontal"
+                    aria-pressed="{{#typeHorizontal}}true{{/typeHorizontal}}{{^typeHorizontal}}false{{/typeHorizontal}}">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                {{#str}}chart_bar_horizontal, tiny_studiolms{{/str}}
+            </button>
+            <button type="button"
+                    class="slms-cb-type-btn{{#typeVertical}} selected{{/typeVertical}}"
+                    data-type="vertical"
+                    aria-pressed="{{#typeVertical}}true{{/typeVertical}}{{^typeVertical}}false{{/typeVertical}}">
+                <i class="fa-solid fa-chart-column" aria-hidden="true"></i>
+                {{#str}}chart_bar_vertical, tiny_studiolms{{/str}}
+            </button>
+        </div>
+    </div>
+
+    {{! Item rows }}
+    <div class="mb-2">
+        <span class="form-label small fw-semibold d-block mb-1">
+            {{#str}}chart_bar_items, tiny_studiolms{{/str}}
+        </span>
+
+        <div class="slms-cb-header d-flex align-items-center mb-1">
+            <span class="slms-cb-dot-col" aria-hidden="true"></span>
+            <span class="slms-cb-label-col small text-muted">
+                {{#str}}chart_bar_item_label, tiny_studiolms{{/str}}
+            </span>
+            <span class="slms-cb-value-col small text-muted text-end">
+                {{#str}}chart_bar_item_value, tiny_studiolms{{/str}}
+            </span>
+        </div>
+
+        {{! Item 1 }}
+        <div class="slms-cb-row d-flex align-items-center">
+            <span class="slms-cb-dot" style="color:{{cb_color1}};font-size:14px;line-height:1;" aria-hidden="true">&#9679;</span>
+            <input type="text"
+                   id="cb_label1"
+                   class="form-control form-control-sm slms-cb-label-col"
+                   value="{{cb_label1}}"
+                   placeholder="{{#str}}chart_bar_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}chart_bar_item_label, tiny_studiolms{{/str}} 1"/>
+            <input type="number"
+                   id="cb_value1"
+                   class="form-control form-control-sm slms-cb-value-col"
+                   value="{{cb_value1}}"
+                   min="0"
+                   step="any"
+                   aria-label="{{#str}}chart_bar_item_value, tiny_studiolms{{/str}} 1"/>
+        </div>
+
+        {{! Item 2 }}
+        <div class="slms-cb-row d-flex align-items-center">
+            <span class="slms-cb-dot" style="color:{{cb_color2}};font-size:14px;line-height:1;" aria-hidden="true">&#9679;</span>
+            <input type="text"
+                   id="cb_label2"
+                   class="form-control form-control-sm slms-cb-label-col"
+                   value="{{cb_label2}}"
+                   placeholder="{{#str}}chart_bar_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}chart_bar_item_label, tiny_studiolms{{/str}} 2"/>
+            <input type="number"
+                   id="cb_value2"
+                   class="form-control form-control-sm slms-cb-value-col"
+                   value="{{cb_value2}}"
+                   min="0"
+                   step="any"
+                   aria-label="{{#str}}chart_bar_item_value, tiny_studiolms{{/str}} 2"/>
+        </div>
+
+        {{! Item 3 }}
+        <div class="slms-cb-row d-flex align-items-center">
+            <span class="slms-cb-dot" style="color:{{cb_color3}};font-size:14px;line-height:1;" aria-hidden="true">&#9679;</span>
+            <input type="text"
+                   id="cb_label3"
+                   class="form-control form-control-sm slms-cb-label-col"
+                   value="{{cb_label3}}"
+                   placeholder="{{#str}}chart_bar_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}chart_bar_item_label, tiny_studiolms{{/str}} 3"/>
+            <input type="number"
+                   id="cb_value3"
+                   class="form-control form-control-sm slms-cb-value-col"
+                   value="{{cb_value3}}"
+                   min="0"
+                   step="any"
+                   aria-label="{{#str}}chart_bar_item_value, tiny_studiolms{{/str}} 3"/>
+        </div>
+
+        {{! Item 4 }}
+        <div class="slms-cb-row d-flex align-items-center">
+            <span class="slms-cb-dot" style="color:{{cb_color4}};font-size:14px;line-height:1;" aria-hidden="true">&#9679;</span>
+            <input type="text"
+                   id="cb_label4"
+                   class="form-control form-control-sm slms-cb-label-col"
+                   value="{{cb_label4}}"
+                   placeholder="{{#str}}chart_bar_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}chart_bar_item_label, tiny_studiolms{{/str}} 4"/>
+            <input type="number"
+                   id="cb_value4"
+                   class="form-control form-control-sm slms-cb-value-col"
+                   value="{{cb_value4}}"
+                   min="0"
+                   step="any"
+                   aria-label="{{#str}}chart_bar_item_value, tiny_studiolms{{/str}} 4"/>
+        </div>
+
+        {{! Item 5 }}
+        <div class="slms-cb-row d-flex align-items-center">
+            <span class="slms-cb-dot" style="color:{{cb_color5}};font-size:14px;line-height:1;" aria-hidden="true">&#9679;</span>
+            <input type="text"
+                   id="cb_label5"
+                   class="form-control form-control-sm slms-cb-label-col"
+                   value="{{cb_label5}}"
+                   placeholder="{{#str}}chart_bar_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}chart_bar_item_label, tiny_studiolms{{/str}} 5"/>
+            <input type="number"
+                   id="cb_value5"
+                   class="form-control form-control-sm slms-cb-value-col"
+                   value="{{cb_value5}}"
+                   min="0"
+                   step="any"
+                   aria-label="{{#str}}chart_bar_item_value, tiny_studiolms{{/str}} 5"/>
+        </div>
+
+        {{! Item 6 }}
+        <div class="slms-cb-row d-flex align-items-center">
+            <span class="slms-cb-dot" style="color:{{cb_color6}};font-size:14px;line-height:1;" aria-hidden="true">&#9679;</span>
+            <input type="text"
+                   id="cb_label6"
+                   class="form-control form-control-sm slms-cb-label-col"
+                   value="{{cb_label6}}"
+                   placeholder="{{#str}}chart_bar_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}chart_bar_item_label, tiny_studiolms{{/str}} 6"/>
+            <input type="number"
+                   id="cb_value6"
+                   class="form-control form-control-sm slms-cb-value-col"
+                   value="{{cb_value6}}"
+                   min="0"
+                   step="any"
+                   aria-label="{{#str}}chart_bar_item_value, tiny_studiolms{{/str}} 6"/>
+        </div>
+
+    </div>
+
+    <div class="form-text mt-1" style="font-size:11px;">
+        {{#str}}chart_bar_values_hint, tiny_studiolms{{/str}}
+    </div>
+
+</div>

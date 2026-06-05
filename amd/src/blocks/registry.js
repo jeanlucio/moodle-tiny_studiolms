@@ -31,6 +31,7 @@ import callout from './callout';
 import table from './table';
 import profileCard from './profilecard';
 import chart from './chart';
+import chartBar from './chart_bar';
 import mindmap from './mindmap';
 import infographic from './infographic';
 import infographicFeatures from './infographic_features';
@@ -49,6 +50,7 @@ export const Blocks = {
     table,
     profileCard,
     chart,
+    chartBar,
     mindmap,
     infographic,
     infographicFeatures,
