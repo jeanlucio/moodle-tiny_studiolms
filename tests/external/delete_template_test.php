@@ -22,7 +22,7 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tiny_studiolms\tests\external;
+namespace tiny_studiolms\external;
 
 use advanced_testcase;
 use tiny_studiolms\external\delete_template;
