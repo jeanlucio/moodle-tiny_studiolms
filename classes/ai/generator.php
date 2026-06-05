@@ -199,17 +199,27 @@ class generator {
         $s .= '    - layout: always "stats"' . "\n";
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
         $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
-        $s .= '    - items: array of {icon: string (FA6 class e.g. "fa-solid fa-users"),' . "\n";
-        $s .= '        value: string (short metric, max 8 chars), label: string}' . "\n";
-        $s .= '    Generate 2–4 items.' . "\n\n";
+        $s .= '    - items: array of {icon: string, value: string (short metric, max 8 chars),' . "\n";
+        $s .= '        label: string}' . "\n";
+        $s .= '    Generate 2–4 items.' . "\n";
+        $s .= '    Allowed icon values (use ONLY these): "fa-solid fa-users", "fa-solid fa-chart-line",' . "\n";
+        $s .= '      "fa-solid fa-book-open", "fa-solid fa-graduation-cap", "fa-solid fa-trophy",' . "\n";
+        $s .= '      "fa-solid fa-star", "fa-solid fa-circle-check", "fa-solid fa-clock",' . "\n";
+        $s .= '      "fa-solid fa-calendar", "fa-solid fa-lightbulb", "fa-solid fa-brain",' . "\n";
+        $s .= '      "fa-solid fa-medal", "fa-solid fa-bullseye", "fa-solid fa-fire",' . "\n";
+        $s .= '      "fa-solid fa-heart", "fa-solid fa-percent", "fa-solid fa-arrow-up",' . "\n";
+        $s .= '      "fa-solid fa-globe", "fa-solid fa-bolt", "fa-solid fa-rocket",' . "\n";
+        $s .= '      "fa-solid fa-chart-bar", "fa-solid fa-laptop", "fa-solid fa-book",' . "\n";
+        $s .= '      "fa-solid fa-flask", "fa-solid fa-code", "fa-solid fa-database",' . "\n";
+        $s .= '      "fa-solid fa-user".' . "\n\n";
 
         $s .= '15. infographicSteps — Numbered process flow.' . "\n";
         $s .= '    config keys:' . "\n";
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
         $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
         $s .= '    - layout: "vertical" or "horizontal"' . "\n";
-        $s .= '    - items: array of {icon: string (FA6 class or ""), title: string,' . "\n";
-        $s .= '        description: string}' . "\n";
+        $s .= '    - items: array of {icon: string (from the allowed list above or ""),' . "\n";
+        $s .= '        title: string, description: string}' . "\n";
         $s .= '    Generate 3–6 steps.' . "\n\n";
 
         $s .= '16. infographicFeatures — Feature/benefit card grid.' . "\n";
@@ -217,8 +227,8 @@ class generator {
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
         $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
         $s .= '    - columns: 2, 3, or 4' . "\n";
-        $s .= '    - items: array of {icon: string (FA6 class or ""), title: string,' . "\n";
-        $s .= '        description: string}' . "\n";
+        $s .= '    - items: array of {icon: string (from the allowed list above or ""),' . "\n";
+        $s .= '        title: string, description: string}' . "\n";
         $s .= '    Generate 3–6 items.' . "\n\n";
 
         $s .= '17. infographicTimeline — Vertical chronological timeline.' . "\n";
@@ -721,6 +731,30 @@ class generator {
     }
 
     /**
+     * Returns the curated FA6 icon list hint shared across all infographic AI prompts.
+     *
+     * Must stay in sync with ICON_UNICODE in amd/src/blocks/infographic_shared.js.
+     *
+     * @return string
+     */
+    private static function icon_list_hint(): string {
+        return 'fa-solid fa-users, fa-solid fa-chart-line, fa-solid fa-chart-bar,'
+            . ' fa-solid fa-book-open, fa-solid fa-book, fa-solid fa-graduation-cap,'
+            . ' fa-solid fa-trophy, fa-solid fa-medal, fa-solid fa-star,'
+            . ' fa-solid fa-circle-check, fa-solid fa-clock, fa-solid fa-calendar,'
+            . ' fa-solid fa-lightbulb, fa-solid fa-brain, fa-solid fa-bullseye,'
+            . ' fa-solid fa-fire, fa-solid fa-heart, fa-solid fa-percent,'
+            . ' fa-solid fa-arrow-up, fa-solid fa-globe, fa-solid fa-bolt,'
+            . ' fa-solid fa-rocket, fa-solid fa-laptop, fa-solid fa-flask,'
+            . ' fa-solid fa-code, fa-solid fa-database, fa-solid fa-user,'
+            . ' fa-solid fa-gear, fa-solid fa-key, fa-solid fa-lock,'
+            . ' fa-solid fa-envelope, fa-solid fa-flag, fa-solid fa-magnifying-glass,'
+            . ' fa-solid fa-play, fa-solid fa-check, fa-solid fa-download,'
+            . ' fa-solid fa-upload, fa-solid fa-arrow-right, fa-solid fa-pen,'
+            . ' fa-solid fa-file';
+    }
+
+    /**
      * Returns the system prompt for infographic generation.
      *
      * @return string
@@ -733,13 +767,8 @@ class generator {
             . ' "label": "string"}, ...]}' . "\n\n";
         $p .= 'Rules:' . "\n";
         $p .= '- Generate 3 or 4 items' . "\n";
-        $p .= '- Each "icon" must be a valid Font Awesome 6 Free class string, e.g. "fa-solid fa-users"' . "\n";
-        $p .= '- Choose icons from this curated list: fa-solid fa-users, fa-solid fa-chart-line,'
-            . ' fa-solid fa-book-open, fa-solid fa-star, fa-solid fa-trophy, fa-solid fa-circle-check,'
-            . ' fa-solid fa-clock, fa-solid fa-graduation-cap, fa-solid fa-lightbulb,'
-            . ' fa-solid fa-percent, fa-solid fa-arrow-up, fa-solid fa-calendar,'
-            . ' fa-solid fa-brain, fa-solid fa-medal, fa-solid fa-bullseye,'
-            . ' fa-solid fa-flag-checkered, fa-solid fa-fire, fa-solid fa-heart' . "\n";
+        $p .= '- Each "icon" must be from this curated list (use ONLY these):'
+            . ' ' . self::icon_list_hint() . "\n";
         $p .= '- "value" must be a short metric: number, percentage, time or short word (max 8 chars)' . "\n";
         $p .= '- "label" must be a short description (max 30 chars)' . "\n";
         $p .= '- "title" should be a short headline (max 50 chars), or empty string if not needed' . "\n";
@@ -806,12 +835,7 @@ class generator {
         $p .= 'Rules:' . "\n";
         $p .= '- Generate 3 to 6 steps' . "\n";
         $p .= '- "icon" is optional — use empty string "" when no icon fits;'
-            . ' otherwise choose from: fa-solid fa-magnifying-glass, fa-solid fa-pen, fa-solid fa-check,'
-            . ' fa-solid fa-upload, fa-solid fa-download, fa-solid fa-circle-check, fa-solid fa-arrow-right,'
-            . ' fa-solid fa-play, fa-solid fa-flag, fa-solid fa-star, fa-solid fa-lightbulb,'
-            . ' fa-solid fa-book-open, fa-solid fa-graduation-cap, fa-solid fa-users, fa-solid fa-gear,'
-            . ' fa-solid fa-key, fa-solid fa-lock, fa-solid fa-envelope, fa-solid fa-file,'
-            . ' fa-solid fa-chart-line' . "\n";
+            . ' otherwise choose from: ' . self::icon_list_hint() . "\n";
         $p .= '- "title" is the short step name (max 50 chars)' . "\n";
         $p .= '- "description" is an optional brief explanation (max 100 chars); use empty string if not needed' . "\n";
         $p .= '- "title" at the top level should be a short headline for the whole flow (max 60 chars),'
@@ -883,13 +907,8 @@ class generator {
         $p .= 'Rules:' . "\n";
         $p .= '- title: short optional heading for the block (may be empty string).' . "\n";
         $p .= '- items: 3–6 objects.' . "\n";
-        $p .= '- icon: one of these FA6 class strings (or empty string): "fa-solid fa-star",' . "\n";
-        $p .= '  "fa-solid fa-bolt", "fa-solid fa-globe", "fa-solid fa-users", "fa-solid fa-gear",' . "\n";
-        $p .= '  "fa-solid fa-lightbulb", "fa-solid fa-brain", "fa-solid fa-heart", "fa-solid fa-fire",' . "\n";
-        $p .= '  "fa-solid fa-trophy", "fa-solid fa-graduation-cap", "fa-solid fa-chart-line",' . "\n";
-        $p .= '  "fa-solid fa-lock", "fa-solid fa-key", "fa-solid fa-bullseye", "fa-solid fa-flag",' . "\n";
-        $p .= '  "fa-solid fa-circle-check", "fa-solid fa-clock", "fa-solid fa-magnifying-glass",' . "\n";
-        $p .= '  "fa-solid fa-medal".' . "\n";
+        $p .= '- icon: one of these FA6 class strings (or empty string):'
+            . ' ' . self::icon_list_hint() . "\n";
         $p .= '- title (item): 2–5 words, concise feature name.' . "\n";
         $p .= '- description: 1–2 sentences explaining the feature. May be empty string.' . "\n";
         $p .= '- No HTML tags. Plain text only.' . "\n";

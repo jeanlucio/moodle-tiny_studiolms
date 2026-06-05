@@ -28,31 +28,7 @@
 import Templates from 'core/templates';
 import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
-import {THEMES, esc, normaliseIcon, iconToSpan, openPicker, closePicker} from './infographic_shared';
-
-/** Curated FA6 Free icons for the visual picker (5 columns × 4 rows = 20 icons). */
-const ICONS = [
-    'fa-solid fa-users',
-    'fa-solid fa-chart-line',
-    'fa-solid fa-book-open',
-    'fa-solid fa-graduation-cap',
-    'fa-solid fa-trophy',
-    'fa-solid fa-star',
-    'fa-solid fa-circle-check',
-    'fa-solid fa-clock',
-    'fa-solid fa-calendar',
-    'fa-solid fa-lightbulb',
-    'fa-solid fa-brain',
-    'fa-solid fa-medal',
-    'fa-solid fa-bullseye',
-    'fa-solid fa-fire',
-    'fa-solid fa-heart',
-    'fa-solid fa-percent',
-    'fa-solid fa-arrow-up',
-    'fa-solid fa-flag-checkered',
-    'fa-solid fa-globe',
-    'fa-solid fa-bolt',
-];
+import {THEMES, ICONS, esc, normaliseIcon, iconToSpan, openPicker, closePicker} from './infographic_shared';
 
 const DEFAULT_ICON = 'fa-solid fa-circle-info';
 

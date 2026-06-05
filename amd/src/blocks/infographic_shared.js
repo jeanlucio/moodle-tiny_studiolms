@@ -16,8 +16,8 @@
 /**
  * Shared utilities for infographic-style blocks (stats, steps, future layouts).
  *
- * Exports: THEMES, ICON_UNICODE, esc, normaliseIcon, iconToSpan, openPicker, closePicker.
- * Each block keeps its own curated ICONS array and passes it to openPicker().
+ * Exports: THEMES, ICON_UNICODE, ICONS, esc, normaliseIcon, iconToSpan, openPicker, closePicker.
+ * ICONS is the single source of truth for the curated icon list shared by all infographic blocks.
  *
  * @module     tiny_studiolms/blocks/infographic_shared
  * @copyright  2026 Jean Lucio <jeanlucio@gmail.com>
@@ -59,7 +59,62 @@ export const ICON_UNICODE = {
     'fa-solid fa-lock': '',
     'fa-solid fa-envelope': '',
     'fa-solid fa-file': '',
+    'fa-solid fa-rocket': '',
+    'fa-solid fa-chart-bar': '',
+    'fa-solid fa-laptop': '',
+    'fa-solid fa-book': '',
+    'fa-solid fa-flask': '',
+    'fa-solid fa-code': '',
+    'fa-solid fa-database': '',
+    'fa-solid fa-user': '',
 };
+
+/**
+ * Curated FA6 Free icon list — single source of truth for all infographic blocks and pickers.
+ * Every icon here MUST have a corresponding entry in ICON_UNICODE above.
+ */
+export const ICONS = [
+    'fa-solid fa-users',
+    'fa-solid fa-chart-line',
+    'fa-solid fa-chart-bar',
+    'fa-solid fa-book-open',
+    'fa-solid fa-book',
+    'fa-solid fa-graduation-cap',
+    'fa-solid fa-trophy',
+    'fa-solid fa-medal',
+    'fa-solid fa-star',
+    'fa-solid fa-circle-check',
+    'fa-solid fa-clock',
+    'fa-solid fa-calendar',
+    'fa-solid fa-lightbulb',
+    'fa-solid fa-brain',
+    'fa-solid fa-bullseye',
+    'fa-solid fa-fire',
+    'fa-solid fa-heart',
+    'fa-solid fa-percent',
+    'fa-solid fa-arrow-up',
+    'fa-solid fa-globe',
+    'fa-solid fa-bolt',
+    'fa-solid fa-rocket',
+    'fa-solid fa-laptop',
+    'fa-solid fa-flask',
+    'fa-solid fa-code',
+    'fa-solid fa-database',
+    'fa-solid fa-user',
+    'fa-solid fa-gear',
+    'fa-solid fa-key',
+    'fa-solid fa-lock',
+    'fa-solid fa-envelope',
+    'fa-solid fa-flag',
+    'fa-solid fa-magnifying-glass',
+    'fa-solid fa-play',
+    'fa-solid fa-check',
+    'fa-solid fa-download',
+    'fa-solid fa-upload',
+    'fa-solid fa-arrow-right',
+    'fa-solid fa-pen',
+    'fa-solid fa-file',
+];
 
 /** Palette definitions for each named theme. */
 export const THEMES = {

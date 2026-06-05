@@ -24,31 +24,7 @@
 import Templates from 'core/templates';
 import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
-import {THEMES, esc, normaliseIcon, iconToSpan, openPicker, closePicker} from './infographic_shared';
-
-/** Curated FA6 Free icons for the steps picker (5 columns x 4 rows = 20 icons). */
-const ICONS = [
-    'fa-solid fa-magnifying-glass',
-    'fa-solid fa-pen',
-    'fa-solid fa-check',
-    'fa-solid fa-upload',
-    'fa-solid fa-download',
-    'fa-solid fa-circle-check',
-    'fa-solid fa-arrow-right',
-    'fa-solid fa-play',
-    'fa-solid fa-flag',
-    'fa-solid fa-star',
-    'fa-solid fa-lightbulb',
-    'fa-solid fa-book-open',
-    'fa-solid fa-graduation-cap',
-    'fa-solid fa-users',
-    'fa-solid fa-gear',
-    'fa-solid fa-key',
-    'fa-solid fa-lock',
-    'fa-solid fa-envelope',
-    'fa-solid fa-file',
-    'fa-solid fa-chart-line',
-];
+import {THEMES, ICONS, esc, normaliseIcon, iconToSpan, openPicker, closePicker} from './infographic_shared';
 
 // HTML renderers — vertical (default) and horizontal.
 // ---------------------------------------------------------------------------

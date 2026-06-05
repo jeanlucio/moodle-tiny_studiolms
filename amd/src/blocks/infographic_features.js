@@ -24,33 +24,9 @@
 import Templates from 'core/templates';
 import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
-import {THEMES, esc, normaliseIcon, iconToSpan, openPicker, closePicker} from './infographic_shared';
+import {THEMES, ICONS, esc, normaliseIcon, iconToSpan, openPicker, closePicker} from './infographic_shared';
 
 const DEFAULT_ICON = 'fa-solid fa-star';
-
-/** Curated FA6 Free icons for the features picker (5 columns x 4 rows = 20 icons). */
-const ICONS = [
-    'fa-solid fa-star',
-    'fa-solid fa-bolt',
-    'fa-solid fa-globe',
-    'fa-solid fa-users',
-    'fa-solid fa-gear',
-    'fa-solid fa-lightbulb',
-    'fa-solid fa-brain',
-    'fa-solid fa-heart',
-    'fa-solid fa-fire',
-    'fa-solid fa-trophy',
-    'fa-solid fa-graduation-cap',
-    'fa-solid fa-chart-line',
-    'fa-solid fa-lock',
-    'fa-solid fa-key',
-    'fa-solid fa-bullseye',
-    'fa-solid fa-flag',
-    'fa-solid fa-circle-check',
-    'fa-solid fa-clock',
-    'fa-solid fa-magnifying-glass',
-    'fa-solid fa-medal',
-];
 
 /**
  * Builds the inner HTML for the features grid.
