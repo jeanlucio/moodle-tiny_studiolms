@@ -46,8 +46,8 @@ const V_BAR_W = 54;
 const V_COL_W = 80;
 const V_CHART_BOTTOM = 130;
 const V_CHART_H = 100;
-const V_SVG_H = 155;
-const V_MAX_LABEL = 7;
+const V_SVG_H = 172;
+const V_LABEL_CHARS = 9;
 
 /**
  * Escape HTML special characters.
@@ -61,12 +61,22 @@ const esc = (str) => String(str ?? '')
     .replace(/"/g, '&quot;');
 
 /**
- * Truncate a string and append ellipsis if needed.
+ * Wrap a label into at most two lines, breaking at a word boundary.
  * @param {string} str Input string.
- * @param {number} max Maximum character count.
- * @returns {string} Truncated string.
+ * @param {number} max Characters per line.
+ * @returns {string[]} One or two-element array of lines.
  */
-const truncate = (str, max) => str.length > max ? str.slice(0, max - 1) + '…' : str;
+const wrapText = (str, max) => {
+    if (str.length <= max) {
+        return [str];
+    }
+    const space = str.lastIndexOf(' ', max);
+    if (space > 0) {
+        const rest = str.slice(space + 1);
+        return [str.slice(0, space), rest.length > max ? rest.slice(0, max - 1) + '…' : rest];
+    }
+    return [str.slice(0, max - 1) + '…'];
+};
 
 /**
  * Build SVG for horizontal bar chart.
@@ -130,15 +140,19 @@ const buildVerticalSvg = (items) => {
         const barY = V_CHART_BOTTOM - barH;
         const midX = barX + Math.floor(V_BAR_W / 2);
         const pct = Math.round((item.value / total) * 100);
-        const label = truncate(item.label, V_MAX_LABEL);
+        const lines = wrapText(item.label, V_LABEL_CHARS);
 
         parts.push(
             `<rect x="${barX}" y="${barY}" width="${V_BAR_W}" height="${barH}"`,
             ` rx="4" fill="${color}" aria-label="${esc(item.label)}: ${pct}%"/>`,
             `<text x="${midX}" y="${barY - 4}" text-anchor="middle"`,
             ` font-size="11" font-weight="600" fill="${color}">${pct}%</text>`,
-            `<text x="${midX}" y="${V_CHART_BOTTOM + 14}" text-anchor="middle"`,
-            ` font-size="11" fill="#64748b">${esc(label)}</text>`
+            `<text x="${midX}" text-anchor="middle" font-size="11" fill="#64748b">`,
+            `<tspan x="${midX}" y="${V_CHART_BOTTOM + 14}">${esc(lines[0])}</tspan>`,
+            ...(lines[1] !== undefined
+                ? [`<tspan x="${midX}" dy="13">${esc(lines[1])}</tspan>`]
+                : []),
+            `</text>`
         );
     });
 
