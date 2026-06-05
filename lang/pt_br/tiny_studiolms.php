@@ -360,6 +360,7 @@ $string['placeholder_tpl_name'] = 'Nome do template...';
 $string['pluginname'] = 'StudioLMS';
 $string['preset_badge'] = 'Padrão';
 $string['preview'] = 'Pré-visualização';
+$string['privacy:ailogs'] = 'Registros de geração de IA';
 $string['privacy:metadata:tiny_studiolms_ai'] = 'O recurso de IA do StudioLMS envia o prompt do usuário para uma API de modelo de linguagem de terceiros (OpenAI, Groq ou Anthropic) para gerar sugestões de conteúdo.';
 $string['privacy:metadata:tiny_studiolms_ai_logs'] = 'O recurso de IA do StudioLMS registra cada geração de bloco, gravando o usuário, o tipo de bloco, o provedor utilizado e o horário.';
 $string['privacy:metadata:tiny_studiolms_ai_logs:ai_provider'] = 'O provedor de IA utilizado nesta geração.';

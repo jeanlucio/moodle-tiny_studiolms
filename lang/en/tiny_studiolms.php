@@ -360,6 +360,7 @@ $string['placeholder_tpl_name'] = 'Template name...';
 $string['pluginname'] = 'StudioLMS';
 $string['preset_badge'] = 'Built-in';
 $string['preview'] = 'Live Preview';
+$string['privacy:ailogs'] = 'AI generation logs';
 $string['privacy:metadata:tiny_studiolms_ai'] = 'The StudioLMS AI feature sends the user\'s prompt to a third-party language model API (Google Gemini, Groq, or a custom provider) to generate content suggestions.';
 $string['privacy:metadata:tiny_studiolms_ai_logs'] = 'The StudioLMS AI feature logs each block generation, recording the user, block type, provider used, and timestamp.';
 $string['privacy:metadata:tiny_studiolms_ai_logs:ai_provider'] = 'The AI provider used for this generation.';

@@ -177,7 +177,7 @@ class provider implements
         $ailogs = $DB->get_records('tiny_studiolms_ai_logs', ['userid' => $userid]);
         if (!empty($ailogs)) {
             writer::with_context($context)->export_data(
-                [get_string('pluginname', 'tiny_studiolms'), 'AI Logs'],
+                [get_string('pluginname', 'tiny_studiolms'), get_string('privacy:ailogs', 'tiny_studiolms')],
                 (object) ['ailogs' => array_values($ailogs)]
             );
         }
