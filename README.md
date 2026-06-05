@@ -17,7 +17,7 @@
 
 ### ✨ Features
 
-* 🧱 **11 Instructional Blocks:** Ready-to-use design blocks insertable from the toolbar:
+* 🧱 **18 Instructional Blocks:** Ready-to-use design blocks insertable from the toolbar:
   * **Action Button** — CTA button with configurable URL, colours, border radius and alignment.
   * **Advanced Card** — Card with image/video media, rich editable body and an internal button.
   * **Webteca** — Resource library (PDF, video, audio, link) in list or grid layout.
@@ -27,8 +27,15 @@
   * **Callout** — Highlight box with customisable icon and border colour.
   * **Stylised Heading** — Styled `h3`/`h4` heading with icon and background colour.
   * **Profile Card** — Presenter card with photo, name, role, bio and up to 3 configurable links; customisable background and accent colour.
+  * **Pie Chart** — Pure SVG donut/pie chart with up to 6 slices, custom labels and 4 colour themes.
+  * **Bar Chart** — Pure SVG bar chart in horizontal or vertical orientation; up to 8 bars with custom labels, values and colour themes.
+  * **Gauge** — Pure SVG semi-circle gauge (speedometer style) with traffic-light colour coding (green ≥ 67 %, amber ≥ 34 %, red < 34 %). Supports 1–3 side-by-side gauges in a single block.
   * **Mind Map** — Pure SVG radial diagram (no external library) with a central topic, up to 8 branches and up to 5 child nodes each. 4 colour themes (blue, green, purple, orange). Optional AI generation from a plain-language description.
-  * **Infographic (Stats)** — Visual stat block with up to 4 items, each combining an icon (picked from a 20-icon visual picker), a value and a label. Optional section title, 4 colour themes and AI generation. Extensible layout system: additional layouts (steps, features, timeline, comparison) can be registered without changing core code.
+  * **Infographic — Stats** — Visual stat block with up to 4 items, each combining an icon (picked from a 20-icon visual picker), a value and a label. Optional section title, 4 colour themes and AI generation.
+  * **Infographic — Steps** — Numbered flow of steps with icon and description. Ideal for methodologies, tutorials and workflows.
+  * **Infographic — Features** — Icon + title + description grid. Ideal for competencies, course highlights and key benefits.
+  * **Infographic — Timeline** — Vertical timeline with date/period, icon and event description.
+  * **Infographic — Comparison** — 2–3 column comparison table with coloured headers and ✓/✗ item lists.
 * 🛡️ **Shielded Injection:** Blocks use `contenteditable="false"` on the wrapper and `contenteditable="true"` on editable regions for reliable editing.
 * 💾 **Round-Trip State:** Block configuration serialised in Base64 inside `data-slms-state` — reopen and edit any block at any time.
 * 📚 **Template Library:** 4-tab modal for managing reusable layouts:
@@ -191,7 +198,7 @@ O **StudioLMS** é um sub-plugin TinyMCE 6 para Moodle que traz uma experiência
 
 ### ✨ Funcionalidades
 
-* 🧱 **11 Blocos Instrucionais:** Blocos de design prontos para uso, inseríveis pela barra de ferramentas:
+* 🧱 **18 Blocos Instrucionais:** Blocos de design prontos para uso, inseríveis pela barra de ferramentas:
   * **Botão CTA** — Botão com URL, cores, raio e alinhamento configuráveis.
   * **Card Avançado** — Card com mídia de imagem/vídeo, corpo rico editável e botão interno.
   * **Webteca** — Biblioteca de recursos (PDF, vídeo, áudio, link) em layout de lista ou grade.
@@ -201,8 +208,15 @@ O **StudioLMS** é um sub-plugin TinyMCE 6 para Moodle que traz uma experiência
   * **Callout** — Caixa de destaque com ícone e cor de borda personalizáveis.
   * **Título Estilizado** — Cabeçalho `h3`/`h4` estilizado com ícone e cor de fundo.
   * **Card de Perfil** — Card de apresentação com foto, nome, cargo, bio e até 3 links configuráveis; cor de fundo e cor de destaque personalizáveis.
+  * **Gráfico de Pizza** — Gráfico de rosca/pizza em SVG puro com até 6 fatias, rótulos personalizados e 4 temas de cor.
+  * **Gráfico de Barras** — Gráfico de barras em SVG puro na orientação horizontal ou vertical; até 8 barras com rótulos, valores e temas de cor personalizados.
+  * **Velocímetro** — Gauge em semicírculo SVG com codificação por semáforo (verde ≥ 67 %, âmbar ≥ 34 %, vermelho < 34 %). Suporta 1 a 3 velocímetros lado a lado em um único bloco.
   * **Mapa Mental** — Diagrama radial em SVG puro (sem biblioteca externa) com tópico central, até 8 ramos e até 5 nós filhos por ramo. 4 temas de cor (azul, verde, roxo, laranja). Geração via IA a partir de uma descrição em linguagem natural.
-  * **Infográfico (Stats)** — Bloco visual de estatísticas com até 4 itens, cada um combinando ícone (selecionado em um picker visual de 20 ícones FA6), valor e rótulo. Título de seção opcional, 4 temas de cor e geração via IA. Sistema de layouts extensível: layouts adicionais (passos, funcionalidades, linha do tempo, comparação) podem ser registrados sem alterar o código central.
+  * **Infográfico — Stats** — Bloco visual de estatísticas com até 4 itens, cada um combinando ícone (selecionado em um picker visual de 20 ícones FA6), valor e rótulo. Título de seção opcional, 4 temas de cor e geração via IA.
+  * **Infográfico — Passos** — Fluxo numerado de passos com ícone e descrição. Ideal para metodologias, tutoriais e roteiros.
+  * **Infográfico — Funcionalidades** — Grade de ícone + título + descrição. Ideal para competências, destaques do curso e benefícios.
+  * **Infográfico — Linha do Tempo** — Linha do tempo vertical com data/período, ícone e descrição do evento.
+  * **Infográfico — Comparação** — Tabela comparativa de 2 a 3 colunas com cabeçalhos coloridos e listas de itens com ✓/✗.
 * 🛡️ **Injeção Blindada:** Blocos usam `contenteditable="false"` no wrapper e `contenteditable="true"` nas regiões editáveis para uma edição confiável.
 * 💾 **Estado de Ida e Volta:** Configuração do bloco serializada em Base64 dentro de `data-slms-state` — reabra e edite qualquer bloco a qualquer momento.
 * 📚 **Biblioteca de Templates:** Modal com 4 abas para gerenciar layouts reutilizáveis:
