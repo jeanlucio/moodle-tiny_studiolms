@@ -42,12 +42,12 @@ const H_BAR_X = 114;
 const H_MAX_BAR_W = 196;
 
 // Vertical bar chart constants.
-const V_BAR_W = 36;
-const V_COL_W = 52;
-const V_CHART_BOTTOM = 155;
-const V_CHART_H = 120;
-const V_SVG_H = 195;
-const V_MAX_LABEL = 9;
+const V_BAR_W = 54;
+const V_COL_W = 80;
+const V_CHART_BOTTOM = 130;
+const V_CHART_H = 100;
+const V_SVG_H = 155;
+const V_MAX_LABEL = 7;
 
 /**
  * Escape HTML special characters.

@@ -2533,6 +2533,11 @@ a.studiolms-webteca-item:focus-visible {
     width: 100%;
 }
 
+.slms-chart-bar--vertical .slms-chart-bar__wrap {
+    max-width: 380px;
+    margin-inline: auto;
+}
+
 .slms-chart-bar__svg {
     width: 100%;
     height: auto;
