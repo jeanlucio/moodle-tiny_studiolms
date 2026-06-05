@@ -167,6 +167,77 @@ class generator {
         $s .= '   - cellData: array of arrays (rows × cols of HTML strings;' . "\n";
         $s .= '     cellData[0] = header row, cellData[1..n] = data rows)' . "\n\n";
 
+        $s .= '10. chart — Pie or donut chart.' . "\n";
+        $s .= '    config keys:' . "\n";
+        $s .= '    - type: "donut" or "pie"' . "\n";
+        $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
+        $s .= '    - slices: array of {label: string, value: number (1–100)}' . "\n";
+        $s .= '    Generate 2–6 slices. Values do not need to sum to 100.' . "\n\n";
+
+        $s .= '11. chartBar — Horizontal or vertical bar chart.' . "\n";
+        $s .= '    config keys:' . "\n";
+        $s .= '    - type: "horizontal" or "vertical"' . "\n";
+        $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
+        $s .= '    - items: array of {label: string, value: number (1–100)}' . "\n";
+        $s .= '    Generate 2–6 items. "vertical" for time-series; "horizontal" for rankings.' . "\n\n";
+
+        $s .= '12. gauge — Semi-circle speedometer chart.' . "\n";
+        $s .= '    config keys:' . "\n";
+        $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
+        $s .= '    - gauges: array of {value: number (0–100), label: string}' . "\n";
+        $s .= '    Generate 1–3 gauge objects (shown side by side).' . "\n\n";
+
+        $s .= '13. mindmap — Radial SVG mind map.' . "\n";
+        $s .= '    config keys:' . "\n";
+        $s .= '    - topic: string (central node, max 20 chars)' . "\n";
+        $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
+        $s .= '    - branches: array of {label: string, children: [string, ...]}' . "\n";
+        $s .= '    Generate 4–6 branches, each with 2–4 children (1–4 word strings).' . "\n\n";
+
+        $s .= '14. infographic — Stats/metrics cards.' . "\n";
+        $s .= '    config keys:' . "\n";
+        $s .= '    - layout: always "stats"' . "\n";
+        $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
+        $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
+        $s .= '    - items: array of {icon: string (FA6 class e.g. "fa-solid fa-users"),' . "\n";
+        $s .= '        value: string (short metric, max 8 chars), label: string}' . "\n";
+        $s .= '    Generate 2–4 items.' . "\n\n";
+
+        $s .= '15. infographicSteps — Numbered process flow.' . "\n";
+        $s .= '    config keys:' . "\n";
+        $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
+        $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
+        $s .= '    - layout: "vertical" or "horizontal"' . "\n";
+        $s .= '    - items: array of {icon: string (FA6 class or ""), title: string,' . "\n";
+        $s .= '        description: string}' . "\n";
+        $s .= '    Generate 3–6 steps.' . "\n\n";
+
+        $s .= '16. infographicFeatures — Feature/benefit card grid.' . "\n";
+        $s .= '    config keys:' . "\n";
+        $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
+        $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
+        $s .= '    - columns: 2, 3, or 4' . "\n";
+        $s .= '    - items: array of {icon: string (FA6 class or ""), title: string,' . "\n";
+        $s .= '        description: string}' . "\n";
+        $s .= '    Generate 3–6 items.' . "\n\n";
+
+        $s .= '17. infographicTimeline — Vertical chronological timeline.' . "\n";
+        $s .= '    config keys:' . "\n";
+        $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
+        $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
+        $s .= '    - items: array of {date: string (year/period, max 15 chars), title: string,' . "\n";
+        $s .= '        description: string}' . "\n";
+        $s .= '    Generate 3–6 items in chronological order.' . "\n\n";
+
+        $s .= '18. infographicComparison — Side-by-side comparison table with checkmarks.' . "\n";
+        $s .= '    config keys:' . "\n";
+        $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
+        $s .= '    - col1: string (first option name, max 20 chars)' . "\n";
+        $s .= '    - col2: string (second option name, max 20 chars)' . "\n";
+        $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
+        $s .= '    - items: array of {label: string, col1: boolean, col2: boolean}' . "\n";
+        $s .= '    Generate 3–6 items with genuine differences between the two options.' . "\n\n";
+
         return $s;
     }
 
@@ -264,7 +335,10 @@ class generator {
         $prompt .= self::block_types_schema();
         $prompt .= 'Rules:' . "\n";
         $prompt .= '- Order blocks logically: heading → content blocks → actions.' . "\n";
-        $prompt .= '- Use ONLY the hex values from the palette above (no other colours).' . "\n";
+        $prompt .= '- For text-based blocks (1–9): use ONLY the hex values from the palette above.' . "\n";
+        $prompt .= '- For visual blocks (10–18: chart, chartBar, gauge, mindmap, infographic*):'
+            . ' set their "theme" field to match the palette name ('
+            . $palette . ').' . "\n";
         $prompt .= self::language_instruction() . "\n";
         $prompt .= '- Generate rich, placeholder-quality HTML content in contentHtml/content fields.' . "\n";
         $prompt .= '- Respond ONLY with JSON.' . "\n";
@@ -1344,7 +1418,10 @@ class generator {
 
         $validtypes = [
             'accordion', 'actionButton', 'advancedCard', 'callout',
-            'gridcards', 'profileCard', 'stylizedHeading', 'table', 'webteca',
+            'chart', 'chartBar', 'gauge',
+            'gridcards', 'infographic', 'infographicComparison',
+            'infographicFeatures', 'infographicSteps', 'infographicTimeline',
+            'mindmap', 'profileCard', 'stylizedHeading', 'table', 'webteca',
         ];
 
         if (
@@ -1379,7 +1456,10 @@ class generator {
 
         $validtypes = [
             'accordion', 'actionButton', 'advancedCard', 'callout',
-            'gridcards', 'profileCard', 'stylizedHeading', 'table', 'webteca',
+            'chart', 'chartBar', 'gauge',
+            'gridcards', 'infographic', 'infographicComparison',
+            'infographicFeatures', 'infographicSteps', 'infographicTimeline',
+            'mindmap', 'profileCard', 'stylizedHeading', 'table', 'webteca',
         ];
 
         if (

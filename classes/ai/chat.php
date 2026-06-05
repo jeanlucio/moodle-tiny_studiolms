@@ -91,23 +91,15 @@ class chat {
             $prompt .= "\n";
         }
 
-        $prompt .= 'All available blocks in StudioLMS (18 total):' . "\n";
+        $prompt .= 'Available block types for generate_template (all 18):' . "\n";
         $prompt .= '  Text & layout: stylizedHeading, callout, accordion, actionButton,' . "\n";
         $prompt .= '    advancedCard, webteca, gridcards, table, profileCard' . "\n";
         $prompt .= '  Charts & data: chart (pie/donut), chartBar (horizontal/vertical bars),' . "\n";
         $prompt .= '    gauge (speedometer, 1–3 side-by-side)' . "\n";
         $prompt .= '  Infographics: infographic (stats/metrics), infographicSteps (numbered flow),' . "\n";
         $prompt .= '    infographicFeatures (icon+title+text grid), infographicTimeline (vertical),' . "\n";
-        $prompt .= '    infographicComparison (side-by-side columns with ✓/✗)' . "\n";
-        $prompt .= '  Conceptual: mindmap (pure SVG radial diagram)' . "\n\n";
-        $prompt .= 'IMPORTANT — generate_template supports TEXT-BASED blocks only:' . "\n";
-        $prompt .= '  stylizedHeading, callout, accordion, actionButton, advancedCard,';
-        $prompt .= ' webteca, gridcards, table, profileCard' . "\n";
-        $prompt .= 'Blocks with their own AI generator (chart, chartBar, gauge, mindmap,' . "\n";
-        $prompt .= '  infographic, infographicSteps, infographicFeatures, infographicTimeline,' . "\n";
-        $prompt .= '  infographicComparison) cannot be added via generate_template.' . "\n";
-        $prompt .= 'When the teacher asks about those blocks, recommend them and explain they' . "\n";
-        $prompt .= '  have a dedicated AI generator button inside the block\'s own edit panel.' . "\n\n";
+        $prompt .= '    infographicComparison (side-by-side columns with checkmarks)' . "\n";
+        $prompt .= '  Conceptual: mindmap (radial SVG diagram)' . "\n\n";
 
         $prompt .= 'Available colour palettes: blue, green, purple, orange, neutral' . "\n\n";
 
