@@ -2641,9 +2641,8 @@ a.studiolms-webteca-item:focus-visible {
 }
 
 .tiny_studiolms .slms-gf-slot {
-    padding-block: 0.5rem;
+    padding-block: 0.25rem;
     border-block-end: 1px solid var(--bs-border-color, #e2e8f0);
-    margin-block-end: 0.25rem;
 }
 
 .tiny_studiolms .slms-gf-slot:last-of-type {
@@ -2654,7 +2653,12 @@ a.studiolms-webteca-item:focus-visible {
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-block-end: 4px;
+    margin-block-end: 2px;
+}
+
+.tiny_studiolms .slms-gf-slot .form-range {
+    height: 20px;
+    padding-block: 0;
 }
 
 .tiny_studiolms .slms-gf-dot {
@@ -2664,11 +2668,13 @@ a.studiolms-webteca-item:focus-visible {
 }
 
 .tiny_studiolms .slms-gf-value-num {
-    flex: 0 0 52px;
+    flex: 0 0 48px;
     min-width: 0;
     text-align: center;
+    padding-block: 2px;
 }
 
 .tiny_studiolms .slms-gf-label {
     margin-inline-start: 20px;
+    padding-block: 2px;
 }
