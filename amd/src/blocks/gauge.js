@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Gauge block — renders a pure-SVG semi-circle gauge chart.
+ * Gauge block — renders 1–3 pure-SVG semi-circle gauge charts side by side.
  *
  * @module     tiny_studiolms/blocks/gauge
  * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
@@ -23,6 +23,11 @@
 
 import Templates from 'core/templates';
 import {getString} from 'core/str';
+
+const MAX_GAUGES = 3;
+
+// Visual slot-indicator colours used only inside the popup.
+const SLOT_COLORS = ['#3b82f6', '#10b981', '#8b5cf6'];
 
 // SVG geometry constants.
 const G_SVG_W = 240;
@@ -44,9 +49,9 @@ const esc = (str) => String(str ?? '')
     .replace(/"/g, '&quot;');
 
 /**
- * Return the fill color for a gauge value using traffic-light zones.
+ * Return the arc fill colour using traffic-light zones.
  * @param {number} v Value 0–100.
- * @returns {string} Hex color.
+ * @returns {string} Hex colour.
  */
 const gaugeColor = (v) => {
     if (v >= 67) {
@@ -59,7 +64,7 @@ const gaugeColor = (v) => {
 };
 
 /**
- * Compute an SVG point on a circle arc using math-angle convention (Y-flipped).
+ * Compute an SVG point on a circle using math-angle convention (Y-flipped for SVG).
  * @param {number} cx Center X.
  * @param {number} cy Center Y.
  * @param {number} r  Radius.
@@ -72,11 +77,10 @@ const ptOnArc = (cx, cy, r, deg) => ({
 });
 
 /**
- * Build an SVG arc path string (clockwise, sweep-flag=1).
- * Spans from startDeg to endDeg, always ≤ 180° so large-arc=0.
- * @param {number} cx Center X.
- * @param {number} cy Center Y.
- * @param {number} r  Radius.
+ * Build an SVG arc path string (clockwise, sweep-flag=1, large-arc=0).
+ * @param {number} cx       Center X.
+ * @param {number} cy       Center Y.
+ * @param {number} r        Radius.
  * @param {number} startDeg Start angle (math degrees).
  * @param {number} endDeg   End angle (math degrees).
  * @returns {string} SVG path d attribute value.
@@ -88,9 +92,9 @@ const describeArc = (cx, cy, r, startDeg, endDeg) => {
 };
 
 /**
- * Build the complete SVG markup for the gauge.
- * @param {number} value  Gauge value 0–100.
- * @param {string} label  Optional label shown below the value.
+ * Build SVG markup for a single gauge.
+ * @param {number} value  0–100.
+ * @param {string} label  Optional label beneath the value.
  * @returns {string} SVG markup string.
  */
 const buildGaugeSvg = (value, label) => {
@@ -123,6 +127,58 @@ const buildGaugeSvg = (value, label) => {
 };
 
 // ---------------------------------------------------------------------------
+// Popup helpers.
+// ---------------------------------------------------------------------------
+
+/**
+ * Read gauge slots from the popup DOM, ignoring empty slots.
+ * A slot is empty when both value is 0 and label is blank.
+ * @param {Element} popup Popup root element.
+ * @param {object}  data  Block data object (mutated in-place).
+ */
+const readGaugesFromPopup = (popup, data) => {
+    const gauges = [];
+    for (let i = 1; i <= MAX_GAUGES; i++) {
+        const rawVal = popup.querySelector(`#gf_value${i}`)?.value ?? '0';
+        const value = Math.min(100, Math.max(0, parseInt(rawVal, 10) || 0));
+        const label = popup.querySelector(`#gf_label${i}`)?.value?.trim() ?? '';
+        if (value > 0 || label) {
+            gauges.push({value, label});
+        }
+    }
+    data.gauges = gauges.length ? gauges : [{value: 0, label: ''}];
+};
+
+/**
+ * Migrate old single-gauge data format to the gauges array format.
+ * @param {object} data Block data.
+ * @returns {Array<{value: number, label: string}>} Normalised gauges array.
+ */
+const normaliseGauges = (data) => {
+    if (Array.isArray(data.gauges) && data.gauges.length) {
+        return data.gauges;
+    }
+    return [{value: data.value ?? 75, label: data.label || ''}];
+};
+
+/**
+ * Convert block data to flat template variables for the popup.
+ * @param {object} data Block data.
+ * @returns {object} Flat vars.
+ */
+const dataToPopupVars = (data) => {
+    const gauges = normaliseGauges(data);
+    const out = {title: data.title || ''};
+    for (let i = 0; i < MAX_GAUGES; i++) {
+        const g = gauges[i] || {value: 0, label: ''};
+        out[`gf_color${i + 1}`] = SLOT_COLORS[i];
+        out[`gf_value${i + 1}`] = g.value ?? 0;
+        out[`gf_label${i + 1}`] = g.label ?? '';
+    }
+    return out;
+};
+
+// ---------------------------------------------------------------------------
 // Block export.
 // ---------------------------------------------------------------------------
 
@@ -133,8 +189,9 @@ export default {
 
     defaultData: {
         title: '',
-        value: 75,
-        label: 'Aprovação',
+        gauges: [
+            {value: 75, label: 'Aprovação'},
+        ],
     },
 
     buildToolbar: async(container, data, onUpdate, PopupManager) => {
@@ -148,43 +205,44 @@ export default {
             }
 
             btnEdit.addEventListener('click', () => {
-                const tplData = {
-                    title: data.title || '',
-                    value: data.value ?? 75,
-                    label: data.label || '',
-                };
+                PopupManager.open(
+                    btnEdit,
+                    'tiny_studiolms/popup_gauge_edit',
+                    dataToPopupVars(data),
+                    (popup) => {
+                        const titleEl = popup.querySelector('#gf_title');
 
-                PopupManager.open(btnEdit, 'tiny_studiolms/popup_gauge_edit', tplData, (popup) => {
-                    const titleEl = popup.querySelector('#gf_title');
-                    const valueEl = popup.querySelector('#gf_value');
-                    const sliderEl = popup.querySelector('#gf_value_slider');
-                    const labelEl = popup.querySelector('#gf_label');
+                        const applyChanges = () => {
+                            data.title = titleEl?.value?.trim() ?? '';
+                            readGaugesFromPopup(popup, data);
+                            onUpdate(data);
+                        };
 
-                    const applyChanges = () => {
-                        data.title = titleEl?.value?.trim() ?? '';
-                        const raw = parseInt(valueEl?.value ?? '75', 10);
-                        data.value = Math.min(100, Math.max(0, isNaN(raw) ? 0 : raw));
-                        data.label = labelEl?.value?.trim() ?? '';
-                        onUpdate(data);
-                    };
+                        titleEl?.addEventListener('input', applyChanges);
 
-                    titleEl?.addEventListener('input', applyChanges);
-                    labelEl?.addEventListener('input', applyChanges);
+                        for (let i = 1; i <= MAX_GAUGES; i++) {
+                            const valueEl = popup.querySelector(`#gf_value${i}`);
+                            const sliderEl = popup.querySelector(`#gf_slider${i}`);
+                            const labelEl = popup.querySelector(`#gf_label${i}`);
 
-                    valueEl?.addEventListener('input', () => {
-                        if (sliderEl) {
-                            sliderEl.value = valueEl.value;
+                            valueEl?.addEventListener('input', () => {
+                                if (sliderEl) {
+                                    sliderEl.value = valueEl.value;
+                                }
+                                applyChanges();
+                            });
+
+                            sliderEl?.addEventListener('input', () => {
+                                if (valueEl) {
+                                    valueEl.value = sliderEl.value;
+                                }
+                                applyChanges();
+                            });
+
+                            labelEl?.addEventListener('input', applyChanges);
                         }
-                        applyChanges();
-                    });
-
-                    sliderEl?.addEventListener('input', () => {
-                        if (valueEl) {
-                            valueEl.value = sliderEl.value;
-                        }
-                        applyChanges();
-                    });
-                });
+                    }
+                );
             });
         } catch (error) {
             container.innerHTML = '';
@@ -200,11 +258,15 @@ export default {
     },
 
     renderHtml: async(data) => {
-        const value = Math.min(100, Math.max(0, parseInt(data.value ?? 75, 10) || 0));
-        const svg = buildGaugeSvg(value, data.label || '');
+        const gauges = normaliseGauges(data).filter(g => g.value > 0 || g.label);
+        const items = (gauges.length ? gauges : [{value: 0, label: ''}]).map(g => {
+            const value = Math.min(100, Math.max(0, parseInt(g.value, 10) || 0));
+            return {svg: buildGaugeSvg(value, g.label || '')};
+        });
+
         return Templates.render('tiny_studiolms/block_gauge', {
             title: data.title ? esc(data.title) : '',
-            svg,
+            gauges: items,
         });
     },
 };

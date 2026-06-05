@@ -202,6 +202,7 @@ $string['gauge_label'] = 'Label';
 $string['gauge_label_ph'] = 'e.g., Approval rate';
 $string['gauge_title'] = 'Title (optional)';
 $string['gauge_value'] = 'Value (%)';
+$string['gauge_values_hint'] = 'Leave the label blank to hide a gauge slot.';
 $string['generic_file'] = 'File';
 $string['grid_align'] = 'Card Height';
 $string['grid_align_start'] = 'Natural (Top)';

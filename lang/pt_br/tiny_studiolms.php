@@ -202,6 +202,7 @@ $string['gauge_label'] = 'Rótulo';
 $string['gauge_label_ph'] = 'ex: Taxa de aprovação';
 $string['gauge_title'] = 'Título (opcional)';
 $string['gauge_value'] = 'Valor (%)';
+$string['gauge_values_hint'] = 'Deixe o rótulo em branco para ocultar um velocímetro.';
 $string['generic_file'] = 'Arquivo';
 $string['grid_align'] = 'Altura dos Cards';
 $string['grid_align_start'] = 'Natural (Topo)';
