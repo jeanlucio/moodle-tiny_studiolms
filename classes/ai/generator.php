@@ -521,6 +521,25 @@ class generator {
     }
 
     /**
+     * Generates free-form text from a caller-supplied system prompt and user prompt.
+     *
+     * Generic entry point that exposes the provider chain (core_ai → Gemini → Groq →
+     * Custom OpenAI-compatible) and the personal-first key resolution to other plugins,
+     * such as local_studiolms, which build their own prompts and parse the returned
+     * content themselves. Unlike the block generators, no schema or language directive
+     * is injected here — the caller is responsible for the full system prompt.
+     *
+     * @param string $systemprompt System instruction text.
+     * @param string $userprompt User prompt text.
+     * @return string The generated content as returned by the provider.
+     * @throws \moodle_exception If no provider is configured or all calls fail.
+     */
+    public static function generate_text(string $systemprompt, string $userprompt): string {
+        $result = self::call_providers($userprompt, $systemprompt, 'ai_generate_text_error');
+        return (string)$result['data'];
+    }
+
+    /**
      * Calls the Google Gemini API.
      *
      * API key is sent via the x-goog-api-key header instead of the querystring to

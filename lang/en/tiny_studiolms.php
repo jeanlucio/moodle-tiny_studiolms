@@ -47,6 +47,7 @@ $string['ai_chat_send'] = 'Send';
 $string['ai_chat_title'] = 'AI Assistant';
 $string['ai_chat_you'] = 'You';
 $string['ai_generate'] = 'Generate';
+$string['ai_generate_text_error'] = 'The AI could not generate the requested content. Please try again.';
 $string['ai_generating'] = 'Generating...';
 $string['ai_generator_desc'] = 'Describe the content you want to create and the AI will suggest a StudioLMS block.';
 $string['ai_generator_error'] = 'The AI could not generate a block. Please try again or rephrase your request.';
