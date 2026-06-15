@@ -357,55 +357,86 @@ class generator {
     }
 
     /**
-     * Resolves API keys and URLs with a personal-first resolution strategy.
+     * Resolves API keys and URLs following the canonical ecosystem ladder, level-first:
      *
-     * Personal keys (user preferences) take absolute priority.
-     * When any personal key is configured, institution-wide defaults are ignored entirely
-     * so that a teacher who set a custom provider is never silently overridden by an
-     * institution key with higher provider priority.
+     *   own personal (tiny prefs) → hub personal (local_playergames)
+     *   → own site (tiny config)  → hub site (local_playergames)
      *
-     * When NO personal keys are set, institution-wide admin config is used.
+     * Levels are exclusive by presence: if any personal key exists (own or hub),
+     * only personal keys are used; otherwise the site level is used. core_ai is the
+     * institutional default and is consulted by the caller only when no key is set at
+     * any level. The hub levels are skipped when local_playergames is absent. The
+     * OpenAI-compatible slot maps to the hub's "openai" provider (key/url/model).
      *
-     * @return array With keys geminikey, groqkey, customkey, customurl, custommodel, haspersonalkeys.
+     * @return array With keys geminikey, groqkey, customkey, customurl, custommodel.
      */
     private static function resolve_keys(): array {
-        $personalgemini = (string)get_user_preferences('tiny_studiolms_gemini_key', '');
-        $personalgroq   = (string)get_user_preferences('tiny_studiolms_groq_key', '');
-        $personalcustom = (string)get_user_preferences('tiny_studiolms_custom_key', '');
-        $personalurl    = (string)get_user_preferences('tiny_studiolms_custom_url', '');
-        $personalmodel  = (string)get_user_preferences('tiny_studiolms_custom_model', '');
+        $hubinstalled = class_exists(\local_playergames\api_key_helper::class);
 
-        $haspersonalkeys = !empty($personalgemini) || !empty($personalgroq) || !empty($personalcustom);
+        // Personal level: own tiny preferences, then the hub's personal keys.
+        $geminikey   = (string)get_user_preferences('tiny_studiolms_gemini_key', '');
+        $groqkey     = (string)get_user_preferences('tiny_studiolms_groq_key', '');
+        $customkey   = (string)get_user_preferences('tiny_studiolms_custom_key', '');
+        $customurl   = (string)get_user_preferences('tiny_studiolms_custom_url', '');
+        $custommodel = (string)get_user_preferences('tiny_studiolms_custom_model', '');
 
-        if ($haspersonalkeys) {
-            return [
-                'geminikey'      => $personalgemini,
-                'groqkey'        => $personalgroq,
-                'customkey'      => $personalcustom,
-                'customurl'      => $personalurl,
-                'custommodel'    => $personalmodel,
-                'haspersonalkeys' => true,
-            ];
+        if ($hubinstalled) {
+            if ($geminikey === '') {
+                $geminikey = \local_playergames\api_key_helper::get_personal_key('gemini');
+            }
+            if ($groqkey === '') {
+                $groqkey = \local_playergames\api_key_helper::get_personal_key('groq');
+            }
+            if ($customkey === '') {
+                $customkey = \local_playergames\api_key_helper::get_personal_key('openai');
+                if ($customkey !== '') {
+                    $customurl   = \local_playergames\api_key_helper::get_openai_baseurl();
+                    $custommodel = \local_playergames\api_key_helper::get_openai_model();
+                }
+            }
+        }
+
+        // Site level: only when no personal key was found at all.
+        if ($geminikey === '' && $groqkey === '' && $customkey === '') {
+            $geminikey   = (string)get_config('tiny_studiolms', 'apikey_gemini');
+            $groqkey     = (string)get_config('tiny_studiolms', 'apikey_groq');
+            $customkey   = (string)get_config('tiny_studiolms', 'apikey_custom');
+            $customurl   = (string)get_config('tiny_studiolms', 'custom_baseurl');
+            $custommodel = (string)get_config('tiny_studiolms', 'custom_model');
+
+            if ($hubinstalled) {
+                if ($geminikey === '') {
+                    $geminikey = \local_playergames\api_key_helper::get_site_key('gemini');
+                }
+                if ($groqkey === '') {
+                    $groqkey = \local_playergames\api_key_helper::get_site_key('groq');
+                }
+                if ($customkey === '') {
+                    $customkey = \local_playergames\api_key_helper::get_site_key('openai');
+                    if ($customkey !== '') {
+                        $customurl   = \local_playergames\api_key_helper::get_openai_baseurl();
+                        $custommodel = \local_playergames\api_key_helper::get_openai_model();
+                    }
+                }
+            }
         }
 
         return [
-            'geminikey'      => (string)get_config('tiny_studiolms', 'apikey_gemini'),
-            'groqkey'        => (string)get_config('tiny_studiolms', 'apikey_groq'),
-            'customkey'      => (string)get_config('tiny_studiolms', 'apikey_custom'),
-            'customurl'      => (string)get_config('tiny_studiolms', 'custom_baseurl'),
-            'custommodel'    => (string)get_config('tiny_studiolms', 'custom_model'),
-            'haspersonalkeys' => false,
+            'geminikey'   => $geminikey,
+            'groqkey'     => $groqkey,
+            'customkey'   => $customkey,
+            'customurl'   => $customurl,
+            'custommodel' => $custommodel,
         ];
     }
 
     /**
-     * Tries all configured AI providers in order and returns the first successful response.
+     * Tries the configured AI providers following the canonical ladder.
      *
-     * When personal keys are configured:
-     *   Gemini (personal) → Groq (personal) → Custom (personal)
-     *
-     * When only institution keys are available:
-     *   core_ai → Gemini (institution) → Groq (institution) → Custom (institution)
+     * The active key level (personal or site, resolved by resolve_keys) is tried
+     * first: Gemini → Groq → Custom OpenAI-compatible. Moodle core_ai is the
+     * institutional default and is consulted only when no key is configured at any
+     * level, so an explicitly set personal or site key always wins.
      *
      * @param string $userprompt  The user-facing prompt text.
      * @param string $sysprompt   The system instruction to send.
@@ -416,18 +447,7 @@ class generator {
     private static function call_providers(string $userprompt, string $sysprompt, string $errkey): array {
         $keys = self::resolve_keys();
 
-        // Priority 0: Moodle core_ai — institution default, skipped when personal keys are set.
-        if (!$keys['haspersonalkeys'] && self::has_core_ai_provider()) {
-            $result = self::call_core_ai($sysprompt, $userprompt);
-            if ($result['success']) {
-                return $result;
-            }
-        }
-
-        if (empty($keys['geminikey']) && empty($keys['groqkey']) && empty($keys['customkey'])) {
-            throw new \moodle_exception('ai_generator_no_config', 'tiny_studiolms');
-        }
-
+        $nokeys = empty($keys['geminikey']) && empty($keys['groqkey']) && empty($keys['customkey']);
         $result = ['success' => false, 'data' => ''];
         $failures = [];
 
@@ -462,7 +482,15 @@ class generator {
             }
         }
 
+        // Bottom of the ladder: Moodle core_ai, only when no key is configured.
+        if (!$result['success'] && $nokeys && self::has_core_ai_provider()) {
+            $result = self::call_core_ai($sysprompt, $userprompt);
+        }
+
         if (!$result['success']) {
+            if ($nokeys && empty($failures)) {
+                throw new \moodle_exception('ai_generator_no_config', 'tiny_studiolms');
+            }
             throw new \moodle_exception($errkey, 'tiny_studiolms', '', null, implode(' | ', $failures));
         }
 
@@ -1533,23 +1561,7 @@ class generator {
     public static function call_chat(string $systemprompt, array $messages): array {
         $keys = self::resolve_keys();
 
-        // Priority 0: Moodle core_ai — institution default, skipped when personal keys are set.
-        if (!$keys['haspersonalkeys'] && self::has_core_ai_provider()) {
-            $chatlines = [];
-            foreach ($messages as $msg) {
-                $role = $msg['role'] === 'assistant' ? 'Assistant' : 'User';
-                $chatlines[] = $role . ': ' . $msg['content'];
-            }
-            $result = self::call_core_ai($systemprompt, implode("\n", $chatlines));
-            if ($result['success']) {
-                return ['data' => $result['data'], 'provider' => $result['provider']];
-            }
-        }
-
-        if (empty($keys['geminikey']) && empty($keys['groqkey']) && empty($keys['customkey'])) {
-            throw new \moodle_exception('ai_generator_no_config', 'tiny_studiolms');
-        }
-
+        $nokeys = empty($keys['geminikey']) && empty($keys['groqkey']) && empty($keys['customkey']);
         $result = ['success' => false, 'data' => ''];
         $failures = [];
 
@@ -1634,7 +1646,21 @@ class generator {
             }
         }
 
+        // Bottom of the ladder: Moodle core_ai, only when no key is configured.
+        // core_ai has no native multi-turn API, so the history is flattened.
+        if (!$result['success'] && $nokeys && self::has_core_ai_provider()) {
+            $chatlines = [];
+            foreach ($messages as $msg) {
+                $role = $msg['role'] === 'assistant' ? 'Assistant' : 'User';
+                $chatlines[] = $role . ': ' . $msg['content'];
+            }
+            $result = self::call_core_ai($systemprompt, implode("\n", $chatlines));
+        }
+
         if (!$result['success']) {
+            if ($nokeys && empty($failures)) {
+                throw new \moodle_exception('ai_generator_no_config', 'tiny_studiolms');
+            }
             throw new \moodle_exception('ai_chat_error', 'tiny_studiolms', '', null, implode(' | ', $failures));
         }
 

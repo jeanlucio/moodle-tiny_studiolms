@@ -1,5 +1,20 @@
 # Change log
 
+## 1.0.3 (2026-06-15)
+
+- Changed: AI provider resolution now follows the shared PlayerGames ecosystem
+  ladder, level-first: own personal key → PlayerGames hub personal key → own site
+  key → hub site key → Moodle `core_ai`. `core_ai` moved from priority-0 to the
+  bottom, so an explicitly configured personal or site key always wins over the
+  institutional default.
+- Added: personal and site keys configured in `local_playergames` are now read at
+  the matching level (the editor is no longer an isolated key silo). The
+  integration stays optional via `class_exists` and needs `local_playergames`
+  0.1.1+; the editor's own keys keep working unchanged.
+- Both AI modes (block/preset generation and the multi-turn chat) use the same
+  ladder. Behaviour with personal keys is unchanged; the only difference is that a
+  configured site/hub key now wins over `core_ai`.
+
 ## 1.0.2 (2026-06-05)
 
 - Added: Moodle `core_ai` probed as priority-0 provider when no personal keys are
