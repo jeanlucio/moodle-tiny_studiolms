@@ -1,5 +1,13 @@
 # Change log
 
+## 1.0.4 (2026-06-15)
+
+- Fixed: key resolution now evaluates each ladder tier as a whole — the first
+  tier that holds any provider key (own personal → hub personal → own site → hub
+  site) is used exclusively. Previously the own and hub stores were merged per
+  provider, so a hub key for a higher-priority provider could win over a personal
+  key the teacher had set for a lower-priority provider (e.g. a custom endpoint).
+
 ## 1.0.3 (2026-06-15)
 
 - Changed: AI provider resolution now follows the shared PlayerGames ecosystem

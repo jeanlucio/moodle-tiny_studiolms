@@ -357,67 +357,73 @@ class generator {
     }
 
     /**
-     * Resolves API keys and URLs following the canonical ecosystem ladder, level-first:
+     * Resolves API keys and URLs following the canonical ecosystem ladder, tier by tier:
      *
-     *   own personal (tiny prefs) → hub personal (local_playergames)
-     *   → own site (tiny config)  → hub site (local_playergames)
+     *   1. own personal (tiny prefs)
+     *   2. hub personal (local_playergames)
+     *   3. own site     (tiny config)
+     *   4. hub site     (local_playergames)
      *
-     * Levels are exclusive by presence: if any personal key exists (own or hub),
-     * only personal keys are used; otherwise the site level is used. core_ai is the
-     * institutional default and is consulted by the caller only when no key is set at
-     * any level. The hub levels are skipped when local_playergames is absent. The
-     * OpenAI-compatible slot maps to the hub's "openai" provider (key/url/model).
+     * Each tier is resolved as a whole: the first tier that holds any provider key
+     * is used exclusively (so an own personal key always wins over a hub key, even
+     * for a different provider). core_ai is the institutional default and is
+     * consulted by the caller only when no tier holds a key. The hub tiers are
+     * skipped when local_playergames is absent; its "openai" provider maps to the
+     * custom OpenAI-compatible slot (key/url/model).
      *
      * @return array With keys geminikey, groqkey, customkey, customurl, custommodel.
      */
     private static function resolve_keys(): array {
         $hubinstalled = class_exists(\local_playergames\api_key_helper::class);
 
-        // Personal level: own tiny preferences, then the hub's personal keys.
-        $geminikey   = (string)get_user_preferences('tiny_studiolms_gemini_key', '');
-        $groqkey     = (string)get_user_preferences('tiny_studiolms_groq_key', '');
-        $customkey   = (string)get_user_preferences('tiny_studiolms_custom_key', '');
-        $customurl   = (string)get_user_preferences('tiny_studiolms_custom_url', '');
-        $custommodel = (string)get_user_preferences('tiny_studiolms_custom_model', '');
+        $tiers = [];
 
+        // Tier 1: own personal (tiny user preferences).
+        $tiers[] = [
+            (string)get_user_preferences('tiny_studiolms_gemini_key', ''),
+            (string)get_user_preferences('tiny_studiolms_groq_key', ''),
+            (string)get_user_preferences('tiny_studiolms_custom_key', ''),
+            (string)get_user_preferences('tiny_studiolms_custom_url', ''),
+            (string)get_user_preferences('tiny_studiolms_custom_model', ''),
+        ];
+
+        // Tier 2: hub personal.
         if ($hubinstalled) {
-            if ($geminikey === '') {
-                $geminikey = \local_playergames\api_key_helper::get_personal_key('gemini');
-            }
-            if ($groqkey === '') {
-                $groqkey = \local_playergames\api_key_helper::get_personal_key('groq');
-            }
-            if ($customkey === '') {
-                $customkey = \local_playergames\api_key_helper::get_personal_key('openai');
-                if ($customkey !== '') {
-                    $customurl   = \local_playergames\api_key_helper::get_openai_baseurl();
-                    $custommodel = \local_playergames\api_key_helper::get_openai_model();
-                }
-            }
+            $tiers[] = [
+                \local_playergames\api_key_helper::get_personal_key('gemini'),
+                \local_playergames\api_key_helper::get_personal_key('groq'),
+                \local_playergames\api_key_helper::get_personal_key('openai'),
+                \local_playergames\api_key_helper::get_openai_baseurl(),
+                \local_playergames\api_key_helper::get_openai_model(),
+            ];
         }
 
-        // Site level: only when no personal key was found at all.
-        if ($geminikey === '' && $groqkey === '' && $customkey === '') {
-            $geminikey   = (string)get_config('tiny_studiolms', 'apikey_gemini');
-            $groqkey     = (string)get_config('tiny_studiolms', 'apikey_groq');
-            $customkey   = (string)get_config('tiny_studiolms', 'apikey_custom');
-            $customurl   = (string)get_config('tiny_studiolms', 'custom_baseurl');
-            $custommodel = (string)get_config('tiny_studiolms', 'custom_model');
+        // Tier 3: own site (tiny config).
+        $tiers[] = [
+            (string)get_config('tiny_studiolms', 'apikey_gemini'),
+            (string)get_config('tiny_studiolms', 'apikey_groq'),
+            (string)get_config('tiny_studiolms', 'apikey_custom'),
+            (string)get_config('tiny_studiolms', 'custom_baseurl'),
+            (string)get_config('tiny_studiolms', 'custom_model'),
+        ];
 
-            if ($hubinstalled) {
-                if ($geminikey === '') {
-                    $geminikey = \local_playergames\api_key_helper::get_site_key('gemini');
-                }
-                if ($groqkey === '') {
-                    $groqkey = \local_playergames\api_key_helper::get_site_key('groq');
-                }
-                if ($customkey === '') {
-                    $customkey = \local_playergames\api_key_helper::get_site_key('openai');
-                    if ($customkey !== '') {
-                        $customurl   = \local_playergames\api_key_helper::get_openai_baseurl();
-                        $custommodel = \local_playergames\api_key_helper::get_openai_model();
-                    }
-                }
+        // Tier 4: hub site.
+        if ($hubinstalled) {
+            $tiers[] = [
+                \local_playergames\api_key_helper::get_site_key('gemini'),
+                \local_playergames\api_key_helper::get_site_key('groq'),
+                \local_playergames\api_key_helper::get_site_key('openai'),
+                \local_playergames\api_key_helper::get_openai_baseurl(),
+                \local_playergames\api_key_helper::get_openai_model(),
+            ];
+        }
+
+        // Use the first tier that holds any provider key.
+        $geminikey = $groqkey = $customkey = $customurl = $custommodel = '';
+        foreach ($tiers as $tier) {
+            if ($tier[0] !== '' || $tier[1] !== '' || $tier[2] !== '') {
+                [$geminikey, $groqkey, $customkey, $customurl, $custommodel] = $tier;
+                break;
             }
         }
 
