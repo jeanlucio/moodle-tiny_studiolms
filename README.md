@@ -44,7 +44,7 @@
   * **My Templates** — Teacher's personal layouts with Save, Export and Import actions.
   * **Favourites** — Curated mix of starred templates from all tabs.
 * ⭐ **Favourites System:** Toggle any template as favourite for quick access.
-* 🤖 **AI Content Generation (Optional):** Two complementary AI modes with a level-first provider ladder (personal key → PlayerGames hub → site key → **Moodle `core_ai`**). An explicitly configured key always wins; when none is set, **Moodle AI (`core_ai`)** is used automatically with no external API key required. Within a level the order is Gemini → Groq → Custom OpenAI-compatible:
+* 🤖 **AI Content Generation (Optional):** Two complementary AI modes with a tiered provider ladder (own personal key → PlayerGames hub → site key → **Moodle `core_ai`**). An explicitly configured key always wins; when none is set, **Moodle AI (`core_ai`)** is used automatically with no external API key required. Within each tier the order is Gemini → Groq → Custom OpenAI-compatible:
   * **AI Block Generator** — Teacher types a plain-language prompt ("Create a red warning card about the exam") and the block is generated ready to insert.
   * **AI Chat Assistant** — Conversational multi-turn chat where the teacher pastes a syllabus, lesson plan or any course content. The AI immediately generates a complete visual template with the real content populated, or asks whether to use Grid Cards vs Webteca when the content is a list of resources. The AI provider used is shown below each reply for transparency.
 * 📤 **Export / Import:** Templates travel as `.json` files, portable across Moodle instances.
@@ -192,22 +192,24 @@ The AI feature is a productivity tool.
 
 #### Supported Providers
 
-Keys are resolved **level-first**, following the shared PlayerGames ecosystem
+Keys are resolved **tier by tier**, following the shared PlayerGames ecosystem
 ladder. An explicitly configured key always wins; `core_ai` sits at the bottom:
 
-| Level | Source |
-|-------|--------|
-| 1 | **Personal key** — teacher's own key set in the StudioLMS *AI Keys* tab |
+| Tier | Source |
+|------|--------|
+| 1 | **Own personal key** — teacher's own key set in the StudioLMS *AI Keys* tab |
 | 2 | **Hub personal key** — teacher's own key in **local_playergames** (if installed) |
-| 3 | **Site key** — admin key in the StudioLMS plugin settings |
+| 3 | **Own site key** — admin key in the StudioLMS plugin settings |
 | 4 | **Hub site key** — admin key in **local_playergames** settings (if installed) |
 | 5 | **Moodle AI (`core_ai`)** — built-in subsystem (4.5+); no external key needed |
 
-If *any* personal key is set, only personal keys are used; otherwise the site
-level; `core_ai` is consulted only when no key is configured at any level. Within
-a level, providers are tried in the order Google Gemini → Groq → OpenAI-compatible
-(e.g. OpenRouter, LM Studio, Ollama proxy). A teacher's key configured in the
-PlayerGames hub is read automatically — no need to re-enter it in StudioLMS.
+Each tier is evaluated as a whole: the first tier that holds *any* key is used
+exclusively, so a teacher's own personal key (tier 1) always wins over a hub key
+(tier 2) — even a hub key for a higher-priority provider. `core_ai` is consulted
+only when no tier holds a key. Within the chosen tier, providers are tried in the
+order Google Gemini → Groq → OpenAI-compatible (e.g. OpenRouter, LM Studio, Ollama
+proxy). A teacher's key configured in the PlayerGames hub is read automatically —
+no need to re-enter it in StudioLMS.
 
 External services operate under their own terms of service and privacy policies.
 
