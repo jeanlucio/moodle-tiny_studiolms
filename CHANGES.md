@@ -1,5 +1,12 @@
 # Change log
 
+## 1.0.5 (2026-06-15)
+
+- Changed: the Moodle `core_ai` manager is now retrieved through the dependency
+  container (`\core\di::get(\core_ai\manager::class)`), the documented retrieval
+  pattern, instead of a reflection-based constructor shim. Behaviour is
+  unchanged.
+
 ## 1.0.4 (2026-06-15)
 
 - Fixed: key resolution now evaluates each ladder tier as a whole — the first
