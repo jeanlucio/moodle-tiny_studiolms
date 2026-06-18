@@ -2699,20 +2699,17 @@ a.studiolms-webteca-item:focus-visible {
 }
 
 /* ==========================================================================
-   RESPONSIVIDADE — BLOCOS RENDERIZADOS (VISÃO DO ESTUDANTE)
-   Aplica em telas ≤ 575 px (smartphones em portrait)
+   RESPONSIVE — RENDERED BLOCKS (STUDENT VIEW) — max 575px
    ========================================================================== */
 
 @media (max-width: 575.98px) {
 
-    /* Grid cards: qualquer configuração multi-coluna passa para 1 coluna */
     .studiolms-grid-content.slms-cols-2,
     .studiolms-grid-content.slms-cols-3,
     .studiolms-grid-content.slms-cols-4 {
         grid-template-columns: 1fr;
     }
 
-    /* Card horizontal: colapsa para coluna vertical */
     .studiolms-card.slms-horizontal {
         flex-direction: column;
     }
@@ -2723,13 +2720,12 @@ a.studiolms-webteca-item:focus-visible {
         border-bottom: 1px solid var(--bs-border-color, #e2e8f0);
     }
 
-    /* Features infographic: 2 e 3 colunas colapsam para 1 */
     .slms-features__grid--2,
     .slms-features__grid--3 {
         grid-template-columns: 1fr;
     }
 
-    /* Steps horizontal: colapsa para lista vertical com badge à esquerda */
+    /* Horizontal steps collapse to vertical rows with badge on the left. */
     .slms-infographic-steps-block .slms-steps__list--h {
         flex-direction: column;
     }
@@ -2750,13 +2746,12 @@ a.studiolms-webteca-item:focus-visible {
         display: none;
     }
 
-    /* Comparison: scroll horizontal quando as colunas fixas ultrapassam a tela */
+    /* Fixed 80px columns overflow narrow screens — horizontal scroll is safer than restructuring. */
     .slms-infographic-comparison-block {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
 
-    /* Webteca grid row: colapsa para coluna */
     .studiolms-webteca-list.slms-dir-row {
         flex-direction: column;
     }
@@ -2764,13 +2759,12 @@ a.studiolms-webteca-item:focus-visible {
 }
 
 /* ==========================================================================
-   RESPONSIVIDADE — INTERFACE DO COMPOSITOR (EDITOR)
-   Aplica em telas ≤ 767 px (smartphones e tablets pequenos)
+   RESPONSIVE — COMPOSER UI (EDITOR) — max 767px
    ========================================================================== */
 
 @media (max-width: 767.98px) {
 
-    /* Modal: ocupa toda a tela; dvh desconta o teclado virtual (fallback: 88vh) */
+    /* dvh accounts for the virtual keyboard; 88vh from the base rule acts as fallback. */
     .studiolms-modal-dialog {
         max-width: 100vw;
         margin: 0;
@@ -2781,14 +2775,13 @@ a.studiolms-webteca-item:focus-visible {
         border-radius: 0;
     }
 
-    /* Logo bar: quebra em duas linhas */
     .tiny_studiolms .slms-logo-bar {
         flex-wrap: wrap;
         padding: 0.375rem 0.625rem;
         gap: 0.25rem;
     }
 
-    /* Linha 1: logo empurra os botões para a direita */
+    /* Row 1: logo + AI buttons. */
     .tiny_studiolms .slms-logo-home-btn {
         order: 1;
         margin-inline-end: auto;
@@ -2798,7 +2791,7 @@ a.studiolms-webteca-item:focus-visible {
         order: 2;
     }
 
-    /* Linha 2: abas com scroll horizontal oculto */
+    /* Row 2: tabs — hidden scrollbar, horizontal scroll. */
     .tiny_studiolms .slms-sidebar-tabs {
         order: 3;
         flex: 0 0 100%;
@@ -2813,7 +2806,7 @@ a.studiolms-webteca-item:focus-visible {
         display: none;
     }
 
-    /* Linha 3: campo de busca em largura total */
+    /* Row 3: search field. */
     .tiny_studiolms .slms-sidebar-search-wrap {
         order: 4;
         flex: 0 0 100%;
@@ -2821,12 +2814,11 @@ a.studiolms-webteca-item:focus-visible {
         margin-inline-start: 0;
     }
 
-    /* Composer layout: contexto de posicionamento para a gaveta lateral */
     .tiny_studiolms .slms-composer-layout {
         position: relative;
     }
 
-    /* Sidebar: gaveta sobreposta ao canvas — animação via transform */
+    /* Sidebar becomes an overlay drawer; transform replaces the flex-basis animation. */
     .tiny_studiolms .slms-sidebar,
     .tiny_studiolms .slms-sidebar.slms-sidebar-collapsed {
         position: absolute;
@@ -2851,7 +2843,7 @@ a.studiolms-webteca-item:focus-visible {
         box-shadow: none;
     }
 
-    /* Botão de toggle: alvo de toque maior e z-index acima da gaveta */
+    /* Larger touch target; z-index keeps it above the open drawer. */
     .tiny_studiolms .slms-sidebar-toggle {
         flex: 0 0 36px;
         width: 36px;
