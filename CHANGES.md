@@ -1,5 +1,13 @@
 # Change log
 
+## 1.0.6 (2026-06-20)
+
+- Fixed: the plugin now removes its per-user preferences (the personal AI keys
+  stored per user) on uninstall. Moodle core drops the plugin's own tables and
+  settings automatically, but never touches the core `user_preferences` table,
+  so these rows were previously left behind. A `db/uninstall.php` hook now
+  deletes every `tiny_studiolms_*` user preference.
+
 ## 1.0.5 (2026-06-15)
 
 - Changed: the Moodle `core_ai` manager is now retrieved through the dependency
