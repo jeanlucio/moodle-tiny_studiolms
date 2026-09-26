@@ -29,23 +29,28 @@
     }
 }}
 <div class="slms-tpl-card" data-templateid="{{id}}">
+    {{!
+        content is arbitrary stored HTML (own templates, official templates created by anyone
+        with manageglobaltemplates, or an imported .json file) — never trusted markup. Rendered
+        inside a fully sandboxed iframe (no allow-scripts, no allow-same-origin) via srcdoc, so it
+        displays as a live visual preview without being able to execute script. The
+        double-mustache variable below HTML-escapes the value for safe use inside the srcdoc
+        attribute; the browser then decodes and parses it as the iframe's own inert document.
+
+        The iframe is a sibling of, not nested inside, the role="button" element below: HTML
+        validation (and the ARIA button pattern) forbids interactive content — which an iframe
+        always counts as, sandboxed or not — inside a button. amd/src/templateslibrary.js wires
+        a click on this thumbnail to the same handler as the button, so the whole card still
+        acts as a single click target.
+    }}
+    <div class="slms-tpl-thumb" aria-hidden="true">
+        <iframe class="slms-tpl-thumb-content"
+                sandbox=""
+                tabindex="-1"
+                loading="lazy"
+                srcdoc="{{content}}"></iframe>
+    </div>
     <div class="slms-tpl-insert" role="button" tabindex="0" aria-label="{{name}}">
-        <div class="slms-tpl-thumb" aria-hidden="true">
-            {{!
-                content is arbitrary stored HTML (own templates, official templates created by
-                anyone with manageglobaltemplates, or an imported .json file) — never trusted
-                markup. Rendered inside a fully sandboxed iframe (no allow-scripts, no
-                allow-same-origin) via srcdoc, so it displays as a live visual preview without
-                being able to execute script. The double-mustache variable below HTML-escapes the
-                value for safe use inside the srcdoc attribute; the browser then decodes and
-                parses it as the iframe's own inert document.
-            }}
-            <iframe class="slms-tpl-thumb-content"
-                    sandbox=""
-                    tabindex="-1"
-                    loading="lazy"
-                    srcdoc="{{content}}"></iframe>
-        </div>
         <div class="slms-tpl-meta">
             <div class="slms-tpl-name-row">
                 <div class="slms-tpl-icon" aria-hidden="true">

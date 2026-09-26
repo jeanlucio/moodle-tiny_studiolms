@@ -355,6 +355,7 @@
     padding: 8px;
     overflow: hidden;
     background: var(--bs-white, #fff);
+    cursor: pointer;
 }
 
 .slms-sidebar .slms-tpl-thumb .slms-tpl-thumb-content {
@@ -379,10 +380,7 @@
 }
 
 .slms-sidebar .slms-tpl-insert {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
+    flex: 0 0 auto;
     cursor: pointer;
 }
 
@@ -592,6 +590,7 @@
     background: var(--bs-gray-100, #f8f9fa);
     border-bottom: 1px solid var(--bs-border-color, #dee2e6);
     padding: 12px;
+    cursor: pointer;
 }
 
 .tiny_studiolms .slms-tpl-thumb-content {

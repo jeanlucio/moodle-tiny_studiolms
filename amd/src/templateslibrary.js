@@ -229,6 +229,10 @@ export const renderTemplateGrid = async(container, templates, editor, modal, opt
             wrapper.innerHTML = htmlParts[i];
             const card = wrapper.firstElementChild;
             const insertTrigger = card.querySelector('.slms-tpl-insert');
+            // The thumbnail sits outside .slms-tpl-insert in the markup (an iframe cannot be
+            // nested inside a role="button" element — see template_card.mustache), so its click
+            // is wired separately to the same handler to keep the whole card a single target.
+            const thumb = card.querySelector('.slms-tpl-thumb');
 
             if (insertTrigger) {
                 const handleClick = () => {
@@ -247,6 +251,10 @@ export const renderTemplateGrid = async(container, templates, editor, modal, opt
                         handleClick();
                     }
                 });
+
+                if (thumb) {
+                    thumb.addEventListener('click', handleClick);
+                }
             }
 
             const btnFav = card.querySelector('.slms-btn-fav');
