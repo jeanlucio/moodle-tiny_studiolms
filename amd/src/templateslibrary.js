@@ -296,12 +296,14 @@ const handleInsertTemplate = (tpl, editor, modal) => {
         let contentToInsert = tpl.content;
 
         if (tplName) {
-            const temp = document.createElement('div');
-            temp.innerHTML = tpl.content;
-            temp.querySelectorAll('[data-slms-block-type]').forEach((el) => {
+            // Tpl.content is arbitrary stored template HTML — parsed via DOMParser into a
+            // separate, inert document (see loadTemplateToCanvas in app.js) rather than a live
+            // div's innerHTML, so tagging the elements here cannot execute a crafted payload.
+            const parsed = new DOMParser().parseFromString(tpl.content, 'text/html');
+            parsed.body.querySelectorAll('[data-slms-block-type]').forEach((el) => {
                 el.setAttribute('data-slms-tpl-name', tplName);
             });
-            contentToInsert = temp.innerHTML;
+            contentToInsert = parsed.body.innerHTML;
         }
 
         editor.insertContent(contentToInsert);

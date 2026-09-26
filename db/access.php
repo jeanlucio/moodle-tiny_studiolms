@@ -39,10 +39,14 @@ $capabilities = [
             'manager'        => CAP_ALLOW,
         ],
     ],
-    // Allows creating and editing official/global templates visible to all users.
+    // Allows creating and editing official/global templates visible to all users. Templates are
+    // stored as raw HTML and rendered to every user's library (see templates/template_card.mustache
+    // and amd/src/app.js), so holding this capability is equivalent to being able to serve
+    // arbitrary HTML/JS site-wide — RISK_XSS/RISK_CONFIG warn an admin who is about to grant it.
     'tiny/studiolms:manageglobaltemplates' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
+        'riskbitmask' => RISK_XSS | RISK_CONFIG,
         'archetypes' => [
             'manager' => CAP_ALLOW,
         ],

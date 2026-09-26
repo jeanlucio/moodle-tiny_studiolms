@@ -579,10 +579,13 @@ const showCanvasEmptyState = () => {
  * @returns {Promise<void>}
  */
 export const loadTemplateToCanvas = async(htmlContent, tplName = '') => {
-    const temp = document.createElement('div');
-    temp.innerHTML = htmlContent;
-
-    const blockElements = temp.querySelectorAll('[data-slms-block-type]');
+    // HtmlContent is arbitrary stored template HTML — never trusted markup (see
+    // StateManager.restore() above for the same concern on a single block's own state).
+    // DOMParser builds a separate, inert document: unlike assigning to a live div's innerHTML,
+    // it never fetches images or fires event handlers, so reading attributes off it here cannot
+    // execute a payload crafted into the template.
+    const parsed = new DOMParser().parseFromString(htmlContent, 'text/html');
+    const blockElements = parsed.body.querySelectorAll('[data-slms-block-type]');
 
     if (blockElements.length === 0) {
         showInlineFeedback(
@@ -613,7 +616,20 @@ export const loadTemplateToCanvas = async(htmlContent, tplName = '') => {
         }
 
         if (blockDef.extractDOM) {
-            blockDef.extractDOM(el, blockConfig);
+            // The extractDOM implementations assume the node they read from was already filtered
+            // by TinyMCE — true when re-editing a block already live in this editor, not true
+            // here: el comes from parsing raw stored template HTML, which can reach storage via a
+            // direct save_template/import_templates call that never went through the editor at
+            // all. Re-serializing through the editor's own schema strips anything TinyMCE itself
+            // would never allow through (script tags, event handler attributes, etc.) while
+            // keeping this plugin's own data-slms-* attributes, which the schema explicitly
+            // allows (see extended_valid_elements in plugin.js).
+            const sanitizedHtml = tinyEditorInstance.serializer.serialize(el, {format: 'html'});
+            const sanitizedEl = new DOMParser().parseFromString(sanitizedHtml, 'text/html')
+                .body.firstElementChild;
+            if (sanitizedEl) {
+                blockDef.extractDOM(sanitizedEl, blockConfig);
+            }
         }
 
         await addBlockToCanvas(blockDef, blockConfig, true);

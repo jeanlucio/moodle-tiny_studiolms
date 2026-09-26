@@ -185,6 +185,35 @@ class behat_tiny_studiolms extends behat_base {
     }
 
     /**
+     * Asserts that a stored template's own content did not execute script when loaded into the
+     * canvas. Unlike the state-restore regression test above, a template's rich-text field may
+     * legitimately still contain a sanitized <img> tag afterward (TinyMCE's schema strips the
+     * event handler attribute, not the element itself) — this only checks the handler could not
+     * fire, not that no tag survived.
+     *
+     * Regression test for the global-template XSS: save_template/import_templates never went
+     * through TinyMCE's own typing-time filtering, so a rich-text field recovered from stored
+     * template HTML must be re-sanitized before it reaches a render sink.
+     *
+     * @Then the StudioLMS canvas preview did not execute the template's payload
+     */
+    public function studiolms_canvas_preview_did_not_execute_template_payload(): void {
+        $session = $this->getSession();
+
+        $this->spin(function () use ($session) {
+            $fired = $session->evaluateScript('return window.__slmsXssFired === true;');
+            if ($fired) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    'The template payload executed inside the StudioLMS canvas preview.',
+                    $session
+                );
+            }
+
+            return true;
+        });
+    }
+
+    /**
      * Asserts that the StudioLMS toolbar button is NOT present in the TinyMCE toolbar.
      *
      * @Then the StudioLMS toolbar button is not visible
@@ -193,6 +222,39 @@ class behat_tiny_studiolms extends behat_base {
         $this->execute('behat_general::should_not_exist', [
             '[aria-label="StudioLMS"]',
             'css_element',
+        ]);
+    }
+
+    /**
+     * Inserts a global template whose callout content carries a script-executing payload,
+     * mirroring how a direct save_template/import_templates call (bypassing TinyMCE's own
+     * typing-time filtering entirely) could produce one.
+     *
+     * Regression test for the global-template XSS: the payload sets window.__slmsXssFired,
+     * checked by "the StudioLMS canvas preview does not execute injected markup" (shared with
+     * the data-slms-state XSS regression test).
+     *
+     * @Given a malicious global StudioLMS template exists
+     */
+    public function a_malicious_global_studiolms_template_exists(): void {
+        global $DB;
+
+        $admin = get_admin();
+        $content = '<div class="studiolms-callout-wrap mceNonEditable" data-slms-hover="none" '
+            . 'data-slms-block-type="callout" data-slms-state="">'
+            . '<div class="slms-callout-icon" aria-hidden="true">⚠️</div>'
+            . '<div class="slms-callout-content mceEditable">'
+            . '<img src="x" onerror="window.__slmsXssFired = true">Aviso</div></div>';
+
+        $now = time();
+        $DB->insert_record('tiny_studiolms_templates', (object) [
+            'name'         => 'Malicious Global Template',
+            'content'      => $content,
+            'userid'       => $admin->id,
+            'usermodified' => $admin->id,
+            'isglobal'     => 1,
+            'timecreated'  => $now,
+            'timemodified' => $now,
         ]);
     }
 }
