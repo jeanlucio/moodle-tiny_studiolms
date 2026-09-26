@@ -90,6 +90,22 @@ final class provider_test extends provider_testcase {
     }
 
     /**
+     * Creates an AI generation log row for the given user.
+     *
+     * @param \stdClass $user The user who generated the block.
+     */
+    private function create_ai_log(\stdClass $user): void {
+        global $DB;
+
+        $DB->insert_record('tiny_studiolms_ai_logs', (object) [
+            'userid'      => $user->id,
+            'blocktype'   => 'callout',
+            'ai_provider' => 'gemini',
+            'timecreated' => time(),
+        ]);
+    }
+
+    /**
      * get_contexts_for_userid returns the system context when the user has templates.
      */
     public function test_get_contexts_for_userid_with_templates(): void {
@@ -112,6 +128,19 @@ final class provider_test extends provider_testcase {
         $contextlist = provider::get_contexts_for_userid($this->user1->id);
 
         $this->assertNotEmpty($contextlist->get_contextids());
+    }
+
+    /**
+     * get_contexts_for_userid returns the system context when the user has AI generation logs.
+     */
+    public function test_get_contexts_for_userid_with_ai_logs(): void {
+        $this->create_ai_log($this->user1);
+
+        $contextlist = provider::get_contexts_for_userid($this->user1->id);
+
+        $contextids = array_map('intval', $contextlist->get_contextids());
+        $this->assertNotEmpty($contextids);
+        $this->assertContains((int) \context_system::instance()->id, $contextids);
     }
 
     /**
@@ -206,6 +235,39 @@ final class provider_test extends provider_testcase {
         $userids = array_map('intval', $userlist->get_userids());
         $this->assertContains((int) $this->user1->id, $userids);
         $this->assertContains((int) $this->user2->id, $userids);
+    }
+
+    /**
+     * export_user_preferences masks secret API keys but exports plain preferences in clear.
+     */
+    public function test_export_user_preferences_masks_secret_keys(): void {
+        set_user_preference('tiny_studiolms_gemini_key', 'supersecretkey', $this->user1);
+        set_user_preference('tiny_studiolms_custom_url', 'https://example.com/v1', $this->user1);
+        set_user_preference('tiny_studiolms_custom_model', 'llama-3', $this->user1);
+
+        provider::export_user_preferences((int) $this->user1->id);
+
+        $writer = \core_privacy\local\request\writer::with_context(\context_system::instance());
+        $prefs = $writer->get_user_preferences('tiny_studiolms');
+
+        $this->assertNotSame('supersecretkey', $prefs->tiny_studiolms_gemini_key->value);
+        $this->assertSame('https://example.com/v1', $prefs->tiny_studiolms_custom_url->value);
+        $this->assertSame('llama-3', $prefs->tiny_studiolms_custom_model->value);
+    }
+
+    /**
+     * export_user_preferences exports only the preferences the user actually set.
+     */
+    public function test_export_user_preferences_skips_unset_preferences(): void {
+        set_user_preference('tiny_studiolms_custom_model', 'llama-3', $this->user1);
+
+        provider::export_user_preferences((int) $this->user1->id);
+
+        $writer = \core_privacy\local\request\writer::with_context(\context_system::instance());
+        $prefs = $writer->get_user_preferences('tiny_studiolms');
+
+        $this->assertObjectNotHasProperty('tiny_studiolms_gemini_key', $prefs);
+        $this->assertObjectHasProperty('tiny_studiolms_custom_model', $prefs);
     }
 
     /**
