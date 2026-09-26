@@ -73,9 +73,14 @@ class generate_card extends external_api {
         } catch (\moodle_exception $e) {
             throw $e;
         } catch (\Throwable $t) {
-            $detail = 'SLMS ' . get_class($t) . ': ' . $t->getMessage()
-                . ' at ' . basename($t->getFile()) . ':' . $t->getLine();
-            throw new \moodle_exception('generalexceptionmessage', 'error', '', $detail);
+            // Never expose the raw exception message or file path to the caller: log it for a
+            // developer instead, and return only a generic, translated error.
+            debugging(
+                'StudioLMS AI: ' . get_class($t) . ': ' . $t->getMessage()
+                    . ' at ' . $t->getFile() . ':' . $t->getLine(),
+                DEBUG_DEVELOPER
+            );
+            throw new \moodle_exception('card_ai_error', 'tiny_studiolms');
         }
 
         return ['content' => $result['content'], 'btntext' => $result['btntext']];

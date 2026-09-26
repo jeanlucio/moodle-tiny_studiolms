@@ -717,9 +717,15 @@ class generator {
 
         if ($source === 'Gemini') {
             $content = $decoded['candidates'][0]['content']['parts'][0]['text'] ?? '';
-            if (empty($content)) {
+            // A provider is untrusted input: content must be validated as a string here, not
+            // assumed. Every caller down the line (parse_block_json() and friends) declares a
+            // string parameter type, so a malformed response with e.g. an array in this field
+            // would otherwise fatal with a TypeError whose message includes this file's absolute
+            // path — exactly the kind of detail the callers' own exception handling is meant to
+            // keep away from the end user.
+            if (!is_string($content) || $content === '') {
                 $blocked = $decoded['candidates'][0]['finishReason'] ?? ($decoded['promptFeedback']['blockReason'] ?? '');
-                $errmsg = 'empty content. finishReason/blockReason: ' . $blocked
+                $errmsg = 'empty or non-string content. finishReason/blockReason: ' . $blocked
                     . ' | keys: ' . implode(',', array_keys($decoded));
                 debugging('StudioLMS AI [Gemini]: ' . $errmsg, DEBUG_DEVELOPER);
                 return [
@@ -728,8 +734,9 @@ class generator {
             }
         } else {
             $content = $decoded['choices'][0]['message']['content'] ?? '';
-            if (empty($content)) {
-                $errmsg = 'empty content. keys: ' . implode(',', array_keys($decoded));
+            // See the same comment in the Gemini branch above.
+            if (!is_string($content) || $content === '') {
+                $errmsg = 'empty or non-string content. keys: ' . implode(',', array_keys($decoded));
                 debugging('StudioLMS AI [' . $source . ']: ' . $errmsg, DEBUG_DEVELOPER);
                 return [
                     'success' => false, 'data' => '', 'provider' => $source, 'httpcode' => $code, 'errmsg' => $errmsg,
