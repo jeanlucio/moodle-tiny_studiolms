@@ -24,11 +24,11 @@
 
 namespace tiny_studiolms\external;
 
+use context;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
-use context_system;
 use tiny_studiolms\ai\generator;
 
 /**
@@ -46,6 +46,7 @@ class generate_accordion extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
+            'contextid' => new external_value(PARAM_INT, 'Context ID of the editor session', VALUE_REQUIRED),
             'topic' => new external_value(PARAM_TEXT, 'Content description for the accordion section'),
         ]);
     }
@@ -53,17 +54,19 @@ class generate_accordion extends external_api {
     /**
      * Generates title and HTML content for an accordion block.
      *
+     * @param int $contextid Context ID of the editor session.
      * @param string $topic Teacher's content description.
      * @return array With keys 'title' and 'content'.
      */
-    public static function execute(string $topic): array {
-        $params = self::validate_parameters(self::execute_parameters(), ['topic' => $topic]);
+    public static function execute(int $contextid, string $topic): array {
+        $params = self::validate_parameters(self::execute_parameters(), [
+            'contextid' => $contextid,
+            'topic' => $topic,
+        ]);
 
-        $context = context_system::instance();
+        $context = context::instance_by_id($params['contextid']);
         self::validate_context($context);
-        if (!isloggedin() || isguestuser()) {
-            throw new \required_capability_exception($context, 'tiny/studiolms:use', 'nopermissions', '');
-        }
+        require_capability('tiny/studiolms:use', $context);
 
         try {
             $result = generator::generate_accordion($params['topic']);

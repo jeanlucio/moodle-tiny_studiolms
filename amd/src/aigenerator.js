@@ -30,6 +30,7 @@ import Templates from 'core/templates';
 import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {Blocks} from './blocks/registry';
+import {getContextId} from './context';
 
 /**
  * Renders a bare preview HTML for a single block (no state attributes).
@@ -298,7 +299,7 @@ const setupBlockGenerator = (container, callbacks) => {
         try {
             const [promise] = ajaxCall([{
                 methodname: 'tiny_studiolms_generate_block',
-                args: {prompt},
+                args: {prompt, contextid: getContextId()},
             }]);
             const result = await promise;
 
@@ -369,6 +370,7 @@ const setupPresetGenerator = (container, callbacks) => {
                     contexttext,
                     blocks:      (inputBlocks?.value.trim()) || '',
                     palette:     selectPalette?.value || 'blue',
+                    contextid:   getContextId(),
                 },
             }]);
             const result = await promise;

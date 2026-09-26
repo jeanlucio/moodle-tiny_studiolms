@@ -24,6 +24,7 @@
 import Templates from 'core/templates';
 import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
+import {getContextId} from '../context';
 
 export default {
     id: 'advancedCard',
@@ -120,7 +121,7 @@ export default {
                                 try {
                                     const [promise] = ajaxCall([{
                                         methodname: 'tiny_studiolms_generate_card',
-                                        args: {topic: prompt},
+                                        args: {topic: prompt, contextid: getContextId()},
                                     }]);
                                     const result = await promise;
                                     data.content = result.content || '';

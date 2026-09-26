@@ -24,11 +24,11 @@
 
 namespace tiny_studiolms\external;
 
+use context;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
-use context_system;
 
 /**
  * Toggles the favourite status of a template for the current user.
@@ -41,6 +41,7 @@ class toggle_favourite extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
+            'contextid' => new external_value(PARAM_INT, 'Context ID of the editor session', VALUE_REQUIRED),
             'templateid' => new external_value(PARAM_INT, 'Template ID to favourite/unfavourite', VALUE_REQUIRED),
         ]);
     }
@@ -48,15 +49,19 @@ class toggle_favourite extends external_api {
     /**
      * Adds or removes the favourite relationship for the current user.
      *
+     * @param int $contextid Context ID of the editor session.
      * @param int $templateid
      * @return array
      */
-    public static function execute(int $templateid): array {
+    public static function execute(int $contextid, int $templateid): array {
         global $DB, $USER;
 
-        $params = self::validate_parameters(self::execute_parameters(), ['templateid' => $templateid]);
+        $params = self::validate_parameters(self::execute_parameters(), [
+            'contextid' => $contextid,
+            'templateid' => $templateid,
+        ]);
 
-        $context = context_system::instance();
+        $context = context::instance_by_id($params['contextid']);
         self::validate_context($context);
         require_capability('tiny/studiolms:use', $context);
 

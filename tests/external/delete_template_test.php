@@ -87,7 +87,7 @@ final class delete_template_test extends advanced_testcase {
 
         $this->setUser($this->owner);
 
-        $result = delete_template::execute($this->templateid);
+        $result = delete_template::execute(\context_system::instance()->id, $this->templateid);
 
         $this->assertTrue($result['success']);
         $this->assertFalse($DB->record_exists('tiny_studiolms_templates', ['id' => $this->templateid]));
@@ -100,7 +100,7 @@ final class delete_template_test extends advanced_testcase {
         $this->setUser($this->other);
 
         $this->expectException(\moodle_exception::class);
-        delete_template::execute($this->templateid);
+        delete_template::execute(\context_system::instance()->id, $this->templateid);
     }
 
     /**
@@ -111,7 +111,7 @@ final class delete_template_test extends advanced_testcase {
 
         $this->setUser($this->manager);
 
-        $result = delete_template::execute($this->templateid);
+        $result = delete_template::execute(\context_system::instance()->id, $this->templateid);
 
         $this->assertTrue($result['success']);
         $this->assertFalse($DB->record_exists('tiny_studiolms_templates', ['id' => $this->templateid]));
@@ -131,7 +131,7 @@ final class delete_template_test extends advanced_testcase {
         ]);
 
         $this->setUser($this->owner);
-        delete_template::execute($this->templateid);
+        delete_template::execute(\context_system::instance()->id, $this->templateid);
 
         $this->assertFalse(
             $DB->record_exists('tiny_studiolms_favourites', ['templateid' => $this->templateid])
@@ -145,7 +145,7 @@ final class delete_template_test extends advanced_testcase {
         $this->setUser($this->owner);
 
         $sink = $this->redirectEvents();
-        delete_template::execute($this->templateid);
+        delete_template::execute(\context_system::instance()->id, $this->templateid);
         $events = $sink->get_events();
         $sink->close();
 
@@ -160,6 +160,6 @@ final class delete_template_test extends advanced_testcase {
         $this->setUser($this->owner);
 
         $this->expectException(\dml_missing_record_exception::class);
-        delete_template::execute(99999);
+        delete_template::execute(\context_system::instance()->id, 99999);
     }
 }

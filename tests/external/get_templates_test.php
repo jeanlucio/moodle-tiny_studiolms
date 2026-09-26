@@ -106,7 +106,7 @@ final class get_templates_test extends advanced_testcase {
     public function test_mine_returns_only_own_templates(): void {
         $this->setUser($this->teacher1);
 
-        $rows = get_templates::execute('mine');
+        $rows = get_templates::execute(\context_system::instance()->id, 'mine');
 
         $this->assertCount(1, $rows);
         $this->assertEquals('Teacher1 Layout', $rows[0]['name']);
@@ -119,7 +119,7 @@ final class get_templates_test extends advanced_testcase {
     public function test_mine_excludes_other_users(): void {
         $this->setUser($this->teacher1);
 
-        $rows = get_templates::execute('mine');
+        $rows = get_templates::execute(\context_system::instance()->id, 'mine');
         $names = array_column($rows, 'name');
 
         $this->assertNotContains('Teacher2 Layout', $names);
@@ -131,7 +131,7 @@ final class get_templates_test extends advanced_testcase {
     public function test_global_returns_only_global_templates(): void {
         $this->setUser($this->teacher1);
 
-        $rows = get_templates::execute('global');
+        $rows = get_templates::execute(\context_system::instance()->id, 'global');
 
         $this->assertCount(1, $rows);
         $this->assertEquals('Global Layout', $rows[0]['name']);
@@ -144,7 +144,7 @@ final class get_templates_test extends advanced_testcase {
     public function test_isfavourite_false_when_not_favourited(): void {
         $this->setUser($this->teacher1);
 
-        $rows = get_templates::execute('global');
+        $rows = get_templates::execute(\context_system::instance()->id, 'global');
 
         $this->assertFalse($rows[0]['isfavourite']);
     }
@@ -164,7 +164,7 @@ final class get_templates_test extends advanced_testcase {
             'timecreated' => time(),
         ]);
 
-        $rows = get_templates::execute('global');
+        $rows = get_templates::execute(\context_system::instance()->id, 'global');
 
         $this->assertTrue($rows[0]['isfavourite']);
     }
@@ -184,7 +184,7 @@ final class get_templates_test extends advanced_testcase {
             'timecreated' => time(),
         ]);
 
-        $rows = get_templates::execute('favourites');
+        $rows = get_templates::execute(\context_system::instance()->id, 'favourites');
 
         $this->assertCount(1, $rows);
         $this->assertEquals('Global Layout', $rows[0]['name']);
@@ -207,7 +207,7 @@ final class get_templates_test extends advanced_testcase {
 
         $this->setUser($this->teacher1);
 
-        $rows = get_templates::execute('favourites');
+        $rows = get_templates::execute(\context_system::instance()->id, 'favourites');
         $names = array_column($rows, 'name');
 
         $this->assertNotContains('Teacher2 Layout', $names);
@@ -220,6 +220,6 @@ final class get_templates_test extends advanced_testcase {
         $this->setGuestUser();
 
         $this->expectException(\required_capability_exception::class);
-        get_templates::execute('mine');
+        get_templates::execute(\context_system::instance()->id, 'mine');
     }
 }

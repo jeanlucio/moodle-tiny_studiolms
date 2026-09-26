@@ -28,6 +28,7 @@ import Templates from 'core/templates';
 import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {refreshAiState} from './app';
+import {getContextId} from './context';
 
 /**
  * Attaches show/hide handlers to key visibility buttons.
@@ -83,7 +84,10 @@ export const init = async(container) => {
     initVisibilityToggles(container);
 
     try {
-        const [loadPromise] = ajaxCall([{methodname: 'tiny_studiolms_get_ai_keys', args: {}}]);
+        const [loadPromise] = ajaxCall([{
+            methodname: 'tiny_studiolms_get_ai_keys',
+            args: {contextid: getContextId()},
+        }]);
         const status = await loadPromise;
 
         if (inputGemini) {
@@ -131,6 +135,7 @@ export const init = async(container) => {
                 custom_model: inputCustomModel?.value ?? '',
             };
             /* eslint-enable camelcase */
+            args.contextid = getContextId();
 
             const [savePromise] = ajaxCall([{methodname: 'tiny_studiolms_save_ai_keys', args}]);
             await savePromise;

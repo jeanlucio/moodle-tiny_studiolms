@@ -26,6 +26,7 @@
 import {call as ajaxCall} from 'core/ajax';
 import Templates from 'core/templates';
 import Notification from 'core/notification';
+import {getContextId} from './context';
 
 /**
  * Initialise the AI Logs panel inside the given container.
@@ -49,7 +50,10 @@ export const init = async(container) => {
     const tbody = container.querySelector('#slms-logs-tbody');
 
     try {
-        const [logsPromise] = ajaxCall([{methodname: 'tiny_studiolms_get_ai_logs', args: {}}]);
+        const [logsPromise] = ajaxCall([{
+            methodname: 'tiny_studiolms_get_ai_logs',
+            args: {contextid: getContextId()},
+        }]);
         const logs = await logsPromise;
 
         if (spinner) {

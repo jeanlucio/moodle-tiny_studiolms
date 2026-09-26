@@ -24,6 +24,7 @@
 import Templates from 'core/templates';
 import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
+import {getContextId} from '../context';
 
 const W = 900;
 const H = 620;
@@ -469,7 +470,7 @@ export default {
                             try {
                                 const [promise] = ajaxCall([{
                                     methodname: 'tiny_studiolms_generate_mindmap',
-                                    args: {topic: prompt},
+                                    args: {topic: prompt, contextid: getContextId()},
                                 }]);
                                 const result = await promise;
 

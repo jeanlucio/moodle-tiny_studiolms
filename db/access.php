@@ -25,10 +25,14 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
-    // The standard capability required by TinyMCE to use this plugin.
+    // The standard capability required by TinyMCE to use this plugin. Checked against the real
+    // context the editor is embedded in (course, activity, etc.), not context_system: a role
+    // assigned at a course context — how virtually every teacher holds "editingteacher" — never
+    // satisfies a check made at an ancestor context, so CONTEXT_SYSTEM here would make the
+    // capability unreachable for ordinary course-enrolled teachers.
     'tiny/studiolms:use' => [
         'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
+        'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
             'editingteacher' => CAP_ALLOW,
             'teacher'        => CAP_ALLOW,

@@ -24,11 +24,11 @@
 
 namespace tiny_studiolms\external;
 
+use context;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
-use context_system;
 
 /**
  * Saves the current user's personal AI provider keys as Moodle user preferences.
@@ -48,6 +48,7 @@ class save_ai_keys extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
+            'contextid'    => new external_value(PARAM_INT, 'Context ID of the editor session', VALUE_REQUIRED),
             'gemini_key'   => new external_value(PARAM_RAW, 'Gemini API key (empty to clear)', VALUE_DEFAULT, ''),
             'groq_key'     => new external_value(PARAM_RAW, 'Groq API key (empty to clear)', VALUE_DEFAULT, ''),
             'custom_key'   => new external_value(PARAM_RAW, 'Custom provider API key (empty to clear)', VALUE_DEFAULT, ''),
@@ -59,6 +60,7 @@ class save_ai_keys extends external_api {
     /**
      * Saves or clears personal AI provider keys for the current user.
      *
+     * @param int    $contextid   Context ID of the editor session.
      * @param string $geminikey   Gemini API key.
      * @param string $groqkey     Groq API key.
      * @param string $customkey   Custom provider API key.
@@ -68,6 +70,7 @@ class save_ai_keys extends external_api {
      * @throws \moodle_exception If the custom URL is not safe.
      */
     public static function execute(
+        int $contextid,
         string $geminikey,
         string $groqkey,
         string $customkey,
@@ -75,6 +78,7 @@ class save_ai_keys extends external_api {
         string $custommodel
     ): array {
         $params = self::validate_parameters(self::execute_parameters(), [
+            'contextid'    => $contextid,
             'gemini_key'   => $geminikey,
             'groq_key'     => $groqkey,
             'custom_key'   => $customkey,
@@ -82,11 +86,9 @@ class save_ai_keys extends external_api {
             'custom_model' => $custommodel,
         ]);
 
-        $context = context_system::instance();
+        $context = context::instance_by_id($params['contextid']);
         self::validate_context($context);
-        if (!isloggedin() || isguestuser()) {
-            throw new \required_capability_exception($context, 'tiny/studiolms:use', 'nopermissions', '');
-        }
+        require_capability('tiny/studiolms:use', $context);
 
         if (!empty($params['custom_url']) && !self::is_safe_url($params['custom_url'])) {
             throw new \moodle_exception('ai_generator_error', 'tiny_studiolms');
@@ -141,17 +143,15 @@ class save_ai_keys extends external_api {
         if (in_array($host, ['localhost', '127.0.0.1', '::1'], true)) {
             return false;
         }
+        // Note: gethostbyname() returns the original hostname unchanged on failure, never false —
+        // so filter_var() below naturally rejects an unresolved host too, since a hostname string
+        // is never a valid IP.
         $ip = gethostbyname($host);
-        if ($ip !== false) {
-            $ispublic = filter_var(
-                $ip,
-                FILTER_VALIDATE_IP,
-                FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
-            );
-            if ($ispublic === false) {
-                return false;
-            }
-        }
-        return true;
+        $ispublic = filter_var(
+            $ip,
+            FILTER_VALIDATE_IP,
+            FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+        );
+        return $ispublic !== false;
     }
 }

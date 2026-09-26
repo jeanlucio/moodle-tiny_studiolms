@@ -24,12 +24,12 @@
 
 namespace tiny_studiolms\external;
 
+use context;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
-use context_system;
 
 /**
  * Returns a list of templates filtered by type (global / mine / favourites).
@@ -43,6 +43,7 @@ class get_templates extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
+            'contextid' => new external_value(PARAM_INT, 'Context ID of the editor session', VALUE_REQUIRED),
             'type' => new external_value(
                 PARAM_ALPHA,
                 'Filter type: global, mine, or favourites',
@@ -55,15 +56,19 @@ class get_templates extends external_api {
     /**
      * Returns templates with isfavourite flag resolved via LEFT JOIN.
      *
+     * @param int $contextid Context ID of the editor session.
      * @param string $type
      * @return array
      */
-    public static function execute(string $type = 'mine'): array {
+    public static function execute(int $contextid, string $type = 'mine'): array {
         global $DB, $USER;
 
-        $params = self::validate_parameters(self::execute_parameters(), ['type' => $type]);
+        $params = self::validate_parameters(self::execute_parameters(), [
+            'contextid' => $contextid,
+            'type' => $type,
+        ]);
 
-        $context = context_system::instance();
+        $context = context::instance_by_id($params['contextid']);
         self::validate_context($context);
         require_capability('tiny/studiolms:use', $context);
 

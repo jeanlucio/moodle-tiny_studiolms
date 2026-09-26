@@ -24,6 +24,7 @@
 import Templates from 'core/templates';
 import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
+import {getContextId} from '../context';
 
 export default {
     id: 'callout',
@@ -110,7 +111,7 @@ export default {
                                 try {
                                     const [promise] = ajaxCall([{
                                         methodname: 'tiny_studiolms_generate_callout',
-                                        args: {topic: prompt},
+                                        args: {topic: prompt, contextid: getContextId()},
                                     }]);
                                     const result = await promise;
                                     const iconEl = popup.querySelector('#pop_callout_icon');

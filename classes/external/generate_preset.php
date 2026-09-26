@@ -24,11 +24,11 @@
 
 namespace tiny_studiolms\external;
 
+use context;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
-use context_system;
 use tiny_studiolms\ai\generator;
 use stdClass;
 
@@ -47,6 +47,7 @@ class generate_preset extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
+            'contextid'   => new external_value(PARAM_INT, 'Context ID of the editor session', VALUE_REQUIRED),
             'name'        => new external_value(PARAM_TEXT, 'Desired name for the generated layout'),
             'contexttext' => new external_value(PARAM_TEXT, 'Pedagogical context and intent description'),
             'blocks'      => new external_value(PARAM_TEXT, 'Optional comma-separated block type hints', VALUE_DEFAULT, ''),
@@ -57,27 +58,33 @@ class generate_preset extends external_api {
     /**
      * Generates a layout from the given pedagogical context.
      *
+     * @param int    $contextid   Context ID of the editor session.
      * @param string $name        Desired layout name.
      * @param string $contexttext Pedagogical context description.
      * @param string $blocks      Optional block type hints.
      * @param string $palette     Colour palette identifier.
      * @return array With keys 'name' and 'blocks'.
      */
-    public static function execute(string $name, string $contexttext, string $blocks, string $palette): array {
+    public static function execute(
+        int $contextid,
+        string $name,
+        string $contexttext,
+        string $blocks,
+        string $palette
+    ): array {
         global $DB, $USER;
 
         $params = self::validate_parameters(self::execute_parameters(), [
+            'contextid'   => $contextid,
             'name'        => $name,
             'contexttext' => $contexttext,
             'blocks'      => $blocks,
             'palette'     => $palette,
         ]);
 
-        $context = context_system::instance();
+        $context = context::instance_by_id($params['contextid']);
         self::validate_context($context);
-        if (!isloggedin() || isguestuser()) {
-            throw new \required_capability_exception($context, 'tiny/studiolms:use', 'nopermissions', '');
-        }
+        require_capability('tiny/studiolms:use', $context);
 
         try {
             $result = generator::generate_preset(

@@ -25,6 +25,7 @@ import Ajax from 'core/ajax';
 import Templates from 'core/templates';
 import Notification from 'core/notification';
 import {getString} from 'core/str';
+import {getContextId} from './context';
 
 /**
  * Show a brief feedback message inside the modal's designated feedback area.
@@ -58,7 +59,7 @@ export const showInlineFeedback = (message, type = 'success') => {
 export const loadTemplates = (type) => {
     return Ajax.call([{
         methodname: 'tiny_studiolms_get_templates',
-        args: {type}
+        args: {type, contextid: getContextId()}
     }])[0];
 };
 
@@ -73,7 +74,7 @@ export const loadTemplates = (type) => {
 export const saveTemplate = (name, content, isglobal = 0) => {
     return Ajax.call([{
         methodname: 'tiny_studiolms_save_template',
-        args: {name, content, isglobal}
+        args: {name, content, isglobal, contextid: getContextId()}
     }])[0];
 };
 
@@ -86,7 +87,7 @@ export const saveTemplate = (name, content, isglobal = 0) => {
 export const deleteTemplate = (id) => {
     return Ajax.call([{
         methodname: 'tiny_studiolms_delete_template',
-        args: {id}
+        args: {id, contextid: getContextId()}
     }])[0];
 };
 
@@ -99,7 +100,7 @@ export const deleteTemplate = (id) => {
 export const toggleFavourite = (templateid) => {
     return Ajax.call([{
         methodname: 'tiny_studiolms_toggle_favourite',
-        args: {templateid}
+        args: {templateid, contextid: getContextId()}
     }])[0];
 };
 
@@ -114,7 +115,7 @@ export const toggleFavourite = (templateid) => {
 export const exportTemplates = async(ids = [], filename = 'studiolms-templates.json') => {
     const templates = await Ajax.call([{
         methodname: 'tiny_studiolms_export_templates',
-        args: {ids}
+        args: {ids, contextid: getContextId()}
     }])[0];
 
     const payload = JSON.stringify({
@@ -178,7 +179,7 @@ export const importTemplatesFromFile = () => {
 
                 const created = await Ajax.call([{
                     methodname: 'tiny_studiolms_import_templates',
-                    args: {templates: payload}
+                    args: {templates: payload, contextid: getContextId()}
                 }])[0];
 
                 resolve(created);

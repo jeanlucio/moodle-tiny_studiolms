@@ -24,12 +24,12 @@
 
 namespace tiny_studiolms\external;
 
+use context;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
-use context_system;
 use tiny_studiolms\ai\chat;
 use stdClass;
 
@@ -64,6 +64,7 @@ class chat_message extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
+            'contextid' => new external_value(PARAM_INT, 'Context ID of the editor session', VALUE_REQUIRED),
             'history' => new external_multiple_structure(
                 new external_single_structure([
                     'role'    => new external_value(PARAM_ALPHA, 'Message role: user or assistant'),
@@ -83,19 +84,21 @@ class chat_message extends external_api {
     /**
      * Sends the conversation to the AI and returns a reply with an optional action.
      *
+     * @param int    $contextid      Context ID of the editor session.
      * @param array  $history        Conversation history [{role, content}, ...].
      * @param string $presetscontext JSON-encoded preset names for the system prompt.
      * @return array With keys 'reply', 'action' (optional), 'provider'.
      */
-    public static function execute(array $history, string $presetscontext): array {
+    public static function execute(int $contextid, array $history, string $presetscontext): array {
         global $DB, $USER;
 
         $params = self::validate_parameters(self::execute_parameters(), [
+            'contextid'      => $contextid,
             'history'        => $history,
             'presetscontext' => $presetscontext,
         ]);
 
-        $context = context_system::instance();
+        $context = context::instance_by_id($params['contextid']);
         self::validate_context($context);
         require_capability('tiny/studiolms:use', $context);
 

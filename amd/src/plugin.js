@@ -38,6 +38,7 @@ const enabledOption = getPluginOptionName(pluginName, 'enabled');
 const canManageGlobalOption = getPluginOptionName(pluginName, 'canmanageglobaltemplates');
 const presetsOption = getPluginOptionName(pluginName, 'presets');
 const hasAiOption = getPluginOptionName(pluginName, 'hasai');
+const contextIdOption = getPluginOptionName(pluginName, 'contextid');
 
 
 export default Promise.all([
@@ -76,6 +77,11 @@ export default Promise.all([
         editor.options.register(hasAiOption, {
             processor: 'boolean',
             'default': false,
+        });
+
+        editor.options.register(contextIdOption, {
+            processor: 'int',
+            'default': 0,
         });
 
         // Tracks the last block clicked when the cursor cannot land inside it (e.g. SVG-based blocks).
@@ -180,7 +186,8 @@ export default Promise.all([
                 const canManageGlobal = editor.options.get(canManageGlobalOption);
                 const presets = editor.options.get(presetsOption) || [];
                 const hasAi = editor.options.get(hasAiOption);
-                initStudioApp(editor, modal, editData, canManageGlobal, presets, hasAi);
+                const contextId = editor.options.get(contextIdOption);
+                initStudioApp(editor, modal, editData, canManageGlobal, presets, hasAi, contextId);
             } catch (error) {
                 Notification.exception(error);
             }

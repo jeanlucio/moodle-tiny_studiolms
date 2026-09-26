@@ -24,11 +24,11 @@
 
 namespace tiny_studiolms\external;
 
+use context;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
-use context_system;
 use tiny_studiolms\event\template_created;
 
 /**
@@ -42,6 +42,7 @@ class save_template extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
+            'contextid' => new external_value(PARAM_INT, 'Context ID of the editor session', VALUE_REQUIRED),
             'name'     => new external_value(PARAM_TEXT, 'Template name', VALUE_REQUIRED),
             'content'  => new external_value(PARAM_RAW, 'Full HTML content from TinyMCE', VALUE_REQUIRED),
             'isglobal' => new external_value(
@@ -56,25 +57,25 @@ class save_template extends external_api {
     /**
      * Saves a template and fires a creation event.
      *
+     * @param int $contextid Context ID of the editor session.
      * @param string $name
      * @param string $content
      * @param int $isglobal
      * @return array
      */
-    public static function execute(string $name, string $content, int $isglobal = 0): array {
+    public static function execute(int $contextid, string $name, string $content, int $isglobal = 0): array {
         global $DB, $USER;
 
         $params = self::validate_parameters(self::execute_parameters(), [
+            'contextid' => $contextid,
             'name'     => $name,
             'content'  => $content,
             'isglobal' => $isglobal,
         ]);
 
-        $context = context_system::instance();
+        $context = context::instance_by_id($params['contextid']);
         self::validate_context($context);
-        if (!isloggedin() || isguestuser()) {
-            throw new \required_capability_exception($context, 'tiny/studiolms:use', 'nopermissions', '');
-        }
+        require_capability('tiny/studiolms:use', $context);
 
         if ($params['isglobal']) {
             require_capability('tiny/studiolms:manageglobaltemplates', $context);

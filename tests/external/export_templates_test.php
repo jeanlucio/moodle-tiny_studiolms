@@ -110,7 +110,7 @@ final class export_templates_test extends advanced_testcase {
     public function test_teacher_exports_own_templates_only(): void {
         $this->setUser($this->teacher);
 
-        $rows = export_templates::execute([]);
+        $rows = export_templates::execute(\context_system::instance()->id, []);
 
         $this->assertCount(1, $rows);
         $this->assertEquals('My Layout', $rows[0]['name']);
@@ -122,7 +122,7 @@ final class export_templates_test extends advanced_testcase {
     public function test_manager_exports_own_and_global_templates(): void {
         $this->setUser($this->manager);
 
-        $rows = export_templates::execute([]);
+        $rows = export_templates::execute(\context_system::instance()->id, []);
         $names = array_column($rows, 'name');
 
         $this->assertContains('Global Layout', $names);
@@ -134,7 +134,7 @@ final class export_templates_test extends advanced_testcase {
     public function test_export_by_ids_returns_only_owned(): void {
         $this->setUser($this->teacher);
 
-        $rows = export_templates::execute([$this->personalid]);
+        $rows = export_templates::execute(\context_system::instance()->id, [$this->personalid]);
 
         $this->assertCount(1, $rows);
         $this->assertEquals($this->personalid, $rows[0]['id']);
@@ -146,7 +146,7 @@ final class export_templates_test extends advanced_testcase {
     public function test_export_by_id_excludes_unowned(): void {
         $this->setUser($this->teacher);
 
-        $rows = export_templates::execute([$this->globalid]);
+        $rows = export_templates::execute(\context_system::instance()->id, [$this->globalid]);
 
         // Teacher does not have manageglobaltemplates, so global template is excluded.
         $this->assertCount(0, $rows);
@@ -158,7 +158,7 @@ final class export_templates_test extends advanced_testcase {
     public function test_manager_can_export_global_by_id(): void {
         $this->setUser($this->manager);
 
-        $rows = export_templates::execute([$this->globalid]);
+        $rows = export_templates::execute(\context_system::instance()->id, [$this->globalid]);
 
         $this->assertCount(1, $rows);
         $this->assertEquals($this->globalid, $rows[0]['id']);
@@ -173,7 +173,7 @@ final class export_templates_test extends advanced_testcase {
         $this->setUser($this->teacher);
 
         $otherid = $DB->get_field('tiny_studiolms_templates', 'id', ['name' => 'Other Layout']);
-        $rows = export_templates::execute([$otherid]);
+        $rows = export_templates::execute(\context_system::instance()->id, [$otherid]);
 
         $this->assertCount(0, $rows);
     }
@@ -185,6 +185,6 @@ final class export_templates_test extends advanced_testcase {
         $this->setGuestUser();
 
         $this->expectException(\required_capability_exception::class);
-        export_templates::execute([]);
+        export_templates::execute(\context_system::instance()->id, []);
     }
 }

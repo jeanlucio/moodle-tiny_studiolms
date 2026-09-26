@@ -25,6 +25,7 @@ import Templates from 'core/templates';
 import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
 import {THEMES, esc, closePicker} from './infographic_shared';
+import {getContextId} from '../context';
 
 /**
  * Builds the inner HTML for the comparison table.
@@ -270,7 +271,7 @@ export default {
                                 try {
                                     const [promise] = ajaxCall([{
                                         methodname: 'tiny_studiolms_generate_infographic_comparison',
-                                        args: {topic: prompt},
+                                        args: {topic: prompt, contextid: getContextId()},
                                     }]);
                                     const result = await promise;
 

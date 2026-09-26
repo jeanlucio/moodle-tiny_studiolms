@@ -66,7 +66,7 @@ final class import_templates_test extends advanced_testcase {
 
         $this->setUser($this->teacher);
 
-        $result = import_templates::execute([
+        $result = import_templates::execute(\context_system::instance()->id, [
             ['name' => 'Imported', 'content' => '<p>A</p>', 'isglobal' => 0],
         ]);
 
@@ -88,7 +88,7 @@ final class import_templates_test extends advanced_testcase {
             ['name' => 'Gamma', 'content' => '<p>G</p>', 'isglobal' => 0],
         ];
 
-        $result = import_templates::execute($payload);
+        $result = import_templates::execute(\context_system::instance()->id, $payload);
 
         $this->assertCount(3, $result);
     }
@@ -113,7 +113,7 @@ final class import_templates_test extends advanced_testcase {
             'timemodified' => $now,
         ]);
 
-        $result = import_templates::execute([
+        $result = import_templates::execute(\context_system::instance()->id, [
             ['name' => 'My Layout', 'content' => '<p>new</p>', 'isglobal' => 0],
         ]);
 
@@ -141,7 +141,7 @@ final class import_templates_test extends advanced_testcase {
             ]);
         }
 
-        $result = import_templates::execute([
+        $result = import_templates::execute(\context_system::instance()->id, [
             ['name' => 'My Layout', 'content' => '<p>new</p>', 'isglobal' => 0],
         ]);
 
@@ -156,7 +156,7 @@ final class import_templates_test extends advanced_testcase {
 
         $this->setUser($this->teacher);
 
-        $result = import_templates::execute([
+        $result = import_templates::execute(\context_system::instance()->id, [
             ['name' => 'Fake Global', 'content' => '<p>x</p>', 'isglobal' => 1],
         ]);
 
@@ -172,7 +172,7 @@ final class import_templates_test extends advanced_testcase {
 
         $this->setUser($this->manager);
 
-        $result = import_templates::execute([
+        $result = import_templates::execute(\context_system::instance()->id, [
             ['name' => 'Real Global', 'content' => '<p>x</p>', 'isglobal' => 1],
         ]);
 
@@ -187,7 +187,7 @@ final class import_templates_test extends advanced_testcase {
         $this->setUser($this->teacher);
 
         $sink = $this->redirectEvents();
-        import_templates::execute([
+        import_templates::execute(\context_system::instance()->id, [
             ['name' => 'E1', 'content' => '<p>1</p>', 'isglobal' => 0],
             ['name' => 'E2', 'content' => '<p>2</p>', 'isglobal' => 0],
         ]);

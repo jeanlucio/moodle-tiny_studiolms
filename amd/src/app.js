@@ -32,6 +32,7 @@ import {initBlock as initAiBlock, initModel as initAiModel} from './aigenerator'
 import {init as initAiKeys} from './aikeys';
 import {init as initAiLogs} from './ailogs';
 import {init as initAiChat} from './aichat';
+import {setContextId} from './context';
 
 // Canvas state — array of {id, blockDef, config, element, previewEl}
 let canvasBlocks = [];
@@ -177,13 +178,15 @@ export const initStudioApp = (
     editData = null,
     canManageGlobal = false,
     presets = [],
-    hasAi = false
+    hasAi = false,
+    contextId = 0
 ) => {
     tinyEditorInstance = editor;
     moodleModalInstance = modal;
     currentZoom = 1;
     targetEditNode = null;
     presetsData = presets;
+    setContextId(contextId);
     hasAiEnabled = hasAi;
     canvasBlocks = [];
     canvasBlockCounter = 0;

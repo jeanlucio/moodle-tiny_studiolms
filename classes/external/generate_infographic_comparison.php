@@ -24,6 +24,7 @@
 
 namespace tiny_studiolms\external;
 
+use context;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -41,6 +42,7 @@ class generate_infographic_comparison extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
+            'contextid' => new external_value(PARAM_INT, 'Context ID of the editor session', VALUE_REQUIRED),
             'topic' => new external_value(PARAM_TEXT, 'Topic or context for the comparison.'),
         ]);
     }
@@ -48,13 +50,18 @@ class generate_infographic_comparison extends external_api {
     /**
      * Generates a comparison infographic from the given topic.
      *
+     * @param int $contextid Context ID of the editor session.
      * @param string $topic Topic or context for the comparison.
      * @return array{title: string, col1: string, col2: string, items: string, provider: string}
      */
-    public static function execute(string $topic): array {
-        $params = self::validate_parameters(self::execute_parameters(), ['topic' => $topic]);
-        self::validate_context(\context_system::instance());
-        require_capability('tiny/studiolms:use', \context_system::instance());
+    public static function execute(int $contextid, string $topic): array {
+        $params = self::validate_parameters(self::execute_parameters(), [
+            'contextid' => $contextid,
+            'topic' => $topic,
+        ]);
+        $context = context::instance_by_id($params['contextid']);
+        self::validate_context($context);
+        require_capability('tiny/studiolms:use', $context);
 
         return generator::generate_infographic_comparison($params['topic']);
     }

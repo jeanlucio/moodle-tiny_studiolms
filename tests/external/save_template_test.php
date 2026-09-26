@@ -66,7 +66,7 @@ final class save_template_test extends advanced_testcase {
 
         $this->setUser($this->teacher);
 
-        $result = save_template::execute('My Layout', '<p>Hello</p>', 0);
+        $result = save_template::execute(\context_system::instance()->id, 'My Layout', '<p>Hello</p>', 0);
 
         $this->assertArrayHasKey('id', $result);
         $this->assertGreaterThan(0, $result['id']);
@@ -85,7 +85,7 @@ final class save_template_test extends advanced_testcase {
         $this->setUser($this->teacher);
 
         $this->expectException(\required_capability_exception::class);
-        save_template::execute('Official', '<p>Content</p>', 1);
+        save_template::execute(\context_system::instance()->id, 'Official', '<p>Content</p>', 1);
     }
 
     /**
@@ -96,7 +96,7 @@ final class save_template_test extends advanced_testcase {
 
         $this->setUser($this->manager);
 
-        $result = save_template::execute('Official Layout', '<p>Content</p>', 1);
+        $result = save_template::execute(\context_system::instance()->id, 'Official Layout', '<p>Content</p>', 1);
 
         $record = $DB->get_record('tiny_studiolms_templates', ['id' => $result['id']], '*', MUST_EXIST);
         $this->assertEquals(1, (int) $record->isglobal);
@@ -109,7 +109,7 @@ final class save_template_test extends advanced_testcase {
         $this->setUser($this->teacher);
 
         $sink = $this->redirectEvents();
-        save_template::execute('Event Test', '<p>x</p>', 0);
+        save_template::execute(\context_system::instance()->id, 'Event Test', '<p>x</p>', 0);
         $events = $sink->get_events();
         $sink->close();
 
@@ -124,6 +124,6 @@ final class save_template_test extends advanced_testcase {
         $this->setGuestUser();
 
         $this->expectException(\required_capability_exception::class);
-        save_template::execute('Guest attempt', '<p>x</p>', 0);
+        save_template::execute(\context_system::instance()->id, 'Guest attempt', '<p>x</p>', 0);
     }
 }

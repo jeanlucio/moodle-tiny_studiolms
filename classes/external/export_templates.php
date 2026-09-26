@@ -24,12 +24,12 @@
 
 namespace tiny_studiolms\external;
 
+use context;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
-use context_system;
 
 /**
  * Returns a JSON-serialisable array of templates owned by the current user
@@ -44,6 +44,7 @@ class export_templates extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
+            'contextid' => new external_value(PARAM_INT, 'Context ID of the editor session', VALUE_REQUIRED),
             'ids' => new external_multiple_structure(
                 new external_value(PARAM_INT, 'Template ID'),
                 'IDs of the templates to export. Empty array = export all owned templates.',
@@ -57,19 +58,21 @@ class export_templates extends external_api {
      * Export templates owned by the current user.
      * Global templates can only be exported by users who also have manageglobaltemplates.
      *
+     * @param int $contextid Context ID of the editor session.
      * @param int[] $ids
      * @return array
      */
-    public static function execute(array $ids = []): array {
+    public static function execute(int $contextid, array $ids = []): array {
         global $DB, $USER;
 
-        $params = self::validate_parameters(self::execute_parameters(), ['ids' => $ids]);
+        $params = self::validate_parameters(self::execute_parameters(), [
+            'contextid' => $contextid,
+            'ids' => $ids,
+        ]);
 
-        $context = context_system::instance();
+        $context = context::instance_by_id($params['contextid']);
         self::validate_context($context);
-        if (!isloggedin() || isguestuser()) {
-            throw new \required_capability_exception($context, 'tiny/studiolms:use', 'nopermissions', '');
-        }
+        require_capability('tiny/studiolms:use', $context);
 
         $canmanageglobal = has_capability('tiny/studiolms:manageglobaltemplates', $context);
         $userid = $USER->id;

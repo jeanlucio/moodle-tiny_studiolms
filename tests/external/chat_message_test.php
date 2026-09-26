@@ -62,6 +62,7 @@ final class chat_message_test extends advanced_testcase {
 
         $this->expectException(\required_capability_exception::class);
         chat_message::execute(
+            \context_system::instance()->id,
             [['role' => 'user', 'content' => 'Hello']],
             '[]'
         );
@@ -76,6 +77,7 @@ final class chat_message_test extends advanced_testcase {
 
         $this->expectException(\required_capability_exception::class);
         chat_message::execute(
+            \context_system::instance()->id,
             [['role' => 'user', 'content' => 'Hello']],
             '[]'
         );
@@ -143,6 +145,7 @@ final class chat_message_test extends advanced_testcase {
 
         $this->expectException(\moodle_exception::class);
         chat_message::execute(
+            \context_system::instance()->id,
             [['role' => 'user', 'content' => 'Olá']],
             '[]'
         );

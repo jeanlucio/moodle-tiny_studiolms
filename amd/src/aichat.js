@@ -24,6 +24,7 @@
 import Ajax from 'core/ajax';
 import Templates from 'core/templates';
 import {getString} from 'core/str';
+import {getContextId} from './context';
 
 const MAX_HISTORY = 30;
 
@@ -155,6 +156,7 @@ export const init = async(container, hasAi, presets = [], callbacks = {}) => {
                 args: {
                     history: limited,
                     presetscontext: presetscontext,
+                    contextid: getContextId(),
                 },
             }])[0];
 
@@ -205,6 +207,7 @@ export const init = async(container, hasAi, presets = [], callbacks = {}) => {
                         contexttext: action.contexttext || '',
                         blocks: action.blocks || '',
                         palette: action.palette || 'blue',
+                        contextid: getContextId(),
                     },
                 }])[0];
                 const preset = {

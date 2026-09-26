@@ -25,6 +25,7 @@ import Templates from 'core/templates';
 import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
 import {THEMES, ICONS, esc, normaliseIcon, iconToSpan, openPicker, closePicker} from './infographic_shared';
+import {getContextId} from '../context';
 
 // HTML renderers — vertical (default) and horizontal.
 // ---------------------------------------------------------------------------
@@ -282,7 +283,7 @@ export default {
                             try {
                                 const [promise] = ajaxCall([{
                                     methodname: 'tiny_studiolms_generate_infographic_steps',
-                                    args: {topic: prompt},
+                                    args: {topic: prompt, contextid: getContextId()},
                                 }]);
                                 const result = await promise;
 

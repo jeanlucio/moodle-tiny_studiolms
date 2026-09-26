@@ -103,7 +103,7 @@ final class toggle_favourite_test extends advanced_testcase {
 
         $this->setUser($this->teacher);
 
-        $result = toggle_favourite::execute($this->templateid);
+        $result = toggle_favourite::execute(\context_system::instance()->id, $this->templateid);
 
         $this->assertTrue($result['favourited']);
         $this->assertTrue(
@@ -123,10 +123,10 @@ final class toggle_favourite_test extends advanced_testcase {
         $this->setUser($this->teacher);
 
         // First toggle on.
-        toggle_favourite::execute($this->templateid);
+        toggle_favourite::execute(\context_system::instance()->id, $this->templateid);
 
         // Then toggle off.
-        $result = toggle_favourite::execute($this->templateid);
+        $result = toggle_favourite::execute(\context_system::instance()->id, $this->templateid);
 
         $this->assertFalse($result['favourited']);
         $this->assertFalse(
@@ -145,9 +145,9 @@ final class toggle_favourite_test extends advanced_testcase {
 
         $this->setUser($this->teacher);
 
-        toggle_favourite::execute($this->templateid);
-        toggle_favourite::execute($this->templateid);
-        toggle_favourite::execute($this->templateid);
+        toggle_favourite::execute(\context_system::instance()->id, $this->templateid);
+        toggle_favourite::execute(\context_system::instance()->id, $this->templateid);
+        toggle_favourite::execute(\context_system::instance()->id, $this->templateid);
 
         $count = $DB->count_records('tiny_studiolms_favourites', [
             'userid'     => $this->teacher->id,
@@ -164,7 +164,7 @@ final class toggle_favourite_test extends advanced_testcase {
         $this->setUser($this->teacher);
 
         $this->expectException(\dml_missing_record_exception::class);
-        toggle_favourite::execute(99999);
+        toggle_favourite::execute(\context_system::instance()->id, 99999);
     }
 
     /**
@@ -174,7 +174,7 @@ final class toggle_favourite_test extends advanced_testcase {
         $this->setGuestUser();
 
         $this->expectException(\required_capability_exception::class);
-        toggle_favourite::execute($this->templateid);
+        toggle_favourite::execute(\context_system::instance()->id, $this->templateid);
     }
 
     /**
@@ -188,7 +188,7 @@ final class toggle_favourite_test extends advanced_testcase {
 
         $this->expectException(\dml_missing_record_exception::class);
         try {
-            toggle_favourite::execute($this->othertemplateid);
+            toggle_favourite::execute(\context_system::instance()->id, $this->othertemplateid);
         } finally {
             $this->assertFalse(
                 $DB->record_exists('tiny_studiolms_favourites', [
@@ -207,7 +207,7 @@ final class toggle_favourite_test extends advanced_testcase {
 
         $this->setUser($this->teacher);
 
-        $result = toggle_favourite::execute($this->globaltemplateid);
+        $result = toggle_favourite::execute(\context_system::instance()->id, $this->globaltemplateid);
 
         $this->assertTrue($result['favourited']);
         $this->assertTrue(
@@ -216,5 +216,39 @@ final class toggle_favourite_test extends advanced_testcase {
                 'templateid' => $this->globaltemplateid,
             ])
         );
+    }
+
+    /**
+     * Architecture regression test: a teacher whose editingteacher role is assigned only through
+     * normal course enrolment — how virtually every real teacher exists in Moodle, unlike this
+     * file's own setUp() which assigns the role directly at system context — can still use the
+     * plugin, because the capability is now checked against the real (course) context the caller
+     * passes in, not a hardcoded context_system that role never satisfies.
+     */
+    public function test_course_enrolled_teacher_can_use_real_course_context(): void {
+        $course = $this->getDataGenerator()->create_course();
+        $courseteacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
+        $coursecontext = \context_course::instance($course->id);
+
+        $this->setUser($courseteacher);
+
+        $result = toggle_favourite::execute($coursecontext->id, $this->globaltemplateid);
+
+        $this->assertTrue($result['favourited']);
+    }
+
+    /**
+     * The same course-enrolled teacher is correctly rejected when checked against
+     * context_system instead of the real course context — guards against silently reverting to
+     * the hardcoded-system-context bug this fix addresses.
+     */
+    public function test_course_enrolled_teacher_rejected_at_system_context(): void {
+        $course = $this->getDataGenerator()->create_course();
+        $courseteacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
+
+        $this->setUser($courseteacher);
+
+        $this->expectException(\required_capability_exception::class);
+        toggle_favourite::execute(\context_system::instance()->id, $this->globaltemplateid);
     }
 }

@@ -25,6 +25,7 @@ import Templates from 'core/templates';
 import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
 import {THEMES, ICONS, esc, normaliseIcon, iconToSpan, openPicker, closePicker} from './infographic_shared';
+import {getContextId} from '../context';
 
 const DEFAULT_ICON = 'fa-solid fa-star';
 
@@ -227,7 +228,7 @@ export default {
                             try {
                                 const [promise] = ajaxCall([{
                                     methodname: 'tiny_studiolms_generate_infographic_features',
-                                    args: {topic: prompt},
+                                    args: {topic: prompt, contextid: getContextId()},
                                 }]);
                                 const result = await promise;
 

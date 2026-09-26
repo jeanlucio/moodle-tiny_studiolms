@@ -89,6 +89,10 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
             'canmanageglobaltemplates' => has_capability('tiny/studiolms:manageglobaltemplates', $context),
             'presets'                  => self::load_presets(current_language()),
             'hasai'                    => $hasai,
+            // Threaded back to every web service call so require_capability() there checks the
+            // same real context this button's own visibility was gated on, instead of a
+            // hardcoded context_system that an ordinary course-enrolled teacher never satisfies.
+            'contextid'                => $context->id,
         ];
     }
 
