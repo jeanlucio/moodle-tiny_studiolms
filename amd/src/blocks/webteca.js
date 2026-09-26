@@ -161,7 +161,23 @@ export default {
             }
 
             if (btnResources) {
-                btnResources.addEventListener('click', () => {
+                btnResources.addEventListener('click', async() => {
+                    const [
+                        typeAria, typeLinkLabel, typePdfLabel, typeVideoLabel, typeAudioLabel,
+                        titlePlaceholder, titleAria, urlPlaceholder, urlAria, removeAria,
+                    ] = await Promise.all([
+                        getString('webteca_res_type_aria', 'tiny_studiolms'),
+                        getString('webteca_res_type_link', 'tiny_studiolms'),
+                        getString('webteca_res_type_pdf', 'tiny_studiolms'),
+                        getString('webteca_res_type_video', 'tiny_studiolms'),
+                        getString('webteca_res_type_audio', 'tiny_studiolms'),
+                        getString('webteca_res_title_placeholder', 'tiny_studiolms'),
+                        getString('webteca_res_title_aria', 'tiny_studiolms'),
+                        getString('webteca_res_url_placeholder', 'tiny_studiolms'),
+                        getString('webteca_res_url_aria', 'tiny_studiolms'),
+                        getString('webteca_res_remove_aria', 'tiny_studiolms'),
+                    ]);
+
                     PopupManager.open(btnResources, 'tiny_studiolms/popup_webteca_resources', {}, (popup) => {
                         const listContainer = popup.querySelector('#slms-webteca-resource-list');
                         const btnAdd = popup.querySelector('#pop_web_add_btn');
@@ -175,24 +191,34 @@ export default {
                                 // The title/url values come from attacker-controllable state (see
                                 // StateManager.restore) and must never be interpolated into an
                                 // HTML string: set them as DOM properties below instead, which
-                                // cannot be broken out of.
+                                // cannot be broken out of. The label/placeholder strings above
+                                // come from core/str, not user input, so interpolating them here
+                                // is safe.
                                 row.innerHTML = `
                                 <div class="flex-grow-1">
                                     <div class="input-group input-group-sm mb-1">
-                                        <select class="form-select res-type slms-webteca-select" aria-label="Type">
-                                            <option value="link" ${res.type === 'link' ? 'selected' : ''}>🔗 Link</option>
-                                            <option value="pdf" ${res.type === 'pdf' ? 'selected' : ''}>📄 PDF</option>
-                                            <option value="video" ${res.type === 'video' ? 'selected' : ''}>▶️ Vídeo</option>
-                                            <option value="audio" ${res.type === 'audio' ? 'selected' : ''}>🎧 Áudio</option>
+                                        <select class="form-select res-type slms-webteca-select" aria-label="${typeAria}">
+                                            <option value="link" ${res.type === 'link' ? 'selected' : ''}>
+                                                ${typeLinkLabel}
+                                            </option>
+                                            <option value="pdf" ${res.type === 'pdf' ? 'selected' : ''}>
+                                                ${typePdfLabel}
+                                            </option>
+                                            <option value="video" ${res.type === 'video' ? 'selected' : ''}>
+                                                ${typeVideoLabel}
+                                            </option>
+                                            <option value="audio" ${res.type === 'audio' ? 'selected' : ''}>
+                                                ${typeAudioLabel}
+                                            </option>
                                         </select>
                                         <input type="text" class="form-control res-title"
-                                            placeholder="Título" aria-label="Title">
+                                            placeholder="${titlePlaceholder}" aria-label="${titleAria}">
                                     </div>
                                     <input type="text" class="form-control form-control-sm res-url"
-                                        placeholder="https://..." aria-label="URL">
+                                        placeholder="${urlPlaceholder}" aria-label="${urlAria}">
                                 </div>
                                 <button type="button" class="btn btn-sm btn-outline-danger res-del slms-btn-fit"
-                                    aria-label="Remove">🗑️</button>
+                                    aria-label="${removeAria}">🗑️</button>
                                 `;
                                 row.querySelector('.res-title').value = res.title;
                                 row.querySelector('.res-url').value = res.url;
