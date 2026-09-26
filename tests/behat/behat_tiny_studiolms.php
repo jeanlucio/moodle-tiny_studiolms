@@ -165,9 +165,13 @@ class behat_tiny_studiolms extends behat_base {
                 );
             }
 
+            // Mink only auto-prefixes "return " when the script does not already start with it,
+            // so a multi-statement script (needing its own "var") must be wrapped in an IIFE.
             $html = $session->evaluateScript(
+                'return (function () {' .
                 'var el = document.querySelector(".slms-canvas-block-preview");' .
-                'return el ? el.innerHTML : "";'
+                'return el ? el.innerHTML : "";' .
+                '})();'
             );
             if (strpos($html, '<img') !== false) {
                 throw new \Behat\Mink\Exception\ExpectationException(
