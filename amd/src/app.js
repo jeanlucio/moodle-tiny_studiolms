@@ -33,6 +33,7 @@ import {init as initAiKeys} from './aikeys';
 import {init as initAiLogs} from './ailogs';
 import {init as initAiChat} from './aichat';
 import {setContextId} from './context';
+import {setEditorInstance} from './editorinstance';
 
 // Canvas state — array of {id, blockDef, config, element, previewEl}
 let canvasBlocks = [];
@@ -187,6 +188,7 @@ export const initStudioApp = (
     targetEditNode = null;
     presetsData = presets;
     setContextId(contextId);
+    setEditorInstance(editor);
     hasAiEnabled = hasAi;
     canvasBlocks = [];
     canvasBlockCounter = 0;

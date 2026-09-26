@@ -1699,6 +1699,11 @@ class generator {
             throw new \moodle_exception('ai_generator_error', 'tiny_studiolms');
         }
 
+        // Unlike the dedicated generators above, this generic path has no fixed field list to
+        // clean_param() per block type — that shape only exists client-side (Blocks registry's
+        // defaultData). The config is sanitized there instead, in editorinstance.js, by
+        // re-serializing every string value through the editor's own schema before it reaches a
+        // render sink; this is only a transport step.
         $config = isset($block['config']) && is_array($block['config']) ? $block['config'] : [];
 
         return [
@@ -1744,6 +1749,7 @@ class generator {
             ) {
                 continue;
             }
+            // See the same comment in parse_block_json() above — sanitized client-side instead.
             $config = isset($block['config']) && is_array($block['config']) ? $block['config'] : [];
             $blocks[] = ['type' => $block['type'], 'config' => $config];
         }

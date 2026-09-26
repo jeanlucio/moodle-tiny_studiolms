@@ -31,6 +31,7 @@ import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {Blocks} from './blocks/registry';
 import {getContextId} from './context';
+import {sanitizeAiConfig} from './editorinstance';
 
 /**
  * Renders a bare preview HTML for a single block (no state attributes).
@@ -315,9 +316,13 @@ const setupBlockGenerator = (container, callbacks) => {
                 parsedConfig = {};
             }
 
+            // Generate_block validates only blocktype server-side — the config object itself is
+            // whatever JSON the LLM returned, unlike the dedicated per-block generators which
+            // clean_param() each known field. A prompt-injected instruction could ask for a
+            // field like contentHtml to contain a script-executing payload.
             const mergedConfig = Object.assign(
                 JSON.parse(JSON.stringify(blockDef.defaultData)),
-                parsedConfig
+                sanitizeAiConfig(parsedConfig)
             );
 
             const htmlContent = await renderBlockPreview(blockDef, mergedConfig);
@@ -381,6 +386,10 @@ const setupPresetGenerator = (container, callbacks) => {
             } catch (parseError) {
                 parsedBlocks = [];
             }
+
+            // Same reasoning as the single-block path above: generate_preset validates only each
+            // block's type, not its config fields.
+            parsedBlocks = sanitizeAiConfig(parsedBlocks);
 
             if (parsedBlocks.length > 0) {
                 const preset = {name: result.name, blocks: parsedBlocks};

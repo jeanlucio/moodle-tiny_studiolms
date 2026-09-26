@@ -25,6 +25,7 @@ import Ajax from 'core/ajax';
 import Templates from 'core/templates';
 import {getString} from 'core/str';
 import {getContextId} from './context';
+import {sanitizeAiConfig} from './editorinstance';
 
 const MAX_HISTORY = 30;
 
@@ -210,9 +211,12 @@ export const init = async(container, hasAi, presets = [], callbacks = {}) => {
                         contextid: getContextId(),
                     },
                 }])[0];
+                // Generate_preset validates only each block's type, not its config fields — see
+                // editorinstance.js for why the LLM's own JSON needs sanitizing before it reaches
+                // a render sink.
                 const preset = {
                     name: result.name,
-                    blocks: JSON.parse(result.blocks),
+                    blocks: sanitizeAiConfig(JSON.parse(result.blocks)),
                 };
                 await callbacks.onGenerateTemplate(preset);
             }
