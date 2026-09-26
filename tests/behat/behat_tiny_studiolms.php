@@ -143,6 +143,44 @@ class behat_tiny_studiolms extends behat_base {
     }
 
     /**
+     * Asserts that no markup restored from a block's own state (e.g. typed into a design popup
+     * field) executed as script, and that no raw tag from it survived into the canvas preview.
+     *
+     * Regression test for the data-slms-state XSS: that attribute is decoded outside of
+     * TinyMCE's own HTML filter, so every block field must be sanitized/escaped before it
+     * reaches a template's triple-mustache/innerHTML sink. Uses a spin because the preview
+     * re-render triggered by the field's input listener is asynchronous.
+     *
+     * @Then the StudioLMS canvas preview does not execute injected markup
+     */
+    public function studiolms_canvas_preview_is_sanitized(): void {
+        $session = $this->getSession();
+
+        $this->spin(function () use ($session) {
+            $fired = $session->evaluateScript('return window.__slmsXssFired === true;');
+            if ($fired) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    'Injected markup executed inside the StudioLMS canvas preview.',
+                    $session
+                );
+            }
+
+            $html = $session->evaluateScript(
+                'var el = document.querySelector(".slms-canvas-block-preview");' .
+                'return el ? el.innerHTML : "";'
+            );
+            if (strpos($html, '<img') !== false) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    'Raw <img> markup survived into the StudioLMS canvas preview.',
+                    $session
+                );
+            }
+
+            return true;
+        });
+    }
+
+    /**
      * Asserts that the StudioLMS toolbar button is NOT present in the TinyMCE toolbar.
      *
      * @Then the StudioLMS toolbar button is not visible

@@ -51,6 +51,74 @@ const invalidateTabCache = (...tabNames) => {
     tabNames.forEach((t) => tabDataCache.delete(t));
 };
 
+const HTML_TAG_PATTERN = /<[^>]*>/g;
+
+/**
+ * Strip HTML markup from a string. Fields that are not excluded via excludeFromState are meant to
+ * hold plain values only (colors, enums, emoji, short text) — the rich HTML fields are re-read
+ * from the sanitized TinyMCE DOM via extractDOM instead. Any markup surviving in a plain field is
+ * either stale data or an attacker-controlled payload, so it is always removed.
+ *
+ * @param {string} value
+ * @returns {string}
+ */
+const stripHtmlMarkup = (value) => value.replace(HTML_TAG_PATTERN, '');
+
+/**
+ * Coerce a single decoded value to the type of the block's own default value for that key.
+ * A value whose type does not match the default falls back to the default, and any string is
+ * stripped of HTML markup.
+ *
+ * @param {*} value Value decoded from the base64 state.
+ * @param {*} sample Corresponding value from the block's defaultData.
+ * @returns {*} Sanitized value.
+ */
+const sanitizeStateValue = (value, sample) => {
+    if (typeof sample === 'string') {
+        return typeof value === 'string' ? stripHtmlMarkup(value) : sample;
+    }
+    if (typeof sample === 'number') {
+        return typeof value === 'number' && Number.isFinite(value) ? value : sample;
+    }
+    if (typeof sample === 'boolean') {
+        return typeof value === 'boolean' ? value : sample;
+    }
+    if (Array.isArray(sample)) {
+        if (!Array.isArray(value)) {
+            return sample;
+        }
+        const itemSample = sample[0];
+        if (itemSample && typeof itemSample === 'object') {
+            return value.map((item) => sanitizeStateObject(item, itemSample));
+        }
+        return value.filter((item) => typeof item === typeof itemSample);
+    }
+    if (sample && typeof sample === 'object') {
+        return sanitizeStateObject(value, sample);
+    }
+    return sample;
+};
+
+/**
+ * Rebuild an object using only the keys the block declares in its reference object, sanitizing
+ * each value against the matching default. This is what keeps an attacker-controlled
+ * data-slms-state attribute from injecting arbitrary keys/markup into a block's config.
+ *
+ * @param {*} decoded Raw decoded object (or sub-object), possibly attacker-controlled.
+ * @param {object} sample Reference object (block defaultData, or a nested default item).
+ * @returns {object} Sanitized object with exactly the keys of sample.
+ */
+const sanitizeStateObject = (decoded, sample) => {
+    const source = decoded && typeof decoded === 'object' ? decoded : {};
+    const result = {};
+    Object.keys(sample).forEach((key) => {
+        result[key] = Object.prototype.hasOwnProperty.call(source, key)
+            ? sanitizeStateValue(source[key], sample[key])
+            : sample[key];
+    });
+    return result;
+};
+
 const StateManager = {
     encode: (data, excludeKeys = []) => {
         const state = Object.assign({}, data);
@@ -65,6 +133,24 @@ const StateManager = {
         } catch (e) {
             return null;
         }
+    },
+    /**
+     * Decode a base64 state and sanitize it against the block's own defaultData schema. Always
+     * use this (never decode() directly) when the state comes from DOM content that Moodle did
+     * not just generate itself — e.g. content restored from an editor node, or from an imported
+     * template — since that HTML can be attacker-controlled and data-slms-state is not covered by
+     * TinyMCE's own HTML filter.
+     *
+     * @param {string} base64
+     * @param {object} blockDef Block definition from the Blocks registry.
+     * @returns {object|null} Sanitized state, safe to merge into the block config, or null.
+     */
+    restore: (base64, blockDef) => {
+        const decoded = StateManager.decode(base64);
+        if (!decoded || !blockDef) {
+            return null;
+        }
+        return sanitizeStateObject(decoded, blockDef.defaultData || {});
     }
 };
 
@@ -121,7 +207,7 @@ export const initStudioApp = (
         if (editData && editData.type && editData.state) {
             const blockDef = Blocks[editData.type];
             if (blockDef) {
-                const restoredState = StateManager.decode(editData.state);
+                const restoredState = StateManager.restore(editData.state, blockDef);
 
                 if (restoredState) {
                     const mergedConfig = Object.assign(
@@ -517,7 +603,7 @@ export const loadTemplateToCanvas = async(htmlContent, tplName = '') => {
         const blockConfig = JSON.parse(JSON.stringify(blockDef.defaultData));
 
         if (state) {
-            const savedState = StateManager.decode(state);
+            const savedState = StateManager.restore(state, blockDef);
             if (savedState) {
                 Object.assign(blockConfig, savedState);
             }
@@ -881,6 +967,9 @@ const renderLibrary = () => {
             const translatedTitle = await getString(blockDef.titleString, 'tiny_studiolms');
             card.setAttribute('aria-label', translatedTitle);
             card.dataset.slmsLabel = translatedTitle.toLowerCase();
+            // Stable, language-independent hook for automated tests (Behat) — aria-label is
+            // translated and cannot be used to target a specific block type reliably.
+            card.dataset.slmsBlockId = blockDef.id;
 
             card.addEventListener('click', (e) => {
                 e.preventDefault();

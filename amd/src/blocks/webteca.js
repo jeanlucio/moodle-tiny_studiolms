@@ -172,6 +172,10 @@ export default {
                                 const row = document.createElement('div');
                                 row.className = 'd-flex gap-2 mb-2 align-items-center p-2 border rounded bg-light';
 
+                                // The title/url values come from attacker-controllable state (see
+                                // StateManager.restore) and must never be interpolated into an
+                                // HTML string: set them as DOM properties below instead, which
+                                // cannot be broken out of.
                                 row.innerHTML = `
                                 <div class="flex-grow-1">
                                     <div class="input-group input-group-sm mb-1">
@@ -181,15 +185,17 @@ export default {
                                             <option value="video" ${res.type === 'video' ? 'selected' : ''}>▶️ Vídeo</option>
                                             <option value="audio" ${res.type === 'audio' ? 'selected' : ''}>🎧 Áudio</option>
                                         </select>
-                                        <input type="text" class="form-control res-title" value="${res.title}"
+                                        <input type="text" class="form-control res-title"
                                             placeholder="Título" aria-label="Title">
                                     </div>
                                     <input type="text" class="form-control form-control-sm res-url"
-                                        value="${res.url}" placeholder="https://..." aria-label="URL">
+                                        placeholder="https://..." aria-label="URL">
                                 </div>
                                 <button type="button" class="btn btn-sm btn-outline-danger res-del slms-btn-fit"
                                     aria-label="Remove">🗑️</button>
                                 `;
+                                row.querySelector('.res-title').value = res.title;
+                                row.querySelector('.res-url').value = res.url;
 
                                 row.querySelector('.res-type').addEventListener('change', (e) => {
                                     data.resources[index].type = e.target.value;
