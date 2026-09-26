@@ -36,8 +36,17 @@ final class toggle_favourite_test extends advanced_testcase {
     /** @var \stdClass User fixture. */
     private \stdClass $teacher;
 
+    /** @var \stdClass Second teacher fixture (ownership isolation). */
+    private \stdClass $otherteacher;
+
     /** @var int ID of the template fixture. */
     private int $templateid;
+
+    /** @var int ID of the other teacher's private template fixture. */
+    private int $othertemplateid;
+
+    /** @var int ID of the global template fixture. */
+    private int $globaltemplateid;
 
     protected function setUp(): void {
         parent::setUp();
@@ -48,9 +57,11 @@ final class toggle_favourite_test extends advanced_testcase {
         $context = \context_system::instance();
 
         $this->teacher = $this->getDataGenerator()->create_user();
+        $this->otherteacher = $this->getDataGenerator()->create_user();
         $role = $this->getDataGenerator()->create_role();
         assign_capability('tiny/studiolms:use', CAP_ALLOW, $role, $context->id);
         role_assign($role, $this->teacher->id, $context->id);
+        role_assign($role, $this->otherteacher->id, $context->id);
 
         $now = time();
         $this->templateid = $DB->insert_record('tiny_studiolms_templates', (object) [
@@ -59,6 +70,26 @@ final class toggle_favourite_test extends advanced_testcase {
             'userid'       => $this->teacher->id,
             'usermodified' => $this->teacher->id,
             'isglobal'     => 0,
+            'timecreated'  => $now,
+            'timemodified' => $now,
+        ]);
+
+        $this->othertemplateid = $DB->insert_record('tiny_studiolms_templates', (object) [
+            'name'         => 'Other Teacher Private Template',
+            'content'      => '<p>secret</p>',
+            'userid'       => $this->otherteacher->id,
+            'usermodified' => $this->otherteacher->id,
+            'isglobal'     => 0,
+            'timecreated'  => $now,
+            'timemodified' => $now,
+        ]);
+
+        $this->globaltemplateid = $DB->insert_record('tiny_studiolms_templates', (object) [
+            'name'         => 'Global Template',
+            'content'      => '<p>global</p>',
+            'userid'       => $this->otherteacher->id,
+            'usermodified' => $this->otherteacher->id,
+            'isglobal'     => 1,
             'timecreated'  => $now,
             'timemodified' => $now,
         ]);
@@ -144,5 +175,46 @@ final class toggle_favourite_test extends advanced_testcase {
 
         $this->expectException(\required_capability_exception::class);
         toggle_favourite::execute($this->templateid);
+    }
+
+    /**
+     * A user cannot favourite another user's private template (IDOR regression test): the
+     * lookup must be scoped by visibility, not just by the id existing at all.
+     */
+    public function test_cannot_favourite_other_users_private_template(): void {
+        global $DB;
+
+        $this->setUser($this->teacher);
+
+        $this->expectException(\dml_missing_record_exception::class);
+        try {
+            toggle_favourite::execute($this->othertemplateid);
+        } finally {
+            $this->assertFalse(
+                $DB->record_exists('tiny_studiolms_favourites', [
+                    'userid'     => $this->teacher->id,
+                    'templateid' => $this->othertemplateid,
+                ])
+            );
+        }
+    }
+
+    /**
+     * A user can favourite a global template they do not own.
+     */
+    public function test_can_favourite_global_template_owned_by_someone_else(): void {
+        global $DB;
+
+        $this->setUser($this->teacher);
+
+        $result = toggle_favourite::execute($this->globaltemplateid);
+
+        $this->assertTrue($result['favourited']);
+        $this->assertTrue(
+            $DB->record_exists('tiny_studiolms_favourites', [
+                'userid'     => $this->teacher->id,
+                'templateid' => $this->globaltemplateid,
+            ])
+        );
     }
 }

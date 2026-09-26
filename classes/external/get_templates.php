@@ -65,9 +65,7 @@ class get_templates extends external_api {
 
         $context = context_system::instance();
         self::validate_context($context);
-        if (!isloggedin() || isguestuser()) {
-            throw new \required_capability_exception($context, 'tiny/studiolms:use', 'nopermissions', '');
-        }
+        require_capability('tiny/studiolms:use', $context);
 
         $userid = $USER->id;
         $canmanageglobal = has_capability('tiny/studiolms:manageglobaltemplates', $context);
@@ -87,8 +85,12 @@ class get_templates extends external_api {
         if ($params['type'] === 'global') {
             $sql .= " WHERE t.isglobal = 1";
         } else if ($params['type'] === 'favourites') {
-            $sql .= " WHERE f.userid = :wuserid";
+            // A favourite row alone does not prove visibility: toggle_favourite() only started
+            // enforcing it going forward, so an older or forged row could still point at another
+            // user's private template. Re-check visibility here too, not just at write time.
+            $sql .= " WHERE f.userid = :wuserid AND (t.isglobal = 1 OR t.userid = :vuserid)";
             $sqlparams['wuserid'] = $userid;
+            $sqlparams['vuserid'] = $userid;
         } else {
             $sql .= " WHERE t.userid = :wuserid AND t.isglobal = 0";
             $sqlparams['wuserid'] = $userid;

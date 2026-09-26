@@ -58,11 +58,18 @@ class toggle_favourite extends external_api {
 
         $context = context_system::instance();
         self::validate_context($context);
-        if (!isloggedin() || isguestuser()) {
-            throw new \required_capability_exception($context, 'tiny/studiolms:use', 'nopermissions', '');
-        }
+        require_capability('tiny/studiolms:use', $context);
 
-        $DB->get_record('tiny_studiolms_templates', ['id' => $params['templateid']], 'id', MUST_EXIST);
+        // Scoped by visibility: a template must be global or owned by the current user before it
+        // can be favourited, otherwise get_templates('favourites') would later leak the content
+        // of any other user's private template to whoever favourited its (guessable) id.
+        $DB->get_record_select(
+            'tiny_studiolms_templates',
+            'id = :id AND (isglobal = 1 OR userid = :userid)',
+            ['id' => $params['templateid'], 'userid' => $USER->id],
+            'id',
+            MUST_EXIST
+        );
 
         $existing = $DB->get_record('tiny_studiolms_favourites', [
             'userid'     => $USER->id,

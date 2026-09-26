@@ -191,6 +191,29 @@ final class get_templates_test extends advanced_testcase {
     }
 
     /**
+     * type=favourites never exposes another user's private template, even via a stale or forged
+     * favourite row (IDOR regression test): visibility must be re-checked at read time, not
+     * assumed from the favourite row's mere existence.
+     */
+    public function test_favourites_excludes_other_users_private_template_via_forged_row(): void {
+        global $DB;
+
+        $othertemplateid = $DB->get_field('tiny_studiolms_templates', 'id', ['name' => 'Teacher2 Layout']);
+        $DB->insert_record('tiny_studiolms_favourites', (object) [
+            'userid'      => $this->teacher1->id,
+            'templateid'  => $othertemplateid,
+            'timecreated' => time(),
+        ]);
+
+        $this->setUser($this->teacher1);
+
+        $rows = get_templates::execute('favourites');
+        $names = array_column($rows, 'name');
+
+        $this->assertNotContains('Teacher2 Layout', $names);
+    }
+
+    /**
      * A user without the :use capability gets an access-denied exception.
      */
     public function test_guest_cannot_get_templates(): void {
