@@ -38,12 +38,12 @@ export default {
     // Exclude rich text content from being serialized into the Base64 chip.
     excludeFromState: ['text'],
 
-    // Reads the rich text back from the Moodle DOM node upon re-edition.
+    // Reads the rich text back from the Moodle DOM node upon re-edition. Falls back to empty
+    // (defense in depth), never to whatever state already held, when the expected child is
+    // missing — e.g. a value that survived from an attacker-controlled data-slms-state.
     extractDOM: (node, state) => {
         const textNode = node.querySelector('.slms-heading-text');
-        if (textNode) {
-            state.text = textNode.innerHTML;
-        }
+        state.text = textNode ? textNode.innerHTML : '';
     },
 
     buildToolbar: async(container, data, onUpdate, PopupManager) => {

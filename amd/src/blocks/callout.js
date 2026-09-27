@@ -46,9 +46,11 @@ export default {
 
     extractDOM: (node, state) => {
         const contentNode = node.querySelector('.slms-callout-content');
-        if (contentNode) {
-            state.contentHtml = contentNode.innerHTML;
-        }
+        // Defense in depth: never leave a caller-supplied state.contentHtml (e.g. a value that
+        // survived from an attacker-controlled data-slms-state) in place just because this
+        // specific markup shape has no matching child — fall back to empty, never to whatever
+        // was already there.
+        state.contentHtml = contentNode ? contentNode.innerHTML : '';
     },
 
     buildToolbar: async(container, data, onUpdate, PopupManager) => {

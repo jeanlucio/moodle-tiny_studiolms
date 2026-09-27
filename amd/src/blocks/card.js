@@ -56,9 +56,11 @@ export default {
     // Extract the rich text back from the Moodle DOM node.
     extractDOM: (node, state) => {
         const contentNode = node.querySelector('.studiolms-editable-area');
-        if (contentNode) {
-            state.content = contentNode.innerHTML;
-        }
+        // Defense in depth: never leave a caller-supplied state.content (e.g. a value that
+        // survived from an attacker-controlled data-slms-state) in place just because this
+        // specific markup shape has no matching child — fall back to empty, never to whatever
+        // was already there.
+        state.content = contentNode ? contentNode.innerHTML : '';
         // Extract dynamically typed border color if it was overridden by contenteditable.
         const headerNode = node.querySelector('h4');
         if (headerNode && headerNode.style.color && headerNode.style.color !== 'inherit') {

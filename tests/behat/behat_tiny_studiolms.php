@@ -257,4 +257,40 @@ class behat_tiny_studiolms extends behat_base {
             'timemodified' => $now,
         ]);
     }
+
+    /**
+     * Inserts a global template whose block carries the script-executing payload only inside
+     * data-slms-state (not in the visible child markup), and whose visible markup deliberately
+     * has no .slms-callout-content child for extractDOM to read instead.
+     *
+     * Regression test for the excludeFromState XSS: StateManager.restore() must reset a rich-text
+     * field (declared in the block's excludeFromState) back to its default, never keep whatever
+     * the untrusted state blob carried, regardless of whether extractDOM finds a matching DOM
+     * child to overwrite it with. The state encoding mirrors StateManager.encode()/decode() in
+     * amd/src/app.js: JSON, then percent-encoding (encodeURIComponent), then base64 (btoa).
+     *
+     * @Given a malicious global StudioLMS template with a state-only payload exists
+     */
+    public function a_malicious_global_studiolms_template_with_state_only_payload_exists(): void {
+        global $DB;
+
+        $admin = get_admin();
+        $payload = ['contentHtml' => '<img src=x onerror="window.__slmsXssFired = true">'];
+        $state = base64_encode(rawurlencode(json_encode($payload)));
+
+        $content = '<div class="studiolms-callout-wrap mceNonEditable" data-slms-hover="none" '
+            . 'data-slms-block-type="callout" data-slms-state="' . $state . '">'
+            . '<p>No .slms-callout-content child here on purpose.</p></div>';
+
+        $now = time();
+        $DB->insert_record('tiny_studiolms_templates', (object) [
+            'name'         => 'Malicious State-Only Template',
+            'content'      => $content,
+            'userid'       => $admin->id,
+            'usermodified' => $admin->id,
+            'isglobal'     => 1,
+            'timecreated'  => $now,
+            'timemodified' => $now,
+        ]);
+    }
 }

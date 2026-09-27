@@ -44,17 +44,15 @@ export default {
     // Exclude strings and rich text from the Base64 state chip.
     excludeFromState: ['title', 'content'],
 
-    // Extract the text back from the live Moodle DOM node.
+    // Extract the text back from the live Moodle DOM node. Both fields fall back to empty
+    // (defense in depth), never to whatever state already held, when the expected child is
+    // missing — e.g. a value that survived from an attacker-controlled data-slms-state.
     extractDOM: (node, state) => {
         const titleNode = node.querySelector('.slms-acc-title');
-        if (titleNode) {
-            state.title = titleNode.textContent.trim();
-        }
+        state.title = titleNode ? titleNode.textContent.trim() : '';
 
         const contentNode = node.querySelector('.studiolms-editable-area');
-        if (contentNode) {
-            state.content = contentNode.innerHTML;
-        }
+        state.content = contentNode ? contentNode.innerHTML : '';
     },
 
     buildToolbar: async(container, data, onUpdate, PopupManager) => {

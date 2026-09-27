@@ -53,18 +53,22 @@ const invalidateTabCache = (...tabNames) => {
     tabNames.forEach((t) => tabDataCache.delete(t));
 };
 
-const HTML_TAG_PATTERN = /<[^>]*>/g;
-
 /**
  * Strip HTML markup from a string. Fields that are not excluded via excludeFromState are meant to
  * hold plain values only (colors, enums, emoji, short text) — the rich HTML fields are re-read
  * from the sanitized TinyMCE DOM via extractDOM instead. Any markup surviving in a plain field is
  * either stale data or an attacker-controlled payload, so it is always removed.
  *
+ * A regex like /<[^>]*>/g only strips tags that are actually closed with '>' — an unclosed tag
+ * such as '<img src=x onerror=...' (no trailing '>') passes straight through unmodified. DOMParser
+ * builds an inert document (see loadTemplateToCanvas below for the same property) and reading
+ * textContent back discards every element node regardless of how malformed its markup is, so
+ * there is no tag shape that can survive this call.
+ *
  * @param {string} value
  * @returns {string}
  */
-const stripHtmlMarkup = (value) => value.replace(HTML_TAG_PATTERN, '');
+const stripHtmlMarkup = (value) => new DOMParser().parseFromString(value, 'text/html').body.textContent || '';
 
 /**
  * Coerce a single decoded value to the type of the block's own default value for that key.
@@ -152,7 +156,24 @@ const StateManager = {
         if (!decoded || !blockDef) {
             return null;
         }
-        return sanitizeStateObject(decoded, blockDef.defaultData || {});
+        const sanitized = sanitizeStateObject(decoded, blockDef.defaultData || {});
+
+        // Rich HTML fields (contentHtml, content, text, ...) are declared in excludeFromState
+        // specifically so they are never carried inside data-slms-state — they are meant to be
+        // re-read from the live, TinyMCE-filtered DOM via the block's own extractDOM instead.
+        // sanitizeStateObject() above has no way to know that distinction: defaultData still
+        // declares these keys (so their type can be validated), so it happily copies whatever
+        // string the attacker put there, only weakly filtered by stripHtmlMarkup(). Force them
+        // back to their default here so a block whose extractDOM finds no matching DOM child
+        // (a silent no-op, see e.g. callout.js) cannot fall back to an attacker-controlled value.
+        const defaultData = blockDef.defaultData || {};
+        (blockDef.excludeFromState || []).forEach((key) => {
+            if (Object.prototype.hasOwnProperty.call(sanitized, key)) {
+                sanitized[key] = defaultData[key];
+            }
+        });
+
+        return sanitized;
     }
 };
 
