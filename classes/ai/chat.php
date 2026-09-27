@@ -153,8 +153,9 @@ class chat {
         $decoded = json_decode(trim($cleaned), true);
 
         if (!is_array($decoded) || empty($decoded['reply'])) {
+            // Same cleaning as the JSON branch below: a prompt can steer the model into this path.
             return [
-                'reply'    => trim($text),
+                'reply'    => clean_param(trim($text), PARAM_TEXT),
                 'action'   => null,
                 'provider' => $provider,
             ];

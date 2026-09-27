@@ -59,8 +59,11 @@ const invalidateTabCache = (...tabNames) => {
  * A regex like /<[^>]*>/g only strips tags that are actually closed with '>' — an unclosed tag
  * such as '<img src=x onerror=...' (no trailing '>') passes straight through unmodified. DOMParser
  * builds an inert document (see loadTemplateToCanvas below for the same property) and reading
- * textContent back discards every element node regardless of how malformed its markup is, so
- * there is no tag shape that can survive this call.
+ * textContent back discards every element node regardless of how malformed its markup is.
+ *
+ * The result is plain text, not HTML-safe text: textContent decodes entities, so '&lt;b&gt;' comes
+ * back as the characters '<b>'. That is correct for these fields, which every block renders escaped
+ * ({{value}} or its own esc()), but the output must never be placed in a raw HTML sink as is.
  *
  * @param {string} value
  * @returns {string}

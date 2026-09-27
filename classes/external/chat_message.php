@@ -139,7 +139,7 @@ class chat_message extends external_api {
      */
     public static function execute_returns(): external_single_structure {
         return new external_single_structure([
-            'reply'    => new external_value(PARAM_RAW, 'AI reply text'),
+            'reply'    => new external_value(PARAM_TEXT, 'AI reply text'),
             'action'   => new external_value(PARAM_RAW, 'JSON-encoded action (optional)', VALUE_OPTIONAL),
             'provider' => new external_value(PARAM_TEXT, 'AI provider used'),
         ]);

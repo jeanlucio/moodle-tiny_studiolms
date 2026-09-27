@@ -25,21 +25,50 @@
 namespace tiny_studiolms\ai;
 
 use advanced_testcase;
+use tiny_studiolms\tests\hub_stub_trait;
+
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once($CFG->dirroot . '/lib/editor/tiny/plugins/studiolms/tests/fixtures/hub_stub_trait.php');
 
 /**
- * Tests for the AI chat assistant's pure logic that does not require a live provider.
+ * Tests for the AI chat assistant that never reach a live provider.
  *
- * send() itself needs a real provider call, so it is covered indirectly via
- * tests\external\chat_message_test; here only build_system_prompt(), the one public
- * method that can be exercised in isolation, is tested directly.
+ * build_system_prompt() is tested directly; send() goes through a stubbed local_aihub client.
  *
  * @covers \tiny_studiolms\ai\chat
  */
 final class chat_test extends advanced_testcase {
+    use hub_stub_trait;
+
     #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
+        $this->setAdminUser();
+    }
+
+    #[\Override]
+    protected function tearDown(): void {
+        $this->reset_hub_stub();
+        parent::tearDown();
+    }
+
+    /**
+     * A reply that is not valid JSON is cleaned exactly like the JSON branch, not returned raw.
+     *
+     * Regression test: the fallback branch used to return the model's text with only trim(), while a
+     * prompt can easily steer the model away from JSON.
+     */
+    public function test_non_json_reply_is_cleaned(): void {
+        $this->install_hub_stub(true, 'Hello <img src=x onerror=alert(1)><b>there</b>');
+
+        $result = chat::send([['role' => 'user', 'content' => 'Hi']], '[]', \context_system::instance());
+
+        $this->assertStringNotContainsString('<', $result['reply']);
+        $this->assertStringContainsString('Hello', $result['reply']);
+        $this->assertNull($result['action']);
     }
 
     /**
