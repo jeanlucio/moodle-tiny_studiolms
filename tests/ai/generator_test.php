@@ -25,114 +25,155 @@
 namespace tiny_studiolms\ai;
 
 use advanced_testcase;
+use tiny_studiolms\tests\hub_stub_trait;
+
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once($CFG->dirroot . '/lib/editor/tiny/plugins/studiolms/tests/fixtures/hub_stub_trait.php');
 
 /**
- * Tests for the AI block/preset generator that do not require a live provider.
+ * Tests for the AI block/preset generator that never reach a live provider.
  *
- * These tests cover the fail-safe paths that fire before any HTTP call is made: no
- * provider configured at all, and an unsafe custom endpoint URL (SSRF guard).
+ * A fresh test site has no hub key and no enabled core_ai provider, which covers the "no AI" path;
+ * generation itself goes through a stubbed local_aihub client.
  *
  * @covers \tiny_studiolms\ai\generator
  */
 final class generator_test extends advanced_testcase {
+    use hub_stub_trait;
+
     #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
+        $this->setAdminUser();
+    }
 
-        // Ensure a clean slate: no keys at any tier of the resolution ladder.
-        set_config('apikey_gemini', '', 'tiny_studiolms');
-        set_config('apikey_groq', '', 'tiny_studiolms');
-        set_config('apikey_custom', '', 'tiny_studiolms');
-        set_config('custom_baseurl', '', 'tiny_studiolms');
-        set_config('custom_model', '', 'tiny_studiolms');
+    #[\Override]
+    protected function tearDown(): void {
+        $this->reset_hub_stub();
+        parent::tearDown();
     }
 
     /**
-     * generate_block() throws when no provider is configured at any level.
+     * Asserts that a callable throws a moodle_exception with the given error code.
+     *
+     * @param string $errorcode Expected lang string key.
+     * @param callable $fn Code expected to throw.
      */
-    public function test_generate_block_throws_when_no_provider_configured(): void {
-        $this->expectException(\moodle_exception::class);
-        generator::generate_block('A callout about photosynthesis');
+    private function assert_throws_code(string $errorcode, callable $fn): void {
+        try {
+            $fn();
+            $this->fail('Expected moodle_exception ' . $errorcode);
+        } catch (\moodle_exception $e) {
+            $this->assertSame($errorcode, $e->errorcode);
+        }
     }
 
     /**
-     * generate_preset() throws when no provider is configured, regardless of palette.
+     * Every generator reports "no AI configured" when no AI source is available at all.
      */
-    public function test_generate_preset_throws_when_no_provider_configured(): void {
-        $this->expectException(\moodle_exception::class);
-        generator::generate_preset('My Layout', 'Intro to photosynthesis', '', 'not-a-real-palette');
+    public function test_generators_throw_no_config_when_no_ai_available(): void {
+        $context = \context_system::instance();
+        $calls = [
+            fn() => generator::generate_block('A callout about photosynthesis', $context),
+            fn() => generator::generate_preset('My Layout', 'Intro to photosynthesis', '', 'not-a-real-palette', $context),
+            fn() => generator::generate_mindmap('Photosynthesis', $context),
+            fn() => generator::generate_infographic('Photosynthesis', $context),
+            fn() => generator::generate_infographic_steps('Photosynthesis', $context),
+            fn() => generator::generate_infographic_features('Photosynthesis', $context),
+            fn() => generator::call_chat('You are a helpful assistant.', [['role' => 'user', 'content' => 'Hi']], $context),
+        ];
+        foreach ($calls as $call) {
+            $this->assert_throws_code('ai_generator_no_config', $call);
+        }
     }
 
     /**
-     * generate_mindmap() throws when no provider is configured.
+     * A provider failure surfaces as the generator's own error, never as "not configured", and the raw
+     * provider detail only reaches developer debugging.
      */
-    public function test_generate_mindmap_throws_when_no_provider_configured(): void {
-        $this->expectException(\moodle_exception::class);
-        generator::generate_mindmap('Photosynthesis');
+    public function test_provider_failure_throws_generator_error(): void {
+        $this->install_hub_stub(false, '', 'Gemini: quota exceeded');
+
+        $this->assert_throws_code(
+            'ai_generator_error',
+            fn() => generator::generate_block('A callout', \context_system::instance())
+        );
+        $this->assertDebuggingCalled('StudioLMS AI: Gemini: quota exceeded');
     }
 
     /**
-     * generate_infographic() throws when no provider is configured.
+     * generate_block() parses the hub response and reports the provider that served it.
      */
-    public function test_generate_infographic_throws_when_no_provider_configured(): void {
-        $this->expectException(\moodle_exception::class);
-        generator::generate_infographic('Photosynthesis');
+    public function test_generate_block_via_hub(): void {
+        $client = $this->install_hub_stub(true, '{"blocktype":"callout","config":{"title":"Photosynthesis"}}');
+
+        $block = generator::generate_block('A callout about photosynthesis', \context_system::instance());
+
+        $this->assertSame('callout', $block['blocktype']);
+        $this->assertSame('{"title":"Photosynthesis"}', $block['config']);
+        $this->assertSame('Gemini', $block['provider']);
+        $this->assertSame('A callout about photosynthesis', $client->calls[0][1]);
+        $this->assertTrue($client->calls[0][2]);
     }
 
     /**
-     * generate_infographic_steps() throws when no provider is configured.
+     * An unknown block type from the model is rejected even when the provider call succeeded.
      */
-    public function test_generate_infographic_steps_throws_when_no_provider_configured(): void {
-        $this->expectException(\moodle_exception::class);
-        generator::generate_infographic_steps('Photosynthesis');
+    public function test_generate_block_rejects_unknown_block_type(): void {
+        $this->install_hub_stub(true, '{"blocktype":"script","config":{}}');
+
+        $this->assert_throws_code(
+            'ai_generator_error',
+            fn() => generator::generate_block('Anything', \context_system::instance())
+        );
     }
 
     /**
-     * generate_infographic_features() throws when no provider is configured.
+     * call_chat() flattens the history into role-labelled lines for the single-prompt providers.
      */
-    public function test_generate_infographic_features_throws_when_no_provider_configured(): void {
-        $this->expectException(\moodle_exception::class);
-        generator::generate_infographic_features('Photosynthesis');
+    public function test_call_chat_flattens_history(): void {
+        $client = $this->install_hub_stub(true, '{"reply":"Hello"}');
+        $messages = [
+            ['role' => 'user', 'content' => 'Hi'],
+            ['role' => 'assistant', 'content' => 'Hello!'],
+            ['role' => 'user', 'content' => 'Make a mind map'],
+        ];
+
+        $result = generator::call_chat('System', $messages, \context_system::instance());
+
+        $this->assertSame(['data' => '{"reply":"Hello"}', 'provider' => 'Gemini'], $result);
+        $this->assertSame("User: Hi\nAssistant: Hello!\nUser: Make a mind map", $client->calls[0][1]);
+        $this->assertSame('System', $client->calls[0][0]);
     }
 
     /**
-     * generate_text() throws when no provider is configured.
+     * Icons returned through the public steps generator pass the allow-list end to end.
      */
-    public function test_generate_text_throws_when_no_provider_configured(): void {
-        $this->expectException(\moodle_exception::class);
-        generator::generate_text('You are a helpful assistant.', 'Say hello.');
-    }
+    public function test_generate_infographic_steps_filters_icons(): void {
+        $payload = json_encode([
+            'title' => 'Steps',
+            'items' => [
+                ['icon' => 'fa-users', 'title' => 'One', 'description' => 'First'],
+                ['icon' => 'x" onmouseover="alert(1)', 'title' => 'Two', 'description' => 'Second'],
+            ],
+        ]);
+        $this->install_hub_stub(true, $payload);
 
-    /**
-     * A custom provider endpoint pointing at a loopback address is rejected before any
-     * network call is attempted (SSRF guard), causing the same fail-safe exception as
-     * having no provider at all — never a raw connection error or a silent success.
-     */
-    public function test_unsafe_custom_url_is_rejected_without_network_call(): void {
-        set_config('apikey_custom', 'fake-key', 'tiny_studiolms');
-        set_config('custom_baseurl', 'https://127.0.0.1/v1/chat/completions', 'tiny_studiolms');
+        $result = generator::generate_infographic_steps('Photosynthesis', \context_system::instance());
+        $items = json_decode($result['items'], true);
 
-        $this->expectException(\moodle_exception::class);
-        generator::generate_block('A callout about photosynthesis');
-    }
-
-    /**
-     * A non-HTTPS custom provider endpoint is rejected before any network call is attempted.
-     */
-    public function test_non_https_custom_url_is_rejected_without_network_call(): void {
-        set_config('apikey_custom', 'fake-key', 'tiny_studiolms');
-        set_config('custom_baseurl', 'http://api.example.com/v1/chat/completions', 'tiny_studiolms');
-
-        $this->expectException(\moodle_exception::class);
-        generator::generate_block('A callout about photosynthesis');
+        $this->assertSame('fa-solid fa-users', $items[0]['icon']);
+        $this->assertSame('', $items[1]['icon']);
     }
 
     /**
      * Calls the private icon allow-list helper directly.
      *
-     * The only public entry points to it (generate_infographic_steps/features) need a live AI
-     * provider, so the helper itself is exercised through reflection instead.
+     * Exercised through reflection so the allow-list is covered even on a site without local_aihub,
+     * where the public generators can only be reached through the stubbed hub client.
      *
      * @param string $raw Icon value as a model would return it.
      * @return string

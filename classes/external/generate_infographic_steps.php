@@ -69,7 +69,7 @@ class generate_infographic_steps extends external_api {
         require_capability('tiny/studiolms:use', $context);
 
         try {
-            $result = generator::generate_infographic_steps($params['topic']);
+            $result = generator::generate_infographic_steps($params['topic'], $context);
         } catch (\moodle_exception $e) {
             throw $e;
         } catch (\Throwable $t) {

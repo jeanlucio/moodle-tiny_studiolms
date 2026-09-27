@@ -31,7 +31,6 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use tiny_studiolms\ai\chat;
-use stdClass;
 
 /**
  * Processes a multi-turn AI chat message and returns a reply with an optional action.
@@ -90,8 +89,6 @@ class chat_message extends external_api {
      * @return array With keys 'reply', 'action' (optional), 'provider'.
      */
     public static function execute(int $contextid, array $history, string $presetscontext): array {
-        global $DB, $USER;
-
         $params = self::validate_parameters(self::execute_parameters(), [
             'contextid'      => $contextid,
             'history'        => $history,
@@ -111,7 +108,7 @@ class chat_message extends external_api {
         }
 
         try {
-            $result = chat::send($cleanhistory, $params['presetscontext']);
+            $result = chat::send($cleanhistory, $params['presetscontext'], $context);
         } catch (\moodle_exception $e) {
             throw $e;
         } catch (\Throwable $t) {
@@ -123,17 +120,6 @@ class chat_message extends external_api {
                 DEBUG_DEVELOPER
             );
             throw new \moodle_exception('ai_chat_error', 'tiny_studiolms');
-        }
-
-        try {
-            $log = new stdClass();
-            $log->userid = $USER->id;
-            $log->blocktype = 'chat';
-            $log->ai_provider = $result['provider'] ?? 'unknown';
-            $log->timecreated = time();
-            $DB->insert_record('tiny_studiolms_ai_logs', $log);
-        } catch (\dml_exception $e) {
-            debugging('StudioLMS AI: log insert failed — ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
 
         $response = [

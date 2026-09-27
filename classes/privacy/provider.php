@@ -29,7 +29,6 @@ use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\core_userlist_provider;
-use core_privacy\local\request\helper;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 
@@ -37,11 +36,14 @@ use core_privacy\local\request\writer;
  * Privacy provider for tiny_studiolms.
  *
  * This plugin stores layout templates created by users and their favourite relationships.
+ *
+ * AI requests go only through local_aihub (when installed) and Moodle core_ai. Both declare the
+ * external providers and keep their own usage records, so this plugin sends no personal data to an
+ * external location itself and stores no AI key or AI log.
  */
 class provider implements
     \core_privacy\local\metadata\provider,
     \core_privacy\local\request\plugin\provider,
-    \core_privacy\local\request\user_preference_provider,
     core_userlist_provider {
     /**
      * Returns metadata about data stored by this plugin.
@@ -62,44 +64,6 @@ class provider implements
             'privacy:metadata:tiny_studiolms_templates'
         );
 
-        $collection->add_external_location_link(
-            'tiny_studiolms_ai',
-            ['prompt' => 'privacy:metadata:tiny_studiolms_ai'],
-            'privacy:metadata:tiny_studiolms_ai'
-        );
-
-        $collection->add_database_table(
-            'tiny_studiolms_ai_logs',
-            [
-                'userid'      => 'privacy:metadata:tiny_studiolms_ai_logs:userid',
-                'blocktype'   => 'privacy:metadata:tiny_studiolms_ai_logs:blocktype',
-                'ai_provider' => 'privacy:metadata:tiny_studiolms_ai_logs:ai_provider',
-                'timecreated' => 'privacy:metadata:tiny_studiolms_ai_logs:timecreated',
-            ],
-            'privacy:metadata:tiny_studiolms_ai_logs'
-        );
-
-        $collection->add_user_preference(
-            'tiny_studiolms_gemini_key',
-            'privacy:metadata:tiny_studiolms_userprefs:gemini_key'
-        );
-        $collection->add_user_preference(
-            'tiny_studiolms_groq_key',
-            'privacy:metadata:tiny_studiolms_userprefs:groq_key'
-        );
-        $collection->add_user_preference(
-            'tiny_studiolms_custom_key',
-            'privacy:metadata:tiny_studiolms_userprefs:custom_key'
-        );
-        $collection->add_user_preference(
-            'tiny_studiolms_custom_url',
-            'privacy:metadata:tiny_studiolms_userprefs:custom_url'
-        );
-        $collection->add_user_preference(
-            'tiny_studiolms_custom_model',
-            'privacy:metadata:tiny_studiolms_userprefs:custom_model'
-        );
-
         $collection->add_database_table(
             'tiny_studiolms_favourites',
             [
@@ -111,45 +75,6 @@ class provider implements
         );
 
         return $collection;
-    }
-
-    /**
-     * Exports all user preferences for the specified user.
-     *
-     * Secret API keys are never exported in plain text: the underlying value is not needed to
-     * fulfil a data request, and doing so would hand a live, usable credential to anyone able
-     * to read the export (e.g. the user themself, or an administrator acting on their behalf).
-     *
-     * @param int $userid The ID of the user whose preferences are being exported.
-     */
-    public static function export_user_preferences(int $userid): void {
-        $maskedvalue = get_string('privacy:apikeynotexported', 'tiny_studiolms');
-
-        $preferences = [
-            'tiny_studiolms_gemini_key'   => ['suffix' => 'gemini_key', 'secret' => true],
-            'tiny_studiolms_groq_key'     => ['suffix' => 'groq_key', 'secret' => true],
-            'tiny_studiolms_custom_key'   => ['suffix' => 'custom_key', 'secret' => true],
-            'tiny_studiolms_custom_url'   => ['suffix' => 'custom_url', 'secret' => false],
-            'tiny_studiolms_custom_model' => ['suffix' => 'custom_model', 'secret' => false],
-        ];
-
-        foreach ($preferences as $preference => $info) {
-            $value = get_user_preferences($preference, null, $userid);
-            if ($value === null) {
-                continue;
-            }
-
-            $description = get_string(
-                'privacy:metadata:tiny_studiolms_userprefs:' . $info['suffix'],
-                'tiny_studiolms'
-            );
-            writer::export_user_preference(
-                'tiny_studiolms',
-                $preference,
-                $info['secret'] ? $maskedvalue : $value,
-                $description
-            );
-        }
     }
 
     /**
@@ -176,19 +101,12 @@ class provider implements
                              FROM {tiny_studiolms_favourites} f
                             WHERE f.userid = :fuserid
                        )
-                       OR
-                       EXISTS (
-                           SELECT 1
-                             FROM {tiny_studiolms_ai_logs} a
-                            WHERE a.userid = :auserid
-                       )
                    )";
 
         $contextlist->add_from_sql($sql, [
             'ctxlevel' => CONTEXT_SYSTEM,
             'tuserid'  => $userid,
             'fuserid'  => $userid,
-            'auserid'  => $userid,
         ]);
 
         return $contextlist;
@@ -221,14 +139,6 @@ class provider implements
                 (object) ['favourites' => array_values($favourites)]
             );
         }
-
-        $ailogs = $DB->get_records('tiny_studiolms_ai_logs', ['userid' => $userid]);
-        if (!empty($ailogs)) {
-            writer::with_context($context)->export_data(
-                [get_string('pluginname', 'tiny_studiolms'), get_string('privacy:ailogs', 'tiny_studiolms')],
-                (object) ['ailogs' => array_values($ailogs)]
-            );
-        }
     }
 
     /**
@@ -242,7 +152,6 @@ class provider implements
         }
 
         global $DB;
-        $DB->delete_records('tiny_studiolms_ai_logs');
         $DB->delete_records('tiny_studiolms_favourites');
         $DB->delete_records_select(
             'tiny_studiolms_templates',
@@ -285,7 +194,6 @@ class provider implements
 
         $userid = $contextlist->get_user()->id;
 
-        $DB->delete_records('tiny_studiolms_ai_logs', ['userid' => $userid]);
         $DB->delete_records('tiny_studiolms_favourites', ['userid' => $userid]);
 
         $templateids = $DB->get_fieldset_select(
@@ -319,7 +227,6 @@ class provider implements
 
         $userlist->add_from_sql('userid', "SELECT userid FROM {tiny_studiolms_templates}", []);
         $userlist->add_from_sql('userid', "SELECT userid FROM {tiny_studiolms_favourites}", []);
-        $userlist->add_from_sql('userid', "SELECT userid FROM {tiny_studiolms_ai_logs}", []);
     }
 
     /**
@@ -344,7 +251,6 @@ class provider implements
 
         [$insql, $inparams] = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
 
-        $DB->delete_records_select('tiny_studiolms_ai_logs', "userid {$insql}", $inparams);
         $DB->delete_records_select('tiny_studiolms_favourites', "userid {$insql}", $inparams);
 
         $templateids = $DB->get_fieldset_select(

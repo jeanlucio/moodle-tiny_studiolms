@@ -63,7 +63,7 @@ class generate_infographic_comparison extends external_api {
         self::validate_context($context);
         require_capability('tiny/studiolms:use', $context);
 
-        return generator::generate_infographic_comparison($params['topic']);
+        return generator::generate_infographic_comparison($params['topic'], $context);
     }
 
     /**

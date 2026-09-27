@@ -39,6 +39,7 @@ const canManageGlobalOption = getPluginOptionName(pluginName, 'canmanageglobalte
 const presetsOption = getPluginOptionName(pluginName, 'presets');
 const hasAiOption = getPluginOptionName(pluginName, 'hasai');
 const contextIdOption = getPluginOptionName(pluginName, 'contextid');
+const aiHubKeysUrlOption = getPluginOptionName(pluginName, 'aihubkeysurl');
 
 
 export default Promise.all([
@@ -82,6 +83,11 @@ export default Promise.all([
         editor.options.register(contextIdOption, {
             processor: 'int',
             'default': 0,
+        });
+
+        editor.options.register(aiHubKeysUrlOption, {
+            processor: 'string',
+            'default': '',
         });
 
         // Tracks the last block clicked when the cursor cannot land inside it (e.g. SVG-based blocks).
@@ -187,7 +193,8 @@ export default Promise.all([
                 const presets = editor.options.get(presetsOption) || [];
                 const hasAi = editor.options.get(hasAiOption);
                 const contextId = editor.options.get(contextIdOption);
-                initStudioApp(editor, modal, editData, canManageGlobal, presets, hasAi, contextId);
+                const aiHubKeysUrl = editor.options.get(aiHubKeysUrlOption);
+                initStudioApp(editor, modal, editData, canManageGlobal, presets, hasAi, contextId, aiHubKeysUrl);
             } catch (error) {
                 Notification.exception(error);
             }

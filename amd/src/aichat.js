@@ -38,18 +38,19 @@ const MAX_HISTORY = 30;
  *   - onGenerateTemplate(presetObj)  — receive a generated {name, blocks} object
  *
  * @param {HTMLElement} container  The element to render the chat UI into.
- * @param {boolean}     hasAi      Whether an AI key is configured.
+ * @param {object}      ai         {available: boolean, keysUrl: string} from the editor configuration.
  * @param {Array}       presets    Array of preset objects (each with a .name string).
  * @param {object}      callbacks  {onApplyPreset, onGenerateTemplate}
  * @returns {Promise<void>}
  */
-export const init = async(container, hasAi, presets = [], callbacks = {}) => {
+export const init = async(container, ai, presets = [], callbacks = {}) => {
     const {html, js} = await Templates.renderForPromise('tiny_studiolms/tab_ai_chat', {
-        hasai: hasAi,
+        hasai: ai.available,
+        aihubkeysurl: ai.keysUrl,
     });
     Templates.replaceNodeContents(container, html, js);
 
-    if (!hasAi) {
+    if (!ai.available) {
         return;
     }
 

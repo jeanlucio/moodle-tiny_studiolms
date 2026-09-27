@@ -25,12 +25,9 @@ import {Blocks} from './blocks/registry';
 import {getString} from 'core/str';
 import Templates from 'core/templates';
 import Notification from 'core/notification';
-import Modal from 'core/modal';
 import {loadTemplates, renderTemplateGrid, saveTemplate, showInlineFeedback,
     exportTemplates, importTemplatesFromFile} from './templateslibrary';
 import {initBlock as initAiBlock, initModel as initAiModel} from './aigenerator';
-import {init as initAiKeys} from './aikeys';
-import {init as initAiLogs} from './ailogs';
 import {init as initAiChat} from './aichat';
 import {setContextId} from './context';
 import {sanitizeUntrustedHtml} from './htmlsanitizer';
@@ -44,7 +41,7 @@ let moodleModalInstance = null;
 let currentZoom = 1;
 let targetEditNode = null;
 let presetsData = [];
-let hasAiEnabled = false;
+let aiState = {available: false, keysUrl: ''};
 let tabsListenerAttached = false;
 
 const tabDataCache = new Map();
@@ -201,7 +198,8 @@ export const initStudioApp = (
     canManageGlobal = false,
     presets = [],
     hasAi = false,
-    contextId = 0
+    contextId = 0,
+    aiKeysUrl = ''
 ) => {
     tinyEditorInstance = editor;
     moodleModalInstance = modal;
@@ -209,7 +207,7 @@ export const initStudioApp = (
     targetEditNode = null;
     presetsData = presets;
     setContextId(contextId);
-    hasAiEnabled = hasAi;
+    aiState = {available: hasAi, keysUrl: aiKeysUrl};
     canvasBlocks = [];
     canvasBlockCounter = 0;
 
@@ -222,8 +220,6 @@ export const initStudioApp = (
     setupTabs();
     setupSidebarToggle();
     setupSidebarSearch();
-    setupAiLogsButton();
-    setupAiKeysButton();
     setupImportExportButtons();
 
     setTimeout(async() => {
@@ -925,7 +921,7 @@ const switchTab = async(tabName) => {
         grid.style.gridTemplateColumns = '1fr';
 
         if (tabName === 'ai-chat') {
-            await initAiChat(grid, hasAiEnabled, presetsData, {
+            await initAiChat(grid, aiState, presetsData, {
                 onApplyPreset: async(presetName) => {
                     const found = presetsData.find((p) => p.name === presetName);
                     if (found) {
@@ -962,9 +958,9 @@ const switchTab = async(tabName) => {
             },
         };
         if (tabName === 'ai-block') {
-            await initAiBlock(grid, hasAiEnabled, aiCallbacks);
+            await initAiBlock(grid, aiState, aiCallbacks);
         } else {
-            await initAiModel(grid, hasAiEnabled, aiCallbacks);
+            await initAiModel(grid, aiState, aiCallbacks);
         }
         return;
     }
@@ -1229,76 +1225,6 @@ const setupSaveTemplateButton = (canManageGlobal = false) => {
             Notification.exception(error);
         }
     });
-};
-
-/**
- * Wire up the AI Logs button in the logo bar to open a centred modal.
- */
-const setupAiLogsButton = () => {
-    const btn = document.getElementById('slms-btn-ai-logs');
-    if (!btn) {
-        return;
-    }
-    btn.addEventListener('click', async() => {
-        try {
-            const titleStr = await getString('ai_logs_title', 'tiny_studiolms');
-            const modal = await Modal.create({
-                title: titleStr,
-                body: '<div></div>',
-                removeOnClose: true,
-            });
-            const bodyEl = modal.getBody()[0];
-            await initAiLogs(bodyEl);
-            modal.show();
-        } catch (error) {
-            Notification.exception(error);
-        }
-    });
-};
-
-/**
- * Wire up the AI Keys button in the logo bar to open a centred modal.
- */
-const setupAiKeysButton = () => {
-    const btn = document.getElementById('slms-btn-ai-keys');
-    if (!btn) {
-        return;
-    }
-    btn.addEventListener('click', async() => {
-        try {
-            const titleStr = await getString('tab_ai_keys', 'tiny_studiolms');
-            const modal = await Modal.create({
-                title: titleStr,
-                body: '<div></div>',
-                removeOnClose: true,
-            });
-            const bodyEl = modal.getBody()[0];
-            await initAiKeys(bodyEl);
-            modal.show();
-        } catch (error) {
-            Notification.exception(error);
-        }
-    });
-};
-
-/**
- * Updates the AI-enabled flag and re-renders the active AI tab if one is open.
- *
- * Called by aikeys.js after the teacher saves personal API keys so AI features
- * become immediately usable without closing and reopening the modal.
- *
- * @param {boolean} enabled Whether at least one AI provider is now configured.
- */
-export const refreshAiState = (enabled) => {
-    hasAiEnabled = enabled;
-    const activeTab = document.querySelector('#studiolms-app [data-slms-tab].active');
-    if (!activeTab) {
-        return;
-    }
-    const tabName = activeTab.getAttribute('data-slms-tab');
-    if (['ai-block', 'ai-model', 'ai-chat'].includes(tabName)) {
-        switchTab(tabName);
-    }
 };
 
 /**

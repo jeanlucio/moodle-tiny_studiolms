@@ -98,28 +98,52 @@ final class plugininfo_test extends advanced_testcase {
     }
 
     /**
-     * hasai is true once any provider key resolves, and false when none does.
+     * hasai follows the provider chain: false with no AI source, true once local_aihub has a key.
      */
-    public function test_hasai_flag_reflects_configured_keys(): void {
+    public function test_hasai_flag_follows_provider_chain(): void {
         $course = $this->getDataGenerator()->create_course();
         $coursecontext = \context_course::instance($course->id);
         $teacher = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
         $this->setUser($teacher);
 
-        set_config('apikey_gemini', '', 'tiny_studiolms');
-        set_config('apikey_groq', '', 'tiny_studiolms');
-        set_config('apikey_custom', '', 'tiny_studiolms');
-        unset_user_preference('tiny_studiolms_gemini_key', $teacher);
-        unset_user_preference('tiny_studiolms_groq_key', $teacher);
-        unset_user_preference('tiny_studiolms_custom_key', $teacher);
-
         $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
         $this->assertFalse($config['hasai']);
 
-        set_user_preference('tiny_studiolms_gemini_key', 'a-key', $teacher);
+        if (!class_exists(\local_aihub\ai::class)) {
+            $this->markTestSkipped('local_aihub is not installed.');
+        }
+        set_config('gemini_key', 'a-key', 'local_aihub');
 
         $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
         $this->assertTrue($config['hasai']);
+    }
+
+    /**
+     * The AI Hub personal-keys link is offered only when the teacher could actually use that page.
+     */
+    public function test_aihubkeysurl_requires_personal_keys_enabled_and_capability(): void {
+        if (!class_exists(\local_aihub\ai::class)) {
+            $this->markTestSkipped('local_aihub is not installed.');
+        }
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = \context_course::instance($course->id);
+        $teacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
+        $this->setUser($teacher);
+
+        set_config('enablepersonalkeys', 0, 'local_aihub');
+        $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+        $this->assertSame('', $config['aihubkeysurl']);
+
+        set_config('enablepersonalkeys', 1, 'local_aihub');
+        $userrole = $this->getDataGenerator()->create_role();
+        assign_capability('local/aihub:usepersonalkey', CAP_ALLOW, $userrole, \context_system::instance()->id);
+        $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+        $this->assertSame('', $config['aihubkeysurl']);
+
+        role_assign($userrole, $teacher->id, \context_system::instance()->id);
+        accesslib_clear_all_caches_for_unit_testing();
+        $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+        $this->assertStringEndsWith('/local/aihub/mykeys.php', $config['aihubkeysurl']);
     }
 
     /**

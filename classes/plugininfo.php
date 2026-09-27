@@ -76,14 +76,6 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
         array $fpoptions,
         ?\editor_tiny\editor $editor = null
     ): array {
-        $geminikey = get_user_preferences('tiny_studiolms_gemini_key', '')
-            ?: get_config('tiny_studiolms', 'apikey_gemini');
-        $groqkey = get_user_preferences('tiny_studiolms_groq_key', '')
-            ?: get_config('tiny_studiolms', 'apikey_groq');
-        $customkey = get_user_preferences('tiny_studiolms_custom_key', '')
-            ?: get_config('tiny_studiolms', 'apikey_custom');
-        $hasai = !empty($geminikey) || !empty($groqkey) || !empty($customkey);
-
         return [
             'enabled'                  => has_capability('tiny/studiolms:use', $context),
             // The manageglobaltemplates capability is a site-wide power (CONTEXT_SYSTEM in db/access.php), never
@@ -96,12 +88,32 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
                 \context_system::instance()
             ),
             'presets'                  => self::load_presets(current_language()),
-            'hasai'                    => $hasai,
+            'hasai'                    => ai\provider_chain::has_ai($context),
+            'aihubkeysurl'             => self::aihub_keys_url(),
             // Threaded back to every web service call so require_capability() there checks the
             // same real context this button's own visibility was gated on, instead of a
             // hardcoded context_system that an ordinary course-enrolled teacher never satisfies.
             'contextid'                => $context->id,
         ];
+    }
+
+    /**
+     * Returns the local_aihub personal-keys page URL when the teacher can actually use it, or ''.
+     *
+     * Shown in the "AI not available" state so a teacher can plug in their own key without an admin.
+     * Mirrors the hub's own access rule for that page (personal keys enabled + the usepersonalkey
+     * capability) through its public surface only — config and capability — never its internal classes.
+     *
+     * @return string
+     */
+    private static function aihub_keys_url(): string {
+        if (!class_exists(\local_aihub\ai::class) || !get_config('local_aihub', 'enablepersonalkeys')) {
+            return '';
+        }
+        if (!has_capability('local/aihub:usepersonalkey', \context_system::instance())) {
+            return '';
+        }
+        return (new \moodle_url('/local/aihub/mykeys.php'))->out(false);
     }
 
     /**

@@ -30,7 +30,6 @@ use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
 use tiny_studiolms\ai\generator;
-use stdClass;
 
 /**
  * Generates a StudioLMS block configuration from a plain-text teacher prompt using an LLM.
@@ -60,8 +59,6 @@ class generate_block extends external_api {
      * @return array With keys 'blocktype' and 'config'.
      */
     public static function execute(int $contextid, string $prompt): array {
-        global $DB, $USER;
-
         $params = self::validate_parameters(self::execute_parameters(), [
             'contextid' => $contextid,
             'prompt' => $prompt,
@@ -72,7 +69,7 @@ class generate_block extends external_api {
         require_capability('tiny/studiolms:use', $context);
 
         try {
-            $result = generator::generate_block($params['prompt']);
+            $result = generator::generate_block($params['prompt'], $context);
         } catch (\moodle_exception $e) {
             throw $e;
         } catch (\Throwable $t) {
@@ -84,17 +81,6 @@ class generate_block extends external_api {
                 DEBUG_DEVELOPER
             );
             throw new \moodle_exception('ai_generator_error', 'tiny_studiolms');
-        }
-
-        try {
-            $log = new stdClass();
-            $log->userid = $USER->id;
-            $log->blocktype = $result['blocktype'];
-            $log->ai_provider = $result['provider'] ?? 'unknown';
-            $log->timecreated = time();
-            $DB->insert_record('tiny_studiolms_ai_logs', $log);
-        } catch (\dml_exception $e) {
-            debugging('StudioLMS AI: log insert failed — ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
 
         return ['blocktype' => $result['blocktype'], 'config' => $result['config']];

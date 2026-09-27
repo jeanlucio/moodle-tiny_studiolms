@@ -30,7 +30,6 @@ use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
 use tiny_studiolms\ai\generator;
-use stdClass;
 
 /**
  * Generates a multi-block StudioLMS layout from a pedagogical context using an LLM.
@@ -72,8 +71,6 @@ class generate_preset extends external_api {
         string $blocks,
         string $palette
     ): array {
-        global $DB, $USER;
-
         $params = self::validate_parameters(self::execute_parameters(), [
             'contextid'   => $contextid,
             'name'        => $name,
@@ -91,7 +88,8 @@ class generate_preset extends external_api {
                 $params['name'],
                 $params['contexttext'],
                 $params['blocks'],
-                $params['palette']
+                $params['palette'],
+                $context
             );
         } catch (\moodle_exception $e) {
             throw $e;
@@ -104,17 +102,6 @@ class generate_preset extends external_api {
                 DEBUG_DEVELOPER
             );
             throw new \moodle_exception('ai_preset_error', 'tiny_studiolms');
-        }
-
-        try {
-            $log = new stdClass();
-            $log->userid = $USER->id;
-            $log->blocktype = 'preset';
-            $log->ai_provider = $result['provider'] ?? 'unknown';
-            $log->timecreated = time();
-            $DB->insert_record('tiny_studiolms_ai_logs', $log);
-        } catch (\dml_exception $e) {
-            debugging('StudioLMS AI: log insert failed — ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
 
         return ['name' => $result['name'], 'blocks' => $result['blocks']];

@@ -25,10 +25,10 @@
 namespace tiny_studiolms\ai;
 
 /**
- * Generates StudioLMS block configurations via AI APIs with automatic provider fallback.
+ * Builds the StudioLMS AI prompts and validates the model's responses.
  *
- * Provider priority: Gemini → Groq → Custom OpenAI-compatible.
- * User preferences override global admin config for each provider independently.
+ * Every request goes through provider_chain (local_aihub, then core_ai); this class owns no API
+ * key and makes no HTTP request of its own.
  *
  * @package    tiny_studiolms
  * @copyright  2026 Jean Lúcio
@@ -357,154 +357,33 @@ class generator {
     }
 
     /**
-     * Resolves API keys and URLs following the canonical ecosystem ladder, tier by tier:
-     *
-     *   1. own personal (tiny prefs)
-     *   2. hub personal (local_playergames)
-     *   3. own site     (tiny config)
-     *   4. hub site     (local_playergames)
-     *
-     * Each tier is resolved as a whole: the first tier that holds any provider key
-     * is used exclusively (so an own personal key always wins over a hub key, even
-     * for a different provider). core_ai is the institutional default and is
-     * consulted by the caller only when no tier holds a key. The hub tiers are
-     * skipped when local_playergames is absent; its "openai" provider maps to the
-     * custom OpenAI-compatible slot (key/url/model).
-     *
-     * @return array With keys geminikey, groqkey, customkey, customurl, custommodel.
-     */
-    private static function resolve_keys(): array {
-        $hubinstalled = class_exists(\local_playergames\api_key_helper::class);
-
-        $tiers = [];
-
-        // Tier 1: own personal (tiny user preferences).
-        $tiers[] = [
-            (string)get_user_preferences('tiny_studiolms_gemini_key', ''),
-            (string)get_user_preferences('tiny_studiolms_groq_key', ''),
-            (string)get_user_preferences('tiny_studiolms_custom_key', ''),
-            (string)get_user_preferences('tiny_studiolms_custom_url', ''),
-            (string)get_user_preferences('tiny_studiolms_custom_model', ''),
-        ];
-
-        // Tier 2: hub personal. URL and model prefer the hub's personal values,
-        // falling back to the hub's site defaults when the user has not set them.
-        if ($hubinstalled) {
-            $hubpersonalurl = method_exists(\local_playergames\api_key_helper::class, 'get_personal_openai_url')
-                ? \local_playergames\api_key_helper::get_personal_openai_url()
-                : '';
-            $hubpersonalmodel = method_exists(\local_playergames\api_key_helper::class, 'get_personal_openai_model')
-                ? \local_playergames\api_key_helper::get_personal_openai_model()
-                : '';
-            $tiers[] = [
-                \local_playergames\api_key_helper::get_personal_key('gemini'),
-                \local_playergames\api_key_helper::get_personal_key('groq'),
-                \local_playergames\api_key_helper::get_personal_key('openai'),
-                $hubpersonalurl !== '' ? $hubpersonalurl : \local_playergames\api_key_helper::get_openai_baseurl(),
-                $hubpersonalmodel !== '' ? $hubpersonalmodel : \local_playergames\api_key_helper::get_openai_model(),
-            ];
-        }
-
-        // Tier 3: own site (tiny config).
-        $tiers[] = [
-            (string)get_config('tiny_studiolms', 'apikey_gemini'),
-            (string)get_config('tiny_studiolms', 'apikey_groq'),
-            (string)get_config('tiny_studiolms', 'apikey_custom'),
-            (string)get_config('tiny_studiolms', 'custom_baseurl'),
-            (string)get_config('tiny_studiolms', 'custom_model'),
-        ];
-
-        // Tier 4: hub site.
-        if ($hubinstalled) {
-            $tiers[] = [
-                \local_playergames\api_key_helper::get_site_key('gemini'),
-                \local_playergames\api_key_helper::get_site_key('groq'),
-                \local_playergames\api_key_helper::get_site_key('openai'),
-                \local_playergames\api_key_helper::get_openai_baseurl(),
-                \local_playergames\api_key_helper::get_openai_model(),
-            ];
-        }
-
-        // Use the first tier that holds any provider key.
-        $geminikey = $groqkey = $customkey = $customurl = $custommodel = '';
-        foreach ($tiers as $tier) {
-            if ($tier[0] !== '' || $tier[1] !== '' || $tier[2] !== '') {
-                [$geminikey, $groqkey, $customkey, $customurl, $custommodel] = $tier;
-                break;
-            }
-        }
-
-        return [
-            'geminikey'   => $geminikey,
-            'groqkey'     => $groqkey,
-            'customkey'   => $customkey,
-            'customurl'   => $customurl,
-            'custommodel' => $custommodel,
-        ];
-    }
-
-    /**
-     * Tries the configured AI providers following the canonical ladder.
-     *
-     * The active key level (personal or site, resolved by resolve_keys) is tried
-     * first: Gemini → Groq → Custom OpenAI-compatible. Moodle core_ai is the
-     * institutional default and is consulted only when no key is configured at any
-     * level, so an explicitly set personal or site key always wins.
+     * Sends a prompt through the provider chain (local_aihub, then core_ai) and returns the result.
      *
      * @param string $userprompt  The user-facing prompt text.
      * @param string $sysprompt   The system instruction to send.
-     * @param string $errkey      Lang string key used if all providers fail.
+     * @param string $errkey      Lang string key used when an AI source is available but fails.
+     * @param string $description Short label of what is generated, for the hub usage log.
+     * @param \context $context   Context the request is made in.
      * @return array With keys 'data' (string) and 'provider' (string).
-     * @throws \moodle_exception If no provider is configured or all calls fail.
+     * @throws \moodle_exception If no AI source is available or the request fails.
      */
-    private static function call_providers(string $userprompt, string $sysprompt, string $errkey): array {
-        $keys = self::resolve_keys();
-
-        $nokeys = empty($keys['geminikey']) && empty($keys['groqkey']) && empty($keys['customkey']);
-        $result = ['success' => false, 'data' => ''];
-        $failures = [];
-
-        if (!empty($keys['geminikey'])) {
-            $result = self::call_gemini($userprompt, $keys['geminikey'], $sysprompt);
-            if (!$result['success']) {
-                $failures[] = 'Gemini: HTTP ' . ($result['httpcode'] ?? '?')
-                    . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
-            }
-        }
-
-        if (!$result['success'] && !empty($keys['groqkey'])) {
-            $result = self::call_groq($userprompt, $keys['groqkey'], $sysprompt);
-            if (!$result['success']) {
-                $failures[] = 'Groq: HTTP ' . ($result['httpcode'] ?? '?')
-                    . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
-            }
-        }
-
-        if (!$result['success'] && !empty($keys['customkey']) && !empty($keys['customurl'])) {
-            $resolvedurl = self::resolve_custom_url((string)$keys['customurl']);
-            $result = self::call_openai_compatible(
-                $userprompt,
-                $keys['customkey'],
-                $resolvedurl,
-                (string)$keys['custommodel'],
-                $sysprompt
-            );
-            if (!$result['success']) {
-                $failures[] = 'Custom: HTTP ' . ($result['httpcode'] ?? '?')
-                    . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
-            }
-        }
-
-        // Bottom of the ladder: Moodle core_ai, only when no key is configured.
-        if (!$result['success'] && $nokeys && self::has_core_ai_provider()) {
-            $result = self::call_core_ai($sysprompt, $userprompt);
-        }
+    private static function call_providers(
+        string $userprompt,
+        string $sysprompt,
+        string $errkey,
+        string $description,
+        \context $context
+    ): array {
+        $result = provider_chain::send($sysprompt, $userprompt, true, $description, $context);
 
         if (!$result['success']) {
-            if ($nokeys && empty($failures)) {
+            if (!$result['attempted']) {
                 throw new \moodle_exception('ai_generator_no_config', 'tiny_studiolms');
             }
-            throw new \moodle_exception($errkey, 'tiny_studiolms', '', null, implode(' | ', $failures));
+            // The provider's own failure detail can carry raw response text: keep it for a
+            // developer, never hand it to the caller.
+            debugging('StudioLMS AI: ' . $result['message'], DEBUG_DEVELOPER);
+            throw new \moodle_exception($errkey, 'tiny_studiolms');
         }
 
         return $result;
@@ -513,15 +392,19 @@ class generator {
     /**
      * Generates a block configuration from a plain-text prompt.
      *
-     * Tries providers in order: Gemini → Groq → Custom OpenAI-compatible.
-     * User preferences override global admin config per provider.
-     *
      * @param string $prompt Teacher's content request.
+     * @param \context $context Context the request is made in.
      * @return array With keys 'blocktype' (string), 'config' (JSON string), 'provider' (string).
-     * @throws \moodle_exception If no provider is configured or all calls fail.
+     * @throws \moodle_exception If no AI source is available or the request fails.
      */
-    public static function generate_block(string $prompt): array {
-        $result = self::call_providers($prompt, self::system_prompt(), 'ai_generator_error');
+    public static function generate_block(string $prompt, \context $context): array {
+        $result = self::call_providers(
+            $prompt,
+            self::system_prompt(),
+            'ai_generator_error',
+            get_string('tab_ai_block', 'tiny_studiolms'),
+            $context
+        );
         $block = self::parse_block_json($result['data']);
         $block['provider'] = $result['provider'];
         return $block;
@@ -530,21 +413,20 @@ class generator {
     /**
      * Generates a multi-block layout from a pedagogical context.
      *
-     * Tries providers in order: Gemini → Groq → Custom OpenAI-compatible.
-     * User preferences override global admin config per provider.
-     *
      * @param string $name        Desired layout name.
      * @param string $contexttext Pedagogical context and intent.
      * @param string $blocks      Optional comma-separated block type hints.
      * @param string $palette     Colour palette identifier (blue|green|purple|orange|neutral).
+     * @param \context $context   Context the request is made in.
      * @return array With keys 'name' (string), 'blocks' (JSON string), 'provider' (string).
-     * @throws \moodle_exception If no provider is configured or all calls fail.
+     * @throws \moodle_exception If no AI source is available or the request fails.
      */
     public static function generate_preset(
         string $name,
         string $contexttext,
         string $blocks,
-        string $palette
+        string $palette,
+        \context $context
     ): array {
         $userparts = ['Preset name: ' . $name, 'Pedagogical context: ' . $contexttext];
         if (!empty(trim($blocks))) {
@@ -555,354 +437,16 @@ class generator {
         $validpalettes = ['blue', 'green', 'purple', 'orange', 'neutral'];
         $safpalette = in_array($palette, $validpalettes, true) ? $palette : 'blue';
 
-        $result = self::call_providers($userprompt, self::preset_system_prompt($safpalette), 'ai_preset_error');
+        $result = self::call_providers(
+            $userprompt,
+            self::preset_system_prompt($safpalette),
+            'ai_preset_error',
+            get_string('tab_ai_model', 'tiny_studiolms'),
+            $context
+        );
         $preset = self::parse_preset_json($result['data']);
         $preset['provider'] = $result['provider'];
         return $preset;
-    }
-
-    /**
-     * Generates free-form text from a caller-supplied system prompt and user prompt.
-     *
-     * Generic entry point that exposes the provider chain (core_ai → Gemini → Groq →
-     * Custom OpenAI-compatible) and the personal-first key resolution to other plugins,
-     * such as local_studiolms, which build their own prompts and parse the returned
-     * content themselves. Unlike the block generators, no schema or language directive
-     * is injected here — the caller is responsible for the full system prompt.
-     *
-     * @param string $systemprompt System instruction text.
-     * @param string $userprompt User prompt text.
-     * @return string The generated content as returned by the provider.
-     * @throws \moodle_exception If no provider is configured or all calls fail.
-     */
-    public static function generate_text(string $systemprompt, string $userprompt): string {
-        $result = self::call_providers($userprompt, $systemprompt, 'ai_generate_text_error');
-        return (string)$result['data'];
-    }
-
-    /**
-     * Calls the Google Gemini API.
-     *
-     * API key is sent via the x-goog-api-key header instead of the querystring to
-     * avoid exposing it in server access logs and HTTP referrer headers.
-     *
-     * @param string $prompt     User prompt.
-     * @param string $key        Gemini API key.
-     * @param string $sysprompt  System instruction text.
-     * @return array With keys 'success', 'data', 'provider'.
-     */
-    private static function call_gemini(string $prompt, string $key, string $sysprompt): array {
-        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
-        $data = [
-            'system_instruction' => ['parts' => [['text' => $sysprompt]]],
-            'contents'           => [['parts' => [['text' => $prompt]]]],
-            'generationConfig'   => ['responseMimeType' => 'application/json', 'maxOutputTokens' => 2000],
-        ];
-        return self::curl_request(
-            $url,
-            json_encode($data),
-            ['Content-Type: application/json', 'x-goog-api-key: ' . $key],
-            'Gemini'
-        );
-    }
-
-    /**
-     * Calls the Groq API (OpenAI-compatible, fixed endpoint).
-     *
-     * @param string $prompt     User prompt.
-     * @param string $key        Groq API key.
-     * @param string $sysprompt  System instruction text.
-     * @return array With keys 'success', 'data', 'provider'.
-     */
-    private static function call_groq(string $prompt, string $key, string $sysprompt): array {
-        $url = 'https://api.groq.com/openai/v1/chat/completions';
-        $data = [
-            'model'           => 'llama-3.3-70b-versatile',
-            'messages'        => [
-                ['role' => 'system', 'content' => $sysprompt],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'response_format' => ['type' => 'json_object'],
-            'max_tokens'      => 2000,
-            'temperature'     => 0.7,
-        ];
-        return self::curl_request(
-            $url,
-            json_encode($data),
-            ['Authorization: Bearer ' . $key, 'Content-Type: application/json'],
-            'Groq'
-        );
-    }
-
-    /**
-     * Calls a custom OpenAI-compatible endpoint.
-     *
-     * @param string $prompt     User prompt.
-     * @param string $key        API key.
-     * @param string $url        Full chat/completions endpoint URL (must be HTTPS, public IP).
-     * @param string $model      Model name; empty string uses endpoint default.
-     * @param string $sysprompt  System instruction text.
-     * @return array With keys 'success', 'data', 'provider'.
-     */
-    private static function call_openai_compatible(
-        string $prompt,
-        string $key,
-        string $url,
-        string $model,
-        string $sysprompt
-    ): array {
-        if (!self::is_safe_url($url)) {
-            // Match the shape curl_request() returns on failure (httpcode/errmsg present):
-            // call_providers() reads both keys unconditionally when logging this failure.
-            return [
-                'success'  => false,
-                'data'     => '',
-                'provider' => 'Custom',
-                'httpcode' => 0,
-                'errmsg'   => 'Blocked unsafe custom provider URL',
-            ];
-        }
-        $data = [
-            'model'           => !empty($model) ? $model : 'gpt-4o-mini',
-            'messages'        => [
-                ['role' => 'system', 'content' => $sysprompt],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'response_format' => ['type' => 'json_object'],
-            'max_tokens'      => 2000,
-            'temperature'     => 0.7,
-        ];
-        return self::curl_request(
-            $url,
-            json_encode($data),
-            ['Authorization: Bearer ' . $key, 'Content-Type: application/json'],
-            'Custom'
-        );
-    }
-
-    /**
-     * Performs the HTTP POST and normalises the response into a common structure.
-     *
-     * @param string   $url     Full endpoint URL.
-     * @param string   $payload JSON request body.
-     * @param string[] $headers HTTP headers.
-     * @param string   $source  Provider label used in logs and return value.
-     * @return array With keys 'success' (bool), 'data' (string), 'provider' (string).
-     */
-    private static function curl_request(
-        string $url,
-        string $payload,
-        array $headers,
-        string $source
-    ): array {
-        global $CFG;
-        require_once($CFG->libdir . '/filelib.php');
-        $curl = new \curl();
-        $curl->setopt(['CURLOPT_TIMEOUT' => 30]);
-        $curl->setHeader($headers);
-
-        $response = $curl->post($url, $payload);
-        $info = $curl->get_info();
-        $code = isset($info['http_code']) ? (int)$info['http_code'] : 0;
-
-        if ($code < 200 || $code >= 300 || empty($response)) {
-            $errmsg = substr((string)$response, 0, 200);
-            debugging(
-                'StudioLMS AI [' . $source . ']: HTTP ' . $code
-                . ' | curl_error: ' . $curl->get_errno()
-                . ' | response: ' . $errmsg,
-                DEBUG_DEVELOPER
-            );
-            return ['success' => false, 'data' => '', 'provider' => $source, 'httpcode' => $code, 'errmsg' => $errmsg];
-        }
-
-        $decoded = json_decode($response, true);
-        if (!is_array($decoded)) {
-            $errmsg = 'JSON decode failed: ' . substr($response, 0, 200);
-            debugging('StudioLMS AI [' . $source . ']: ' . $errmsg, DEBUG_DEVELOPER);
-            return ['success' => false, 'data' => '', 'provider' => $source, 'httpcode' => $code, 'errmsg' => $errmsg];
-        }
-
-        if ($source === 'Gemini') {
-            $content = $decoded['candidates'][0]['content']['parts'][0]['text'] ?? '';
-            // A provider is untrusted input: content must be validated as a string here, not
-            // assumed. Every caller down the line (parse_block_json() and friends) declares a
-            // string parameter type, so a malformed response with e.g. an array in this field
-            // would otherwise fatal with a TypeError whose message includes this file's absolute
-            // path — exactly the kind of detail the callers' own exception handling is meant to
-            // keep away from the end user.
-            if (!is_string($content) || $content === '') {
-                $blocked = $decoded['candidates'][0]['finishReason'] ?? ($decoded['promptFeedback']['blockReason'] ?? '');
-                $errmsg = 'empty or non-string content. finishReason/blockReason: ' . $blocked
-                    . ' | keys: ' . implode(',', array_keys($decoded));
-                debugging('StudioLMS AI [Gemini]: ' . $errmsg, DEBUG_DEVELOPER);
-                return [
-                    'success' => false, 'data' => '', 'provider' => $source, 'httpcode' => $code, 'errmsg' => $errmsg,
-                ];
-            }
-        } else {
-            $content = $decoded['choices'][0]['message']['content'] ?? '';
-            // See the same comment in the Gemini branch above.
-            if (!is_string($content) || $content === '') {
-                $errmsg = 'empty or non-string content. keys: ' . implode(',', array_keys($decoded));
-                debugging('StudioLMS AI [' . $source . ']: ' . $errmsg, DEBUG_DEVELOPER);
-                return [
-                    'success' => false, 'data' => '', 'provider' => $source, 'httpcode' => $code, 'errmsg' => $errmsg,
-                ];
-            }
-        }
-
-        return ['success' => true, 'data' => $content, 'provider' => $source, 'httpcode' => $code, 'errmsg' => ''];
-    }
-
-    /**
-     * Returns true only if the URL is safe to use as an external AI endpoint.
-     *
-     * Enforces HTTPS and blocks loopback, link-local, and RFC-1918 private addresses
-     * to prevent Server-Side Request Forgery (SSRF) via teacher-configured endpoints.
-     * Resolves all A and AAAA DNS records to guard against DNS rebinding attacks where
-     * a public hostname temporarily resolves to an internal IP.
-     *
-     * @param string $url The URL to validate.
-     * @return bool True if safe; false otherwise.
-     */
-    private static function is_safe_url(string $url): bool {
-        $parsed = parse_url($url);
-        if (!$parsed || ($parsed['scheme'] ?? '') !== 'https') {
-            return false;
-        }
-        $host = $parsed['host'] ?? '';
-        if (empty($host)) {
-            return false;
-        }
-        if (in_array(strtolower($host), ['localhost', '127.0.0.1', '::1'], true)) {
-            return false;
-        }
-        $ip = filter_var($host, FILTER_VALIDATE_IP);
-        if ($ip !== false) {
-            // Literal IP address in the URL — check directly.
-            $ispublic = filter_var(
-                $ip,
-                FILTER_VALIDATE_IP,
-                FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
-            );
-            if ($ispublic === false) {
-                return false;
-            }
-        } else {
-            // Hostname: resolve all A/AAAA records and re-apply the private/reserved check
-            // to prevent DNS rebinding attacks where a public domain resolves to an internal IP.
-            $resolvedips = [];
-            $arecords = dns_get_record($host, DNS_A);
-            if (is_array($arecords)) {
-                foreach ($arecords as $r) {
-                    if (!empty($r['ip'])) {
-                        $resolvedips[] = $r['ip'];
-                    }
-                }
-            }
-            $aaaarecords = dns_get_record($host, DNS_AAAA);
-            if (is_array($aaaarecords)) {
-                foreach ($aaaarecords as $r) {
-                    if (!empty($r['ipv6'])) {
-                        $resolvedips[] = $r['ipv6'];
-                    }
-                }
-            }
-            foreach ($resolvedips as $resolvedip) {
-                $ispublic = filter_var(
-                    $resolvedip,
-                    FILTER_VALIDATE_IP,
-                    FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
-                );
-                if ($ispublic === false) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Ensures the custom AI URL ends with /chat/completions.
-     *
-     * Providers that follow the OpenAI-compatible standard always expose this path.
-     * Users who supply only a base URL (e.g. https://integrate.api.nvidia.com/v1)
-     * get the suffix appended automatically; users who already include it are unaffected.
-     *
-     * @param string $url The configured endpoint URL.
-     * @return string URL guaranteed to end with /chat/completions.
-     */
-    private static function resolve_custom_url(string $url): string {
-        if (!str_ends_with($url, '/chat/completions')) {
-            $url = rtrim($url, '/') . '/chat/completions';
-        }
-        return $url;
-    }
-
-    /**
-     * Returns true when Moodle core_ai has at least one provider configured for text generation.
-     *
-     * Compatible with Moodle 4.5+ — the manager is retrieved via the dependency
-     * container, which injects the dependencies for the running version.
-     *
-     * @return bool
-     */
-    private static function has_core_ai_provider(): bool {
-        if (
-            !class_exists(\core_ai\manager::class)
-            || !class_exists(\core_ai\aiactions\generate_text::class)
-        ) {
-            return false;
-        }
-        try {
-            $actionclass = \core_ai\aiactions\generate_text::class;
-            $manager = \core\di::get(\core_ai\manager::class);
-            $providers = $manager->get_providers_for_actions([$actionclass], true);
-            return !empty($providers[$actionclass]);
-        } catch (\Throwable $e) {
-            return false;
-        }
-    }
-
-    /**
-     * Generates text via the Moodle core_ai subsystem.
-     *
-     * Combines system and user prompt parts into a single string (core_ai accepts only
-     * one prompttext field). Compatible with Moodle 4.5+.
-     *
-     * @param string $sysprompt  System instruction text.
-     * @param string $userprompt User-facing prompt text.
-     * @return array Result with keys: success (bool), data (string), provider (string).
-     */
-    private static function call_core_ai(string $sysprompt, string $userprompt): array {
-        global $USER;
-        try {
-            $fullprompt = trim($sysprompt . "\n\n" . $userprompt);
-            $actionclass = \core_ai\aiactions\generate_text::class;
-            $manager = \core\di::get(\core_ai\manager::class);
-            $providers = $manager->get_providers_for_actions([$actionclass], true);
-            if (empty($providers[$actionclass])) {
-                return ['success' => false, 'data' => '', 'provider' => 'Moodle AI'];
-            }
-            $action = new \core_ai\aiactions\generate_text(
-                contextid: \context_system::instance()->id,
-                userid: (int) $USER->id,
-                prompttext: $fullprompt,
-            );
-            $response = $manager->process_action($action);
-            if (!$response->get_success()) {
-                return ['success' => false, 'data' => '', 'provider' => 'Moodle AI'];
-            }
-            $data = $response->get_response_data();
-            $content = (string) ($data['generatedcontent'] ?? '');
-            if ($content === '') {
-                return ['success' => false, 'data' => '', 'provider' => 'Moodle AI'];
-            }
-            return ['success' => true, 'data' => $content, 'provider' => 'Moodle AI'];
-        } catch (\Throwable $e) {
-            return ['success' => false, 'data' => '', 'provider' => 'Moodle AI'];
-        }
     }
 
     /**
@@ -928,11 +472,18 @@ class generator {
      * Generates a mind map node structure from a topic description.
      *
      * @param string $topic Topic description from the teacher.
+     * @param \context $context Context the request is made in.
      * @return array With keys 'topic' (string), 'branches' (JSON string), 'provider' (string).
      * @throws \moodle_exception If no provider is configured, all calls fail, or the response is invalid.
      */
-    public static function generate_mindmap(string $topic): array {
-        $result = self::call_providers($topic, self::mindmap_system_prompt(), 'mindmap_ai_error');
+    public static function generate_mindmap(string $topic, \context $context): array {
+        $result = self::call_providers(
+            $topic,
+            self::mindmap_system_prompt(),
+            'mindmap_ai_error',
+            get_string('block_mindmap_title', 'tiny_studiolms'),
+            $context
+        );
 
         $raw = trim($result['data']);
         $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
@@ -1041,11 +592,18 @@ class generator {
      * Generates an infographic stat structure from a topic description.
      *
      * @param string $topic Topic or context description from the teacher.
+     * @param \context $context Context the request is made in.
      * @return array With keys 'title' (string), 'items' (JSON string), 'provider' (string).
      * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
      */
-    public static function generate_infographic(string $topic): array {
-        $result = self::call_providers($topic, self::infographic_system_prompt(), 'infographic_ai_error');
+    public static function generate_infographic(string $topic, \context $context): array {
+        $result = self::call_providers(
+            $topic,
+            self::infographic_system_prompt(),
+            'infographic_ai_error',
+            get_string('block_infographic_title', 'tiny_studiolms'),
+            $context
+        );
 
         $raw = trim($result['data']);
         $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
@@ -1109,14 +667,17 @@ class generator {
      * Generates a process steps structure from a topic description.
      *
      * @param string $topic Teacher's process or topic description.
+     * @param \context $context Context the request is made in.
      * @return array With keys 'title' (string), 'items' (JSON string), 'provider' (string).
      * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
      */
-    public static function generate_infographic_steps(string $topic): array {
+    public static function generate_infographic_steps(string $topic, \context $context): array {
         $result = self::call_providers(
             $topic,
             self::infographic_steps_system_prompt(),
-            'infographic_steps_ai_error'
+            'infographic_steps_ai_error',
+            get_string('block_infographic_steps_title', 'tiny_studiolms'),
+            $context
         );
 
         $raw = trim($result['data']);
@@ -1180,13 +741,16 @@ class generator {
      * Generates feature cards content via a configured LLM provider.
      *
      * @param string $topic User-supplied topic.
+     * @param \context $context Context the request is made in.
      * @return array{title: string, items: string, provider: string}
      */
-    public static function generate_infographic_features(string $topic): array {
+    public static function generate_infographic_features(string $topic, \context $context): array {
         $result = self::call_providers(
             $topic,
             self::infographic_features_system_prompt(),
-            'infographic_features_ai_error'
+            'infographic_features_ai_error',
+            get_string('block_infographic_features_title', 'tiny_studiolms'),
+            $context
         );
 
         $raw = trim($result['data']);
@@ -1254,14 +818,17 @@ class generator {
      * Generates a timeline structure from a topic description.
      *
      * @param string $topic Teacher's topic or subject description.
+     * @param \context $context Context the request is made in.
      * @return array{title: string, items: string, provider: string}
      * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
      */
-    public static function generate_infographic_timeline(string $topic): array {
+    public static function generate_infographic_timeline(string $topic, \context $context): array {
         $result = self::call_providers(
             $topic,
             self::infographic_timeline_system_prompt(),
-            'infographic_timeline_ai_error'
+            'infographic_timeline_ai_error',
+            get_string('block_infographic_timeline_title', 'tiny_studiolms'),
+            $context
         );
 
         $raw = trim($result['data']);
@@ -1326,14 +893,17 @@ class generator {
      * Generates a comparison infographic structure from a topic description.
      *
      * @param string $topic Teacher's topic or subject description.
+     * @param \context $context Context the request is made in.
      * @return array{title: string, col1: string, col2: string, items: string, provider: string}
      * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
      */
-    public static function generate_infographic_comparison(string $topic): array {
+    public static function generate_infographic_comparison(string $topic, \context $context): array {
         $result = self::call_providers(
             $topic,
             self::infographic_comparison_system_prompt(),
-            'infographic_comparison_ai_error'
+            'infographic_comparison_ai_error',
+            get_string('block_infographic_comparison_title', 'tiny_studiolms'),
+            $context
         );
 
         $raw = trim($result['data']);
@@ -1396,11 +966,18 @@ class generator {
      * Generates icon and HTML content for a callout block.
      *
      * @param string $topic Teacher's description of the callout content.
+     * @param \context $context Context the request is made in.
      * @return array With keys 'icon' (string), 'contenthtml' (string), 'provider' (string).
      * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
      */
-    public static function generate_callout(string $topic): array {
-        $result = self::call_providers($topic, self::callout_system_prompt(), 'callout_ai_error');
+    public static function generate_callout(string $topic, \context $context): array {
+        $result = self::call_providers(
+            $topic,
+            self::callout_system_prompt(),
+            'callout_ai_error',
+            get_string('block_callout_title', 'tiny_studiolms'),
+            $context
+        );
 
         $raw = trim($result['data']);
         $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
@@ -1441,11 +1018,18 @@ class generator {
      * Generates HTML content and button text for an advanced card block.
      *
      * @param string $topic Teacher's description of the card content.
+     * @param \context $context Context the request is made in.
      * @return array With keys 'content' (string), 'btntext' (string), 'provider' (string).
      * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
      */
-    public static function generate_card(string $topic): array {
-        $result = self::call_providers($topic, self::card_system_prompt(), 'card_ai_error');
+    public static function generate_card(string $topic, \context $context): array {
+        $result = self::call_providers(
+            $topic,
+            self::card_system_prompt(),
+            'card_ai_error',
+            get_string('block_card_title', 'tiny_studiolms'),
+            $context
+        );
 
         $raw = trim($result['data']);
         $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
@@ -1486,11 +1070,18 @@ class generator {
      * Generates title and HTML content for an accordion block.
      *
      * @param string $topic Teacher's description of the accordion content.
+     * @param \context $context Context the request is made in.
      * @return array With keys 'title' (string), 'content' (string), 'provider' (string).
      * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
      */
-    public static function generate_accordion(string $topic): array {
-        $result = self::call_providers($topic, self::accordion_system_prompt(), 'accordion_ai_error');
+    public static function generate_accordion(string $topic, \context $context): array {
+        $result = self::call_providers(
+            $topic,
+            self::accordion_system_prompt(),
+            'accordion_ai_error',
+            get_string('block_accordion_title', 'tiny_studiolms'),
+            $context
+        );
 
         $raw = trim($result['data']);
         $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
@@ -1535,11 +1126,18 @@ class generator {
      * Generates title, description and resources for a webteca block.
      *
      * @param string $topic Teacher's description of the resource collection.
+     * @param \context $context Context the request is made in.
      * @return array With keys 'title' (string), 'desc' (string), 'resources' (JSON string), 'provider' (string).
      * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
      */
-    public static function generate_webteca(string $topic): array {
-        $result = self::call_providers($topic, self::webteca_system_prompt(), 'webteca_ai_error');
+    public static function generate_webteca(string $topic, \context $context): array {
+        $result = self::call_providers(
+            $topic,
+            self::webteca_system_prompt(),
+            'webteca_ai_error',
+            get_string('block_webteca_title', 'tiny_studiolms'),
+            $context
+        );
 
         $raw = trim($result['data']);
         $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
@@ -1578,127 +1176,32 @@ class generator {
     }
 
     /**
-     * Sends a multi-turn conversation to the AI provider chain and returns the raw text reply.
+     * Sends a multi-turn conversation through the provider chain and returns the raw text reply.
      *
-     * Each entry in $messages must have 'role' (user|assistant) and 'content' (string).
-     * The caller is responsible for building the system prompt via chat::build_system_prompt().
+     * Each entry in $messages must have 'role' (user|assistant) and 'content' (string). The
+     * provider chain takes a single system/user pair, so the history is flattened into a
+     * transcript — the same shape core_ai always needed.
      *
-     * When personal keys are configured:
-     *   Gemini (personal) → Groq (personal) → Custom (personal)
-     *
-     * When only institution keys are available:
-     *   core_ai → Gemini (institution) → Groq (institution) → Custom (institution)
-     *
-     * @param string $systemprompt System instruction sent to all providers.
+     * @param string $systemprompt System instruction.
      * @param array  $messages     Conversation history [{role, content}, ...].
+     * @param \context $context    Context the request is made in.
      * @return array With keys 'data' (string) and 'provider' (string).
-     * @throws \moodle_exception If no provider is configured or all calls fail.
+     * @throws \moodle_exception If no AI source is available or the request fails.
      */
-    public static function call_chat(string $systemprompt, array $messages): array {
-        $keys = self::resolve_keys();
-
-        $nokeys = empty($keys['geminikey']) && empty($keys['groqkey']) && empty($keys['customkey']);
-        $result = ['success' => false, 'data' => ''];
-        $failures = [];
-
-        if (!empty($keys['geminikey'])) {
-            $contents = [];
-            foreach ($messages as $msg) {
-                $role = $msg['role'] === 'assistant' ? 'model' : 'user';
-                $contents[] = ['role' => $role, 'parts' => [['text' => $msg['content']]]];
-            }
-            $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
-            $data = [
-                'system_instruction' => ['parts' => [['text' => $systemprompt]]],
-                'contents'           => $contents,
-                'generationConfig'   => [
-                    'responseMimeType' => 'application/json',
-                    'maxOutputTokens'  => 1500,
-                ],
-            ];
-            $result = self::curl_request(
-                $url,
-                json_encode($data),
-                ['Content-Type: application/json', 'x-goog-api-key: ' . $keys['geminikey']],
-                'Gemini'
-            );
-            if (!$result['success']) {
-                $failures[] = 'Gemini: HTTP ' . ($result['httpcode'] ?? '?')
-                    . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
-            }
+    public static function call_chat(string $systemprompt, array $messages, \context $context): array {
+        $chatlines = [];
+        foreach ($messages as $msg) {
+            $role = $msg['role'] === 'assistant' ? 'Assistant' : 'User';
+            $chatlines[] = $role . ': ' . $msg['content'];
         }
 
-        if (!$result['success'] && !empty($keys['groqkey'])) {
-            $msgs = [['role' => 'system', 'content' => $systemprompt]];
-            foreach ($messages as $msg) {
-                $msgs[] = ['role' => $msg['role'], 'content' => $msg['content']];
-            }
-            $data = [
-                'model'           => 'llama-3.3-70b-versatile',
-                'messages'        => $msgs,
-                'response_format' => ['type' => 'json_object'],
-                'max_tokens'      => 1500,
-                'temperature'     => 0.7,
-            ];
-            $result = self::curl_request(
-                'https://api.groq.com/openai/v1/chat/completions',
-                json_encode($data),
-                ['Authorization: Bearer ' . $keys['groqkey'], 'Content-Type: application/json'],
-                'Groq'
-            );
-            if (!$result['success']) {
-                $failures[] = 'Groq: HTTP ' . ($result['httpcode'] ?? '?')
-                    . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
-            }
-        }
-
-        if (!$result['success'] && !empty($keys['customkey']) && !empty($keys['customurl'])) {
-            $resolvedurl = self::resolve_custom_url((string)$keys['customurl']);
-            if (self::is_safe_url($resolvedurl)) {
-                $msgs = [['role' => 'system', 'content' => $systemprompt]];
-                foreach ($messages as $msg) {
-                    $msgs[] = ['role' => $msg['role'], 'content' => $msg['content']];
-                }
-                $model = !empty($keys['custommodel']) ? (string)$keys['custommodel'] : 'gpt-4o-mini';
-                $data = [
-                    'model'           => $model,
-                    'messages'        => $msgs,
-                    'response_format' => ['type' => 'json_object'],
-                    'max_tokens'      => 1500,
-                    'temperature'     => 0.7,
-                ];
-                $result = self::curl_request(
-                    $resolvedurl,
-                    json_encode($data),
-                    ['Authorization: Bearer ' . $keys['customkey'], 'Content-Type: application/json'],
-                    'Custom'
-                );
-                if (!$result['success']) {
-                    $failures[] = 'Custom: HTTP ' . ($result['httpcode'] ?? '?')
-                        . ($result['errmsg'] ? ' — ' . $result['errmsg'] : '');
-                }
-            } else {
-                $failures[] = 'Custom: unsafe URL';
-            }
-        }
-
-        // Bottom of the ladder: Moodle core_ai, only when no key is configured.
-        // core_ai has no native multi-turn API, so the history is flattened.
-        if (!$result['success'] && $nokeys && self::has_core_ai_provider()) {
-            $chatlines = [];
-            foreach ($messages as $msg) {
-                $role = $msg['role'] === 'assistant' ? 'Assistant' : 'User';
-                $chatlines[] = $role . ': ' . $msg['content'];
-            }
-            $result = self::call_core_ai($systemprompt, implode("\n", $chatlines));
-        }
-
-        if (!$result['success']) {
-            if ($nokeys && empty($failures)) {
-                throw new \moodle_exception('ai_generator_no_config', 'tiny_studiolms');
-            }
-            throw new \moodle_exception('ai_chat_error', 'tiny_studiolms', '', null, implode(' | ', $failures));
-        }
+        $result = self::call_providers(
+            implode("\n", $chatlines),
+            $systemprompt,
+            'ai_chat_error',
+            get_string('tab_ai_chat', 'tiny_studiolms'),
+            $context
+        );
 
         return ['data' => $result['data'], 'provider' => $result['provider']];
     }

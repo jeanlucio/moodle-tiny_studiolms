@@ -40,13 +40,14 @@ class chat {
      *
      * @param array  $messages       Conversation history [{role: user|assistant, content: string}, ...].
      * @param string $presetscontext JSON string listing available preset names for the system prompt.
+     * @param \context $context      Context the request is made in.
      * @return array With keys 'reply' (string), 'action' (string|null), 'provider' (string).
-     * @throws \moodle_exception If no provider is configured or all calls fail.
+     * @throws \moodle_exception If no AI source is available or the request fails.
      */
-    public static function send(array $messages, string $presetscontext): array {
+    public static function send(array $messages, string $presetscontext, \context $context): array {
         $limited = array_slice($messages, -self::MAX_HISTORY);
         $systemprompt = self::build_system_prompt($presetscontext);
-        $result = generator::call_chat($systemprompt, $limited);
+        $result = generator::call_chat($systemprompt, $limited, $context);
         return self::parse_response($result['data'], $result['provider']);
     }
 
@@ -141,7 +142,7 @@ class chat {
      * text as a plain reply when JSON decoding fails.
      *
      * @param string $text     Raw text returned by the LLM.
-     * @param string $provider Provider label (Gemini, Groq, Custom).
+     * @param string $provider Provider label reported by the provider chain.
      * @return array With keys 'reply' (string), 'action' (string|null), 'provider' (string).
      */
     private static function parse_response(string $text, string $provider): array {

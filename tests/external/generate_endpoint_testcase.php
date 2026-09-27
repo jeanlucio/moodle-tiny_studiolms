@@ -81,7 +81,7 @@ abstract class generate_endpoint_testcase extends advanced_testcase {
     }
 
     /**
-     * When no AI provider is configured, execute() throws a moodle_exception.
+     * When no AI source is available, execute() throws a moodle_exception.
      *
      * Verifies the fail-safe path: the function never returns a 200 with empty data
      * when every provider is unconfigured, and never leaks a raw \Throwable to the caller.
@@ -89,13 +89,7 @@ abstract class generate_endpoint_testcase extends advanced_testcase {
     public function test_no_provider_throws_moodle_exception(): void {
         $this->setUser($this->teacher);
 
-        unset_user_preference('tiny_studiolms_gemini_key', $this->teacher);
-        unset_user_preference('tiny_studiolms_groq_key', $this->teacher);
-        unset_user_preference('tiny_studiolms_custom_key', $this->teacher);
-        set_config('apikey_gemini', '', 'tiny_studiolms');
-        set_config('apikey_groq', '', 'tiny_studiolms');
-        set_config('apikey_custom', '', 'tiny_studiolms');
-
+        // A fresh test site has no local_aihub key and no enabled core_ai provider.
         $this->expectException(\moodle_exception::class);
         $this->call_execute(\context_system::instance()->id);
     }

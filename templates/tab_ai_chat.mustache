@@ -18,15 +18,14 @@
     @template tiny_studiolms/tab_ai_chat
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
 
-    Example context (json): {"hasai": true}
+    Context variables:
+    * hasai - Whether an AI source can serve the teacher in this context.
+    * aihubkeysurl - AI Hub personal-keys page URL, forwarded to the unavailable panel.
+
+    Example context (json): {"hasai": true, "aihubkeysurl": ""}
 }}
 {{^hasai}}
-<div class="p-4">
-    <div class="alert alert-warning mb-0" role="alert">
-        <span aria-hidden="true">🔑</span>
-        <span class="ms-1">{{#str}} ai_chat_nokey, tiny_studiolms {{/str}}</span>
-    </div>
-</div>
+{{> tiny_studiolms/ai_unavailable}}
 {{/hasai}}
 {{#hasai}}
 <div class="slms-chat-section d-flex flex-column h-100">
