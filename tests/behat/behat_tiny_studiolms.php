@@ -214,6 +214,48 @@ class behat_tiny_studiolms extends behat_base {
     }
 
     /**
+     * Asserts that no link or SVG animation in the canvas preview can still run script once clicked,
+     * while an ordinary https link in the same template survives (so the check saw real content).
+     *
+     * Regression test for the URL-scheme bypass: sanitizeUntrustedHtml() used to test a raw
+     * /^\s*javascript:/ pattern on the entity-decoded value, which a tab inside the scheme
+     * (java&#x09;script:) or a leading control character slips past, and never looked at SVG
+     * xlink:href or <set>/<animate>, which can rewrite href after sanitization.
+     *
+     * @Then the StudioLMS canvas preview keeps only safe link URLs
+     */
+    public function studiolms_canvas_preview_keeps_only_safe_link_urls(): void {
+        $session = $this->getSession();
+
+        $this->spin(function () use ($session) {
+            $result = $session->evaluateScript(
+                'return (function () {' .
+                'var root = document.querySelector(".slms-canvas-block-preview");' .
+                'if (!root) { return "missing"; }' .
+                'if (root.querySelector("set, animate, animateTransform, animateMotion")) { return "animation"; }' .
+                'var bad = Array.prototype.some.call(root.querySelectorAll("*"), function (el) {' .
+                'return Array.prototype.some.call(el.attributes, function (a) {' .
+                'if (["href", "xlink:href", "src"].indexOf(a.name) === -1) { return false; }' .
+                'var v = a.value.replace(/[\\u0000-\\u0020]/g, "").toLowerCase();' .
+                'return /^[a-z][a-z0-9+.-]*:/.test(v) && !/^(https?|mailto|tel):/.test(v);' .
+                '});' .
+                '});' .
+                'if (bad) { return "unsafe-url"; }' .
+                'return root.querySelector("a[href=\'https://moodle.org/\']") ? "ok" : "no-safe-link";' .
+                '})();'
+            );
+            if ($result !== 'ok') {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    'StudioLMS canvas preview URL check failed: ' . $result,
+                    $session
+                );
+            }
+
+            return true;
+        });
+    }
+
+    /**
      * Asserts that the StudioLMS toolbar button is NOT present in the TinyMCE toolbar.
      *
      * @Then the StudioLMS toolbar button is not visible
@@ -321,6 +363,40 @@ class behat_tiny_studiolms extends behat_base {
         $now = time();
         $DB->insert_record('tiny_studiolms_templates', (object) [
             'name'         => 'Malicious Animation Payload Template',
+            'content'      => $content,
+            'userid'       => $admin->id,
+            'usermodified' => $admin->id,
+            'isglobal'     => 1,
+            'timecreated'  => $now,
+            'timemodified' => $now,
+        ]);
+    }
+
+    /**
+     * Inserts a global template whose callout content hides script URLs behind every obfuscation the
+     * old sanitizer missed, next to one legitimate https link.
+     *
+     * @Given a malicious global StudioLMS template with obfuscated script URLs exists
+     */
+    public function a_malicious_global_studiolms_template_with_obfuscated_urls_exists(): void {
+        global $DB;
+
+        $admin = get_admin();
+        $content = '<div class="studiolms-callout-wrap mceNonEditable" data-slms-hover="none" '
+            . 'data-slms-block-type="callout" data-slms-state="">'
+            . '<div class="slms-callout-icon" aria-hidden="true">⚠️</div>'
+            . '<div class="slms-callout-content mceEditable">'
+            . '<p><a href="https://moodle.org/">Moodle</a> '
+            . '<a href="java&#x09;script:window.__slmsXssFired = true">Tab</a> '
+            . '<a href="&#x01;javascript:window.__slmsXssFired = true">Control</a></p>'
+            . '<svg><a xlink:href="javascript:window.__slmsXssFired = true"><text y="20">Xlink</text></a>'
+            . '<a href="#"><set attributeName="href" to="javascript:window.__slmsXssFired = true"/>'
+            . '<text y="40">Set</text></a></svg>'
+            . '</div></div>';
+
+        $now = time();
+        $DB->insert_record('tiny_studiolms_templates', (object) [
+            'name'         => 'Malicious Obfuscated URL Template',
             'content'      => $content,
             'userid'       => $admin->id,
             'usermodified' => $admin->id,

@@ -33,10 +33,35 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/** @var {string[]} Attributes whose value the browser resolves as a URL. */
+const URL_ATTRIBUTES = ['href', 'xlink:href', 'src', 'action', 'formaction', 'poster', 'background'];
+
+/** @var {string[]} URL schemes a block may link to; anything else with a scheme is dropped. */
+const ALLOWED_SCHEMES = ['http', 'https', 'mailto', 'tel'];
+
+/**
+ * Tells whether a URL attribute value is safe to keep.
+ *
+ * An allow-list, not a javascript: blocklist: attr.value arrives entity-decoded, and the browser's
+ * URL parser drops ASCII tab/newline and leading control characters before reading the scheme, so
+ * 'java&#x09;script:' or '&#x01;javascript:' would slip past any pattern tested on the raw value.
+ * The value is normalized the same way first; a relative URL (no scheme) is always kept.
+ *
+ * @param {string} value
+ * @returns {boolean}
+ */
+const isSafeUrl = (value) => {
+    // eslint-disable-next-line no-control-regex
+    const normalized = value.replace(/[\u0000-\u0020\u007f]/g, '').toLowerCase();
+    const scheme = normalized.match(/^([a-z][a-z0-9+.-]*):/);
+    return !scheme || ALLOWED_SCHEMES.includes(scheme[1]);
+};
+
 /**
  * Strips constructs that could execute script from an untrusted HTML string: every on* event
  * handler attribute, <script>/<iframe>/<object>/<embed>/<link>/<style>/<meta>/<base> elements,
- * and javascript: URLs in href/src/action/formaction.
+ * SVG animation elements (which can rewrite an attribute such as href after sanitization), and
+ * any URL attribute whose scheme is not http/https/mailto/tel.
  *
  * This is a real sanitizer, deliberately not built on TinyMCE's own serializer.serialize(): Moodle
  * initializes the editor with xss_sanitization:false and an extended_valid_elements schema of
@@ -59,17 +84,17 @@ export const sanitizeUntrustedHtml = (html) => {
 
     const doc = new DOMParser().parseFromString(html, 'text/html');
 
-    doc.querySelectorAll('script, iframe, object, embed, link, style, meta, base').forEach((el) => {
+    const blocked = 'script, iframe, object, embed, link, style, meta, base, set, animate, animateTransform, animateMotion';
+    doc.querySelectorAll(blocked).forEach((el) => {
         el.remove();
     });
 
-    const urlAttributes = ['href', 'src', 'action', 'formaction'];
     doc.body.querySelectorAll('*').forEach((el) => {
         Array.from(el.attributes).forEach((attr) => {
             const name = attr.name.toLowerCase();
             if (name.startsWith('on')) {
                 el.removeAttribute(attr.name);
-            } else if (urlAttributes.includes(name) && (/^\s*javascript:/i).test(attr.value)) {
+            } else if (URL_ATTRIBUTES.includes(name) && !isSafeUrl(attr.value)) {
                 el.removeAttribute(attr.name);
             }
         });
