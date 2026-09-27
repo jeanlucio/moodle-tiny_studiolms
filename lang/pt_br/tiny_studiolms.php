@@ -198,7 +198,6 @@ $string['error_preview_failed'] = 'Falha na pré-visualização.';
 $string['error_save_template'] = 'Erro ao salvar o template.';
 $string['event_template_created'] = 'Template criado';
 $string['event_template_deleted'] = 'Template excluído';
-$string['event_template_updated'] = 'Template atualizado';
 $string['export_success'] = 'Templates exportados com sucesso.';
 $string['fav_add_aria'] = 'Adicionar aos favoritos';
 $string['fav_added'] = 'Adicionado aos favoritos.';

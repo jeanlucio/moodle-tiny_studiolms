@@ -198,7 +198,6 @@ $string['error_preview_failed'] = 'Preview failed.';
 $string['error_save_template'] = 'Error saving template.';
 $string['event_template_created'] = 'Template created';
 $string['event_template_deleted'] = 'Template deleted';
-$string['event_template_updated'] = 'Template updated';
 $string['export_success'] = 'Templates exported successfully.';
 $string['fav_add_aria'] = 'Add to favourites';
 $string['fav_added'] = 'Added to favourites.';
