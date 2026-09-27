@@ -214,13 +214,16 @@ class behat_tiny_studiolms extends behat_base {
     }
 
     /**
-     * Asserts that no link or SVG animation in the canvas preview can still run script once clicked,
-     * while an ordinary https link in the same template survives (so the check saw real content).
+     * Asserts that no link or SVG animation in the canvas previews can still run script once clicked
+     * or reached by keyboard, and that the action button's target fell back to a known value, while
+     * an ordinary https link in the same template survives (so the check saw real content).
      *
      * Regression test for the URL-scheme bypass: sanitizeUntrustedHtml() used to test a raw
      * /^\s*javascript:/ pattern on the entity-decoded value, which a tab inside the scheme
      * (java&#x09;script:) or a leading control character slips past, and never looked at SVG
-     * xlink:href or <set>/<animate>, which can rewrite href after sanitization.
+     * xlink:href or <set>/<animate>, which can rewrite href after sanitization. A URL field saved in
+     * data-slms-state (the button's btnUrl) is plain text that no HTML sanitizer inspects, and the
+     * preview's pointer-events: none never kept its links out of the keyboard tab order.
      *
      * @Then the StudioLMS canvas preview keeps only safe link URLs
      */
@@ -230,9 +233,13 @@ class behat_tiny_studiolms extends behat_base {
         $this->spin(function () use ($session) {
             $result = $session->evaluateScript(
                 'return (function () {' .
-                'var root = document.querySelector(".slms-canvas-block-preview");' .
-                'if (!root) { return "missing"; }' .
+                'var root = document.getElementById("slms-canvas-blocks");' .
+                'if (!root || root.querySelectorAll(".slms-canvas-block-preview").length < 2) { return "missing"; }' .
                 'if (root.querySelector("set, animate, animateTransform, animateMotion")) { return "animation"; }' .
+                'if (root.querySelector(".slms-canvas-block-preview a[href]:not([tabindex=\'-1\'])")) {' .
+                'return "focusable-link"; }' .
+                'var button = root.querySelector(".slms-canvas-block-preview a.studiolms-btn");' .
+                'if (!button || button.getAttribute("target") !== "_blank") { return "bad-target"; }' .
                 'var bad = Array.prototype.some.call(root.querySelectorAll("*"), function (el) {' .
                 'return Array.prototype.some.call(el.attributes, function (a) {' .
                 'if (["href", "xlink:href", "src"].indexOf(a.name) === -1) { return false; }' .
@@ -374,7 +381,8 @@ class behat_tiny_studiolms extends behat_base {
 
     /**
      * Inserts a global template whose callout content hides script URLs behind every obfuscation the
-     * old sanitizer missed, next to one legitimate https link.
+     * old sanitizer missed, next to one legitimate https link, followed by an action button whose
+     * saved state carries a script URL and an unknown link target.
      *
      * @Given a malicious global StudioLMS template with obfuscated script URLs exists
      */
@@ -393,6 +401,14 @@ class behat_tiny_studiolms extends behat_base {
             . '<a href="#"><set attributeName="href" to="javascript:window.__slmsXssFired = true"/>'
             . '<text y="40">Set</text></a></svg>'
             . '</div></div>';
+        // A plain-text URL field travels inside data-slms-state, where no HTML sanitizer can see it.
+        $state = base64_encode(rawurlencode(json_encode([
+            'btnText' => 'Button',
+            'btnUrl' => 'javascript:window.__slmsXssFired = true',
+            'target' => 'evilframe',
+        ])));
+        $content .= '<div class="studiolms-btn-wrap" data-slms-block-type="actionButton" '
+            . 'data-slms-state="' . $state . '"><a href="#" class="studiolms-btn"><span>Button</span></a></div>';
 
         $now = time();
         $DB->insert_record('tiny_studiolms_templates', (object) [

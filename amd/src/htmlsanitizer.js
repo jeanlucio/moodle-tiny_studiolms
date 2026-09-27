@@ -103,26 +103,73 @@ export const sanitizeUntrustedHtml = (html) => {
     return doc.body.innerHTML;
 };
 
+/** @var {RegExp} Block config keys whose value is rendered as a URL (btnUrl, mediaUrl, link0url, url...). */
+const URL_FIELD = /url$/i;
+
+/** @var {string[]} Link targets a block may use; matches the options the button popup offers. */
+const ALLOWED_TARGETS = ['_blank', '_self'];
+
 /**
- * Recursively sanitizes every string value in an AI-generated block config (or array of
- * resource-like objects, e.g. a webteca block's resources list).
+ * Validates the URL and link-target fields of a block config, at any depth.
  *
- * @param {*} value A config object, an array of them, a string, or any other JSON value.
- * @returns {*} The same shape, with every string sanitized.
+ * A URL field is plain text, not markup, so sanitizeUntrustedHtml() has no attribute to inspect in
+ * it: 'javascript:alert(1)' passes through unchanged and only becomes a live href once a block
+ * template renders href="{{btnUrl}}". Fields are recognised by key name, the one convention every
+ * block definition already follows. An unsafe URL becomes '' (a block with an empty URL hides its
+ * media or link), and an unknown target falls back to '_blank', the button's own default.
+ *
+ * @param {*} value A config object, an array of them, or any other JSON value.
+ * @returns {*} The same shape, with URL and target fields validated.
  */
-export const sanitizeAiConfig = (value) => {
-    if (typeof value === 'string') {
-        return sanitizeUntrustedHtml(value);
-    }
+export const sanitizeUrlFields = (value) => {
     if (Array.isArray(value)) {
-        return value.map((item) => sanitizeAiConfig(item));
+        return value.map((item) => sanitizeUrlFields(item));
     }
     if (value && typeof value === 'object') {
         const result = {};
         Object.keys(value).forEach((key) => {
-            result[key] = sanitizeAiConfig(value[key]);
+            const item = value[key];
+            if (typeof item === 'string' && URL_FIELD.test(key)) {
+                result[key] = isSafeUrl(item) ? item : '';
+            } else if (typeof item === 'string' && key === 'target') {
+                result[key] = ALLOWED_TARGETS.includes(item) ? item : '_blank';
+            } else {
+                result[key] = sanitizeUrlFields(item);
+            }
         });
         return result;
     }
     return value;
 };
+
+/**
+ * Recursively sanitizes every string value in a config, as HTML.
+ *
+ * @param {*} value A config object, an array of them, a string, or any other JSON value.
+ * @returns {*} The same shape, with every string sanitized.
+ */
+const sanitizeHtmlStrings = (value) => {
+    if (typeof value === 'string') {
+        return sanitizeUntrustedHtml(value);
+    }
+    if (Array.isArray(value)) {
+        return value.map((item) => sanitizeHtmlStrings(item));
+    }
+    if (value && typeof value === 'object') {
+        const result = {};
+        Object.keys(value).forEach((key) => {
+            result[key] = sanitizeHtmlStrings(value[key]);
+        });
+        return result;
+    }
+    return value;
+};
+
+/**
+ * Sanitizes an AI-generated block config (or array of resource-like objects, e.g. a webteca
+ * block's resources list): every string as HTML, then every URL and target field.
+ *
+ * @param {*} value A config object, an array of them, a string, or any other JSON value.
+ * @returns {*} The same shape, safe to render.
+ */
+export const sanitizeAiConfig = (value) => sanitizeUrlFields(sanitizeHtmlStrings(value));

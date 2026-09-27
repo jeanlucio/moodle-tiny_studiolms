@@ -30,7 +30,7 @@ import {loadTemplates, renderTemplateGrid, saveTemplate, showInlineFeedback,
 import {initBlock as initAiBlock, initModel as initAiModel} from './aigenerator';
 import {init as initAiChat} from './aichat';
 import {setContextId} from './context';
-import {sanitizeUntrustedHtml} from './htmlsanitizer';
+import {sanitizeUntrustedHtml, sanitizeUrlFields} from './htmlsanitizer';
 
 // Canvas state — array of {id, blockDef, config, element, previewEl}
 let canvasBlocks = [];
@@ -237,6 +237,12 @@ export const initStudioApp = (
                     );
 
                     if (blockDef.extractDOM && targetEditNode) {
+                        // Deliberately read from the live node, unsanitized, unlike loadTemplateToCanvas.
+                        // It is not filtered (Moodle's editor keeps on* attributes on <p>/<i>), but any
+                        // handler there already ran inside the editor iframe, same origin, before this
+                        // point, so copying it here gives an attacker nothing new. Sanitizing would
+                        // instead strip the teacher's own <iframe>/<style> content (an embedded video in
+                        // a callout, say), and Update would then write the block back without it.
                         blockDef.extractDOM(targetEditNode, mergedConfig);
                     }
 
@@ -306,9 +312,12 @@ export const initStudioApp = (
  */
 const addBlockToCanvas = async(blockDef, config = null, skipScroll = false) => {
     const blockId = ++canvasBlockCounter;
-    const blockConfig = config
+    // Every canvas entry passes here (template, re-edit, preset, AI insert), so URL and target
+    // fields are validated once for all of them; see sanitizeUrlFields() for why HTML
+    // sanitization alone does not cover them.
+    const blockConfig = sanitizeUrlFields(config
         ? JSON.parse(JSON.stringify(config))
-        : JSON.parse(JSON.stringify(blockDef.defaultData));
+        : JSON.parse(JSON.stringify(blockDef.defaultData)));
 
     const entry = {id: blockId, blockDef, config: blockConfig, element: null, previewEl: null};
     canvasBlocks.push(entry);
@@ -433,6 +442,11 @@ const renderBlockPreview = async(entry) => {
     try {
         const html = await entry.blockDef.renderHtml(entry.config);
         entry.previewEl.innerHTML = html;
+        // The preview is display-only (pointer-events: none in styles.css), but that does not stop
+        // Tab + Enter from reaching a link or button inside it. tabindex="-1" closes that path while
+        // keeping the content readable by screen readers, which inert would hide.
+        entry.previewEl.querySelectorAll('a[href], button, input, select, textarea, iframe, [tabindex]')
+            .forEach((el) => el.setAttribute('tabindex', '-1'));
     } catch (error) {
         entry.previewEl.innerHTML = '';
         Notification.exception(error);
@@ -634,12 +648,13 @@ export const loadTemplateToCanvas = async(htmlContent, tplName = '') => {
         }
 
         if (blockDef.extractDOM) {
-            // The extractDOM implementations assume the node they read from was already filtered
-            // — true when re-editing a block already live in this editor, not true here: el comes
-            // from parsing raw stored template HTML, which can reach storage via a direct
-            // save_template/import_templates call that never went through the editor at all.
+            // The extractDOM implementations render what they read into the preview, so the node
+            // must be filtered first. el comes from parsing raw stored template HTML, which can
+            // reach storage via a direct save_template/import_templates call that never went
+            // through the editor at all, so a payload in it has not run anywhere yet. (The re-edit
+            // path in initStudioApp differs on purpose; see the comment there.)
             // sanitizeUntrustedHtml() strips script-executing constructs (on* attributes,
-            // <script>/<iframe>/etc., javascript: URLs) while keeping this plugin's own
+            // <script>/<iframe>/etc., non-web URL schemes) while keeping this plugin's own
             // data-slms-* attributes and ordinary formatting intact. TinyMCE's own
             // serializer.serialize() is deliberately not used here: Moodle initializes the editor
             // with xss_sanitization:false and a p[*]/i[*] wildcard schema, so the serializer keeps
