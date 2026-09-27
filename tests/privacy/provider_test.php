@@ -206,6 +206,59 @@ final class provider_test extends provider_testcase {
     }
 
     /**
+     * delete_data_for_user keeps a global template but strips the deleted user's authorship from it,
+     * so the user is no longer reported as having data afterwards.
+     */
+    public function test_delete_data_for_user_anonymises_global_template_authorship(): void {
+        global $DB;
+
+        $globalid = $this->create_template($this->user1, 'Global', 1);
+
+        $contextlist = provider::get_contexts_for_userid($this->user1->id);
+        $approvedlist = new approved_contextlist($this->user1, 'tiny_studiolms', $contextlist->get_contextids());
+        provider::delete_data_for_user($approvedlist);
+
+        $record = $DB->get_record('tiny_studiolms_templates', ['id' => $globalid], '*', MUST_EXIST);
+        $this->assertEquals(0, (int) $record->userid);
+        $this->assertEquals(0, (int) $record->usermodified);
+        $this->assertCount(0, provider::get_contexts_for_userid($this->user1->id)->get_contextids());
+    }
+
+    /**
+     * delete_data_for_users anonymises only the listed users' global templates.
+     */
+    public function test_delete_data_for_users_anonymises_only_listed_users_global_templates(): void {
+        global $DB;
+
+        $user1global = $this->create_template($this->user1, 'U1 Global', 1);
+        $user2global = $this->create_template($this->user2, 'U2 Global', 1);
+
+        $approveduserlist = new approved_userlist(\context_system::instance(), 'tiny_studiolms', [$this->user1->id]);
+        provider::delete_data_for_users($approveduserlist);
+
+        $this->assertEquals(0, (int) $DB->get_field('tiny_studiolms_templates', 'userid', ['id' => $user1global]));
+        $this->assertEquals(
+            (int) $this->user2->id,
+            (int) $DB->get_field('tiny_studiolms_templates', 'userid', ['id' => $user2global])
+        );
+    }
+
+    /**
+     * delete_data_for_all_users_in_context keeps global templates but clears all their authorship.
+     */
+    public function test_delete_data_for_all_users_in_context_anonymises_global_templates(): void {
+        global $DB;
+
+        $globalid = $this->create_template($this->user1, 'Global', 1);
+
+        provider::delete_data_for_all_users_in_context(\context_system::instance());
+
+        $record = $DB->get_record('tiny_studiolms_templates', ['id' => $globalid], '*', MUST_EXIST);
+        $this->assertEquals(0, (int) $record->userid);
+        $this->assertEquals(0, (int) $record->usermodified);
+    }
+
+    /**
      * delete_data_for_all_users_in_context removes all personal templates and favourites.
      */
     public function test_delete_data_for_all_users_in_context(): void {

@@ -248,6 +248,31 @@ class provider implements
             'tiny_studiolms_templates',
             'isglobal = 0'
         );
+        $DB->set_field_select('tiny_studiolms_templates', 'userid', 0, 'isglobal = 1');
+        $DB->set_field_select('tiny_studiolms_templates', 'usermodified', 0, 'isglobal = 1');
+    }
+
+    /**
+     * Removes the given users' authorship from global templates without deleting them.
+     *
+     * A global template is institutional content other users rely on, so it survives a data
+     * deletion request — but who created or last modified it is still personal data, so both
+     * columns are cleared for the deleted users.
+     *
+     * @param string $insql IN/equal SQL fragment for the user IDs, from get_in_or_equal().
+     * @param array $inparams Parameters for $insql.
+     */
+    private static function anonymise_global_templates(string $insql, array $inparams): void {
+        global $DB;
+
+        $DB->set_field_select('tiny_studiolms_templates', 'userid', 0, "isglobal = 1 AND userid {$insql}", $inparams);
+        $DB->set_field_select(
+            'tiny_studiolms_templates',
+            'usermodified',
+            0,
+            "isglobal = 1 AND usermodified {$insql}",
+            $inparams
+        );
     }
 
     /**
@@ -275,6 +300,9 @@ class provider implements
             $DB->delete_records_select('tiny_studiolms_favourites', "templateid {$insql}", $inparams);
             $DB->delete_records_select('tiny_studiolms_templates', "id {$insql}", $inparams);
         }
+
+        [$usersql, $userparams] = $DB->get_in_or_equal([$userid], SQL_PARAMS_NAMED);
+        self::anonymise_global_templates($usersql, $userparams);
     }
 
     /**
@@ -331,5 +359,7 @@ class provider implements
             $DB->delete_records_select('tiny_studiolms_favourites', "templateid {$tplsql}", $tplparams);
             $DB->delete_records_select('tiny_studiolms_templates', "id {$tplsql}", $tplparams);
         }
+
+        self::anonymise_global_templates($insql, $inparams);
     }
 }
