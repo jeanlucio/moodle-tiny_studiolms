@@ -1,0 +1,24 @@
+# Each entry needs an image at docs/assets/img/screenshots/<file>, plus an
+# English and a Portuguese caption. The screenshots.md pages (en/pt) loop over
+# this list, so adding a new screenshot never touches the gallery markup.
+- file: page-view.png
+  caption_en: "What students see: a course page built entirely with StudioLMS blocks — heading, callouts, a numbered steps infographic and a stats infographic — rendered by the standard Moodle page, no HTML written by hand"
+  caption_pt: "O que o estudante vê: uma página do curso montada só com blocos do StudioLMS — título, destaques, infográfico de passos e infográfico de estatísticas — exibida pela página padrão do Moodle, sem nenhuma linha de HTML escrita à mão"
+- file: composer.png
+  caption_en: "The canvas composer inside TinyMCE: the Components sidebar on the left, the page being assembled block by block on the right, then inserted into the editor in one click"
+  caption_pt: "O compositor em canvas dentro do TinyMCE: a barra lateral de Componentes à esquerda e a página sendo montada bloco a bloco à direita, inserida no editor com um clique"
+- file: block-editing.png
+  caption_en: "Editing a block: the properties panel of a mind map — central topic, branches, colour theme — with its own \"Generate Map with AI\" button that filled in this map from a one-line description"
+  caption_pt: "Editando um bloco: o painel de propriedades de um mapa mental — tópico central, ramos, tema de cores — com o próprio botão \"Gerar Mapa com IA\", que preencheu este mapa a partir de uma descrição de uma linha"
+- file: official-templates.png
+  caption_en: "Official Templates: institution-wide layouts maintained by site managers; one click loads a complete, editable layout onto the canvas"
+  caption_pt: "Templates oficiais: layouts da instituição mantidos pelos gestores do site; um clique carrega um layout completo e editável no canvas"
+- file: ai-layout.png
+  caption_en: "AI Layout: describe the pedagogical context and the AI assembles a multi-block layout, previewed before anything reaches the canvas or the course"
+  caption_pt: "Modelo IA: descreva o contexto pedagógico e a IA monta um layout com vários blocos, com pré-visualização antes de chegar ao canvas ou ao curso"
+- file: ai-block.png
+  caption_en: "AI Block: a single plain-language request becomes one ready-to-insert block, which can still be configured by hand before inserting"
+  caption_pt: "Bloco IA: um único pedido em linguagem natural vira um bloco pronto para inserir, que ainda pode ser ajustado manualmente antes da inserção"
+- file: ai-chat.png
+  caption_en: "AI Chat: paste a week's plan and the assistant proposes a complete page; nothing is applied until the teacher confirms the action card"
+  caption_pt: "Chat IA: cole o plano da semana e o assistente propõe uma página completa; nada é aplicado até o professor confirmar o cartão de ação"

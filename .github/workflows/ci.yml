@@ -3,12 +3,14 @@ name: Moodle Plugin CI
 on:
   push:
     paths-ignore:
-      - '**.md'
-      - '.gitignore'
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGES.md'
   pull_request:
     paths-ignore:
-      - '**.md'
-      - '.gitignore'
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGES.md'
   workflow_dispatch:
 
 permissions:
