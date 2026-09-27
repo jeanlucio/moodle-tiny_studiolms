@@ -14,8 +14,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Holds a reference to the live TinyMCE editor instance for the current StudioLMS session, and
- * sanitizes AI-generated block configuration through it.
+ * Sanitizes AI-generated block configuration before it reaches a triple-mustache render sink.
  *
  * The dedicated per-block-type AI generators (generate_callout, generate_card, ...) already
  * apply clean_param() to each known field server-side. generate_block/generate_preset instead
@@ -23,63 +22,72 @@
  * validation — a prompt-injected instruction could ask the model to return a field such as
  * contentHtml containing a script-executing payload. That config is rendered client-side via the
  * same triple-mustache block templates every other block config uses, so it needs the same kind
- * of treatment as a template's own rich-text fields (see app.js's loadTemplateToCanvas): re-
- * serialized through the editor's own schema, which strips anything TinyMCE itself would never
- * allow through while leaving ordinary formatting and this plugin's own attributes intact.
+ * of sanitization as a template's own rich-text fields (see app.js's loadTemplateToCanvas).
  *
  * Kept as its own module (no other imports) for the same reason as context.js: every caller —
  * aigenerator.js, aichat.js, and any block definition under blocks/ — can read it without
  * creating a circular import back through app.js/blocks/registry.js.
  *
- * @module     tiny_studiolms/editorinstance
+ * @module     tiny_studiolms/htmlsanitizer
  * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-let currentEditor = null;
-
 /**
- * Set the live TinyMCE editor instance for the current StudioLMS session.
+ * Strips constructs that could execute script from an untrusted HTML string: every on* event
+ * handler attribute, <script>/<iframe>/<object>/<embed>/<link>/<style>/<meta>/<base> elements,
+ * and javascript: URLs in href/src/action/formaction.
  *
- * @param {object} editor
- */
-export const setEditorInstance = (editor) => {
-    currentEditor = editor;
-};
-
-/**
- * Sanitize a single HTML string through the editor's own schema.
+ * This is a real sanitizer, deliberately not built on TinyMCE's own serializer.serialize(): Moodle
+ * initializes the editor with xss_sanitization:false and an extended_valid_elements schema of
+ * 'script[*],p[*],i[*]' (lib/editor/tiny/classes/editor.php), and TinyMCE's schema engine turns
+ * the '[*]' wildcard into an "allow any attribute" pattern for p/i elements — so the serializer
+ * keeps onmouseover/onanimationstart etc. on those two tags rather than stripping them. DOMParser
+ * builds an inert document (no image loads, no event firing), so walking it here never executes
+ * anything itself.
  *
- * Safe to call on a plain, non-HTML value too (a colour, an enum, a URL): DOMParser will not
- * introduce any markup that was not already there, so the value round-trips unchanged.
+ * Safe to call on a plain, non-HTML value too (a colour, an enum, a URL): a string with no markup
+ * and no dangerous attributes round-trips unchanged.
  *
  * @param {string} html
  * @returns {string}
  */
-const sanitizeHtmlString = (html) => {
-    if (!currentEditor || !html) {
+export const sanitizeUntrustedHtml = (html) => {
+    if (!html) {
         return html;
     }
-    const parsed = new DOMParser().parseFromString(html, 'text/html');
-    // TinyMCE's forced_root_block option is disabled below: it is the editor's default typing
-    // behaviour of wrapping any bare root-level content in a <p>, which is exactly wrong for a
-    // short plain field (an icon, a colour, an enum) — it would come back as the literal string
-    // "<p>value</p>" instead of value. A field with genuine paragraph-level content already
-    // carries its own <p> tags.
-    /* eslint-disable-next-line camelcase */
-    return currentEditor.serializer.serialize(parsed.body, {format: 'html', forced_root_block: false});
+
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    doc.querySelectorAll('script, iframe, object, embed, link, style, meta, base').forEach((el) => {
+        el.remove();
+    });
+
+    const urlAttributes = ['href', 'src', 'action', 'formaction'];
+    doc.body.querySelectorAll('*').forEach((el) => {
+        Array.from(el.attributes).forEach((attr) => {
+            const name = attr.name.toLowerCase();
+            if (name.startsWith('on')) {
+                el.removeAttribute(attr.name);
+            } else if (urlAttributes.includes(name) && (/^\s*javascript:/i).test(attr.value)) {
+                el.removeAttribute(attr.name);
+            }
+        });
+    });
+
+    return doc.body.innerHTML;
 };
 
 /**
  * Recursively sanitizes every string value in an AI-generated block config (or array of
- * resource-like objects, e.g. a webteca block's resources list) through the editor's schema.
+ * resource-like objects, e.g. a webteca block's resources list).
  *
  * @param {*} value A config object, an array of them, a string, or any other JSON value.
  * @returns {*} The same shape, with every string sanitized.
  */
 export const sanitizeAiConfig = (value) => {
     if (typeof value === 'string') {
-        return sanitizeHtmlString(value);
+        return sanitizeUntrustedHtml(value);
     }
     if (Array.isArray(value)) {
         return value.map((item) => sanitizeAiConfig(item));

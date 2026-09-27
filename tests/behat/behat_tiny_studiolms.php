@@ -293,4 +293,40 @@ class behat_tiny_studiolms extends behat_base {
             'timemodified' => $now,
         ]);
     }
+
+    /**
+     * Inserts a global template whose callout content carries an animation-triggered handler
+     * instead of an <img onerror>, on tags (<p>) that TinyMCE's own schema would keep intact.
+     *
+     * Regression test for the fake-sanitizer XSS: sanitizeUntrustedHtml() (htmlsanitizer.js) must
+     * strip on* attributes itself rather than relying on the editor's serializer.serialize(), which
+     * keeps event handler attributes on <p>/<i> under Moodle's default xss_sanitization:false +
+     * p[*]/i[*] wildcard schema. Uses onanimationstart (no click needed) exactly like the real
+     * finding's proof of concept, so the payload fires as soon as the element renders if the
+     * attribute survives.
+     *
+     * @Given a malicious global StudioLMS template with an animation-triggered payload exists
+     */
+    public function a_malicious_global_studiolms_template_with_animation_payload_exists(): void {
+        global $DB;
+
+        $admin = get_admin();
+        $content = '<div class="studiolms-callout-wrap mceNonEditable" data-slms-hover="none" '
+            . 'data-slms-block-type="callout" data-slms-state="">'
+            . '<div class="slms-callout-icon" aria-hidden="true">⚠️</div>'
+            . '<div class="slms-callout-content mceEditable">'
+            . '<p style="animation:spin 1s" onanimationstart="window.__slmsXssFired = true">Aviso</p>'
+            . '</div></div>';
+
+        $now = time();
+        $DB->insert_record('tiny_studiolms_templates', (object) [
+            'name'         => 'Malicious Animation Payload Template',
+            'content'      => $content,
+            'userid'       => $admin->id,
+            'usermodified' => $admin->id,
+            'isglobal'     => 1,
+            'timecreated'  => $now,
+            'timemodified' => $now,
+        ]);
+    }
 }

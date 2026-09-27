@@ -31,7 +31,7 @@ import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {Blocks} from './blocks/registry';
 import {getContextId} from './context';
-import {sanitizeAiConfig} from './editorinstance';
+import {sanitizeAiConfig} from './htmlsanitizer';
 
 /**
  * Renders a bare preview HTML for a single block (no state attributes).
