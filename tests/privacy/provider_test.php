@@ -222,6 +222,20 @@ final class provider_test extends provider_testcase {
     }
 
     /**
+     * delete_data_for_all_users_in_context does nothing for a non-system context.
+     */
+    public function test_delete_data_for_all_users_in_context_does_nothing_for_non_system_context(): void {
+        global $DB;
+
+        $this->create_template($this->user1);
+
+        $course = $this->getDataGenerator()->create_course();
+        provider::delete_data_for_all_users_in_context(\context_course::instance($course->id));
+
+        $this->assertEquals(1, $DB->count_records('tiny_studiolms_templates', ['isglobal' => 0]));
+    }
+
+    /**
      * get_users_in_context lists all users who have templates or favourites.
      */
     public function test_get_users_in_context(): void {
@@ -235,6 +249,25 @@ final class provider_test extends provider_testcase {
         $userids = array_map('intval', $userlist->get_userids());
         $this->assertContains((int) $this->user1->id, $userids);
         $this->assertContains((int) $this->user2->id, $userids);
+    }
+
+    /**
+     * get_users_in_context does nothing for a non-system context.
+     *
+     * All of this plugin's data lives at the system context, so a context of any other
+     * level is guaranteed to hold none of it — the early return is what keeps this
+     * function from running its SQL against the wrong context by mistake.
+     */
+    public function test_get_users_in_context_does_nothing_for_non_system_context(): void {
+        $templateid = $this->create_template($this->user1);
+        $this->create_favourite($this->user2, $templateid);
+
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = \context_course::instance($course->id);
+        $userlist = new userlist($coursecontext, 'tiny_studiolms');
+        provider::get_users_in_context($userlist);
+
+        $this->assertCount(0, $userlist->get_userids());
     }
 
     /**
@@ -286,5 +319,22 @@ final class provider_test extends provider_testcase {
 
         $this->assertFalse($DB->record_exists('tiny_studiolms_templates', ['userid' => $this->user1->id]));
         $this->assertTrue($DB->record_exists('tiny_studiolms_templates', ['userid' => $this->user2->id]));
+    }
+
+    /**
+     * delete_data_for_users does nothing for a non-system context.
+     */
+    public function test_delete_data_for_users_does_nothing_for_non_system_context(): void {
+        global $DB;
+
+        $this->create_template($this->user1, 'U1 Layout');
+
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = \context_course::instance($course->id);
+        $approveduserlist = new approved_userlist($coursecontext, 'tiny_studiolms', [$this->user1->id]);
+
+        provider::delete_data_for_users($approveduserlist);
+
+        $this->assertTrue($DB->record_exists('tiny_studiolms_templates', ['userid' => $this->user1->id]));
     }
 }
