@@ -292,7 +292,7 @@ export default {
 
         return Templates.render('tiny_studiolms/block_chart', {
             type,
-            title: data.title ? esc(data.title) : '',
+            title: data.title || '',
             svg,
             legend,
         });

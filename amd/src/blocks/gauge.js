@@ -248,7 +248,7 @@ export default {
         });
 
         return Templates.render('tiny_studiolms/block_gauge', {
-            title: data.title ? esc(data.title) : '',
+            title: data.title || '',
             gauges: items,
         });
     },

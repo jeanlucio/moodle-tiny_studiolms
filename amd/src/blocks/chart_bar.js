@@ -286,7 +286,7 @@ export default {
 
         return Templates.render('tiny_studiolms/block_chart_bar', {
             type,
-            title: data.title ? esc(data.title) : '',
+            title: data.title || '',
             svg,
         });
     },
