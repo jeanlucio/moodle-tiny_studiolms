@@ -144,6 +144,14 @@ jobs:
         if: ${{ !cancelled() && matrix.runchecks == 'all' }}
         run: moodle-plugin-ci grunt --max-lint-warnings 0
 
+      # Headless tests for the plain, DOM-free AMD modules (see amd/src/blocks/text_escape.js and
+      # sanitizeUrlFields() in amd/src/htmlsanitizer.js) — no RequireJS, no Moodle runtime, no
+      # browser. Runs on the runner's own Node, no setup-node step needed for this.
+      - name: JS unit tests
+        if: ${{ !cancelled() && matrix.runchecks == 'all' }}
+        working-directory: plugin
+        run: node --test tests/js/text_escape.test.js tests/js/sanitize_url_fields.test.js
+
       - name: PHPUnit tests
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci phpunit --fail-on-warning

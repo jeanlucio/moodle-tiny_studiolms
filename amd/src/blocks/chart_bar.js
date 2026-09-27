@@ -23,6 +23,7 @@
 
 import Templates from 'core/templates';
 import {getString} from 'core/str';
+import {escapeHtml as esc} from './text_escape';
 
 const MAX_ITEMS = 6;
 const BAR_COLORS = [
@@ -54,12 +55,6 @@ const V_LABEL_CHARS = 9;
  * @param {string} str Raw string.
  * @returns {string} Safe string.
  */
-const esc = (str) => String(str ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-
 /**
  * Wrap a label into at most two lines, breaking at a word boundary.
  * @param {string} str Input string.

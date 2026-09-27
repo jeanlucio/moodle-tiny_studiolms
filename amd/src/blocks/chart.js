@@ -23,6 +23,7 @@
 
 import Templates from 'core/templates';
 import {getString} from 'core/str';
+import {escapeHtml as esc} from './text_escape';
 
 const SVG_SIZE = 280;
 const CX = SVG_SIZE / 2;
@@ -45,12 +46,6 @@ const SLICE_COLORS = [
  * @param {string} str Raw string.
  * @returns {string} Escaped string safe for HTML attributes and text nodes.
  */
-const esc = (str) => String(str ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-
 /**
  * Convert polar coordinates to cartesian point on the circle.
  * @param {number} angle Angle in radians, 0 = top.

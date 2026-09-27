@@ -25,6 +25,7 @@ import Templates from 'core/templates';
 import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
 import {getContextId} from '../context';
+import {escapeHtml as svgEsc} from './text_escape';
 
 const W = 900;
 const H = 620;
@@ -81,17 +82,6 @@ const COLORS = {
         lineColor: '#94a3b8',
     },
 };
-
-/**
- * Escapes a string for safe embedding inside SVG text nodes.
- * @param {string} text
- * @returns {string}
- */
-const svgEsc = (text) => String(text || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
 
 /**
  * Splits text into at most two lines for SVG rendering.

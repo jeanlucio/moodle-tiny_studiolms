@@ -23,6 +23,7 @@
 
 import Templates from 'core/templates';
 import {getString} from 'core/str';
+import {escapeHtml as esc} from './text_escape';
 
 const MAX_GAUGES = 3;
 
@@ -42,12 +43,6 @@ const G_TRACK_W = 16;
  * @param {string} str Raw string.
  * @returns {string} Safe string.
  */
-const esc = (str) => String(str ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-
 /**
  * Return the arc fill colour using traffic-light zones.
  * @param {number} v Value 0–100.

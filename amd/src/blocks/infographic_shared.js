@@ -24,6 +24,10 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import {escapeHtml as esc} from './text_escape';
+
+export {esc};
+
 export const ICON_UNICODE = {
     'fa-solid fa-users': '',
     'fa-solid fa-chart-line': '',
@@ -173,16 +177,6 @@ export const THEMES = {
         borderColor: '#cbd5e1',
     },
 };
-
-/**
- * @param {string} text
- * @returns {string}
- */
-export const esc = (text) => String(text || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
 
 /**
  * Normalises an FA6 icon class string.
