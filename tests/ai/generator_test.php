@@ -170,6 +170,29 @@ final class generator_test extends advanced_testcase {
     }
 
     /**
+     * The stats infographic filters AI icons through the same allow-list as its sibling generators.
+     *
+     * Regression test: generate_infographic kept the model's icon through PARAM_TEXT only, which keeps
+     * quotes, while steps and features already used allowed_icon().
+     */
+    public function test_generate_infographic_filters_icons(): void {
+        $payload = json_encode([
+            'title' => 'Stats',
+            'items' => [
+                ['icon' => 'fa-users', 'value' => '240', 'label' => 'Participants'],
+                ['icon' => 'x" onmouseover="alert(1)', 'value' => '85%', 'label' => 'Pass rate'],
+            ],
+        ]);
+        $this->install_hub_stub(true, $payload);
+
+        $result = generator::generate_infographic('Course stats', \context_system::instance());
+        $items = json_decode($result['items'], true);
+
+        $this->assertSame('fa-solid fa-users', $items[0]['icon']);
+        $this->assertSame('', $items[1]['icon']);
+    }
+
+    /**
      * Calls the private icon allow-list helper directly.
      *
      * Exercised through reflection so the allow-list is covered even on a site without local_aihub,

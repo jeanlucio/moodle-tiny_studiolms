@@ -622,7 +622,7 @@ class generator {
                 continue;
             }
             $safeitems[] = [
-                'icon'  => clean_param((string)($item['icon'] ?? 'fa-solid fa-circle-info'), PARAM_TEXT),
+                'icon'  => self::allowed_icon((string)($item['icon'] ?? '')),
                 'value' => clean_param((string)($item['value'] ?? ''), PARAM_TEXT),
                 'label' => clean_param((string)($item['label'] ?? ''), PARAM_TEXT),
             ];
