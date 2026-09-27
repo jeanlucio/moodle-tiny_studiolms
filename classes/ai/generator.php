@@ -652,7 +652,15 @@ class generator {
         string $sysprompt
     ): array {
         if (!self::is_safe_url($url)) {
-            return ['success' => false, 'data' => '', 'provider' => 'Custom'];
+            // Match the shape curl_request() returns on failure (httpcode/errmsg present):
+            // call_providers() reads both keys unconditionally when logging this failure.
+            return [
+                'success'  => false,
+                'data'     => '',
+                'provider' => 'Custom',
+                'httpcode' => 0,
+                'errmsg'   => 'Blocked unsafe custom provider URL',
+            ];
         }
         $data = [
             'model'           => !empty($model) ? $model : 'gpt-4o-mini',
