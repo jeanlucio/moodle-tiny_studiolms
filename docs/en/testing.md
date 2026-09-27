@@ -1,6 +1,6 @@
 # 🧪 Automated Tests
 
-StudioLMS ships with **144 PHPUnit test cases** across **28 files**, plus a **22-scenario Behat suite** across **10 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
+StudioLMS ships with **142 PHPUnit test cases** across **27 files**, plus a **22-scenario Behat suite** across **10 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
 
 ### PHPUnit — Unit & Integration Tests
 
@@ -9,7 +9,6 @@ StudioLMS ships with **144 PHPUnit test cases** across **28 files**, plus a **22
 | `ai/chat_test.php` | 5 | System-prompt building for the chat assistant (includes supplied presets, omits the section when none are given, tolerates malformed preset JSON, documents both action types) and that a non-JSON model reply is cleaned exactly like the JSON path, not returned raw |
 | `ai/generator_test.php` | 11 | The fail-safe "no AI configured" path across every generator and `call_chat`; a provider failure surfacing as the generator's own error (never as "not configured"), with the raw detail kept out of the response; `generate_block` parsing a hub response, rejecting an unknown block type, and purifying markup in a generic AI config (the `<noscript>` mutation-XSS regression); the same purification for `generate_preset`; chat history flattened into role-labelled lines; the icon allow-list applied end to end through `generate_infographic_steps`/`generate_infographic` and exercised directly via reflection, including a payload trying to break out of a class attribute |
 | `ai/provider_chain_test.php` | 3 | The local_aihub → core_ai chain: nothing attempted when neither is available; a hub success returned as-is and logged under this plugin's component; a hub failure with no core_ai fallback keeping the hub's own failure message |
-| `db_upgrade_test.php` | 2 | The upgrade step that removed the plugin's legacy AI keys and log table: deletes the `tiny_studiolms_%` preferences, unsets the five settings and drops the log table when present; is a no-op when the table was already gone |
 | `event/template_created_test.php` | 2 | The event fires with the right data and can be triggered/observed; its name string resolves |
 | `event/template_deleted_test.php` | 4 | Description includes the template name when supplied and omits it otherwise; the event can be triggered/observed; its name string resolves |
 | `external/chat_message_test.php` | 5 | Guest rejection; capability check; invalid message roles stripped from history; history trimmed to the configured maximum; no-AI-available throws a clean `moodle_exception` |

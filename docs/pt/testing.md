@@ -1,6 +1,6 @@
 # 🧪 Testes Automatizados
 
-O StudioLMS inclui **144 casos de teste PHPUnit** em **28 arquivos**, mais uma suíte Behat com
+O StudioLMS inclui **142 casos de teste PHPUnit** em **27 arquivos**, mais uma suíte Behat com
 **22 cenários** em **10 arquivos de feature**, executados em todo push de CI na matriz completa
 (Moodle 4.5 → 5.x, PostgreSQL e MariaDB).
 
@@ -11,7 +11,6 @@ O StudioLMS inclui **144 casos de teste PHPUnit** em **28 arquivos**, mais uma s
 | `ai/chat_test.php` | 5 | Montagem do prompt de sistema do chat (inclui presets fornecidos, omite a seção quando nenhum é dado, tolera JSON de preset malformado, documenta os dois tipos de ação) e que uma resposta do modelo fora de JSON é limpa exatamente como o caminho JSON, nunca devolvida crua |
 | `ai/generator_test.php` | 11 | O caminho seguro de "nenhuma IA configurada" em todo gerador e no `call_chat`; uma falha de provedor aparecendo como erro do próprio gerador (nunca como "não configurado"), com o detalhe cru fora da resposta; `generate_block` interpretando uma resposta do hub, rejeitando um tipo de bloco desconhecido e purificando marcação numa config genérica de IA (a regressão de mXSS via `<noscript>`); a mesma purificação para `generate_preset`; histórico de chat achatado em linhas rotuladas por papel; a lista de ícones permitidos aplicada de ponta a ponta via `generate_infographic_steps`/`generate_infographic` e testada diretamente por reflexão, inclusive um payload tentando escapar de um atributo de classe |
 | `ai/provider_chain_test.php` | 3 | A cadeia local_aihub → core_ai: nada é tentado quando nenhum dos dois está disponível; um sucesso do hub é devolvido como está e registrado sob o componente deste plugin; uma falha do hub sem fallback para o core_ai mantém a mensagem de falha do próprio hub |
-| `db_upgrade_test.php` | 2 | O passo de upgrade que removeu as chaves de IA e a tabela de log legadas do plugin: apaga as preferências `tiny_studiolms_%`, remove as cinco configurações e derruba a tabela de log quando ela existe; não faz nada quando a tabela já não existia |
 | `event/template_created_test.php` | 2 | O evento dispara com os dados corretos e pode ser acionado/observado; a string do nome resolve |
 | `event/template_deleted_test.php` | 4 | A descrição inclui o nome do template quando fornecido e o omite quando não; o evento pode ser acionado/observado; a string do nome resolve |
 | `external/chat_message_test.php` | 5 | Rejeição de convidado; checagem de capability; papéis de mensagem inválidos removidos do histórico; histórico cortado no máximo configurado; ausência de IA lança um `moodle_exception` limpo |

@@ -22,7 +22,7 @@ instructional design blocks — cards, accordions, infographics, charts and more
 single line of HTML, with optional AI assistance for both single blocks and complete layouts.
 
 📚 **[Full documentation](https://jeanlucio.github.io/moodle-tiny_studiolms/)** — all 18 blocks,
-screenshots, AI features and where the AI comes from, the full test suite (144 PHPUnit cases + a
+screenshots, AI features and where the AI comes from, the full test suite (142 PHPUnit cases + a
 22-scenario Behat suite), and security details.
 
 ### 📦 Requirements
@@ -69,7 +69,7 @@ escrever uma linha de HTML, com assistência opcional de IA tanto para blocos in
 para layouts completos.
 
 📚 **[Documentação completa](https://jeanlucio.github.io/moodle-tiny_studiolms/pt.html)** — os 18
-blocos, capturas de tela, recursos de IA e de onde vem a IA, a suíte completa de testes (144 casos
+blocos, capturas de tela, recursos de IA e de onde vem a IA, a suíte completa de testes (142 casos
 PHPUnit + suíte Behat com 22 cenários), e detalhes de segurança.
 
 ### 📦 Requisitos

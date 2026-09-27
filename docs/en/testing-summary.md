@@ -1,6 +1,6 @@
 # 🧪 Automated Tests
 
-StudioLMS ships with **144 PHPUnit test cases** and a **22-scenario Behat suite**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
+StudioLMS ships with **142 PHPUnit test cases** and a **22-scenario Behat suite**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
 
 ### PHPUnit — Unit & Integration Tests
 
@@ -12,8 +12,7 @@ StudioLMS ships with **144 PHPUnit test cases** and a **22-scenario Behat suite*
 | Events | 2 | 6 |
 | Privacy API | 1 | 16 |
 | Editor integration (`plugininfo`, hook callbacks) | 2 | 12 |
-| Upgrade steps | 1 | 2 |
-| **Total** | **28** | **144** |
+| **Total** | **27** | **142** |
 
 ```bash
 vendor/bin/phpunit --testsuite tiny_studiolms_testsuite
