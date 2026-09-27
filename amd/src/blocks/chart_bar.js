@@ -22,7 +22,7 @@
  */
 
 import Templates from 'core/templates';
-import {getString} from 'core/str';
+import Notification from 'core/notification';
 import {escapeHtml as esc} from './text_escape';
 
 const MAX_ITEMS = 6;
@@ -258,15 +258,11 @@ export default {
                 });
             });
         } catch (error) {
+            // A genuinely unexpected failure (a template/DOM error, not an anticipated business
+            // rule), so it goes through Notification.exception() instead of inline text — see
+            // CLAUDE.md's rule reserving that for real bugs.
             container.innerHTML = '';
-            const errEl = document.createElement('div');
-            errEl.className = 'text-danger small';
-            try {
-                errEl.textContent = await getString('error_loading_form', 'tiny_studiolms');
-            } catch (_) {
-                errEl.textContent = 'Error';
-            }
-            container.appendChild(errEl);
+            Notification.exception(error);
         }
     },
 

@@ -23,7 +23,7 @@
 
 import Templates from 'core/templates';
 import {call as ajaxCall} from 'core/ajax';
-import {getString} from 'core/str';
+import Notification from 'core/notification';
 import {getContextId} from '../context';
 import {escapeHtml as svgEsc} from './text_escape';
 
@@ -476,13 +476,9 @@ export default {
                                 onUpdate(data);
                             } catch (err) {
                                 if (aiError) {
-                                    let msg = '';
-                                    try {
-                                        msg = await getString('mindmap_ai_error', 'tiny_studiolms');
-                                    } catch (_) {
-                                        msg = 'Erro ao gerar mapa. Tente novamente.';
-                                    }
-                                    aiError.textContent = msg;
+                                    // The err.message is already the translated moodle_exception text the
+                                    // server sent (mindmap_ai_error) — no need to fetch it again client-side.
+                                    aiError.textContent = err.message;
                                     aiError.classList.remove('d-none');
                                 }
                             } finally {
@@ -494,15 +490,11 @@ export default {
                 });
             });
         } catch (error) {
+            // A genuinely unexpected failure (a template/DOM error, not an anticipated business
+            // rule), so it goes through Notification.exception() instead of inline text — see
+            // CLAUDE.md's rule reserving that for real bugs.
             container.innerHTML = '';
-            const errEl = document.createElement('div');
-            errEl.className = 'text-danger small';
-            try {
-                errEl.textContent = await getString('error_loading_form', 'tiny_studiolms');
-            } catch (_) {
-                errEl.textContent = 'Error';
-            }
-            container.appendChild(errEl);
+            Notification.exception(error);
         }
     },
 

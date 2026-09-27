@@ -171,7 +171,6 @@ $string['default_profilecard_name'] = 'Professor Name';
 $string['design_colors'] = 'Design & Colors';
 $string['editing_suffix'] = '(editing)';
 $string['error_generic'] = 'Error';
-$string['error_loading_form'] = 'Error loading form.';
 $string['error_preview'] = 'Preview error.';
 $string['error_preview_failed'] = 'Preview failed.';
 $string['error_save_template'] = 'Error saving template.';
