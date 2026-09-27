@@ -120,6 +120,57 @@ final class generator_test extends advanced_testcase {
     }
 
     /**
+     * Markup in a generic block config is purified server-side, while plain values such as a URL with
+     * a query string come back untouched.
+     *
+     * Regression test for the <noscript> mXSS: the client-side filter parses with scripting disabled,
+     * so a comment hidden inside <noscript> smuggled a live <img onerror> past it.
+     */
+    public function test_generate_block_purifies_config_markup(): void {
+        $payload = json_encode([
+            'blocktype' => 'callout',
+            'config' => [
+                'contentHtml' => 'Aviso <noscript><!--</noscript><img src=x onerror=alert(1)>--></noscript> <b>ok</b>',
+                'btnUrl' => 'https://example.com/?a=1&b=2',
+                'nested' => ['items' => ['<img src=x onerror=alert(2)>']],
+            ],
+        ]);
+        $this->install_hub_stub(true, $payload);
+
+        $block = generator::generate_block('A callout', \context_system::instance());
+        $config = json_decode($block['config'], true);
+
+        $this->assertStringNotContainsString('onerror', $config['contentHtml']);
+        $this->assertStringNotContainsString('noscript', $config['contentHtml']);
+        $this->assertStringContainsString('<b>ok</b>', $config['contentHtml']);
+        $this->assertSame('https://example.com/?a=1&b=2', $config['btnUrl']);
+        $this->assertStringNotContainsString('onerror', $config['nested']['items'][0]);
+    }
+
+    /**
+     * Every block config in a generated preset is purified the same way.
+     */
+    public function test_generate_preset_purifies_config_markup(): void {
+        $payload = json_encode([
+            'name' => 'Layout',
+            'blocks' => [
+                [
+                    'type' => 'callout',
+                    'config' => ['contentHtml' => 'x <noscript><!--</noscript><img src=x onerror=alert(1)>--></noscript>'],
+                ],
+                ['type' => 'script', 'config' => []],
+            ],
+        ]);
+        $this->install_hub_stub(true, $payload);
+
+        $preset = generator::generate_preset('Layout', 'Context', '', 'blue', \context_system::instance());
+        $blocks = json_decode($preset['blocks'], true);
+
+        $this->assertCount(1, $blocks);
+        $this->assertStringNotContainsString('onerror', $blocks[0]['config']['contentHtml']);
+    }
+
+    /**
      * An unknown block type from the model is rejected even when the provider call succeeded.
      */
     public function test_generate_block_rejects_unknown_block_type(): void {

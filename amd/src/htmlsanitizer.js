@@ -16,13 +16,12 @@
 /**
  * Sanitizes AI-generated block configuration before it reaches a triple-mustache render sink.
  *
- * The dedicated per-block-type AI generators (generate_callout, generate_card, ...) already
- * apply clean_param() to each known field server-side. generate_block/generate_preset instead
- * accept a whole config object shaped by the LLM's own JSON response, with no per-field
- * validation — a prompt-injected instruction could ask the model to return a field such as
- * contentHtml containing a script-executing payload. That config is rendered client-side via the
- * same triple-mustache block templates every other block config uses, so it needs the same kind
- * of sanitization as a template's own rich-text fields (see app.js's loadTemplateToCanvas).
+ * The primary barrier for AI output is server-side: the dedicated per-block-type generators
+ * (generate_callout, generate_card, ...) clean_param() each known field, and generate_block/
+ * generate_preset run every markup-bearing string of the model's config through core's HTMLPurifier
+ * (generator::clean_config()). This module is the second barrier for that config, and the only one
+ * for stored templates, which keep their data-slms-* attributes and so cannot go through
+ * HTMLPurifier (see app.js's loadTemplateToCanvas).
  *
  * Kept as its own module (no other imports) for the same reason as context.js: every caller —
  * aigenerator.js, aichat.js, and any block definition under blocks/ — can read it without
@@ -58,10 +57,64 @@ const isSafeUrl = (value) => {
 };
 
 /**
+ * Elements removed outright: script-capable ones, SVG animations (which can rewrite an attribute
+ * such as href after sanitization), and the raw-text/template elements a browser parses
+ * differently depending on whether scripting is enabled.
+ */
+const BLOCKED_ELEMENTS = [
+    'script', 'iframe', 'object', 'embed', 'link', 'style', 'meta', 'base',
+    'set', 'animate', 'animateTransform', 'animateMotion',
+    'noscript', 'noembed', 'noframes', 'xmp', 'plaintext', 'template',
+].join(', ');
+
+/** @var {number} Re-sanitization passes allowed before an unstable result is dropped. */
+const MAX_PASSES = 3;
+
+/**
+ * One sanitization pass over an HTML string.
+ *
+ * @param {string} html
+ * @returns {string}
+ */
+const sanitizeOnce = (html) => {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    doc.querySelectorAll(BLOCKED_ELEMENTS).forEach((el) => {
+        el.remove();
+    });
+
+    // Comments go too: they are serialized verbatim, so one can carry markup that a later parse in a
+    // different context (e.g. inside an element read as raw text there) turns into live elements.
+    const comments = [];
+    const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_COMMENT);
+    while (walker.nextNode()) {
+        comments.push(walker.currentNode);
+    }
+    comments.forEach((node) => node.remove());
+
+    doc.body.querySelectorAll('*').forEach((el) => {
+        Array.from(el.attributes).forEach((attr) => {
+            const name = attr.name.toLowerCase();
+            if (name.startsWith('on')) {
+                el.removeAttribute(attr.name);
+            } else if (URL_ATTRIBUTES.includes(name) && !isSafeUrl(attr.value)) {
+                el.removeAttribute(attr.name);
+            }
+        });
+    });
+
+    return doc.body.innerHTML;
+};
+
+/**
  * Strips constructs that could execute script from an untrusted HTML string: every on* event
- * handler attribute, <script>/<iframe>/<object>/<embed>/<link>/<style>/<meta>/<base> elements,
- * SVG animation elements (which can rewrite an attribute such as href after sanitization), and
- * any URL attribute whose scheme is not http/https/mailto/tel.
+ * handler attribute, every comment, script-capable, SVG animation and raw-text elements, and any
+ * URL attribute whose scheme is not http/https/mailto/tel.
+ *
+ * DOMParser parses with scripting disabled while the live page parses with it enabled, so markup
+ * that is inert here can come back to life there (mutation XSS; <noscript> is the classic case,
+ * handled by removing it). As a further guard the output is sanitized again until it stops
+ * changing: a result that still mutates after MAX_PASSES is dropped rather than trusted.
  *
  * This is a real sanitizer, deliberately not built on TinyMCE's own serializer.serialize(): Moodle
  * initializes the editor with xss_sanitization:false and an extended_valid_elements schema of
@@ -82,25 +135,15 @@ export const sanitizeUntrustedHtml = (html) => {
         return html;
     }
 
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-
-    const blocked = 'script, iframe, object, embed, link, style, meta, base, set, animate, animateTransform, animateMotion';
-    doc.querySelectorAll(blocked).forEach((el) => {
-        el.remove();
-    });
-
-    doc.body.querySelectorAll('*').forEach((el) => {
-        Array.from(el.attributes).forEach((attr) => {
-            const name = attr.name.toLowerCase();
-            if (name.startsWith('on')) {
-                el.removeAttribute(attr.name);
-            } else if (URL_ATTRIBUTES.includes(name) && !isSafeUrl(attr.value)) {
-                el.removeAttribute(attr.name);
-            }
-        });
-    });
-
-    return doc.body.innerHTML;
+    let output = sanitizeOnce(html);
+    for (let pass = 0; pass < MAX_PASSES; pass++) {
+        const next = sanitizeOnce(output);
+        if (next === output) {
+            return output;
+        }
+        output = next;
+    }
+    return '';
 };
 
 /** @var {RegExp} Block config keys whose value is rendered as a URL (btnUrl, mediaUrl, link0url, url...). */

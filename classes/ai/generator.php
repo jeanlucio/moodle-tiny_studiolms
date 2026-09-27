@@ -1207,6 +1207,33 @@ class generator {
     }
 
     /**
+     * Purifies every markup-bearing string of an AI-generated block config, at any depth.
+     *
+     * Unlike the dedicated generators, generate_block/generate_preset have no fixed field list to
+     * clean_param() per block type — that shape only exists client-side (the Blocks registry's
+     * defaultData) — and the config reaches triple-mustache sinks rendered through innerHTML. Core's
+     * HTMLPurifier (PARAM_CLEANHTML) is the one sanitizer that understands how a browser will
+     * re-parse the markup: the client-side filter in htmlsanitizer.js parses with scripting
+     * disabled, so a <noscript> wrapper could smuggle a live element past it. Only strings containing
+     * '<' are purified: without one no element or comment can form, and purifying plain text would
+     * entity-encode '&' in URLs such as btnUrl. URL schemes are validated client-side
+     * (sanitizeUrlFields) for every block config either way.
+     *
+     * @param array $config Decoded config from the model.
+     * @return array The same shape, with markup purified.
+     */
+    private static function clean_config(array $config): array {
+        foreach ($config as $key => $value) {
+            if (is_array($value)) {
+                $config[$key] = self::clean_config($value);
+            } else if (is_string($value) && strpos($value, '<') !== false) {
+                $config[$key] = clean_param($value, PARAM_CLEANHTML);
+            }
+        }
+        return $config;
+    }
+
+    /**
      * Validates and normalises the raw JSON string returned by the LLM.
      *
      * @param string $content Raw text from the LLM response.
@@ -1236,12 +1263,7 @@ class generator {
             throw new \moodle_exception('ai_generator_error', 'tiny_studiolms');
         }
 
-        // Unlike the dedicated generators above, this generic path has no fixed field list to
-        // clean_param() per block type — that shape only exists client-side (Blocks registry's
-        // defaultData). The config is sanitized there instead, in htmlsanitizer.js, by stripping
-        // script-executing constructs from every string value before it reaches a render sink;
-        // this is only a transport step.
-        $config = isset($block['config']) && is_array($block['config']) ? $block['config'] : [];
+        $config = isset($block['config']) && is_array($block['config']) ? self::clean_config($block['config']) : [];
 
         return [
             'blocktype' => $block['blocktype'],
@@ -1286,8 +1308,7 @@ class generator {
             ) {
                 continue;
             }
-            // See the same comment in parse_block_json() above — sanitized client-side instead.
-            $config = isset($block['config']) && is_array($block['config']) ? $block['config'] : [];
+            $config = isset($block['config']) && is_array($block['config']) ? self::clean_config($block['config']) : [];
             $blocks[] = ['type' => $block['type'], 'config' => $config];
         }
 

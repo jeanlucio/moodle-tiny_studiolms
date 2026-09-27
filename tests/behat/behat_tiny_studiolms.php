@@ -200,17 +200,26 @@ class behat_tiny_studiolms extends behat_base {
     public function studiolms_canvas_preview_did_not_execute_template_payload(): void {
         $session = $this->getSession();
 
+        // An absence can only be asserted once there is something to be absent from: wait for the
+        // template's block to render first.
         $this->spin(function () use ($session) {
-            $fired = $session->evaluateScript('return window.__slmsXssFired === true;');
-            if ($fired) {
-                throw new \Behat\Mink\Exception\ExpectationException(
-                    'The template payload executed inside the StudioLMS canvas preview.',
-                    $session
-                );
+            if (!$session->evaluateScript('return !!document.querySelector(".slms-canvas-block-preview");')) {
+                throw new \Behat\Mink\Exception\ExpectationException('No StudioLMS canvas preview yet.', $session);
             }
-
             return true;
         });
+
+        // Payloads such as <img onerror> fire asynchronously, once the image request fails (about 60 ms
+        // after render when measured against a live site), so a single immediate check could pass before
+        // the handler ever ran. A fixed one-second window is the only way to assert something did not happen.
+        $session->wait(1000);
+
+        if ($session->evaluateScript('return window.__slmsXssFired === true;')) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                'The template payload executed inside the StudioLMS canvas preview.',
+                $session
+            );
+        }
     }
 
     /**
@@ -413,6 +422,40 @@ class behat_tiny_studiolms extends behat_base {
         $now = time();
         $DB->insert_record('tiny_studiolms_templates', (object) [
             'name'         => 'Malicious Obfuscated URL Template',
+            'content'      => $content,
+            'userid'       => $admin->id,
+            'usermodified' => $admin->id,
+            'isglobal'     => 1,
+            'timecreated'  => $now,
+            'timemodified' => $now,
+        ]);
+    }
+
+    /**
+     * Inserts a global template whose callout content hides an <img onerror> inside a comment in a
+     * <noscript>, preceded by text so the element lands in <body> rather than <head>.
+     *
+     * Regression test for the <noscript> mutation XSS: sanitizeUntrustedHtml() parses with DOMParser,
+     * where scripting is disabled and <noscript> content is ordinary markup (here, just a comment),
+     * so nothing was removed; the live page parses <noscript> as raw text, the hidden </noscript>
+     * closes it, and the <img onerror> fires on render, with no click.
+     *
+     * @Given a malicious global StudioLMS template with a noscript payload exists
+     */
+    public function a_malicious_global_studiolms_template_with_noscript_payload_exists(): void {
+        global $DB;
+
+        $admin = get_admin();
+        $content = '<div class="studiolms-callout-wrap mceNonEditable" data-slms-hover="none" '
+            . 'data-slms-block-type="callout" data-slms-state="">'
+            . '<div class="slms-callout-icon" aria-hidden="true">⚠️</div>'
+            . '<div class="slms-callout-content mceEditable">'
+            . 'Aviso <noscript><!--</noscript><img src="x" onerror="window.__slmsXssFired = true">--></noscript>'
+            . '</div></div>';
+
+        $now = time();
+        $DB->insert_record('tiny_studiolms_templates', (object) [
+            'name'         => 'Malicious Noscript Template',
             'content'      => $content,
             'userid'       => $admin->id,
             'usermodified' => $admin->id,
