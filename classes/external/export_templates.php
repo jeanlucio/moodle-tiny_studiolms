@@ -74,7 +74,10 @@ class export_templates extends external_api {
         self::validate_context($context);
         require_capability('tiny/studiolms:use', $context);
 
-        $canmanageglobal = has_capability('tiny/studiolms:manageglobaltemplates', $context);
+        // The manageglobaltemplates capability is a site-wide power (CONTEXT_SYSTEM in db/access.php); checking
+        // it against the editor's own $context would let a course/category-delegated manager
+        // export every global template on the site, well beyond what they administer.
+        $canmanageglobal = has_capability('tiny/studiolms:manageglobaltemplates', \context_system::instance());
         $userid = $USER->id;
 
         if (!empty($params['ids'])) {

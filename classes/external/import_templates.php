@@ -81,7 +81,10 @@ class import_templates extends external_api {
         self::validate_context($context);
         require_capability('tiny/studiolms:use', $context);
 
-        $canmanageglobal = has_capability('tiny/studiolms:manageglobaltemplates', $context);
+        // The manageglobaltemplates capability is a site-wide power (CONTEXT_SYSTEM in db/access.php); checking
+        // it against the editor's own $context would let a manager delegated only at a course or
+        // category level import templates into the site-wide Official library.
+        $canmanageglobal = has_capability('tiny/studiolms:manageglobaltemplates', \context_system::instance());
         $now = time();
         $created = [];
 

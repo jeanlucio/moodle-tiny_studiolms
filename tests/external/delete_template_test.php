@@ -104,17 +104,62 @@ final class delete_template_test extends advanced_testcase {
     }
 
     /**
-     * A manager can delete any template regardless of ownership.
+     * A manager with manageglobaltemplates can delete a global template regardless of ownership.
      */
-    public function test_manager_can_delete_any_template(): void {
+    public function test_manager_can_delete_global_template(): void {
         global $DB;
+
+        $now = time();
+        $globalid = $DB->insert_record('tiny_studiolms_templates', (object) [
+            'name'         => 'Global Template',
+            'content'      => '<p>Official</p>',
+            'userid'       => $this->owner->id,
+            'usermodified' => $this->owner->id,
+            'isglobal'     => 1,
+            'timecreated'  => $now,
+            'timemodified' => $now,
+        ]);
 
         $this->setUser($this->manager);
 
-        $result = delete_template::execute(\context_system::instance()->id, $this->templateid);
+        $result = delete_template::execute(\context_system::instance()->id, $globalid);
 
         $this->assertTrue($result['success']);
-        $this->assertFalse($DB->record_exists('tiny_studiolms_templates', ['id' => $this->templateid]));
+        $this->assertFalse($DB->record_exists('tiny_studiolms_templates', ['id' => $globalid]));
+    }
+
+    /**
+     * manageglobaltemplates grants deleting a GLOBAL template, never someone else's PRIVATE one —
+     * that capability has nothing to do with owning the row being deleted.
+     */
+    public function test_manager_cannot_delete_other_users_private_template(): void {
+        $this->setUser($this->manager);
+
+        $this->expectException(\moodle_exception::class);
+        delete_template::execute(\context_system::instance()->id, $this->templateid);
+    }
+
+    /**
+     * manageglobaltemplates is declared at CONTEXT_SYSTEM: a user who only holds it at a course
+     * context (a common delegation pattern for the manager archetype) must not be treated as
+     * having it site-wide. Regression test for the capability-context confusion that let a
+     * course-scoped manager delete any user's private template via require_capability() checked
+     * against the editor's own $context instead of \context_system::instance().
+     */
+    public function test_course_scoped_manager_cannot_delete_other_users_private_template(): void {
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = \context_course::instance($course->id);
+
+        $coursemanager = $this->getDataGenerator()->create_user();
+        $role = $this->getDataGenerator()->create_role();
+        assign_capability('tiny/studiolms:use', CAP_ALLOW, $role, $coursecontext->id);
+        assign_capability('tiny/studiolms:manageglobaltemplates', CAP_ALLOW, $role, $coursecontext->id);
+        $this->getDataGenerator()->enrol_user($coursemanager->id, $course->id, $role);
+
+        $this->setUser($coursemanager);
+
+        $this->expectException(\moodle_exception::class);
+        delete_template::execute($coursecontext->id, $this->templateid);
     }
 
     /**

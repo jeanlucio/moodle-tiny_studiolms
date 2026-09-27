@@ -73,7 +73,10 @@ class get_templates extends external_api {
         require_capability('tiny/studiolms:use', $context);
 
         $userid = $USER->id;
-        $canmanageglobal = has_capability('tiny/studiolms:manageglobaltemplates', $context);
+        // The manageglobaltemplates capability is a site-wide power (CONTEXT_SYSTEM in db/access.php); checking
+        // it against the editor's own $context would mark a course/category-delegated manager as
+        // "ismine" for every global template on the site, well beyond what they administer.
+        $canmanageglobal = has_capability('tiny/studiolms:manageglobaltemplates', \context_system::instance());
 
         $sql = "SELECT t.id,
                        t.name,

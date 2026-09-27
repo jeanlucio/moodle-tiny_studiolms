@@ -126,4 +126,25 @@ final class save_template_test extends advanced_testcase {
         $this->expectException(\required_capability_exception::class);
         save_template::execute(\context_system::instance()->id, 'Guest attempt', '<p>x</p>', 0);
     }
+
+    /**
+     * manageglobaltemplates is declared at CONTEXT_SYSTEM: a user who only holds it at a course
+     * context (a common delegation pattern for the manager archetype) must not be able to
+     * publish into the site-wide Official library via that course's own context.
+     */
+    public function test_course_scoped_manager_cannot_save_global_template(): void {
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = \context_course::instance($course->id);
+
+        $coursemanager = $this->getDataGenerator()->create_user();
+        $role = $this->getDataGenerator()->create_role();
+        assign_capability('tiny/studiolms:use', CAP_ALLOW, $role, $coursecontext->id);
+        assign_capability('tiny/studiolms:manageglobaltemplates', CAP_ALLOW, $role, $coursecontext->id);
+        $this->getDataGenerator()->enrol_user($coursemanager->id, $course->id, $role);
+
+        $this->setUser($coursemanager);
+
+        $this->expectException(\required_capability_exception::class);
+        save_template::execute($coursecontext->id, 'Phishing Link', '<p>x</p>', 1);
+    }
 }

@@ -69,9 +69,16 @@ class delete_template extends external_api {
 
         $template = $DB->get_record('tiny_studiolms_templates', ['id' => $params['id']], '*', MUST_EXIST);
 
-        $canmanageglobal = has_capability('tiny/studiolms:manageglobaltemplates', $context);
-
-        if ((int) $template->userid !== (int) $USER->id && !$canmanageglobal) {
+        // The manageglobaltemplates capability is declared at CONTEXT_SYSTEM (db/access.php): it
+        // is a site-wide power, never scoped by the editor's own $context. Checking it there
+        // instead would let a manager assigned only at a course or category context (a common
+        // delegation pattern — the manager archetype supports both) pass this check and delete a
+        // PRIVATE template belonging to any user on the site, since that capability has nothing
+        // to do with owning the row being deleted. A private template can only ever be deleted by
+        // its own owner; manageglobaltemplates only ever grants deleting a GLOBAL one.
+        if ($template->isglobal) {
+            require_capability('tiny/studiolms:manageglobaltemplates', \context_system::instance());
+        } else if ((int) $template->userid !== (int) $USER->id) {
             throw new moodle_exception('nopermissions', 'error', '', 'delete template');
         }
 

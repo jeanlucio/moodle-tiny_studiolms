@@ -75,6 +75,29 @@ final class plugininfo_test extends advanced_testcase {
     }
 
     /**
+     * manageglobaltemplates is declared at CONTEXT_SYSTEM: a user who only holds it at a course
+     * context (a common delegation pattern for the manager archetype) must not see
+     * canmanageglobaltemplates=true for that course, since every web service checks the same
+     * capability against \context_system::instance() regardless of what this flag says.
+     */
+    public function test_canmanageglobaltemplates_ignores_course_scoped_capability(): void {
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = \context_course::instance($course->id);
+
+        $coursemanager = $this->getDataGenerator()->create_user();
+        $role = $this->getDataGenerator()->create_role();
+        assign_capability('tiny/studiolms:use', CAP_ALLOW, $role, $coursecontext->id);
+        assign_capability('tiny/studiolms:manageglobaltemplates', CAP_ALLOW, $role, $coursecontext->id);
+        $this->getDataGenerator()->enrol_user($coursemanager->id, $course->id, $role);
+
+        $this->setUser($coursemanager);
+
+        $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+
+        $this->assertFalse($config['canmanageglobaltemplates']);
+    }
+
+    /**
      * hasai is true once any provider key resolves, and false when none does.
      */
     public function test_hasai_flag_reflects_configured_keys(): void {

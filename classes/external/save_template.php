@@ -78,7 +78,13 @@ class save_template extends external_api {
         require_capability('tiny/studiolms:use', $context);
 
         if ($params['isglobal']) {
-            require_capability('tiny/studiolms:manageglobaltemplates', $context);
+            // The manageglobaltemplates capability is declared at CONTEXT_SYSTEM (db/access.php):
+            // it is a site-wide power. Checking it against the editor's own $context instead
+            // would let a manager assigned only at a course or category context (a common
+            // delegation pattern) publish a template into the Official library seen by every
+            // user with tiny/studiolms:use on the whole site, well beyond the course/category
+            // they manage.
+            require_capability('tiny/studiolms:manageglobaltemplates', \context_system::instance());
         }
 
         $now = time();

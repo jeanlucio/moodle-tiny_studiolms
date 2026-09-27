@@ -86,7 +86,15 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
 
         return [
             'enabled'                  => has_capability('tiny/studiolms:use', $context),
-            'canmanageglobaltemplates' => has_capability('tiny/studiolms:manageglobaltemplates', $context),
+            // The manageglobaltemplates capability is a site-wide power (CONTEXT_SYSTEM in db/access.php), never
+            // scoped by the editor's own $context — checking it here against $context would show
+            // the global-template UI affordances to a manager delegated only at a course or
+            // category level, even though every web service they would call is now correctly
+            // gated on \context_system::instance() for that same capability.
+            'canmanageglobaltemplates' => has_capability(
+                'tiny/studiolms:manageglobaltemplates',
+                \context_system::instance()
+            ),
             'presets'                  => self::load_presets(current_language()),
             'hasai'                    => $hasai,
             // Threaded back to every web service call so require_capability() there checks the

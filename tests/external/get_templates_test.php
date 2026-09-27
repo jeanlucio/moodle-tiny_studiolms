@@ -214,6 +214,29 @@ final class get_templates_test extends advanced_testcase {
     }
 
     /**
+     * manageglobaltemplates is declared at CONTEXT_SYSTEM: a user who only holds it at a course
+     * context (a common delegation pattern for the manager archetype) must not be marked
+     * "ismine" for a global template they did not create and cannot actually manage.
+     */
+    public function test_course_scoped_manager_not_marked_ismine_for_global_template(): void {
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = \context_course::instance($course->id);
+
+        $coursemanager = $this->getDataGenerator()->create_user();
+        $role = $this->getDataGenerator()->create_role();
+        assign_capability('tiny/studiolms:use', CAP_ALLOW, $role, $coursecontext->id);
+        assign_capability('tiny/studiolms:manageglobaltemplates', CAP_ALLOW, $role, $coursecontext->id);
+        $this->getDataGenerator()->enrol_user($coursemanager->id, $course->id, $role);
+
+        $this->setUser($coursemanager);
+
+        $rows = get_templates::execute($coursecontext->id, 'global');
+
+        $this->assertCount(1, $rows);
+        $this->assertFalse($rows[0]['ismine']);
+    }
+
+    /**
      * A user without the :use capability gets an access-denied exception.
      */
     public function test_guest_cannot_get_templates(): void {

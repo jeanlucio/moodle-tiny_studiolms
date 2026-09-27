@@ -179,6 +179,28 @@ final class export_templates_test extends advanced_testcase {
     }
 
     /**
+     * manageglobaltemplates is declared at CONTEXT_SYSTEM: a user who only holds it at a course
+     * context (a common delegation pattern for the manager archetype) must not be able to export
+     * global templates via that course's own context.
+     */
+    public function test_course_scoped_manager_cannot_export_global_templates(): void {
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = \context_course::instance($course->id);
+
+        $coursemanager = $this->getDataGenerator()->create_user();
+        $role = $this->getDataGenerator()->create_role();
+        assign_capability('tiny/studiolms:use', CAP_ALLOW, $role, $coursecontext->id);
+        assign_capability('tiny/studiolms:manageglobaltemplates', CAP_ALLOW, $role, $coursecontext->id);
+        $this->getDataGenerator()->enrol_user($coursemanager->id, $course->id, $role);
+
+        $this->setUser($coursemanager);
+
+        $rows = export_templates::execute($coursecontext->id, []);
+
+        $this->assertCount(0, $rows);
+    }
+
+    /**
      * A guest without the :use capability cannot export templates.
      */
     public function test_guest_cannot_export(): void {

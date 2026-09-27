@@ -181,6 +181,33 @@ final class import_templates_test extends advanced_testcase {
     }
 
     /**
+     * manageglobaltemplates is declared at CONTEXT_SYSTEM: a user who only holds it at a course
+     * context (a common delegation pattern for the manager archetype) must have isglobal=1
+     * silently demoted to 0 for that import, exactly like an ordinary teacher.
+     */
+    public function test_course_scoped_manager_cannot_import_as_global(): void {
+        global $DB;
+
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = \context_course::instance($course->id);
+
+        $coursemanager = $this->getDataGenerator()->create_user();
+        $role = $this->getDataGenerator()->create_role();
+        assign_capability('tiny/studiolms:use', CAP_ALLOW, $role, $coursecontext->id);
+        assign_capability('tiny/studiolms:manageglobaltemplates', CAP_ALLOW, $role, $coursecontext->id);
+        $this->getDataGenerator()->enrol_user($coursemanager->id, $course->id, $role);
+
+        $this->setUser($coursemanager);
+
+        $result = import_templates::execute($coursecontext->id, [
+            ['name' => 'Fake Global', 'content' => '<p>x</p>', 'isglobal' => 1],
+        ]);
+
+        $record = $DB->get_record('tiny_studiolms_templates', ['id' => $result[0]['id']], '*', MUST_EXIST);
+        $this->assertEquals(0, (int) $record->isglobal);
+    }
+
+    /**
      * Each imported template fires a template_created event.
      */
     public function test_import_fires_template_created_events(): void {
