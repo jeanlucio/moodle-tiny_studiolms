@@ -249,7 +249,9 @@ export default {
                                         iconInput.value = iconVal;
                                     }
                                     if (iconBtn) {
-                                        iconBtn.innerHTML = `<i class="${iconVal}" aria-hidden="true"></i>`;
+                                        // The value comes straight from the LLM response: escape it
+                                        // so a quote cannot break out of the class attribute.
+                                        iconBtn.innerHTML = `<i class="${esc(iconVal)}" aria-hidden="true"></i>`;
                                     }
                                     if (titleInput) {
                                         titleInput.value = newVars[`item${i}_title`] || '';

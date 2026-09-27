@@ -971,28 +971,47 @@ class generator {
         ];
     }
 
+    /** @var string[] Curated FA6 icons offered to the AI; must stay in sync with ICON_UNICODE in infographic_shared.js. */
+    private const ALLOWED_ICONS = [
+        'fa-solid fa-users', 'fa-solid fa-chart-line', 'fa-solid fa-chart-bar',
+        'fa-solid fa-book-open', 'fa-solid fa-book', 'fa-solid fa-graduation-cap',
+        'fa-solid fa-trophy', 'fa-solid fa-medal', 'fa-solid fa-star',
+        'fa-solid fa-circle-check', 'fa-solid fa-clock', 'fa-solid fa-calendar',
+        'fa-solid fa-lightbulb', 'fa-solid fa-brain', 'fa-solid fa-bullseye',
+        'fa-solid fa-fire', 'fa-solid fa-heart', 'fa-solid fa-percent',
+        'fa-solid fa-arrow-up', 'fa-solid fa-globe', 'fa-solid fa-bolt',
+        'fa-solid fa-rocket', 'fa-solid fa-laptop', 'fa-solid fa-flask',
+        'fa-solid fa-code', 'fa-solid fa-database', 'fa-solid fa-user',
+        'fa-solid fa-gear', 'fa-solid fa-key', 'fa-solid fa-lock',
+        'fa-solid fa-envelope', 'fa-solid fa-flag', 'fa-solid fa-magnifying-glass',
+        'fa-solid fa-play', 'fa-solid fa-check', 'fa-solid fa-download',
+        'fa-solid fa-upload', 'fa-solid fa-arrow-right', 'fa-solid fa-pen',
+        'fa-solid fa-file',
+    ];
+
     /**
      * Returns the curated FA6 icon list hint shared across all infographic AI prompts.
-     *
-     * Must stay in sync with ICON_UNICODE in amd/src/blocks/infographic_shared.js.
      *
      * @return string
      */
     private static function icon_list_hint(): string {
-        return 'fa-solid fa-users, fa-solid fa-chart-line, fa-solid fa-chart-bar,'
-            . ' fa-solid fa-book-open, fa-solid fa-book, fa-solid fa-graduation-cap,'
-            . ' fa-solid fa-trophy, fa-solid fa-medal, fa-solid fa-star,'
-            . ' fa-solid fa-circle-check, fa-solid fa-clock, fa-solid fa-calendar,'
-            . ' fa-solid fa-lightbulb, fa-solid fa-brain, fa-solid fa-bullseye,'
-            . ' fa-solid fa-fire, fa-solid fa-heart, fa-solid fa-percent,'
-            . ' fa-solid fa-arrow-up, fa-solid fa-globe, fa-solid fa-bolt,'
-            . ' fa-solid fa-rocket, fa-solid fa-laptop, fa-solid fa-flask,'
-            . ' fa-solid fa-code, fa-solid fa-database, fa-solid fa-user,'
-            . ' fa-solid fa-gear, fa-solid fa-key, fa-solid fa-lock,'
-            . ' fa-solid fa-envelope, fa-solid fa-flag, fa-solid fa-magnifying-glass,'
-            . ' fa-solid fa-play, fa-solid fa-check, fa-solid fa-download,'
-            . ' fa-solid fa-upload, fa-solid fa-arrow-right, fa-solid fa-pen,'
-            . ' fa-solid fa-file';
+        return implode(', ', self::ALLOWED_ICONS);
+    }
+
+    /**
+     * Restricts an AI-returned icon class to the curated allow-list.
+     *
+     * PARAM_TEXT strips tags but keeps quotes, so an unchecked value can still break out of the
+     * class attribute it is later interpolated into. Accepts the bare ("fa-users") and "fas"
+     * short forms the model sometimes returns; anything outside the list becomes empty.
+     *
+     * @param string $raw Icon value as returned by the model.
+     * @return string A class string from ALLOWED_ICONS, or '' when not allowed.
+     */
+    private static function allowed_icon(string $raw): string {
+        $name = preg_replace('/^(fa-solid|fas)\s+/', '', trim($raw));
+        $icon = 'fa-solid ' . $name;
+        return in_array($icon, self::ALLOWED_ICONS, true) ? $icon : '';
     }
 
     /**
@@ -1117,7 +1136,7 @@ class generator {
                 continue;
             }
             $safeitems[] = [
-                'icon'        => clean_param((string)($item['icon'] ?? ''), PARAM_TEXT),
+                'icon'        => self::allowed_icon((string)($item['icon'] ?? '')),
                 'title'       => clean_param((string)($item['title'] ?? ''), PARAM_TEXT),
                 'description' => clean_param((string)($item['description'] ?? ''), PARAM_TEXT),
             ];
@@ -1187,7 +1206,7 @@ class generator {
                 continue;
             }
             $safeitems[] = [
-                'icon'        => clean_param((string)($item['icon'] ?? ''), PARAM_TEXT),
+                'icon'        => self::allowed_icon((string)($item['icon'] ?? '')),
                 'title'       => clean_param((string)($item['title'] ?? ''), PARAM_TEXT),
                 'description' => clean_param((string)($item['description'] ?? ''), PARAM_TEXT),
             ];

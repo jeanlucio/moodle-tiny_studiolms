@@ -127,4 +127,41 @@ final class generator_test extends advanced_testcase {
         $this->expectException(\moodle_exception::class);
         generator::generate_block('A callout about photosynthesis');
     }
+
+    /**
+     * Calls the private icon allow-list helper directly.
+     *
+     * The only public entry points to it (generate_infographic_steps/features) need a live AI
+     * provider, so the helper itself is exercised through reflection instead.
+     *
+     * @param string $raw Icon value as a model would return it.
+     * @return string
+     */
+    private function allowed_icon(string $raw): string {
+        $method = new \ReflectionMethod(generator::class, 'allowed_icon');
+        return $method->invoke(null, $raw);
+    }
+
+    /**
+     * Listed icons pass, including the bare and "fas" short forms a model sometimes returns.
+     */
+    public function test_allowed_icon_accepts_listed_icons_and_short_forms(): void {
+        $this->assertSame('fa-solid fa-users', $this->allowed_icon('fa-solid fa-users'));
+        $this->assertSame('fa-solid fa-users', $this->allowed_icon('fa-users'));
+        $this->assertSame('fa-solid fa-users', $this->allowed_icon('fas fa-users'));
+        $this->assertSame('', $this->allowed_icon(''));
+    }
+
+    /**
+     * An icon value that tries to break out of the class attribute is discarded entirely.
+     *
+     * Regression test for the AI icon XSS: PARAM_TEXT keeps quotes, so a prompt-injected value
+     * like this one used to reach an innerHTML sink with its event handler intact.
+     */
+    public function test_allowed_icon_rejects_attribute_breakout(): void {
+        $payload = 'x" onmouseover="alert(document.domain)" style="position:fixed;inset:0';
+
+        $this->assertSame('', $this->allowed_icon($payload));
+        $this->assertSame('', $this->allowed_icon('fa-solid fa-not-a-real-icon'));
+    }
 }
