@@ -17,7 +17,7 @@
  * Core application logic for StudioLMS Canvas Composer.
  *
  * @module     tiny_studiolms/app
- * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

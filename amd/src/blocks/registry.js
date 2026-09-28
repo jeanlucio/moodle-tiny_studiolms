@@ -17,7 +17,7 @@
  * Registry loader for StudioLMS blocks.
  *
  * @module     tiny_studiolms/blocks/registry
- * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

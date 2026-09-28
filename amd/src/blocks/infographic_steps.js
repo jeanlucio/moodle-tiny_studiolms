@@ -17,7 +17,7 @@
  * Infographic Steps block — numbered/icon-led step flow with optional AI generation.
  *
  * @module     tiny_studiolms/blocks/infographic_steps
- * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

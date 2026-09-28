@@ -17,7 +17,7 @@
  * Chart block — renders a pure-SVG pie or donut chart, no external libraries.
  *
  * @module     tiny_studiolms/blocks/chart
- * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

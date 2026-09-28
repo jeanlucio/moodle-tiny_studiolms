@@ -17,7 +17,7 @@
  * Gauge block — renders 1–3 pure-SVG semi-circle gauge charts side by side.
  *
  * @module     tiny_studiolms/blocks/gauge
- * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

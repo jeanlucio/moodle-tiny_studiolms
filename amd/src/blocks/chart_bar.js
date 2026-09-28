@@ -17,7 +17,7 @@
  * Bar chart block — renders a pure-SVG horizontal or vertical bar chart.
  *
  * @module     tiny_studiolms/blocks/chart_bar
- * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

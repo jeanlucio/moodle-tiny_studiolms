@@ -17,7 +17,7 @@
  * AI Chat tab for StudioLMS Canvas Composer.
  *
  * @module     tiny_studiolms/aichat
- * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

@@ -18,7 +18,7 @@
  * Version details for the tiny_studiolms plugin.
  *
  * @package    tiny_studiolms
- * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

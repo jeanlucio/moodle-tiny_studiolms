@@ -21,7 +21,7 @@
  * save as a template, or discard the result.
  *
  * @module     tiny_studiolms/aigenerator
- * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

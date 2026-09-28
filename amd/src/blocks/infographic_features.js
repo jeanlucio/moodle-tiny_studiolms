@@ -17,7 +17,7 @@
  * Infographic Features block — icon + title + description cards in a 2 or 3-column grid.
  *
  * @module     tiny_studiolms/blocks/infographic_features
- * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

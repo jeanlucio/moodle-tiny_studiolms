@@ -25,7 +25,7 @@
  * hover effects via .slms-hov-* — all class-based to survive purification.
  *
  * @module     tiny_studiolms/frontend
- * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

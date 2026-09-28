@@ -29,7 +29,7 @@
  * no RequireJS and no Moodle runtime — see that file for why.
  *
  * @module     tiny_studiolms/blocks/text_escape
- * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

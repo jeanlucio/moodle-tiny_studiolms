@@ -20,7 +20,7 @@
  * ICONS is the single source of truth for the curated icon list shared by all infographic blocks.
  *
  * @module     tiny_studiolms/blocks/infographic_shared
- * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
+ * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
