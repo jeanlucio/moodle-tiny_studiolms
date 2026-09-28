@@ -25,7 +25,7 @@ import stylizedHeading from './heading';
 import actionButton from './button';
 import advancedCard from './card';
 import accordion from './accordion';
-import webteca from './webteca';
+import resources from './resources';
 import gridcards from './gridcards';
 import callout from './callout';
 import table from './table';
@@ -45,7 +45,7 @@ export const Blocks = {
     actionButton,
     advancedCard,
     accordion,
-    webteca,
+    resources,
     gridcards,
     callout,
     table,

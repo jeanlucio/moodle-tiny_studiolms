@@ -209,7 +209,7 @@ const sanitizeHtmlStrings = (value) => {
 };
 
 /**
- * Sanitizes an AI-generated block config (or array of resource-like objects, e.g. a webteca
+ * Sanitizes an AI-generated block config (or array of resource-like objects, e.g. a resources
  * block's resources list): every string as HTML, then every URL and target field.
  *
  * @param {*} value A config object, an array of them, a string, or any other JSON value.

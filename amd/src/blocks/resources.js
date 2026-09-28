@@ -14,9 +14,9 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Webteca (Resource Library) block definition.
+ * Resources (Web Library) block definition.
  *
- * @module     tiny_studiolms/blocks/webteca
+ * @module     tiny_studiolms/blocks/resources
  * @copyright  2026 Jean Lúcio <jeanlucio@gmail.com>
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,8 +28,8 @@ import Notification from 'core/notification';
 import {getContextId} from '../context';
 
 export default {
-    id: 'webteca',
-    titleString: 'block_webteca_title',
+    id: 'resources',
+    titleString: 'block_resources_title',
     icon: '📚',
     defaultData: {
         title: '',
@@ -51,11 +51,11 @@ export default {
     excludeFromState: ['title', 'desc'],
 
     extractDOM: (node, state) => {
-        const titleNode = node.querySelector('.slms-wt-title');
+        const titleNode = node.querySelector('.slms-resources-title');
         if (titleNode) {
             state.title = titleNode.textContent.trim();
         }
-        const descNode = node.querySelector('.slms-wt-desc');
+        const descNode = node.querySelector('.slms-resources-desc');
         if (descNode) {
             state.desc = descNode.textContent.trim();
         }
@@ -63,11 +63,11 @@ export default {
 
     buildToolbar: async(container, data, onUpdate, PopupManager) => {
         try {
-            const {html, js} = await Templates.renderForPromise('tiny_studiolms/toolbar_webteca', {});
+            const {html, js} = await Templates.renderForPromise('tiny_studiolms/toolbar_resources', {});
             Templates.replaceNodeContents(container, html, js);
 
-            const btnGeneral = container.querySelector('#tb-web-general');
-            const btnResources = container.querySelector('#tb-web-resources');
+            const btnGeneral = container.querySelector('#tb-res-general');
+            const btnResources = container.querySelector('#tb-res-items');
 
             if (btnGeneral) {
                 btnGeneral.addEventListener('click', () => {
@@ -77,14 +77,14 @@ export default {
                     tplData['hover_' + (data.hoverEffect || 'none')] = true;
                     tplData['sound_opt_' + (data.openSound || 'none')] = true;
 
-                    PopupManager.open(btnGeneral, 'tiny_studiolms/popup_webteca_general', tplData, (popup) => {
+                    PopupManager.open(btnGeneral, 'tiny_studiolms/popup_resources_general', tplData, (popup) => {
                         const propMap = {
-                            '#pop_web_layout': 'layout',
-                            '#pop_web_title': 'title',
-                            '#pop_web_desc': 'desc',
-                            '#pop_web_bg': 'bg',
-                            '#pop_web_hover': 'hoverEffect',
-                            '#pop_web_sound': 'openSound'
+                            '#pop_res_layout': 'layout',
+                            '#pop_res_title': 'title',
+                            '#pop_res_desc': 'desc',
+                            '#pop_res_bg': 'bg',
+                            '#pop_res_hover': 'hoverEffect',
+                            '#pop_res_sound': 'openSound'
                         };
                         Object.keys(propMap).forEach(selector => {
                             const el = popup.querySelector(selector);
@@ -96,7 +96,7 @@ export default {
                             }
                         });
 
-                        const elOpen = popup.querySelector('#pop_web_open');
+                        const elOpen = popup.querySelector('#pop_res_open');
                         if (elOpen) {
                             elOpen.addEventListener('input', (ev) => {
                                 data.isOpen = ev.target.value === 'true';
@@ -104,10 +104,10 @@ export default {
                             });
                         }
 
-                        const aiBtnEl = popup.querySelector('#webteca-ai-btn');
-                        const aiPromptEl = popup.querySelector('#webteca_ai_prompt');
-                        const aiSpinner = popup.querySelector('#webteca-ai-spinner');
-                        const aiError = popup.querySelector('#webteca-ai-error');
+                        const aiBtnEl = popup.querySelector('#resources-ai-btn');
+                        const aiPromptEl = popup.querySelector('#resources_ai_prompt');
+                        const aiSpinner = popup.querySelector('#resources-ai-spinner');
+                        const aiError = popup.querySelector('#resources-ai-error');
 
                         if (aiBtnEl && aiPromptEl) {
                             aiBtnEl.addEventListener('click', async() => {
@@ -123,12 +123,12 @@ export default {
                                 }
                                 try {
                                     const [promise] = ajaxCall([{
-                                        methodname: 'tiny_studiolms_generate_webteca',
+                                        methodname: 'tiny_studiolms_generate_resources',
                                         args: {topic: prompt, contextid: getContextId()},
                                     }]);
                                     const result = await promise;
-                                    const titleEl = popup.querySelector('#pop_web_title');
-                                    const descEl = popup.querySelector('#pop_web_desc');
+                                    const titleEl = popup.querySelector('#pop_res_title');
+                                    const descEl = popup.querySelector('#pop_res_desc');
                                     if (titleEl && result.title) {
                                         titleEl.value = result.title;
                                         data.title = result.title;
@@ -144,7 +144,7 @@ export default {
                                 } catch (err) {
                                     if (aiError) {
                                         // The err.message is already the translated moodle_exception text the
-                                        // server sent (webteca_ai_error) — no need to fetch it again client-side.
+                                        // server sent (resources_ai_error) — no need to fetch it again client-side.
                                         aiError.textContent = err.message;
                                         aiError.classList.remove('d-none');
                                     }
@@ -164,21 +164,21 @@ export default {
                         typeAria, typeLinkLabel, typePdfLabel, typeVideoLabel, typeAudioLabel,
                         titlePlaceholder, titleAria, urlPlaceholder, urlAria, removeAria,
                     ] = await Promise.all([
-                        getString('webteca_res_type_aria', 'tiny_studiolms'),
-                        getString('webteca_res_type_link', 'tiny_studiolms'),
-                        getString('webteca_res_type_pdf', 'tiny_studiolms'),
-                        getString('webteca_res_type_video', 'tiny_studiolms'),
-                        getString('webteca_res_type_audio', 'tiny_studiolms'),
-                        getString('webteca_res_title_placeholder', 'tiny_studiolms'),
-                        getString('webteca_res_title_aria', 'tiny_studiolms'),
-                        getString('webteca_res_url_placeholder', 'tiny_studiolms'),
-                        getString('webteca_res_url_aria', 'tiny_studiolms'),
-                        getString('webteca_res_remove_aria', 'tiny_studiolms'),
+                        getString('resources_res_type_aria', 'tiny_studiolms'),
+                        getString('resources_res_type_link', 'tiny_studiolms'),
+                        getString('resources_res_type_pdf', 'tiny_studiolms'),
+                        getString('resources_res_type_video', 'tiny_studiolms'),
+                        getString('resources_res_type_audio', 'tiny_studiolms'),
+                        getString('resources_res_title_placeholder', 'tiny_studiolms'),
+                        getString('resources_res_title_aria', 'tiny_studiolms'),
+                        getString('resources_res_url_placeholder', 'tiny_studiolms'),
+                        getString('resources_res_url_aria', 'tiny_studiolms'),
+                        getString('resources_res_remove_aria', 'tiny_studiolms'),
                     ]);
 
-                    PopupManager.open(btnResources, 'tiny_studiolms/popup_webteca_resources', {}, (popup) => {
-                        const listContainer = popup.querySelector('#slms-webteca-resource-list');
-                        const btnAdd = popup.querySelector('#pop_web_add_btn');
+                    PopupManager.open(btnResources, 'tiny_studiolms/popup_resources_items', {}, (popup) => {
+                        const listContainer = popup.querySelector('#slms-resources-list');
+                        const btnAdd = popup.querySelector('#pop_res_add_btn');
 
                         const renderList = () => {
                             listContainer.innerHTML = '';
@@ -195,7 +195,7 @@ export default {
                                 row.innerHTML = `
                                 <div class="flex-grow-1">
                                     <div class="input-group input-group-sm mb-1">
-                                        <select class="form-select res-type slms-webteca-select" aria-label="${typeAria}">
+                                        <select class="form-select res-type slms-resources-select" aria-label="${typeAria}">
                                             <option value="link" ${res.type === 'link' ? 'selected' : ''}>
                                                 ${typeLinkLabel}
                                             </option>
@@ -247,7 +247,7 @@ export default {
                         if (btnAdd) {
                             btnAdd.addEventListener('click', async() => {
                                 const defaultTitle = await getString(
-                                    'webteca_default_item_title', 'tiny_studiolms'
+                                    'resources_default_item_title', 'tiny_studiolms'
                                 );
                                 data.resources.push({type: 'link', title: defaultTitle, url: '#'});
                                 renderList();
@@ -275,13 +275,13 @@ export default {
         templateData.listFlexWrap = data.layout === 'grid' ? 'wrap' : 'nowrap';
 
         if (!templateData.title || templateData.title.trim() === '') {
-            templateData.title = await getString('webteca_default_title', 'tiny_studiolms');
+            templateData.title = await getString('resources_default_title', 'tiny_studiolms');
         }
         if (!templateData.desc || templateData.desc.trim() === '') {
-            templateData.desc = await getString('webteca_default_desc', 'tiny_studiolms');
+            templateData.desc = await getString('resources_default_desc', 'tiny_studiolms');
         }
 
-        const defaultItemTitle = await getString('webteca_default_item_title', 'tiny_studiolms');
+        const defaultItemTitle = await getString('resources_default_item_title', 'tiny_studiolms');
         templateData.mappedResources = data.resources.map(r => {
             let icon = '🔗';
             let typeColor = '#6c757d';
@@ -307,6 +307,6 @@ export default {
             return {...r, title: title, icon: icon, typeColor: typeColor};
         });
 
-        return Templates.render('tiny_studiolms/block_webteca', templateData);
+        return Templates.render('tiny_studiolms/block_resources', templateData);
     }
 };

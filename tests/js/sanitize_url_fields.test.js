@@ -84,7 +84,7 @@ test('normalises an unknown link target to _blank and keeps _self', async() => {
     assert.equal(sanitizeUrlFields({target: '_self'}).target, '_self');
 });
 
-test('recurses into arrays and nested objects (a webteca block\'s resources list)', async() => {
+test('recurses into arrays and nested objects (a resources block\'s items list)', async() => {
     const sanitizeUrlFields = await sanitizeUrlFieldsPromise;
 
     const config = {

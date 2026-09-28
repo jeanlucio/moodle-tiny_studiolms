@@ -120,14 +120,14 @@ class generator {
         $s .= '   - btnText: string (button label; use "" for no button)' . "\n";
         $s .= '   - btnUrl: string (URL; use "#" if not specified)' . "\n\n";
 
-        $s .= '6. webteca — A resource list (links, PDFs, videos) with a collapsible panel.' . "\n";
+        $s .= '6. resources — A resource list (links, PDFs, videos) with a collapsible panel.' . "\n";
         $s .= '   config keys:' . "\n";
         $s .= '   - title: string (panel heading, plain text)' . "\n";
         $s .= '   - desc: string (short description, plain text)' . "\n";
         $s .= '   - isOpen: boolean' . "\n";
         $s .= '   - layout: "list" or "grid"' . "\n";
         $s .= '   - resources: array of {type: "pdf"|"video"|"link", title: string, url: string}' . "\n";
-        $s .= '   IMPORTANT: ALL resources go into the resources array of ONE webteca block.' . "\n\n";
+        $s .= '   IMPORTANT: ALL resources go into the resources array of ONE resources block.' . "\n\n";
 
         $s .= '7. gridcards — A responsive grid where each slot is an HTML card.' . "\n";
         $s .= '   config keys:' . "\n";
@@ -1101,11 +1101,11 @@ class generator {
     }
 
     /**
-     * Returns the system prompt for webteca resource list generation.
+     * Returns the system prompt for resources block resource list generation.
      *
      * @return string
      */
-    private static function webteca_system_prompt(): string {
+    private static function resources_system_prompt(): string {
         $p = 'You are an educational content assistant generating a curated resource list.' . "\n";
         $p .= 'Given a topic, produce a title, short description and a list of learning resources.' . "\n\n";
         $p .= 'Respond ONLY with a valid JSON object — no markdown, no code fences, no explanation.' . "\n\n";
@@ -1123,19 +1123,19 @@ class generator {
     }
 
     /**
-     * Generates title, description and resources for a webteca block.
+     * Generates title, description and resources for a resources block.
      *
      * @param string $topic Teacher's description of the resource collection.
      * @param \context $context Context the request is made in.
      * @return array With keys 'title' (string), 'desc' (string), 'resources' (JSON string), 'provider' (string).
      * @throws \moodle_exception If no provider is configured, all calls fail, or response is invalid.
      */
-    public static function generate_webteca(string $topic, \context $context): array {
+    public static function generate_resources(string $topic, \context $context): array {
         $result = self::call_providers(
             $topic,
-            self::webteca_system_prompt(),
-            'webteca_ai_error',
-            get_string('block_webteca_title', 'tiny_studiolms'),
+            self::resources_system_prompt(),
+            'resources_ai_error',
+            get_string('block_resources_title', 'tiny_studiolms'),
             $context
         );
 
@@ -1146,7 +1146,7 @@ class generator {
         $data = json_decode(trim($raw), true);
 
         if (!is_array($data) || empty($data['resources']) || !is_array($data['resources'])) {
-            throw new \moodle_exception('webteca_ai_error', 'tiny_studiolms');
+            throw new \moodle_exception('resources_ai_error', 'tiny_studiolms');
         }
 
         $saferesources = [];
@@ -1164,7 +1164,7 @@ class generator {
         }
 
         if (empty($saferesources)) {
-            throw new \moodle_exception('webteca_ai_error', 'tiny_studiolms');
+            throw new \moodle_exception('resources_ai_error', 'tiny_studiolms');
         }
 
         return [
@@ -1252,7 +1252,7 @@ class generator {
             'chart', 'chartBar', 'gauge',
             'gridcards', 'infographic', 'infographicComparison',
             'infographicFeatures', 'infographicSteps', 'infographicTimeline',
-            'mindmap', 'profileCard', 'stylizedHeading', 'table', 'webteca',
+            'mindmap', 'profileCard', 'stylizedHeading', 'table', 'resources',
         ];
 
         if (
@@ -1290,7 +1290,7 @@ class generator {
             'chart', 'chartBar', 'gauge',
             'gridcards', 'infographic', 'infographicComparison',
             'infographicFeatures', 'infographicSteps', 'infographicTimeline',
-            'mindmap', 'profileCard', 'stylizedHeading', 'table', 'webteca',
+            'mindmap', 'profileCard', 'stylizedHeading', 'table', 'resources',
         ];
 
         if (

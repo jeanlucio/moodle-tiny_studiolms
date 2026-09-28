@@ -26,9 +26,9 @@ block's settings.
 * **AI Layout** — give a name, the pedagogical context, optional block types and a colour palette;
   the AI assembles a multi-block layout for review.
 * **AI Chat** — paste a syllabus, lesson plan or activity list. The assistant proposes a complete
-  page (or asks whether a resource list should be Grid Cards or a Webteca) and shows an action card;
+  page (or asks whether a resource list should be Grid Cards or Resources) and shows an action card;
   nothing is applied until you confirm it.
-* Several blocks (mind map, infographics, callout, card, accordion, webteca) also have their own
+* Several blocks (mind map, infographics, callout, card, accordion, resources) also have their own
   **Generate with AI** button in the properties panel.
 
 AI output is always shown as a preview first; the teacher decides what goes into the course.

@@ -94,7 +94,7 @@ class chat {
 
         $prompt .= 'Available block types for generate_template (all 18):' . "\n";
         $prompt .= '  Text & layout: stylizedHeading, callout, accordion, actionButton,' . "\n";
-        $prompt .= '    advancedCard, webteca, gridcards, table, profileCard' . "\n";
+        $prompt .= '    advancedCard, resources, gridcards, table, profileCard' . "\n";
         $prompt .= '  Charts & data: chart (pie/donut), chartBar (horizontal/vertical bars),' . "\n";
         $prompt .= '    gauge (speedometer, 1–3 side-by-side)' . "\n";
         $prompt .= '  Infographics: infographic (stats/metrics), infographicSteps (numbered flow),' . "\n";

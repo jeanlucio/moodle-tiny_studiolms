@@ -178,10 +178,10 @@ $functions = [
         'loginrequired' => true,
         'capabilities'  => 'tiny/studiolms:use',
     ],
-    'tiny_studiolms_generate_webteca' => [
-        'classname'   => 'tiny_studiolms\external\generate_webteca',
+    'tiny_studiolms_generate_resources' => [
+        'classname'   => 'tiny_studiolms\external\generate_resources',
         'methodname'  => 'execute',
-        'description' => 'Generate a curated resource list for a webteca block via a configured LLM provider.',
+        'description' => 'Generate a curated resource list for a resources block via a configured LLM provider.',
         'type'        => 'write',
         'ajax'        => true,
         'loginrequired' => true,

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * PHPUnit tests for tiny_studiolms\external\generate_webteca.
+ * PHPUnit tests for tiny_studiolms\external\generate_resources.
  *
  * @package    tiny_studiolms
  * @copyright  2026 Jean Lúcio
@@ -30,18 +30,18 @@ global $CFG;
 require_once($CFG->dirroot . '/lib/editor/tiny/plugins/studiolms/tests/external/generate_endpoint_testcase.php');
 
 /**
- * Tests for the generate_webteca external function.
+ * Tests for the generate_resources external function.
  *
  * The access-control and fail-safe assertions live in generate_endpoint_testcase;
  * these three methods only exist so Moodle's PHPUnit tooling (which requires each
  * testcase class to declare its own test_ methods) can discover and run them here.
  *
- * @covers \tiny_studiolms\external\generate_webteca
+ * @covers \tiny_studiolms\external\generate_resources
  */
-final class generate_webteca_test extends generate_endpoint_testcase {
+final class generate_resources_test extends generate_endpoint_testcase {
     #[\Override]
     protected function call_execute(int $contextid): void {
-        generate_webteca::execute($contextid, 'Photosynthesis in plants');
+        generate_resources::execute($contextid, 'Photosynthesis in plants');
     }
 
     #[\Override]

@@ -12,7 +12,7 @@
             }
         },
         {
-            "type": "webteca",
+            "type": "resources",
             "config": {
                 "title": "Materiais de Apoio",
                 "desc": "Recursos complementares para aprofundar seus estudos.",

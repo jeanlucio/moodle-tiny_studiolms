@@ -387,21 +387,21 @@ export default Promise.all([
                 font-weight: 600;
                 text-align: left;
                 vertical-align: middle; }
-            body.mce-content-body .studiolms-webteca {
+            body.mce-content-body .studiolms-resources {
                 border: 1px solid #e2e8f0;
                 border-radius: 8px;
                 overflow: hidden;
                 background-color: var(--slms-bg, #ffffff);
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
                 margin-bottom: 1.5rem; }
-            body.mce-content-body .studiolms-webteca-summary {
+            body.mce-content-body .studiolms-resources-summary {
                 background-color: var(--slms-header-bg, #f8f9fa);
                 border-bottom: 1px solid #e2e8f0;
                 padding: 1.25rem 1.5rem;
                 display: flex;
                 justify-content: space-between;
                 align-items: center; }
-            body.mce-content-body .studiolms-webteca-list {
+            body.mce-content-body .studiolms-resources-list {
                 list-style: none;
                 padding: 0;
                 margin: 0;
@@ -409,9 +409,9 @@ export default Promise.all([
                 flex-direction: var(--slms-dir, column);
                 flex-wrap: var(--slms-wrap, nowrap);
                 gap: 0.75rem; }
-            body.mce-content-body a.studiolms-webteca-item,
-            body.mce-content-body a.studiolms-webteca-item:hover,
-            body.mce-content-body a.studiolms-webteca-item:focus {
+            body.mce-content-body a.studiolms-resources-item,
+            body.mce-content-body a.studiolms-resources-item:hover,
+            body.mce-content-body a.studiolms-resources-item:focus {
                 display: flex;
                 align-items: center;
                 padding: 0.75rem 1rem;

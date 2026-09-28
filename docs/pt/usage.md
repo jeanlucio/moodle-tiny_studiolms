@@ -29,7 +29,7 @@ com as configurações daquele bloco.
 * **Chat IA** — cole uma ementa, plano de aula ou lista de atividades. O assistente propõe uma
   página completa (ou pergunta se uma lista de recursos deve virar Grid de Cards ou Webteca) e mostra
   um cartão de ação; nada é aplicado até você confirmar.
-* Vários blocos (mapa mental, infográficos, destaque, cartão, accordion, webteca) também têm o
+* Vários blocos (mapa mental, infográficos, destaque, cartão, accordion, resources) também têm o
   próprio botão **Gerar com IA** no painel de propriedades.
 
 A saída da IA sempre aparece primeiro como pré-visualização; o professor decide o que entra no

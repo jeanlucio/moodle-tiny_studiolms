@@ -1001,49 +1001,30 @@
 }
 
 
-/* Student-facing: accordion and webteca icons animate on toggle.
+/* Student-facing: accordion and resources icons animate on toggle.
    Base state = -90deg so ▼ renders as ▶ (closed); open state = 0deg so ▼ shows naturally.
    Uses .slms-closed class instead of [open] attribute — details/summary are stripped
    by Moodle's HTMLPurifier (XHTML 1.0 Transitional doctype). */
 .studiolms-accordion-header .user-select-none,
-.studiolms-webteca-summary .user-select-none {
+.studiolms-resources-summary .user-select-none {
     display: inline-block;
     transition: transform 0.3s ease;
     transform: rotate(-90deg);
 }
 
 .studiolms-accordion:not(.slms-closed) .studiolms-accordion-header .user-select-none,
-.studiolms-webteca:not(.slms-closed) .studiolms-webteca-summary .user-select-none {
+.studiolms-resources:not(.slms-closed) .studiolms-resources-summary .user-select-none {
     transform: rotate(0deg);
 }
 
 /* Hide content when accordion is closed — student view only (not in TinyMCE editor). */
 body:not(.mce-content-body) .studiolms-accordion.slms-closed > .studiolms-accordion-content,
-body:not(.mce-content-body) .studiolms-webteca.slms-closed > .studiolms-webteca-content {
+body:not(.mce-content-body) .studiolms-resources.slms-closed > .studiolms-resources-content {
     display: none;
 }
 
-/* Webteca Component Styles */
-details.wt-details summary {
-    list-style: none;
-    outline: none;
-}
-
-details.wt-details summary::-webkit-details-marker {
-    display: none;
-}
-
-details.wt-details .wt-icon-main {
-    transition: transform 0.3s ease;
-    display: inline-block;
-    transform-origin: center;
-}
-
-details.wt-details[open] summary .wt-icon-main {
-    transform: rotate(90deg);
-}
-/* Webteca popup utility classes. */
-.tiny_studiolms .slms-webteca-select {
+/* Resources popup utility classes. */
+.tiny_studiolms .slms-resources-select {
     max-width: 130px;
 }
 .tiny_studiolms .slms-btn-fit {
@@ -1325,8 +1306,8 @@ a.studiolms-btn:focus-visible {
     vertical-align: middle;
 }
 
-/* Webteca */
-.studiolms-webteca {
+/* Resources */
+.studiolms-resources {
     border: 1px solid var(--bs-border-color, #e2e8f0);
     border-radius: 8px;
     overflow: hidden;
@@ -1334,7 +1315,7 @@ a.studiolms-btn:focus-visible {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.studiolms-webteca-summary {
+.studiolms-resources-summary {
     background-color: var(--slms-header-bg, #f8f9fa);
     border-bottom: 1px solid var(--bs-border-color, #e2e8f0);
     padding: 1.25rem 1.5rem;
@@ -1344,12 +1325,12 @@ a.studiolms-btn:focus-visible {
     cursor: pointer;
 }
 
-.studiolms-webteca-summary:focus-visible {
+.studiolms-resources-summary:focus-visible {
     outline: 2px solid var(--bs-primary, #0d47a1);
     outline-offset: -2px;
 }
 
-.studiolms-webteca-list {
+.studiolms-resources-list {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -1359,17 +1340,17 @@ a.studiolms-btn:focus-visible {
     gap: 0.75rem;
 }
 
-/* Webteca grid layout class — survives HTML Purifier */
-.studiolms-webteca-list.slms-dir-row {
+/* Resources grid layout class — survives HTML Purifier */
+.studiolms-resources-list.slms-dir-row {
     flex-direction: row;
     flex-wrap: wrap;
 }
 
-.studiolms-webteca-list li {
+.studiolms-resources-list li {
     list-style: none;
 }
 
-a.studiolms-webteca-item {
+a.studiolms-resources-item {
     display: flex;
     align-items: center;
     padding: 0.75rem 1rem;
@@ -1384,14 +1365,14 @@ a.studiolms-webteca-item {
     height: 100%;
 }
 
-a.studiolms-webteca-item:hover {
+a.studiolms-resources-item:hover {
     text-decoration: none;
     transform: translateX(2px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     color: var(--bs-body-color, #212529);
 }
 
-a.studiolms-webteca-item:focus-visible {
+a.studiolms-resources-item:focus-visible {
     outline: 2px solid var(--slms-type-c, #0d47a1);
     outline-offset: 2px;
 }
@@ -1470,7 +1451,7 @@ a.studiolms-webteca-item:focus-visible {
     transition: transform 0.2s ease-out;
 }
 
-.tiny_studiolms .slms-webteca-resource-list {
+.tiny_studiolms .slms-resources-list {
     max-height: 250px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -2741,7 +2722,7 @@ a.studiolms-webteca-item:focus-visible {
         -webkit-overflow-scrolling: touch;
     }
 
-    .studiolms-webteca-list.slms-dir-row {
+    .studiolms-resources-list.slms-dir-row {
         flex-direction: column;
     }
 

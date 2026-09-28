@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * External function: generate webteca resource list via AI.
+ * External function: generate resources block resource list via AI.
  *
  * @package    tiny_studiolms
  * @copyright  2026 Jean Lúcio
@@ -32,13 +32,13 @@ use core_external\external_value;
 use tiny_studiolms\ai\generator;
 
 /**
- * Generates a curated resource list for a webteca block using an LLM.
+ * Generates a curated resource list for a resources block using an LLM.
  *
  * @package    tiny_studiolms
  * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class generate_webteca extends external_api {
+class generate_resources extends external_api {
     /**
      * Declares the parameters accepted by execute().
      *
@@ -52,7 +52,7 @@ class generate_webteca extends external_api {
     }
 
     /**
-     * Generates title, description and resource list for a webteca block.
+     * Generates title, description and resource list for a resources block.
      *
      * @param int $contextid Context ID of the editor session.
      * @param string $topic Teacher's topic or context description.
@@ -69,7 +69,7 @@ class generate_webteca extends external_api {
         require_capability('tiny/studiolms:use', $context);
 
         try {
-            $result = generator::generate_webteca($params['topic'], $context);
+            $result = generator::generate_resources($params['topic'], $context);
         } catch (\moodle_exception $e) {
             throw $e;
         } catch (\Throwable $t) {
@@ -80,7 +80,7 @@ class generate_webteca extends external_api {
                     . ' at ' . $t->getFile() . ':' . $t->getLine(),
                 DEBUG_DEVELOPER
             );
-            throw new \moodle_exception('webteca_ai_error', 'tiny_studiolms');
+            throw new \moodle_exception('resources_ai_error', 'tiny_studiolms');
         }
 
         return [
@@ -97,7 +97,7 @@ class generate_webteca extends external_api {
      */
     public static function execute_returns(): external_single_structure {
         return new external_single_structure([
-            'title'     => new external_value(PARAM_TEXT, 'Panel heading for the webteca'),
+            'title'     => new external_value(PARAM_TEXT, 'Panel heading for the resources block'),
             'desc'      => new external_value(PARAM_TEXT, 'Short description text'),
             'resources' => new external_value(PARAM_RAW, 'JSON-encoded resources array [{type, title, url}, ...]'),
         ]);

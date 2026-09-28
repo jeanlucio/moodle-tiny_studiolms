@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template tiny_studiolms/block_webteca
+    @template tiny_studiolms/block_resources
     @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
 
     Example context (json): {
@@ -25,27 +25,27 @@
         "mappedResources": [{"url": "#", "typeColor": "#0d6efd", "icon": "🔗", "title": "Resource"}]
     }
 }}
-<div class="studiolms-webteca-wrap my-4 w-100" style="max-width: 900px;">
-    <div class="studiolms-webteca slms-snd-{{openSound}} {{^isOpen}}slms-closed{{/isOpen}}"
+<div class="studiolms-resources-wrap my-4 w-100" style="max-width: 900px;">
+    <div class="studiolms-resources slms-snd-{{openSound}} {{^isOpen}}slms-closed{{/isOpen}}"
          style="background-color: {{bg}};">
-        <div class="studiolms-webteca-summary slms-hov-{{hoverEffect}}"
+        <div class="studiolms-resources-summary slms-hov-{{hoverEffect}}"
              style="background-color: {{headerBg}};">
             <span class="d-flex flex-column gap-1">
                 <span class="fw-bold fs-5" style="color: {{color}};">
-                    <span aria-hidden="true" class="me-2">📚</span><span class="slms-wt-title">{{title}}</span>
+                    <span aria-hidden="true" class="me-2">📚</span><span class="slms-resources-title">{{title}}</span>
                 </span>
-                <span class="slms-wt-desc text-secondary small">{{desc}}</span>
+                <span class="slms-resources-desc text-secondary small">{{desc}}</span>
             </span>
             <span contenteditable="false" aria-hidden="true" class="ms-3 fs-5 user-select-none" style="color: {{color}};">▼</span>
         </div>
-        <div contenteditable="false" class="studiolms-webteca-content p-4">
-            <ul class="studiolms-webteca-list {{#isGrid}}slms-dir-row{{/isGrid}}">
+        <div contenteditable="false" class="studiolms-resources-content p-4">
+            <ul class="studiolms-resources-list {{#isGrid}}slms-dir-row{{/isGrid}}">
                 {{#mappedResources}}
                 <li {{#isGrid}}style="min-width: 250px; width: calc(50% - 0.375rem);"{{/isGrid}}>
-                    <a href="{{url}}" target="_blank" rel="noopener noreferrer" class="studiolms-webteca-item" style="border-left-color: {{typeColor}};">
+                    <a href="{{url}}" target="_blank" rel="noopener noreferrer" class="studiolms-resources-item" style="border-left-color: {{typeColor}};">
                         <span aria-hidden="true" class="me-3 fs-5">{{icon}}</span>
                         <span class="flex-grow-1">{{title}}</span>
-                        <span class="badge bg-light text-dark border">{{#str}} webteca_btn_access, tiny_studiolms {{/str}}</span>
+                        <span class="badge bg-light text-dark border">{{#str}} resources_btn_access, tiny_studiolms {{/str}}</span>
                     </a>
                 </li>
                 {{/mappedResources}}

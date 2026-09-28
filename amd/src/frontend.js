@@ -31,11 +31,11 @@
 
 const SELECTORS = {
     ACCORDION_SUMMARY: '.studiolms-accordion-summary',
-    WEBTECA_SUMMARY: '.studiolms-webteca-summary',
-    ANY_BLOCK: '.studiolms-accordion, .studiolms-webteca, .studiolms-card, .studiolms-callout-wrap',
+    RESOURCES_SUMMARY: '.studiolms-resources-summary',
+    ANY_BLOCK: '.studiolms-accordion, .studiolms-resources, .studiolms-card, .studiolms-callout-wrap',
 };
 
-// Counter for unique IDs assigned to accordion/webteca toggle pairs.
+// Counter for unique IDs assigned to accordion/resources toggle pairs.
 let toggleCounter = 0;
 
 /**
@@ -122,7 +122,7 @@ const getSoundClass = (el) => {
 };
 
 /**
- * Wire up click and keyboard toggle handlers for all accordion and webteca
+ * Wire up click and keyboard toggle handlers for all accordion and resources
  * summary divs. Each toggle flips the .slms-closed class on the container
  * and plays the configured open sound.
  *
@@ -131,16 +131,16 @@ const getSoundClass = (el) => {
  * Accordion pattern (APG).
  */
 const initToggles = () => {
-    const summarySelector = `${SELECTORS.ACCORDION_SUMMARY}, ${SELECTORS.WEBTECA_SUMMARY}`;
+    const summarySelector = `${SELECTORS.ACCORDION_SUMMARY}, ${SELECTORS.RESOURCES_SUMMARY}`;
     document.querySelectorAll(summarySelector).forEach(summary => {
-        const container = summary.closest('.studiolms-accordion, .studiolms-webteca');
+        const container = summary.closest('.studiolms-accordion, .studiolms-resources');
         if (!container) {
             return;
         }
 
         const isAccordion = container.classList.contains('studiolms-accordion');
         const contentEl = container.querySelector(
-            isAccordion ? '.studiolms-accordion-content' : '.studiolms-webteca-content'
+            isAccordion ? '.studiolms-accordion-content' : '.studiolms-resources-content'
         );
 
         const uid = ++toggleCounter;
