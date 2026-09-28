@@ -335,8 +335,8 @@ export default {
             });
         } catch (error) {
             // A genuinely unexpected failure (a template/DOM error, not an anticipated business
-            // rule), so it goes through Notification.exception() instead of inline text — see
-            // CLAUDE.md's rule reserving that for real bugs.
+            // rule), so it goes through Notification.exception() instead of inline text —
+            // reserved for real bugs, not routine validation failures.
             container.innerHTML = '';
             Notification.exception(error);
         }

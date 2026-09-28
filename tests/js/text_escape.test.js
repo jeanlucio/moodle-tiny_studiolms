@@ -20,12 +20,11 @@
  * the source file (unlike amd/src/htmlsanitizer.js's DOMParser-based functions, which do need a
  * browser).
  *
- * This is the mitigation SCOPE.md's DA11 substitutes for the larger Mustache-migration the
- * security audit suggested for chart/gauge/infographic/mind map's hand-built markup: instead of
- * moving that markup into templates (rejected as too large/risky for an already-published block
- * shape), the one escaping function every one of those blocks now shares gets its own regression
- * test, so a future edit that weakens it — or a new block that forgets to call it — is caught
- * here instead of only in a runtime audit.
+ * chart/gauge/infographic/mind map build their markup by hand instead of through a Mustache
+ * template (moving it into templates was rejected as too large/risky for an already-published
+ * block shape), so the one escaping function every one of those blocks now shares carries all
+ * the weight of keeping that markup safe. This test suite exists so a future edit that weakens
+ * it — or a new block that forgets to call it — is caught here instead of at runtime.
  *
  * @package    tiny_studiolms
  * @copyright  2026 Jean Lúcio
