@@ -1053,7 +1053,7 @@ details.wt-details[open] summary .wt-icon-main {
 body.mce-content-body div.slms-grid-slot,
 .tiny_studiolms div#slms-live-preview div.slms-grid-slot,
 .tiny_studiolms div.slms-card-thumb-content div.slms-grid-slot {
-    border: 2px dashed #cbd5e1;
+    border: 2px dashed var(--bs-border-color, #cbd5e1);
     background-color: rgba(241, 245, 249, 0.4);
     min-height: 70px;
     border-radius: 8px;
