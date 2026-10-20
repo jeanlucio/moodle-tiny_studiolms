@@ -17,6 +17,9 @@
 /**
  * Styles for tiny_studiolms.
  *
+ * The editor frame cannot see the theme sheet this file ends up in, so editor_styles.css is an exact copy of it.
+ * After a change here run: cp styles.css editor_styles.css (the unit tests fail while the two differ).
+ *
  * @package    tiny_studiolms
  * @copyright  2026 Jean Lúcio
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -1217,6 +1220,13 @@ body.mce-content-body div.slms-grid-slot,
     outline: none;
 }
 
+/* The page theme drops the margin under the last element of a text area; the preview and the editor did not. */
+.studiolms-editable-area > :last-child,
+.studiolms-accordion-content > :last-child,
+.slms-callout-content > :last-child {
+    margin-bottom: 0;
+}
+
 /* Accordion */
 .studiolms-accordion {
     border: 1px solid var(--bs-border-color, #e2e8f0);
@@ -1343,6 +1353,10 @@ a.studiolms-btn:focus-visible {
     border-bottom: var(--slms-media-border-b, 1px solid var(--bs-border-color, #e2e8f0));
 }
 
+.studiolms-card-media img {
+    max-width: 100%;
+}
+
 .studiolms-card-content {
     flex: 1 1 auto;
     padding: 1.5rem;
@@ -1460,6 +1474,9 @@ a.studiolms-btn:focus-visible {
     font-weight: 600;
     text-align: start;
     vertical-align: middle;
+    /* Course content breaks words anywhere, which lets the table squeeze a short heading to a few letters. */
+    overflow-wrap: normal;
+    word-break: normal;
 }
 
 /* Resources */
@@ -1705,6 +1722,24 @@ a.studiolms-resources-item:focus-visible {
 .studiolms-profilecard .slms-pc-link:hover {
     background: var(--slms-pc-accent, #0f6cbf);
     color: var(--bs-white, #fff);
+    text-decoration: none;
+}
+
+/*
+ * Moove underlines the links of a label and of an activity page with id-level selectors
+ * (body.pagelayout-course #region-main .modtype_label a:not(.btn) and the same for body.pagelayout-incourse),
+ * which no class selector above can outrank. The links a block draws as a button, an item or a pill repeat that
+ * chain with one more class, so they look on the page the way they do in the editor and the preview.
+ */
+body #region-main [data-slms-block-type] a.studiolms-btn.studiolms-btn:not(.btn),
+body #region-main [data-slms-block-type] a.studiolms-btn.studiolms-btn:not(.btn):hover,
+body #region-main [data-slms-block-type] a.studiolms-btn.studiolms-btn:not(.btn):focus,
+body #region-main [data-slms-block-type] a.studiolms-resources-item.studiolms-resources-item:not(.btn),
+body #region-main [data-slms-block-type] a.studiolms-resources-item.studiolms-resources-item:not(.btn):hover,
+body #region-main [data-slms-block-type] a.studiolms-resources-item.studiolms-resources-item:not(.btn):focus,
+body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn),
+body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):hover,
+body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):focus {
     text-decoration: none;
 }
 
@@ -2059,6 +2094,9 @@ a.studiolms-resources-item:focus-visible {
     width: 2px;
     min-height: 12px;
     margin: 4px auto 0;
+    /* TinyMCE saves the empty element as &nbsp;, and a line of text would make the connector taller. */
+    font-size: 0;
+    line-height: 0;
 }
 
 .slms-infographic-steps-block .slms-steps__content {
@@ -2698,6 +2736,8 @@ a.studiolms-resources-item:focus-visible {
     width: 100%;
     height: auto;
     display: block;
+    /* The percentage after the longest bar runs a few units past the viewBox, and the block's padding has room. */
+    overflow: visible;
 }
 
 /* ── Bar chart popup ────────────────────────────────────────────────────── */
@@ -2987,4 +3027,28 @@ a.studiolms-resources-item:focus-visible {
         height: 2.75rem;
     }
 
+}
+
+/*
+ * Utilities the blocks use by their Bootstrap 5 names and a Bootstrap 4 theme (Moodle 4.5) does not have. On a
+ * Bootstrap 5 theme the framework's own rule, the same value, takes over.
+ */
+[data-slms-block-type] .fs-5,
+.slms-canvas-block-preview .fs-5 {
+    font-size: 1.25rem;
+}
+
+[data-slms-block-type] .fw-bold,
+.slms-canvas-block-preview .fw-bold {
+    font-weight: 700;
+}
+
+[data-slms-block-type] .gap-1,
+.slms-canvas-block-preview .gap-1 {
+    gap: 0.25rem;
+}
+
+[data-slms-block-type] .object-fit-cover,
+.slms-canvas-block-preview .object-fit-cover {
+    object-fit: cover;
 }

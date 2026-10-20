@@ -240,7 +240,101 @@ export default Promise.all([
               + `url('${wwwroot}/lib/fonts/fa-solid-900.ttf') format('truetype');}`
             : '';
 
-        const editorCss = fa6FontFace + `
+        // The editor frame of a Bootstrap 4 site (Moodle 4.5) gets none of the theme's utility classes, and the markup
+        // of the blocks leans on them: without these the layout falls apart while editing. Each one is limited to the
+        // blocks and carries the value the page theme gives it, so the frame looks the way the page does.
+        const utilities = {
+            'align-middle': 'vertical-align: middle',
+            'badge': 'display: inline-block; padding: 0.25em 0.4em; font-size: 75%; font-weight: 700; line-height: 1; ' +
+                'text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: 0.5rem',
+            'bg-light': 'background-color: #f8f9fa',
+            'bg-white': 'background-color: #ffffff',
+            'border': 'border: 1px solid #dee2e6',
+            'border-bottom': 'border-bottom: 1px solid #dee2e6',
+            'd-block': 'display: block',
+            'd-flex': 'display: flex',
+            'flex-column': 'flex-direction: column',
+            'flex-grow-1': 'flex-grow: 1',
+            'fs-5': 'font-size: 1.25rem',
+            'fw-bold': 'font-weight: 700',
+            'gap-1': 'gap: 0.25rem',
+            'h-100': 'height: 100%',
+            'm-0': 'margin: 0',
+            'mb-1': 'margin-bottom: 0.25rem',
+            'mb-3': 'margin-bottom: 1rem',
+            'mb-4': 'margin-bottom: 1.5rem',
+            'me-2': 'margin-inline-end: 0.5rem',
+            'me-3': 'margin-inline-end: 1rem',
+            'ms-3': 'margin-inline-start: 1rem',
+            'mt-4': 'margin-top: 1.5rem',
+            'my-3': 'margin-top: 1rem; margin-bottom: 1rem',
+            'my-4': 'margin-top: 1.5rem; margin-bottom: 1.5rem',
+            'object-fit-cover': 'object-fit: cover',
+            'p-3': 'padding: 1rem',
+            'p-4': 'padding: 1.5rem',
+            'pb-2': 'padding-bottom: 0.5rem',
+            'rounded': 'border-radius: 0.375rem',
+            'small': 'font-size: 0.875em',
+            'table': 'width: 100%; border-collapse: collapse',
+            'text-center': 'text-align: center',
+            'text-dark': 'color: #212529',
+            'text-end': 'text-align: end',
+            'text-muted': 'color: #6c757d',
+            'text-secondary': 'color: #6c757d',
+            'text-start': 'text-align: start',
+            'user-select-none': 'user-select: none',
+            'w-100': 'width: 100%',
+        };
+        const blockRoot = 'body.mce-content-body [data-slms-block-type]';
+        // The frame does not inherit the page's typography either (Moodle 4.5 even sizes it differently), so the
+        // blocks start from what the page body uses. :where() keeps these as fallbacks that any rule of a block beats.
+        const pageStyle = window.getComputedStyle(document.body);
+        const pageFontSize = parseFloat(pageStyle.fontSize) || 15;
+        const pageLineHeight = (parseFloat(pageStyle.lineHeight) / pageFontSize) || 1.5;
+        // Headings typed inside a block take the sizes the page gives them, not the frame's own.
+        const headingCss = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map((tag) => {
+            const probe = document.createElement(tag);
+            probe.textContent = 'x';
+            probe.style.cssText = 'position: absolute; visibility: hidden;';
+            document.body.appendChild(probe);
+            const style = window.getComputedStyle(probe);
+            const rule = `font-size: ${style.fontSize}; font-weight: ${style.fontWeight}; ` +
+                `line-height: ${style.lineHeight}; margin: ${style.marginTop} 0 ${style.marginBottom}`;
+            probe.remove();
+            return `:where(${blockRoot} ${tag}) { ${rule}; }`;
+        }).join('\n');
+        // Table cells likewise: Bootstrap 4 and 5 pad them differently.
+        const tableProbe = document.createElement('table');
+        tableProbe.className = 'table';
+        tableProbe.style.cssText = 'position: absolute; visibility: hidden;';
+        tableProbe.innerHTML = '<tbody><tr><td>x</td></tr></tbody>';
+        document.body.appendChild(tableProbe);
+        const cellPadding = window.getComputedStyle(tableProbe.querySelector('td')).padding;
+        tableProbe.remove();
+        const utilityClassCss = Object.entries(utilities)
+            .map(([name, rule]) => `${blockRoot}.${name}, ${blockRoot} .${name} { ${rule}; }`)
+            .join('\n');
+        const utilityCss = `
+            ${headingCss}
+            :where(${blockRoot}, ${blockRoot} *, ${blockRoot} *::before, ${blockRoot} *::after) {
+                box-sizing: border-box; }
+            :where(${blockRoot}) {
+                font-size: ${pageFontSize}px;
+                line-height: ${pageLineHeight};
+                font-family: ${pageStyle.fontFamily}, sans-serif;
+                color: ${pageStyle.color}; }
+            :where(${blockRoot} svg) {
+                vertical-align: middle; }
+            ${blockRoot} .table :where(th, td) {
+                padding: ${cellPadding}; }
+            ${blockRoot} .table-bordered :where(th, td) {
+                border: 1px solid #dee2e6; }
+            ${blockRoot} .table-striped > tbody > tr:nth-of-type(odd) > * {
+                box-shadow: inset 0 0 0 9999px rgba(0, 0, 0, 0.03); }
+            ${utilityClassCss}
+        `;
+
+        const editorCss = `${fa6FontFace}${utilityCss}
             body.mce-content-body .slms-noneditable-selected {
                 outline: 2px solid #2276d2;
                 outline-offset: 2px;
@@ -252,11 +346,10 @@ export default Promise.all([
                 border-radius: 8px;
                 padding: 8px; }
             body.mce-content-body .studiolms-accordion {
-                border: 1px solid #e2e8f0;
+                border: 1px solid var(--bs-border-color, #dee2e6);
                 border-radius: 8px;
                 overflow: hidden;
-                background-color: var(--slms-bg, #ffffff);
-                margin-bottom: 1.5rem; }
+                background-color: var(--slms-bg, #ffffff); }
             body.mce-content-body .studiolms-accordion summary {
                 display: block;
                 list-style: none;
@@ -276,7 +369,7 @@ export default Promise.all([
                 color: var(--slms-color, inherit); }
             body.mce-content-body .studiolms-accordion-content {
                 padding: 1.5rem;
-                border-top: 1px solid #e2e8f0;
+                border-top: 1px solid var(--bs-border-color, #dee2e6);
                 background: transparent;
                 font-weight: normal;
                 color: #212529;
@@ -331,7 +424,7 @@ export default Promise.all([
                 flex-direction: var(--slms-dir, column);
                 background-color: var(--slms-bg, #ffffff);
                 color: var(--slms-color, #333333);
-                border: 1px solid #e2e8f0;
+                border: 1px solid var(--bs-border-color, #dee2e6);
                 border-left: 6px solid var(--slms-border-c, #0d47a1);
                 border-radius: var(--slms-radius, 8px);
                 box-shadow: var(--slms-shadow, none);
@@ -343,7 +436,7 @@ export default Promise.all([
                 flex: var(--slms-media-flex, 1 1 auto);
                 min-height: 200px;
                 border-right: var(--slms-media-border-r, none);
-                border-bottom: var(--slms-media-border-b, 1px solid #e2e8f0); }
+                border-bottom: var(--slms-media-border-b, 1px solid var(--bs-border-color, #dee2e6)); }
             body.mce-content-body .studiolms-card-content {
                 flex: 1 1 auto;
                 padding: 1.5rem;
@@ -382,21 +475,19 @@ export default Promise.all([
             body.mce-content-body .studiolms-table th {
                 background-color: var(--slms-bg, #0f172a);
                 color: var(--slms-color, #ffffff);
-                padding: 12px;
-                border: 1px solid rgba(0, 0, 0, 0.1);
+                border: 1px solid var(--bs-border-color, #dee2e6);
                 font-weight: 600;
                 text-align: left;
                 vertical-align: middle; }
             body.mce-content-body .studiolms-resources {
-                border: 1px solid #e2e8f0;
+                border: 1px solid var(--bs-border-color, #dee2e6);
                 border-radius: 8px;
                 overflow: hidden;
                 background-color: var(--slms-bg, #ffffff);
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-                margin-bottom: 1.5rem; }
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
             body.mce-content-body .studiolms-resources-summary {
                 background-color: var(--slms-header-bg, #f8f9fa);
-                border-bottom: 1px solid #e2e8f0;
+                border-bottom: 1px solid var(--bs-border-color, #dee2e6);
                 padding: 1.25rem 1.5rem;
                 display: flex;
                 justify-content: space-between;

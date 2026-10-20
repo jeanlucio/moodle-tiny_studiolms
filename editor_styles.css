@@ -1,0 +1,3054 @@
+/**
+ * This file is part of Moodle - https://moodle.org/
+ *
+ * Moodle is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Moodle is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+ */
+/**
+ * Styles for tiny_studiolms.
+ *
+ * The editor frame cannot see the theme sheet this file ends up in, so editor_styles.css is an exact copy of it.
+ * After a change here run: cp styles.css editor_styles.css (the unit tests fail while the two differ).
+ *
+ * @package    tiny_studiolms
+ * @copyright  2026 Jean Lúcio
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+:root {
+    --slms-brand: #0d47a1;
+    --slms-brand-bg: #e9f3ff;
+    --slms-brand-subtle: #f0f6ff;
+}
+
+.tiny_studiolms {
+    background-color: var(--bs-body-bg, #fff);
+    font-family: inherit;
+    position: relative;
+}
+
+/* -----------------------------------------
+   HEADER & LIBRARY
+   ----------------------------------------- */
+
+/* Branded modal header — gradient on Moodle's own header bar */
+.studiolms-modal-dialog .slms-modal-header-branded {
+    background: linear-gradient(90deg, var(--slms-brand-bg, #e9f3ff) 0%, var(--bs-white, #fff) 55%);
+    border-bottom: 1px solid rgba(13, 71, 161, 0.1);
+}
+
+.studiolms-modal-dialog .slms-modal-header-branded .modal-title {
+    font-weight: 700;
+    color: var(--slms-brand, #0d47a1);
+}
+
+/* Logo bar — persistent header above the composer layout */
+.tiny_studiolms .slms-logo-bar {
+    background: linear-gradient(90deg, var(--slms-brand-bg, #e9f3ff) 0%, var(--bs-white, #fff) 55%);
+    border-bottom: 1px solid rgba(13, 71, 161, 0.06);
+    padding: 0.375rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+}
+
+.tiny_studiolms .slms-logo-bar img {
+    height: 34px;
+    width: auto;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
+}
+
+/* Logo as home button */
+.tiny_studiolms .slms-logo-home-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    cursor: default;
+    border-radius: 6px;
+    transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+.tiny_studiolms .slms-logo-home-btn.slms-logo-active {
+    cursor: pointer;
+}
+
+.tiny_studiolms .slms-logo-home-btn.slms-logo-active:hover {
+    opacity: 0.8;
+    filter: drop-shadow(0 1px 4px rgba(13, 71, 161, 0.22));
+}
+
+/* Breadcrumb inside logo bar */
+.tiny_studiolms .slms-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.tiny_studiolms .slms-bc-sep {
+    color: rgba(13, 71, 161, 0.38);
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1;
+}
+
+.tiny_studiolms .slms-bc-component {
+    color: var(--slms-brand, #0d47a1);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+/* Breadcrumb — library link button */
+.tiny_studiolms .slms-bc-library-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: rgba(13, 71, 161, 0.65);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.15s ease;
+    line-height: 1;
+}
+
+.tiny_studiolms .slms-bc-library-btn:hover {
+    color: var(--slms-brand, #0d47a1);
+    text-decoration: underline;
+}
+
+/* Editor footer — action bar at bottom of the composer */
+.tiny_studiolms .slms-editor-footer {
+    border-top: 1px solid rgba(13, 71, 161, 0.1);
+    padding: 0.5rem 1rem;
+    background: linear-gradient(90deg, var(--bs-white, #fff) 45%, var(--slms-brand-bg, #e9f3ff) 100%);
+    flex: 0 0 auto;
+}
+
+/* -----------------------------------------
+   COMPOSER LAYOUT (SIDEBAR + CANVAS)
+   ----------------------------------------- */
+
+#studiolms-app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.tiny_studiolms .slms-composer-layout {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.tiny_studiolms .slms-sidebar {
+    /* --slms-sidebar-w is set by app.js when the author drags the divider; 270px is the default. */
+    width: var(--slms-sidebar-w, 270px);
+    min-width: 240px;
+    max-width: 60%;
+    flex: 0 0 var(--slms-sidebar-w, 270px);
+    display: flex;
+    flex-direction: column;
+    border-inline-end: 1px solid var(--bs-border-color, #dee2e6);
+    background: var(--bs-white, #fff);
+    overflow: hidden;
+}
+
+/* Tabs — now live in the logo bar, inline with logo and search */
+.tiny_studiolms .slms-sidebar-tabs {
+    flex: 0 1 auto;
+    flex-wrap: nowrap;
+    padding: 0;
+    gap: 0;
+    overflow: hidden;
+}
+
+.tiny_studiolms .slms-sidebar-tabs .nav-link {
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 0.3rem 0.4rem;
+    white-space: nowrap;
+    color: var(--bs-body-color, #343a40);
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.tiny_studiolms .slms-sidebar-tabs .nav-link:hover {
+    color: var(--slms-brand, #0d47a1);
+    border-bottom-color: rgba(13, 71, 161, 0.25);
+    background: transparent;
+}
+
+.tiny_studiolms .slms-sidebar-tabs .nav-link:focus,
+.tiny_studiolms .slms-sidebar-tabs .nav-link:focus-visible {
+    outline: none;
+    box-shadow: none;
+}
+
+.tiny_studiolms .slms-sidebar-tabs .nav-link.active {
+    color: var(--slms-brand, #0d47a1);
+    font-weight: 600;
+    border-top: none;
+    border-inline-start: none;
+    border-inline-end: none;
+    border-bottom: 2px solid var(--slms-brand, #0d47a1);
+    background: transparent;
+    outline: none;
+    box-shadow: none;
+}
+
+.tiny_studiolms .slms-sidebar-tab-toolbar {
+    flex: 0 0 auto;
+    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+/* Search bar — now in the logo bar, pushed to the right */
+.tiny_studiolms .slms-sidebar-search-wrap {
+    flex: 0 1 210px;
+    min-width: 130px;
+    margin-inline-start: auto;
+}
+
+.tiny_studiolms .slms-sidebar-search {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.375rem;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.78rem;
+    background: var(--bs-white, #fff);
+    color: var(--bs-body-color, #212529);
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tiny_studiolms .slms-sidebar-search:focus {
+    border-color: rgba(13, 71, 161, 0.4);
+    box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.08);
+}
+
+/* -----------------------------------------
+   PROPERTIES PANEL (sidebar contextual)
+   ----------------------------------------- */
+.tiny_studiolms .slms-properties-panel {
+    /* Sized by its content, up to 60% of the sidebar: the component list below keeps the rest. */
+    flex: 0 1 auto;
+    max-height: 60%;
+    overflow-y: auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/*
+ * Bar between a block's settings and the component list: the heading of the list plus two arrows that
+ * move it. Up hides the settings, down hides the list; from either end the opposite arrow comes back
+ * to the middle.
+ */
+.tiny_studiolms .slms-library-heading {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.25rem 0.5rem 0.25rem 0.75rem;
+    border-top: 1px solid var(--bs-border-color, #dee2e6);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--bs-secondary-color, #6c757d);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.tiny_studiolms .slms-split-controls {
+    display: inline-flex;
+    gap: 0.25rem;
+}
+
+.tiny_studiolms .slms-split-btn {
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 4px;
+    background: var(--bs-white, #fff);
+    color: var(--slms-brand, #0d47a1);
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.tiny_studiolms .slms-split-btn:hover,
+.tiny_studiolms .slms-split-btn:focus-visible {
+    background: var(--slms-brand-bg, #e9f3ff);
+    border-color: var(--slms-brand, #0d47a1);
+}
+
+/* An arrow with nowhere left to go stays in place, dimmed, so keyboard focus is not lost. */
+.tiny_studiolms .slms-split-btn[aria-disabled="true"] {
+    opacity: 0.35;
+    cursor: default;
+    background: var(--bs-white, #fff);
+    border-color: var(--bs-border-color, #dee2e6);
+}
+
+/* Settings hidden: the component list takes the whole sidebar. */
+.tiny_studiolms .slms-sidebar.slms-split-on.slms-split-list .slms-properties-panel {
+    display: none;
+}
+
+/* List hidden: the settings take the whole sidebar, with the bar at the bottom. */
+.tiny_studiolms .slms-sidebar.slms-split-on.slms-split-properties .slms-library-grid {
+    display: none;
+}
+
+.tiny_studiolms .slms-sidebar.slms-split-on.slms-split-properties .slms-properties-panel {
+    flex: 1 1 auto;
+    max-height: none;
+}
+
+.tiny_studiolms .slms-properties-content {
+    flex: 1;
+    padding: 1rem;
+}
+
+.tiny_studiolms .slms-properties-content label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--bs-body-color, #343a40);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.tiny_studiolms .slms-properties-content .form-control,
+.tiny_studiolms .slms-properties-content .form-select {
+    font-size: 0.82rem;
+}
+
+.tiny_studiolms .slms-library-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    align-items: start;
+    align-content: start;
+    padding: 0.625rem;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+/* The list is never squeezed out by a tall settings panel. */
+.tiny_studiolms .slms-properties-panel:not(.d-none) ~ .slms-library-grid {
+    flex: 1 1 0;
+    min-height: 9rem;
+}
+
+/* Grid column picked in the canvas as the place for the next blocks. */
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot {
+    /* The preview ignores the pointer; its columns are the one exception, as they are what is clicked. */
+    pointer-events: auto;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+/* What sits inside a column stays inert, so a click anywhere in it lands on the column itself and a
+   link or button of a nested block cannot be followed from the preview. */
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot * {
+    pointer-events: none;
+}
+
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot:hover,
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot:focus-visible {
+    border-color: var(--slms-brand, #0d47a1);
+}
+
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot.slms-slot-target {
+    border-style: solid;
+    border-color: var(--slms-brand, #0d47a1);
+    background-color: var(--slms-brand-bg, #e9f3ff);
+    position: relative;
+}
+
+/* The label sits on the column's own border, so it never overlaps the blocks inside it. */
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot.slms-slot-target::before {
+    content: attr(data-slms-target-label);
+    position: absolute;
+    top: -0.7rem;
+    inset-inline-start: 0.5rem;
+    padding: 0 0.4rem;
+    border-radius: 4px;
+    background: var(--slms-brand, #0d47a1);
+    color: var(--bs-white, #fff);
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1.4;
+    pointer-events: none;
+}
+
+/* Sidebar component cards — v1 thumbnail style */
+.slms-sidebar .slms-card {
+    display: flex;
+    flex-direction: column;
+    height: 110px;
+    padding: 0;
+    text-align: center;
+    background: var(--bs-white, #fff);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.slms-sidebar .slms-card:hover,
+.slms-sidebar .slms-card:focus {
+    box-shadow: 0 2px 8px rgba(13, 71, 161, 0.1);
+    border-color: rgba(13, 71, 161, 0.4);
+    background: var(--slms-brand-subtle, #f0f6ff);
+}
+
+.slms-sidebar .slms-card .slms-card-thumb-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding: 8px;
+    background: var(--bs-white, #fff);
+    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+.slms-sidebar .slms-card .slms-card-thumb-content {
+    transform: scale(0.38);
+    transform-origin: top left;
+    width: 263%;
+    pointer-events: none;
+}
+
+.slms-sidebar .slms-card .slms-card-thumb-label {
+    flex: 0 0 auto;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--bs-body-color, #212529);
+    padding: 0.25rem 0.375rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.3;
+}
+
+/* Sidebar template cards — show HTML thumbnail at compact scale */
+.slms-sidebar .slms-tpl-thumb {
+    display: block;
+    flex: 1;
+    padding: 8px;
+    overflow: hidden;
+    background: var(--bs-white, #fff);
+    cursor: pointer;
+}
+
+.slms-sidebar .slms-tpl-thumb .slms-tpl-thumb-content {
+    display: block;
+    transform: scale(0.26);
+    transform-origin: top left;
+    width: 385%;
+    height: 320px;
+    border: 0;
+    background: transparent;
+    pointer-events: none;
+}
+
+.slms-sidebar .slms-tpl-card {
+    display: flex;
+    flex-direction: column;
+    height: 110px;
+    overflow: hidden;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.5rem;
+    background: var(--bs-white, #fff);
+}
+
+.slms-sidebar .slms-tpl-insert {
+    flex: 0 0 auto;
+    cursor: pointer;
+}
+
+.slms-sidebar .slms-tpl-meta {
+    flex: 0 0 auto;
+    padding: 0.25rem 0.375rem;
+    border-top: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+.tiny_studiolms .slms-sidebar .slms-tpl-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--bs-body-color, #212529);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.3;
+    margin: 0;
+}
+
+.slms-sidebar .slms-tpl-icon {
+    display: none;
+}
+
+.slms-sidebar .slms-preset-badge {
+    display: none;
+}
+
+.slms-sidebar .slms-tpl-card .slms-tpl-actions {
+    display: none;
+}
+
+/* Mine and favourites: auto height to accommodate the action row */
+.slms-sidebar.slms-tab-mine .slms-tpl-card,
+.slms-sidebar.slms-tab-favourites .slms-tpl-card {
+    height: auto;
+}
+
+.slms-sidebar.slms-tab-mine .slms-tpl-thumb,
+.slms-sidebar.slms-tab-favourites .slms-tpl-thumb {
+    flex: 0 0 88px;
+}
+
+.slms-sidebar.slms-tab-mine .slms-tpl-card .slms-tpl-actions,
+.slms-sidebar.slms-tab-favourites .slms-tpl-card .slms-tpl-actions {
+    display: inline-flex;
+    padding: 0.25rem 0.375rem;
+}
+
+.slms-sidebar.slms-tab-mine .slms-btn-fav,
+.slms-sidebar.slms-tab-mine .slms-btn-tpl-delete,
+.slms-sidebar.slms-tab-favourites .slms-btn-fav {
+    width: 22px;
+    height: 22px;
+    font-size: 0.7rem;
+}
+
+.slms-sidebar.slms-tab-mine .slms-tpl-select {
+    width: 0.85rem;
+    height: 0.85rem;
+}
+
+.slms-sidebar.slms-tab-favourites .slms-tpl-select,
+.slms-sidebar.slms-tab-favourites .slms-btn-tpl-delete {
+    display: none;
+}
+
+/* Sidebar collapse toggle — thin handle with floating pill chevron */
+.tiny_studiolms .slms-sidebar-toggle {
+    flex: 0 0 18px;
+    width: 18px;
+    border: none;
+    background: transparent;
+    /* The divider is also the drag handle for resizing the sidebar. */
+    cursor: col-resize;
+    touch-action: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    position: relative;
+    outline: none;
+}
+
+.tiny_studiolms .slms-sidebar-toggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: var(--bs-border-color, #dee2e6);
+    transform: translateX(-50%);
+    transition: background 0.2s ease, width 0.2s ease;
+}
+
+.tiny_studiolms .slms-sidebar-toggle:hover::before {
+    background: rgba(13, 71, 161, 0.35);
+    width: 2px;
+}
+
+.tiny_studiolms #slms-sidebar-toggle-icon {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 26px;
+    border-radius: 4px;
+    background: var(--bs-white, #fff);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    font-size: 0.6rem;
+    color: var(--bs-secondary-color, #6c757d);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+    user-select: none;
+    pointer-events: none;
+}
+
+.tiny_studiolms .slms-sidebar-toggle:focus-visible #slms-sidebar-toggle-icon {
+    border-color: rgba(13, 71, 161, 0.5);
+    box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.2);
+}
+
+.tiny_studiolms .slms-sidebar-toggle:hover #slms-sidebar-toggle-icon {
+    background: var(--slms-brand-bg, #e9f3ff);
+    color: var(--slms-brand, #0d47a1);
+    border-color: rgba(13, 71, 161, 0.35);
+    box-shadow: 0 2px 8px rgba(13, 71, 161, 0.15);
+    transform: scale(1.15);
+}
+
+/* Sidebar collapsed state */
+.tiny_studiolms .slms-sidebar {
+    transition: flex-basis 0.25s ease, min-width 0.25s ease;
+    overflow: hidden;
+}
+
+.tiny_studiolms .slms-sidebar.slms-sidebar-collapsed {
+    flex-basis: 0;
+    width: 0;
+    min-width: 0;
+    border-inline-end: none;
+}
+
+/* Nothing to resize while collapsed: the divider only expands the sidebar again. */
+.tiny_studiolms .slms-sidebar.slms-sidebar-collapsed + .slms-sidebar-toggle {
+    cursor: pointer;
+}
+
+/* While dragging, the sidebar must follow the pointer without the collapse animation lagging behind. */
+.tiny_studiolms .slms-composer-layout.slms-resizing {
+    cursor: col-resize;
+    user-select: none;
+}
+
+.tiny_studiolms .slms-composer-layout.slms-resizing .slms-sidebar {
+    transition: none;
+}
+
+.tiny_studiolms .slms-card {
+    background: var(--bs-white, #fff);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    overflow: hidden;
+}
+
+.tiny_studiolms .slms-card:hover,
+.tiny_studiolms .slms-card:focus {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+    border-color: var(--bs-primary, #0f6cbf);
+    outline: none;
+}
+
+.tiny_studiolms .slms-card-thumb-wrapper {
+    height: 130px;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--bs-white, #fff);
+    padding: 15px;
+}
+
+.tiny_studiolms .slms-card-thumb-content {
+    transform: scale(0.45);
+    transform-origin: top left;
+    width: 220%;
+    pointer-events: none;
+}
+
+.tiny_studiolms .slms-tpl-card {
+    background: var(--bs-white, #fff);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.tiny_studiolms .slms-tpl-insert {
+    cursor: pointer;
+}
+
+.tiny_studiolms .slms-tpl-card:hover,
+.tiny_studiolms .slms-tpl-insert:focus {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    border-color: var(--bs-primary, #0f6cbf);
+    outline: none;
+}
+
+.tiny_studiolms .slms-tpl-thumb {
+    height: 140px;
+    overflow: hidden;
+    background: var(--bs-gray-100, #f8f9fa);
+    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+    padding: 12px;
+    cursor: pointer;
+}
+
+.tiny_studiolms .slms-tpl-thumb-content {
+    display: block;
+    transform: scale(0.32);
+    transform-origin: top left;
+    width: 312%;
+    height: 320px;
+    border: 0;
+    background: transparent;
+    pointer-events: none;
+}
+
+.tiny_studiolms .slms-tpl-thumb-content img,
+.tiny_studiolms .slms-tpl-thumb-content video,
+.tiny_studiolms .slms-tpl-thumb-content iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+.tiny_studiolms .slms-tpl-meta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0.75rem;
+}
+
+.tiny_studiolms .slms-tpl-name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.tiny_studiolms .slms-tpl-icon {
+    flex: 0 0 auto;
+}
+
+.tiny_studiolms .slms-tpl-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--bs-body-color, #212529);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tiny_studiolms .slms-tpl-actions {
+    border-top: 1px solid var(--bs-border-color, #dee2e6);
+    padding: 0.5rem 0.75rem 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.tiny_studiolms .slms-tpl-select {
+    cursor: pointer;
+    flex: 0 0 auto;
+    width: 1rem;
+    height: 1rem;
+}
+
+.tiny_studiolms .slms-tpl-card.slms-selected {
+    border-color: var(--bs-primary, #0f6cbf);
+    box-shadow: 0 0 0 3px rgba(15, 108, 191, 0.15);
+}
+
+.tiny_studiolms .slms-btn-fav,
+.tiny_studiolms .slms-btn-tpl-delete {
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 999px;
+    background: var(--bs-white, #fff);
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--bs-secondary, #6c757d);
+}
+
+.tiny_studiolms .slms-btn-fav.active {
+    border-color: var(--bs-warning, #ffc107);
+    background: var(--bs-warning-bg-subtle, #fff3cd);
+    color: var(--bs-warning, #ffc107);
+}
+
+.tiny_studiolms .slms-btn-fav:hover {
+    background: var(--bs-gray-100, #f8f9fa);
+    color: var(--bs-warning, #ffc107);
+}
+
+.tiny_studiolms .slms-btn-tpl-delete:hover {
+    background: var(--bs-danger-bg-subtle, #f8d7da);
+    border-color: var(--bs-danger, #dc3545);
+    color: var(--bs-danger, #dc3545);
+}
+
+/* -----------------------------------------
+   COMPOSER MAIN AREA
+   ----------------------------------------- */
+
+.tiny_studiolms .slms-composer-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    background: var(--bs-gray-100, #f8f9fa);
+}
+
+/* Top Toolbar row — contextual per selected block */
+.tiny_studiolms .slms-toolbar-row {
+    flex: 0 0 auto;
+    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+    background: var(--bs-white, #fff);
+    padding: 0.4rem 1rem;
+    flex-wrap: wrap;
+    min-height: 46px;
+}
+
+.tiny_studiolms .slms-toolbar-empty-hint {
+    font-size: 0.78rem;
+    color: var(--bs-secondary-color, #6c757d);
+    font-style: italic;
+}
+
+/* Canvas wrapper — holds scrollable area + zoom overlay */
+.tiny_studiolms .slms-canvas-wrapper {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Scrollable canvas area */
+.tiny_studiolms .slms-canvas-area {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-image: radial-gradient(var(--bs-border-color, #dee2e6) 1px, transparent 0);
+    background-size: 20px 20px;
+    background-color: var(--bs-gray-100, #f1f3f5);
+    padding: 1.25rem;
+}
+
+/* List of canvas blocks */
+.tiny_studiolms .slms-canvas-blocks-list {
+    display: flex;
+    flex-direction: column;
+    /* Wide enough for the floating block header, which sits in the gap above each block. */
+    gap: 2.25rem;
+    padding-top: 1rem;
+    max-width: 860px;
+    margin: 0 auto;
+    transform-origin: top center;
+    transition: transform 0.15s ease-out;
+}
+
+/* Single canvas block wrapper */
+.tiny_studiolms .slms-canvas-block {
+    position: relative;
+    border: 2px solid transparent;
+    border-radius: 0.5rem;
+    background: var(--bs-white, #fff);
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tiny_studiolms .slms-canvas-block:hover {
+    border-color: rgba(13, 71, 161, 0.25);
+    box-shadow: 0 2px 8px rgba(13, 71, 161, 0.07);
+}
+
+.tiny_studiolms .slms-canvas-block.slms-active-block {
+    border-color: var(--slms-brand, #0d47a1);
+    box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1);
+}
+
+/*
+ * Block header — visible on hover / active.
+ *
+ * It sits in the gap above the block, out of the layout flow. It used to be display: none and then
+ * display: flex, which pushed the block's content down by the header height every time the pointer
+ * entered or left; the pointer then ended up over a different block, which switched the highlight
+ * again, so the blocks "pulsed" and clicking a button inside one made it jump.
+ */
+.tiny_studiolms .slms-canvas-block-header {
+    visibility: hidden;
+    position: absolute;
+    /* The block has a 2px border, so reach past the padding box to line up with its outer edge. */
+    inset-inline: -2px;
+    bottom: calc(100% + 2px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.3rem 0.6rem;
+    background: var(--slms-brand-bg, #e9f3ff);
+    border-bottom: 1px solid rgba(13, 71, 161, 0.12);
+    border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.tiny_studiolms .slms-canvas-block:hover .slms-canvas-block-header,
+.tiny_studiolms .slms-canvas-block.slms-active-block .slms-canvas-block-header {
+    visibility: visible;
+}
+
+.tiny_studiolms .slms-canvas-block-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--slms-brand, #0d47a1);
+    user-select: none;
+}
+
+.tiny_studiolms .slms-canvas-block-actions {
+    display: flex;
+    gap: 0.2rem;
+}
+
+.tiny_studiolms .slms-canvas-block-action-btn {
+    background: transparent;
+    border: 1px solid rgba(13, 71, 161, 0.2);
+    border-radius: 4px;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: var(--slms-brand, #0d47a1);
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    transition: background 0.15s ease;
+}
+
+.tiny_studiolms .slms-canvas-block-action-btn:hover {
+    background: rgba(13, 71, 161, 0.1);
+}
+
+.tiny_studiolms .slms-canvas-block-action-btn.slms-btn-block-remove {
+    border-color: rgba(220, 53, 69, 0.3);
+    color: var(--bs-danger, #dc3545);
+}
+
+.tiny_studiolms .slms-canvas-block-action-btn.slms-btn-block-remove:hover {
+    background: rgba(220, 53, 69, 0.08);
+}
+
+/* Block preview area */
+.tiny_studiolms .slms-canvas-block-preview {
+    padding: 0.75rem;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Empty canvas state */
+.tiny_studiolms .slms-canvas-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+    text-align: center;
+    padding: 2rem;
+    color: var(--bs-secondary-color, #6c757d);
+}
+
+.tiny_studiolms .slms-canvas-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.tiny_studiolms .slms-canvas-empty-text {
+    font-size: 0.9rem;
+    max-width: 280px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Toolbar (shared styles for buttons inside toolbar row) */
+.tiny_studiolms .slms-toolbar {
+    flex-wrap: wrap;
+}
+
+/* Segmented control wrapper */
+.tiny_studiolms .slms-toolbar-seg {
+    display: inline-flex;
+    background: var(--bs-gray-200, #e9ecef);
+    border-radius: 0.5rem;
+    padding: 3px;
+    gap: 2px;
+}
+
+/* Toolbar Buttons — segment style */
+.tiny_studiolms .slms-toolbar-btn {
+    background: transparent;
+    border: none;
+    padding: 0.3rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--bs-gray-600, #6c757d);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    white-space: nowrap;
+}
+
+.tiny_studiolms .slms-toolbar-btn:hover {
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--slms-brand, #0d47a1);
+}
+
+.tiny_studiolms .slms-toolbar-btn.active {
+    background: var(--bs-white, #fff);
+    color: var(--slms-brand, #0d47a1);
+    font-weight: 700;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(13, 71, 161, 0.18);
+}
+
+/* slms-preview-panel kept for backward compatibility with any lingering references */
+.tiny_studiolms .slms-preview-panel {
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+/* -----------------------------------------
+   ZOOM CONTROLS
+   ----------------------------------------- */
+.tiny_studiolms .slms-zoom-controls {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    background: var(--bs-white, #fff);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 2rem;
+    display: flex;
+    align-items: center;
+    padding: 0.25rem;
+    z-index: 10;
+}
+
+.tiny_studiolms .slms-zoom-controls button {
+    background: transparent;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--bs-gray-700, #495057);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.tiny_studiolms .slms-zoom-controls button:hover {
+    background: var(--bs-gray-200, #e9ecef);
+}
+
+.tiny_studiolms .slms-zoom-controls span {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--bs-gray-700, #495057);
+    min-width: 45px;
+    text-align: center;
+    user-select: none;
+}
+
+/* -----------------------------------------
+   NAVIGATION TABS
+   ----------------------------------------- */
+.tiny_studiolms .slms-tabs .nav-link {
+    font-weight: 500;
+    color: var(--bs-secondary, #6c757d);
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.tiny_studiolms .slms-tabs .nav-link:hover {
+    color: var(--slms-brand, #0d47a1);
+    border-bottom-color: rgba(13, 71, 161, 0.25);
+    background-color: rgba(13, 71, 161, 0.03);
+}
+
+.tiny_studiolms .slms-tabs .nav-link.active {
+    color: var(--slms-brand, #0d47a1);
+    font-weight: 600;
+    border-bottom: 3px solid var(--slms-brand, #0d47a1);
+    background-color: transparent;
+}
+
+/* -----------------------------------------
+   GENERAL UTILITIES & INJECTED STYLES
+   ----------------------------------------- */
+.tiny_studiolms .slms-color-picker {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.25rem;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+/* Modal Native Overrides */
+.studiolms-modal-dialog {
+    max-width: 92vw;
+}
+
+@media (min-width: 1400px) {
+    .studiolms-modal-dialog {
+        max-width: 1320px;
+    }
+}
+
+.studiolms-modal-dialog .modal-content {
+    height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.studiolms-modal-dialog .modal-body.studiolms-modal-body {
+    padding: 0;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+
+/* Student-facing: accordion and resources icons animate on toggle.
+   Base state = -90deg so ▼ renders as ▶ (closed); open state = 0deg so ▼ shows naturally.
+   Uses .slms-closed class instead of [open] attribute — details/summary are stripped
+   by Moodle's HTMLPurifier (XHTML 1.0 Transitional doctype). */
+.studiolms-accordion-header .user-select-none,
+.studiolms-resources-summary .user-select-none {
+    display: inline-block;
+    transition: transform 0.3s ease;
+    transform: rotate(-90deg);
+}
+
+.studiolms-accordion:not(.slms-closed) .studiolms-accordion-header .user-select-none,
+.studiolms-resources:not(.slms-closed) .studiolms-resources-summary .user-select-none {
+    transform: rotate(0deg);
+}
+
+/* Hide content when accordion is closed — student view only (not in TinyMCE editor). */
+body:not(.mce-content-body) .studiolms-accordion.slms-closed > .studiolms-accordion-content,
+body:not(.mce-content-body) .studiolms-resources.slms-closed > .studiolms-resources-content {
+    display: none;
+}
+
+/* Resources popup utility classes. */
+.tiny_studiolms .slms-resources-select {
+    max-width: 130px;
+}
+.tiny_studiolms .slms-btn-fit {
+    height: fit-content;
+}
+/*
+ * Dashed grid slot borders are editor-only; hidden on the rendered page.
+ * The canvas preview needs them too: without them the empty columns and the gap of a grid block
+ * are invisible there, and there is nothing to show where the blocks will go.
+ */
+body.mce-content-body div.slms-grid-slot,
+.tiny_studiolms div#slms-live-preview div.slms-grid-slot,
+.tiny_studiolms div.slms-card-thumb-content div.slms-grid-slot,
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot {
+    border: 2px dashed var(--bs-border-color, #cbd5e1);
+    background-color: rgba(241, 245, 249, 0.4);
+    min-height: 70px;
+    border-radius: 8px;
+    padding: 8px;
+}
+/* Flex gap utilities — Bootstrap 4 has no gap-* classes; these fill the gap. */
+.tiny_studiolms .slms-gap-1 {
+    gap: 0.375rem;
+}
+.tiny_studiolms .slms-gap-2 {
+    gap: 0.5rem;
+}
+
+/* =========================================
+   STUDIOLMS: RUNTIME BLOCKS (NO INLINE CSS)
+   These selectors are unscoped so they apply
+   in the editor, modal preview, and rendered page.
+   ========================================= */
+
+.studiolms-editable-area,
+.slms-acc-title,
+.slms-heading-text,
+.slms-grid-title {
+    outline: none;
+}
+
+/* The page theme drops the margin under the last element of a text area; the preview and the editor did not. */
+.studiolms-editable-area > :last-child,
+.studiolms-accordion-content > :last-child,
+.slms-callout-content > :last-child {
+    margin-bottom: 0;
+}
+
+/* Accordion */
+.studiolms-accordion {
+    border: 1px solid var(--bs-border-color, #e2e8f0);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: var(--slms-bg, #fff);
+}
+
+.studiolms-accordion-summary {
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+}
+
+.studiolms-accordion-summary:focus-visible {
+    outline: 2px solid var(--bs-primary, #0d47a1);
+    outline-offset: -2px;
+}
+
+.studiolms-accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--slms-color, inherit);
+}
+
+.studiolms-accordion-content {
+    padding: 1.5rem;
+    border-top: 1px solid var(--bs-border-color, #e2e8f0);
+    background: transparent;
+    font-weight: normal;
+    color: var(--bs-body-color, #212529);
+    outline: none;
+}
+
+/* Button */
+a.studiolms-btn {
+    display: var(--slms-display, inline-flex);
+    width: var(--slms-w, auto);
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 24px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    border-radius: var(--slms-radius, 6px);
+    background-color: var(--slms-bg, #0d47a1);
+    color: var(--slms-color, #fff);
+    border: 1px solid transparent;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+a.studiolms-btn:hover,
+a.studiolms-btn:focus {
+    text-decoration: none;
+    color: var(--slms-color, #fff);
+    opacity: 0.88;
+}
+
+a.studiolms-btn:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 3px;
+    opacity: 1;
+}
+
+/* Callout */
+.studiolms-callout-wrap {
+    background-color: var(--slms-bg, #fef9c3);
+    border-inline-start: var(--slms-border-w, 4px) solid var(--slms-border-c, #eab308);
+    border-radius: var(--slms-radius, 6px);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.slms-callout-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.slms-callout-content {
+    flex-grow: 1;
+    color: var(--slms-text, inherit);
+    font-size: 1rem;
+    line-height: 1.5;
+    outline: none;
+    min-width: 0;
+}
+
+/* Card */
+.studiolms-card {
+    display: flex;
+    flex-direction: var(--slms-dir, column);
+    background-color: var(--slms-bg, #fff);
+    color: var(--slms-color, #333);
+    border: 1px solid var(--bs-border-color, #e2e8f0);
+    border-inline-start: 6px solid var(--slms-border-c, #0d47a1);
+    border-radius: var(--slms-radius, 8px);
+    box-shadow: var(--slms-shadow, none);
+    overflow: hidden;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5rem 0;
+}
+
+.studiolms-card-media {
+    flex: var(--slms-media-flex, 1 1 auto);
+    min-height: 200px;
+    border-inline-end: var(--slms-media-border-r, none);
+    border-bottom: var(--slms-media-border-b, 1px solid var(--bs-border-color, #e2e8f0));
+}
+
+.studiolms-card-media img {
+    max-width: 100%;
+}
+
+.studiolms-card-content {
+    flex: 1 1 auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Card horizontal layout class — survives HTML Purifier */
+.studiolms-card.slms-horizontal {
+    flex-direction: row;
+}
+
+.studiolms-card.slms-horizontal .studiolms-card-media {
+    flex: 0 0 35%;
+    border-inline-end: 1px solid var(--bs-border-color, #e2e8f0);
+    border-bottom: none;
+}
+
+/* Grid Container */
+.studiolms-grid-wrap {
+    background: var(--slms-bg, transparent);
+    border: var(--slms-border, none);
+    border-radius: var(--slms-radius, 0);
+    padding: var(--slms-pad, 0);
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 1.5rem;
+}
+
+.studiolms-grid-content {
+    display: grid;
+    gap: var(--slms-gap, 20px);
+    grid-template-columns: var(--slms-cols, repeat(2, 1fr));
+}
+
+/* Grid column utility classes — survive HTML Purifier (class attr preserved, inline CSS vars stripped) */
+.studiolms-grid-content.slms-cols-1 {
+    grid-template-columns: 1fr;
+}
+
+.studiolms-grid-content.slms-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.studiolms-grid-content.slms-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.studiolms-grid-content.slms-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* Grid gap utility classes */
+.studiolms-grid-content.slms-gap-0 {
+    gap: 0;
+}
+
+.studiolms-grid-content.slms-gap-4 {
+    gap: 4px;
+}
+
+.studiolms-grid-content.slms-gap-8 {
+    gap: 8px;
+}
+
+.studiolms-grid-content.slms-gap-12 {
+    gap: 12px;
+}
+
+.studiolms-grid-content.slms-gap-16 {
+    gap: 16px;
+}
+
+.studiolms-grid-content.slms-gap-20 {
+    gap: 20px;
+}
+
+.studiolms-grid-content.slms-gap-24 {
+    gap: 24px;
+}
+
+.studiolms-grid-content.slms-gap-32 {
+    gap: 32px;
+}
+
+/* Heading */
+.studiolms-heading-h3 {
+    background-color: var(--slms-bg, transparent);
+    color: var(--slms-color, inherit);
+    padding: 8px;
+    border-radius: 6px;
+    margin: 0;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.studiolms-heading-h4 {
+    background-color: var(--slms-bg, transparent);
+    border-inline-start: 6px solid var(--slms-color, inherit);
+    padding: 8px;
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--bs-body-color, #333);
+    display: flex;
+    align-items: center;
+}
+
+/* Table */
+.studiolms-table th {
+    background-color: var(--slms-bg, #0f172a);
+    color: var(--slms-color, #fff);
+    padding: 12px;
+    border: 1px solid var(--bs-border-color, rgba(0, 0, 0, 0.1));
+    font-weight: 600;
+    text-align: start;
+    vertical-align: middle;
+    /* Course content breaks words anywhere, which lets the table squeeze a short heading to a few letters. */
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+/* Resources */
+.studiolms-resources {
+    border: 1px solid var(--bs-border-color, #e2e8f0);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: var(--slms-bg, #fff);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.studiolms-resources-summary {
+    background-color: var(--slms-header-bg, #f8f9fa);
+    border-bottom: 1px solid var(--bs-border-color, #e2e8f0);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.studiolms-resources-summary:focus-visible {
+    outline: 2px solid var(--bs-primary, #0d47a1);
+    outline-offset: -2px;
+}
+
+.studiolms-resources-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: var(--slms-dir, column);
+    flex-wrap: var(--slms-wrap, nowrap);
+    gap: 0.75rem;
+}
+
+/* Resources grid layout class — survives HTML Purifier */
+.studiolms-resources-list.slms-dir-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.studiolms-resources-list li {
+    list-style: none;
+}
+
+a.studiolms-resources-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: var(--bs-white, #fff);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-inline-start: 4px solid var(--slms-type-c, #6c757d);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--bs-body-color, #212529);
+    font-weight: 500;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+}
+
+a.studiolms-resources-item:hover {
+    text-decoration: none;
+    transform: translateX(2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    color: var(--bs-body-color, #212529);
+}
+
+a.studiolms-resources-item:focus-visible {
+    outline: 2px solid var(--slms-type-c, #0d47a1);
+    outline-offset: 2px;
+}
+
+/* =========================================
+   STUDIOLMS: HOVER EFFECTS (.slms-hov-*)
+   Class-based — survives Moodle HTMLPurifier.
+   ========================================= */
+
+.slms-hov-scale {
+    transition: transform 0.2s ease;
+}
+
+.slms-hov-scale:hover {
+    transform: scale(1.04);
+}
+
+.slms-hov-glow {
+    transition: filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.slms-hov-glow:hover {
+    filter: brightness(1.06);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.slms-hov-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.slms-hov-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+/* -----------------------------------------
+   PROPERTIES PANEL — SECTION GROUPS
+   ----------------------------------------- */
+
+/* Card wrapper for sub-sections (e.g. Interatividade e sons) */
+.tiny_studiolms .slms-section-group {
+    background: var(--slms-brand-subtle, #f0f6ff);
+    border: 1px solid rgba(13, 71, 161, 0.1);
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.75rem;
+    margin-top: 0.75rem;
+}
+
+/* Uppercase micro-label for section group headings */
+.tiny_studiolms .slms-section-title {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: rgba(13, 71, 161, 0.7);
+    margin-bottom: 0.5rem;
+}
+
+/* Compact select used in inline label-control rows */
+.tiny_studiolms .slms-select-compact {
+    max-width: 150px;
+}
+
+/* Short label input in side-by-side pairs (e.g. profilecard links) */
+.tiny_studiolms .slms-input-label {
+    max-width: 90px;
+    flex-shrink: 0;
+}
+
+/* =========================================
+   STUDIOLMS: MODAL & POPUP UI (NO INLINE CSS)
+   ========================================= */
+
+.tiny_studiolms .slms-live-preview-box {
+    transform-origin: top center;
+    transition: transform 0.2s ease-out;
+}
+
+.tiny_studiolms .slms-resources-list {
+    max-height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 5px;
+}
+
+/* =========================================
+   AI GENERATOR: INLINE PREVIEW
+   ========================================= */
+
+.tiny_studiolms .slms-ai-preview-box {
+    max-height: 360px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* =========================================
+   PROFILE CARD
+   ========================================= */
+
+.studiolms-profilecard {
+    background: var(--slms-pc-bg, #fff);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.75rem;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.studiolms-profilecard .slms-pc-photo {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--slms-pc-accent, #0f6cbf);
+    display: block;
+    margin: 0 auto 1rem;
+}
+
+.studiolms-profilecard .slms-pc-photo-placeholder {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: var(--bs-light, #f8f9fa);
+    border: 3px solid var(--slms-pc-accent, #0f6cbf);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.8rem;
+    margin: 0 auto 1rem;
+}
+
+.studiolms-profilecard .slms-pc-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0 0 0.2rem;
+    color: inherit;
+}
+
+.studiolms-profilecard .slms-pc-role {
+    font-size: 0.8rem;
+    color: var(--slms-pc-accent, #0f6cbf);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 0.75rem;
+}
+
+.studiolms-profilecard .slms-pc-bio {
+    font-size: 0.875rem;
+    color: var(--bs-secondary-color, #6c757d);
+    line-height: 1.55;
+    margin: 0 0 1.25rem;
+}
+
+.studiolms-profilecard .slms-pc-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    justify-content: center;
+}
+
+.studiolms-profilecard .slms-pc-link {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    border: 1px solid var(--slms-pc-accent, #0f6cbf);
+    border-radius: 999px;
+    color: var(--slms-pc-accent, #0f6cbf);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+}
+
+.studiolms-profilecard .slms-pc-link:hover {
+    background: var(--slms-pc-accent, #0f6cbf);
+    color: var(--bs-white, #fff);
+    text-decoration: none;
+}
+
+/*
+ * Moove underlines the links of a label and of an activity page with id-level selectors
+ * (body.pagelayout-course #region-main .modtype_label a:not(.btn) and the same for body.pagelayout-incourse),
+ * which no class selector above can outrank. The links a block draws as a button, an item or a pill repeat that
+ * chain with one more class, so they look on the page the way they do in the editor and the preview.
+ */
+body #region-main [data-slms-block-type] a.studiolms-btn.studiolms-btn:not(.btn),
+body #region-main [data-slms-block-type] a.studiolms-btn.studiolms-btn:not(.btn):hover,
+body #region-main [data-slms-block-type] a.studiolms-btn.studiolms-btn:not(.btn):focus,
+body #region-main [data-slms-block-type] a.studiolms-resources-item.studiolms-resources-item:not(.btn),
+body #region-main [data-slms-block-type] a.studiolms-resources-item.studiolms-resources-item:not(.btn):hover,
+body #region-main [data-slms-block-type] a.studiolms-resources-item.studiolms-resources-item:not(.btn):focus,
+body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn),
+body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):hover,
+body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):focus {
+    text-decoration: none;
+}
+
+/* -----------------------------------------
+   AI CHAT TAB
+   ----------------------------------------- */
+
+.tiny_studiolms .slms-chat-section {
+    height: 100%;
+    min-height: 0;
+}
+
+.tiny_studiolms .slms-chat-messages-area {
+    min-height: 120px;
+    max-height: 340px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    scroll-behavior: smooth;
+}
+
+.tiny_studiolms .slms-chat-message {
+    display: flex;
+    flex-direction: column;
+    max-width: 90%;
+}
+
+.tiny_studiolms .slms-chat-message-user {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.tiny_studiolms .slms-chat-message-assistant {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.tiny_studiolms .slms-chat-bubble {
+    padding: 0.5rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.tiny_studiolms .slms-chat-message-user .slms-chat-bubble {
+    background: var(--bs-primary, #0d6efd);
+    color: var(--bs-white, #fff);
+    border-bottom-right-radius: 3px;
+}
+
+.tiny_studiolms .slms-chat-message-assistant .slms-chat-bubble {
+    background: var(--bs-light, #f8f9fa);
+    color: var(--bs-body-color, #212529);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-bottom-left-radius: 3px;
+}
+
+.tiny_studiolms .slms-chat-provider {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--bs-secondary, #6c757d);
+    margin-top: 3px;
+    padding-inline-start: 2px;
+}
+
+.tiny_studiolms .slms-chat-action-card {
+    background: var(--bs-primary-bg-subtle, #cfe2ff);
+    border-top: 1px solid var(--bs-primary-border-subtle, #9ec5fe);
+}
+
+.tiny_studiolms .slms-chat-input {
+    resize: none;
+    font-size: 0.875rem;
+}
+
+.tiny_studiolms .slms-chat-send-btn {
+    flex-shrink: 0;
+    align-self: flex-end;
+}
+
+/* Mind Map popup */
+.tiny_studiolms .slms-popup-mindmap-edit {
+    min-width: 260px;
+}
+
+.tiny_studiolms .slms-mm-branches-area {
+    font-size: 12px;
+    resize: vertical;
+    width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.tiny_studiolms .slms-mm-theme-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.tiny_studiolms .slms-mm-theme-btn:hover {
+    transform: scale(1.15);
+}
+
+.tiny_studiolms .slms-mm-theme-btn.selected {
+    border-color: var(--bs-body-color, #212529);
+    box-shadow: 0 0 0 2px var(--bs-body-bg, #fff);
+}
+
+/* Mind Map block in editor */
+.slms-mindmap-block {
+    display: block;
+    margin: 1rem 0;
+    line-height: 0;
+}
+
+.slms-mindmap-block:focus-visible {
+    outline: 2px solid var(--bs-primary, #0d47a1);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+/* ── Infographic popup ─────────────────────────────────────────────────── */
+
+/* No extra padding — the parent slms-properties-content already has 1rem */
+.tiny_studiolms .slms-popup-infographic-edit {
+    min-width: 240px;
+}
+
+/* Item rows: tight vertical rhythm */
+.tiny_studiolms .slms-ig-item-row {
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+/* Visual icon-picker trigger button — same height as form-control-sm (26px) */
+.tiny_studiolms .slms-ig-icon-btn {
+    width: 30px;
+    height: 26px;
+    border-radius: 4px;
+    border: 1px solid var(--bs-border-color, #ced4da);
+    background: var(--bs-tertiary-bg, #f8f9fa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--bs-primary, #1d4ed8);
+    flex-shrink: 0;
+    padding: 0;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.tiny_studiolms .slms-ig-icon-btn:hover {
+    background: var(--bs-secondary-bg, #e9ecef);
+    border-color: var(--bs-primary, #1d4ed8);
+}
+
+/* Value input: fixed narrow width */
+.tiny_studiolms .slms-ig-value-col {
+    flex: 0 0 58px;
+    min-width: 0;
+}
+
+/* Label input: fills remaining space */
+.tiny_studiolms .slms-ig-label-col {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Icon picker overlay (appended to document.body, position:fixed) */
+.slms-ig-icon-picker {
+    position: fixed;
+    z-index: 99999;
+    background: var(--bs-body-bg, #fff);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 10px;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(5, 32px);
+    gap: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.slms-ig-icon-option {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    background: transparent;
+    color: var(--bs-body-color, #495057);
+    padding: 0;
+    transition: background 0.1s ease, border-color 0.1s ease;
+}
+
+.slms-ig-icon-option:hover {
+    background: var(--bs-secondary-bg, #e9ecef);
+    border-color: var(--bs-border-color, #ced4da);
+    color: var(--bs-primary, #1d4ed8);
+}
+
+.tiny_studiolms .slms-ig-theme-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.tiny_studiolms .slms-ig-theme-btn:hover {
+    transform: scale(1.15);
+}
+
+.tiny_studiolms .slms-ig-theme-btn.selected {
+    border-color: var(--bs-body-color, #212529);
+    box-shadow: 0 0 0 2px var(--bs-body-bg, #fff);
+}
+
+/* ── Infographic block (rendered in content area) ──────────────────────── */
+.slms-infographic-block {
+    display: block;
+    margin: 1rem 0;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.slms-infographic-block:focus-visible {
+    outline: 2px solid var(--bs-primary, #0d47a1);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.slms-infographic__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    letter-spacing: -0.01em;
+}
+
+/* Stats layout */
+.slms-infographic--stats .slms-infographic__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.slms-infographic--stats .slms-infographic__stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+    flex: 1 1 140px;
+    max-width: 200px;
+    min-width: 120px;
+    gap: 0.4rem;
+}
+
+.slms-infographic--stats .slms-infographic__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+}
+
+.slms-infographic--stats .slms-infographic__value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.slms-infographic--stats .slms-infographic__label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.3;
+    opacity: 0.9;
+}
+
+/* Steps block */
+.slms-infographic-steps-block {
+    display: block;
+    margin: 1rem 0;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.slms-infographic-steps-block:focus-visible {
+    outline: 2px solid var(--bs-primary, #0d47a1);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.slms-infographic-steps-block .slms-steps__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+}
+
+.slms-infographic-steps-block .slms-steps__list {
+    display: flex;
+    flex-direction: column;
+}
+
+.slms-infographic-steps-block .slms-steps__item {
+    display: flex;
+    gap: 1rem;
+}
+
+.slms-infographic-steps-block .slms-steps__left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.slms-infographic-steps-block .slms-steps__badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.slms-infographic-steps-block .slms-steps__connector {
+    flex: 1;
+    width: 2px;
+    min-height: 12px;
+    margin: 4px auto 0;
+    /* TinyMCE saves the empty element as &nbsp;, and a line of text would make the connector taller. */
+    font-size: 0;
+    line-height: 0;
+}
+
+.slms-infographic-steps-block .slms-steps__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.slms-infographic-steps-block .slms-steps__step-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.3;
+    padding-top: 0.55rem;
+}
+
+.slms-infographic-steps-block .slms-steps__step-desc {
+    font-size: 0.85rem;
+    font-weight: 400;
+    line-height: 1.4;
+    margin-top: 0.2rem;
+    opacity: 0.9;
+}
+
+/* Steps — horizontal layout */
+.slms-infographic-steps-block .slms-steps__list--h {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.slms-infographic-steps-block .slms-steps__item--h {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 70px;
+}
+
+.slms-infographic-steps-block .slms-steps__step-title--h {
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-top: 0.5rem;
+}
+
+.slms-infographic-steps-block .slms-steps__hconnector {
+    flex: 0 0 auto;
+    align-self: flex-start;
+    margin-top: 19px;
+    width: 28px;
+    min-width: 12px;
+    height: 2px;
+}
+
+/* Popup: step item rows */
+.slms-st-item-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.slms-st-icon-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    background: var(--bs-secondary-bg, #f8f9fa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--bs-secondary-color, #6c757d);
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: border-color 0.15s;
+}
+
+.slms-st-icon-btn:hover {
+    border-color: var(--bs-primary, #0d47a1);
+    color: var(--bs-primary, #0d47a1);
+}
+
+.slms-st-item-fields {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.slms-st-desc-input {
+    font-size: 0.8rem;
+}
+
+.slms-st-layout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    background: var(--bs-secondary-bg, #f8f9fa);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--bs-secondary-color, #6c757d);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.slms-st-layout-btn:hover {
+    border-color: var(--bs-primary, #0d47a1);
+    color: var(--bs-primary, #0d47a1);
+}
+
+.slms-st-layout-btn.selected {
+    border-color: var(--bs-primary, #0d47a1);
+    background: var(--bs-primary, #0d47a1);
+    color: var(--bs-white, #fff);
+}
+
+/* ==========================================================================
+   Infographic Features block
+   ========================================================================== */
+
+.slms-infographic-features-block {
+    font-family: inherit;
+}
+
+.slms-features__title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.slms-features__grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.slms-features__grid--2 {
+    grid-template-columns: 1fr 1fr;
+}
+
+.slms-features__grid--3 {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.slms-features__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.25rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid;
+    gap: 0.375rem;
+}
+
+.slms-features__icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    margin-bottom: 0.25rem;
+}
+
+.slms-features__name {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.slms-features__desc {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    margin-top: 0.125rem;
+}
+
+/* Features popup — column picker buttons */
+.slms-ft-icon-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    min-width: 2.25rem;
+    border-radius: 50%;
+    border: 2px solid var(--bs-border-color, #dee2e6);
+    background: var(--bs-light, #f8f9fa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+    color: var(--bs-body-color, #212529);
+}
+
+.slms-ft-icon-btn:hover {
+    border-color: var(--bs-primary, #0d47a1);
+    background: var(--bs-primary-bg-subtle, #cfe2ff);
+}
+
+.slms-ft-col-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.8125rem;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.375rem;
+    background: transparent;
+    cursor: pointer;
+    color: var(--bs-body-color, #212529);
+}
+
+.slms-ft-col-btn:hover {
+    border-color: var(--bs-primary, #0d47a1);
+    color: var(--bs-primary, #0d47a1);
+}
+
+.slms-ft-col-btn.selected {
+    border-color: var(--bs-primary, #0d47a1);
+    background: var(--bs-primary, #0d47a1);
+    color: var(--bs-white, #fff);
+}
+
+/* =========================================================
+   Infographic — Timeline block
+   ========================================================= */
+
+.slms-infographic-timeline-block {
+    font-family: inherit;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    background: var(--card-bg, #fff);
+}
+
+.slms-infographic-timeline-block:focus-visible {
+    outline: 3px solid var(--bs-primary, #0d47a1);
+    outline-offset: 2px;
+}
+
+.slms-timeline__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    line-height: 1.3;
+}
+
+.slms-timeline__list {
+    position: relative;
+}
+
+.slms-timeline__item {
+    display: flex;
+    gap: 1rem;
+    align-items: stretch;
+    margin-bottom: 0;
+}
+
+.slms-timeline__marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 1.125rem;
+    padding-top: 0.75rem;
+}
+
+.slms-timeline__dot {
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.slms-timeline__connector {
+    flex: 1;
+    width: 2px;
+    min-height: 0.75rem;
+    border-radius: 1px;
+    margin-top: 4px;
+}
+
+.slms-timeline__body {
+    flex: 1;
+    border: 1px solid;
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    margin-bottom: 0.75rem;
+}
+
+.slms-timeline__date {
+    display: inline-block;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.025em;
+    line-height: 1.4;
+}
+
+.slms-timeline__event-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 0.2rem;
+}
+
+.slms-timeline__event-desc {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+}
+
+/* Timeline popup — date + title row */
+.slms-tl-item-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+.slms-tl-item-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.slms-tl-date-title-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.slms-tl-date-input {
+    width: 100%;
+}
+
+/* ============================================================
+   Infographic — Comparison block
+   ============================================================ */
+
+.slms-infographic-comparison-block {
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+.slms-comparison__title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.3;
+}
+
+.slms-comparison__table {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.slms-comparison__header {
+    display: flex;
+}
+
+.slms-comparison__header-label {
+    flex: 1;
+    padding: 10px 12px;
+}
+
+.slms-comparison__header-col {
+    width: 80px;
+    flex-shrink: 0;
+    text-align: center;
+    padding: 10px 8px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    line-height: 1.3;
+}
+
+.slms-comparison__row {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid;
+}
+
+.slms-comparison__row:last-child {
+    border-bottom: 0;
+}
+
+.slms-comparison__row-label {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.slms-comparison__row-cell {
+    width: 80px;
+    flex-shrink: 0;
+    text-align: center;
+    padding: 8px 4px;
+    font-size: 1.125rem;
+}
+
+.slms-comparison__yes,
+.slms-comparison__no {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.slms-comparison__no {
+    color: var(--bs-secondary, #6c757d);
+}
+
+/* Comparison popup */
+.slms-cmp-header-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.slms-cmp-header-label {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.slms-cmp-col-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--bs-secondary, #6c757d);
+    text-transform: uppercase;
+}
+
+.slms-cmp-item-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.slms-cmp-label-input {
+    flex: 1;
+    min-width: 0;
+}
+
+.slms-cmp-check-col {
+    width: 36px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slms-cmp-checkbox {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* ── Chart block (rendered in content area) ────────────────────────────── */
+.slms-chart-block {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: var(--card-bg, #fff);
+    border: 1px solid var(--border-color, #e2e8f0);
+}
+
+.slms-chart-block:focus-visible {
+    outline: 2px solid var(--primary, #1d4ed8);
+    outline-offset: 2px;
+}
+
+.slms-chart__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--body-color, #1e293b);
+    margin-block-end: 0.75rem;
+    text-align: center;
+}
+
+.slms-chart__body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+}
+
+.slms-chart__wrap {
+    flex-shrink: 0;
+    width: 180px;
+}
+
+.slms-chart__svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.slms-chart__legend {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.slms-chart__legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+}
+
+.slms-chart__legend-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.slms-chart__legend-label {
+    color: var(--body-color, #1e293b);
+}
+
+.slms-chart__legend-pct {
+    font-weight: 600;
+    color: var(--body-color, #1e293b);
+}
+
+/* ── Chart popup ────────────────────────────────────────────────────────── */
+.tiny_studiolms .slms-popup-chart-edit {
+    min-width: 240px;
+}
+
+.tiny_studiolms .slms-ch-type-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--border-color, #cbd5e1);
+    border-radius: 0.375rem;
+    background: transparent;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    color: var(--body-color, #1e293b);
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.tiny_studiolms .slms-ch-type-btn.selected {
+    background: var(--primary, #1d4ed8);
+    border-color: var(--primary, #1d4ed8);
+    color: var(--bs-white, #fff);
+}
+
+.tiny_studiolms .slms-ch-row {
+    gap: 6px;
+    margin-block-end: 5px;
+}
+
+.tiny_studiolms .slms-ch-header {
+    gap: 6px;
+}
+
+.tiny_studiolms .slms-ch-dot-col {
+    width: 14px;
+    flex-shrink: 0;
+}
+
+.tiny_studiolms .slms-ch-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.tiny_studiolms .slms-ch-label-col {
+    flex: 1;
+    min-width: 0;
+}
+
+.tiny_studiolms .slms-ch-value-col {
+    flex: 0 0 52px;
+    min-width: 0;
+}
+
+/* ── Bar chart block (rendered in content area) ─────────────────────────── */
+.slms-chart-bar-block {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: var(--card-bg, #fff);
+    border: 1px solid var(--border-color, #e2e8f0);
+}
+
+.slms-chart-bar-block:focus-visible {
+    outline: 2px solid var(--primary, #1d4ed8);
+    outline-offset: 2px;
+}
+
+.slms-chart-bar__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--body-color, #1e293b);
+    margin-block-end: 0.75rem;
+    text-align: center;
+}
+
+.slms-chart-bar__wrap {
+    width: 100%;
+}
+
+.slms-chart-bar--vertical .slms-chart-bar__wrap {
+    max-width: 380px;
+    margin-inline: auto;
+}
+
+.slms-chart-bar__svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    /* The percentage after the longest bar runs a few units past the viewBox, and the block's padding has room. */
+    overflow: visible;
+}
+
+/* ── Bar chart popup ────────────────────────────────────────────────────── */
+.tiny_studiolms .slms-popup-chart-bar-edit {
+    min-width: 240px;
+}
+
+.tiny_studiolms .slms-cb-type-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--border-color, #cbd5e1);
+    border-radius: 0.375rem;
+    background: transparent;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    color: var(--body-color, #1e293b);
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.tiny_studiolms .slms-cb-type-btn.selected {
+    background: var(--primary, #1d4ed8);
+    border-color: var(--primary, #1d4ed8);
+    color: var(--bs-white, #fff);
+}
+
+.tiny_studiolms .slms-cb-row {
+    gap: 6px;
+    margin-block-end: 5px;
+}
+
+.tiny_studiolms .slms-cb-header {
+    gap: 6px;
+}
+
+.tiny_studiolms .slms-cb-dot-col {
+    width: 14px;
+    flex-shrink: 0;
+}
+
+.tiny_studiolms .slms-cb-dot {
+    flex-shrink: 0;
+}
+
+.tiny_studiolms .slms-cb-label-col {
+    flex: 1;
+    min-width: 0;
+}
+
+.tiny_studiolms .slms-cb-value-col {
+    flex: 0 0 52px;
+    min-width: 0;
+}
+
+/* ── Gauge block ──────────────────────────────────────────────────────────── */
+.slms-gauge-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.slms-gauge__title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--bs-body-color, #1e293b);
+    margin-block-end: 0.5rem;
+    text-align: center;
+}
+
+.slms-gauge__row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.slms-gauge__wrap {
+    flex: 1;
+    min-width: 140px;
+    max-width: 220px;
+}
+
+.slms-gauge__svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ── Gauge popup ──────────────────────────────────────────────────────────── */
+.tiny_studiolms .slms-popup-gauge-edit {
+    min-width: 240px;
+}
+
+.tiny_studiolms .slms-gf-row {
+    gap: 6px;
+    margin-block-end: 5px;
+}
+
+.tiny_studiolms .slms-gf-header {
+    gap: 6px;
+}
+
+.tiny_studiolms .slms-gf-dot-col {
+    width: 14px;
+    flex-shrink: 0;
+}
+
+.tiny_studiolms .slms-gf-dot {
+    flex-shrink: 0;
+}
+
+.tiny_studiolms .slms-gf-label-col {
+    flex: 1;
+    min-width: 0;
+}
+
+.tiny_studiolms .slms-gf-value-col {
+    flex: 0 0 52px;
+    min-width: 0;
+}
+
+/* ==========================================================================
+   RESPONSIVE — RENDERED BLOCKS (STUDENT VIEW) — max 575px
+   ========================================================================== */
+
+@media (max-width: 575.98px) {
+
+    .studiolms-grid-content.slms-cols-2,
+    .studiolms-grid-content.slms-cols-3,
+    .studiolms-grid-content.slms-cols-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .studiolms-card.slms-horizontal {
+        flex-direction: column;
+    }
+
+    .studiolms-card.slms-horizontal .studiolms-card-media {
+        flex: 0 0 auto;
+        border-inline-end: none;
+        border-bottom: 1px solid var(--bs-border-color, #e2e8f0);
+    }
+
+    .slms-features__grid--2,
+    .slms-features__grid--3 {
+        grid-template-columns: 1fr;
+    }
+
+    /* Horizontal steps collapse to vertical rows with badge on the left. */
+    .slms-infographic-steps-block .slms-steps__list--h {
+        flex-direction: column;
+    }
+
+    .slms-infographic-steps-block .slms-steps__item--h {
+        flex-direction: row;
+        text-align: start;
+        min-width: 0;
+    }
+
+    .slms-infographic-steps-block .slms-steps__step-title--h {
+        text-align: start;
+        margin-top: 0;
+        padding-top: 0.55rem;
+    }
+
+    .slms-infographic-steps-block .slms-steps__hconnector {
+        display: none;
+    }
+
+    /* Fixed 80px columns overflow narrow screens — horizontal scroll is safer than restructuring. */
+    .slms-infographic-comparison-block {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .studiolms-resources-list.slms-dir-row {
+        flex-direction: column;
+    }
+
+}
+
+/* ==========================================================================
+   RESPONSIVE — COMPOSER UI (EDITOR) — max 767px
+   ========================================================================== */
+
+@media (max-width: 767.98px) {
+
+    /* dvh accounts for the virtual keyboard; 88vh from the base rule acts as fallback. */
+    .studiolms-modal-dialog {
+        max-width: 100vw;
+        margin: 0;
+    }
+
+    .studiolms-modal-dialog .modal-content {
+        height: 90dvh;
+        border-radius: 0;
+    }
+
+    .tiny_studiolms .slms-logo-bar {
+        flex-wrap: wrap;
+        padding: 0.375rem 0.625rem;
+        gap: 0.25rem;
+    }
+
+    /* Row 1: logo. */
+    .tiny_studiolms .slms-logo-home-btn {
+        order: 1;
+        margin-inline-end: auto;
+    }
+
+    /* Row 2: tabs — hidden scrollbar, horizontal scroll. */
+    .tiny_studiolms .slms-sidebar-tabs {
+        order: 3;
+        flex: 0 0 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex-wrap: nowrap;
+        padding-block-end: 2px;
+    }
+
+    .tiny_studiolms .slms-sidebar-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Row 3: search field. */
+    .tiny_studiolms .slms-sidebar-search-wrap {
+        order: 4;
+        flex: 0 0 100%;
+        min-width: 0;
+        margin-inline-start: 0;
+    }
+
+    .tiny_studiolms .slms-composer-layout {
+        position: relative;
+    }
+
+    /* Sidebar becomes an overlay drawer; transform replaces the flex-basis animation. */
+    .tiny_studiolms .slms-sidebar,
+    .tiny_studiolms .slms-sidebar.slms-sidebar-collapsed {
+        position: absolute;
+        inset-block: 0;
+        inset-inline-start: 0;
+        z-index: 50;
+        height: 100%;
+        width: 270px;
+        min-width: 240px;
+        max-width: none;
+        border-inline-end: 1px solid var(--bs-border-color, #dee2e6);
+        flex-basis: auto;
+    }
+
+    .tiny_studiolms .slms-sidebar {
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+        transform: translateX(0);
+    }
+
+    .tiny_studiolms .slms-sidebar.slms-sidebar-collapsed {
+        transform: translateX(-100%);
+        box-shadow: none;
+    }
+
+    /* Larger touch target; z-index keeps it above the open drawer. The drawer has a fixed width, so no resize cursor. */
+    .tiny_studiolms .slms-sidebar-toggle {
+        flex: 0 0 36px;
+        width: 36px;
+        position: relative;
+        z-index: 51;
+        cursor: pointer;
+    }
+
+    .tiny_studiolms #slms-sidebar-toggle-icon {
+        width: 32px;
+        height: 36px;
+        font-size: 0.8rem;
+    }
+
+    /* Touch targets of at least 44px for the arrows above the component list. */
+    .tiny_studiolms .slms-split-btn {
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+
+}
+
+/*
+ * Utilities the blocks use by their Bootstrap 5 names and a Bootstrap 4 theme (Moodle 4.5) does not have. On a
+ * Bootstrap 5 theme the framework's own rule, the same value, takes over.
+ */
+[data-slms-block-type] .fs-5,
+.slms-canvas-block-preview .fs-5 {
+    font-size: 1.25rem;
+}
+
+[data-slms-block-type] .fw-bold,
+.slms-canvas-block-preview .fw-bold {
+    font-weight: 700;
+}
+
+[data-slms-block-type] .gap-1,
+.slms-canvas-block-preview .gap-1 {
+    gap: 0.25rem;
+}
+
+[data-slms-block-type] .object-fit-cover,
+.slms-canvas-block-preview .object-fit-cover {
+    object-fit: cover;
+}
