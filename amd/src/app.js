@@ -407,6 +407,12 @@ const addBlockToCanvas = async(blockDef, config = null, skipScroll = false) => {
         if (e.target.closest('.slms-canvas-block-actions')) {
             return;
         }
+        // Selecting rebuilds the whole toolbar and re-opens its first panel. Doing that for a block
+        // that is already active threw away the tab the author was on, so every extra click on the
+        // block made the properties panel flicker and jump back to the first tab.
+        if (blockEl.classList.contains('slms-active-block')) {
+            return;
+        }
         selectCanvasBlock(blockId);
     });
 
@@ -733,7 +739,7 @@ const renderPresetToHtml = async(preset) => {
         const config = Object.assign({}, blockDef.defaultData, block.config ?? {});
         parts.push(await renderSingleBlockForInsert(blockDef, config));
     }
-    return parts.join('<p><br></p>');
+    return parts.join('');
 };
 
 /**
@@ -752,7 +758,10 @@ const insertCanvasToEditor = async() => {
             parts.push(await renderSingleBlockForInsert(entry.blockDef, entry.config));
         }
 
-        const finalHtml = parts.join('<p><br></p>') + '<p><br></p>';
+        // Blocks go in back to back: an empty paragraph between them only added a blank line. The
+        // caret can still be placed between two non-editable blocks (TinyMCE's block caret), and the
+        // single paragraph at the end gives the author somewhere to keep typing after the last one.
+        const finalHtml = `${parts.join('')}<p><br></p>`;
 
         tinyEditorInstance.undoManager.transact(() => {
             if (targetEditNode && canvasBlocks.length === 1) {
@@ -790,16 +799,152 @@ const setupNavigation = (canManageGlobal = false) => {
     setupSaveTemplateButton(canManageGlobal);
 };
 
+/** Where the author's sidebar width is remembered between sessions. */
+const SIDEBAR_WIDTH_STORAGE_KEY = 'tiny_studiolms.sidebarWidth';
+/** Narrowest the sidebar may be dragged; matches the min-width in styles.css. */
+const SIDEBAR_MIN_WIDTH = 240;
+/** Widest the sidebar may be dragged, as a share of the composer width. */
+const SIDEBAR_MAX_SHARE = 0.6;
+/** Pixels the pointer must travel before a press on the handle counts as a drag, not a click. */
+const SIDEBAR_DRAG_THRESHOLD = 4;
+/** Pixels moved by each arrow key press. */
+const SIDEBAR_KEY_STEP = 24;
+/** Same breakpoint as the drawer layout in styles.css, where the sidebar overlays the canvas. */
+const SIDEBAR_DRAWER_QUERY = '(max-width: 767.98px)';
+
+/**
+ * Read the sidebar width saved by a previous session.
+ *
+ * Storage can be blocked (private windows, site data cleared), so any failure just means "no saved width".
+ *
+ * @returns {number|null}
+ */
+const readStoredSidebarWidth = () => {
+    try {
+        const stored = parseInt(window.localStorage.getItem(SIDEBAR_WIDTH_STORAGE_KEY), 10);
+        return Number.isFinite(stored) && stored >= SIDEBAR_MIN_WIDTH ? stored : null;
+    } catch (error) {
+        return null;
+    }
+};
+
+/**
+ * Remember the sidebar width for the next session; silently skipped when storage is unavailable.
+ *
+ * @param {number} width
+ */
+const storeSidebarWidth = (width) => {
+    try {
+        window.localStorage.setItem(SIDEBAR_WIDTH_STORAGE_KEY, String(Math.round(width)));
+    } catch (error) {
+        // The width simply falls back to the default the next time the composer opens.
+    }
+};
+
+/**
+ * Wire the divider between the sidebar and the canvas: a click collapses or expands the sidebar,
+ * dragging it (or the left/right arrow keys) resizes the sidebar.
+ */
 const setupSidebarToggle = () => {
     const btn = document.getElementById('slms-sidebar-toggle');
     const sidebar = document.getElementById('slms-sidebar');
     const icon = document.getElementById('slms-sidebar-toggle-icon');
+    const layout = sidebar ? sidebar.closest('.slms-composer-layout') : null;
 
-    if (!btn || !sidebar) {
+    if (!btn || !sidebar || !layout) {
         return;
     }
 
+    const isDrawer = () => window.matchMedia(SIDEBAR_DRAWER_QUERY).matches;
+    const isCollapsed = () => sidebar.classList.contains('slms-sidebar-collapsed');
+    // The sidebar sits on the inline-start side, so dragging towards the end widens it in LTR only.
+    const direction = () => (window.getComputedStyle(layout).direction === 'rtl' ? -1 : 1);
+
+    const applyWidth = (width) => {
+        const max = Math.max(SIDEBAR_MIN_WIDTH, Math.floor(layout.clientWidth * SIDEBAR_MAX_SHARE));
+        const clamped = Math.min(Math.max(Math.round(width), SIDEBAR_MIN_WIDTH), max);
+        layout.style.setProperty('--slms-sidebar-w', `${clamped}px`);
+        return clamped;
+    };
+
+    // The width the sidebar is heading for. Its rendered width trails this while the flex-basis
+    // transition runs, so stepping from the rendered width made quick key presses land on odd values.
+    const currentWidth = () => {
+        const target = parseFloat(layout.style.getPropertyValue('--slms-sidebar-w'));
+        return Number.isFinite(target) ? target : sidebar.getBoundingClientRect().width;
+    };
+
+    // Not clamped to the composer width here: the modal may not be laid out yet, and the max-width in
+    // styles.css already keeps an oversized saved value in bounds.
+    const savedWidth = readStoredSidebarWidth();
+    if (savedWidth !== null) {
+        layout.style.setProperty('--slms-sidebar-w', `${savedWidth}px`);
+    }
+
+    let drag = null;
+    // A drag ends with a click on the same element; it must not also collapse the sidebar.
+    let dragEnded = false;
+
+    btn.addEventListener('pointerdown', (event) => {
+        dragEnded = false;
+        if (event.button !== 0 || isDrawer() || isCollapsed()) {
+            return;
+        }
+        drag = {
+            pointerId: event.pointerId,
+            startX: event.clientX,
+            startWidth: currentWidth(),
+            moved: false,
+        };
+        btn.setPointerCapture(event.pointerId);
+    });
+
+    btn.addEventListener('pointermove', (event) => {
+        if (!drag || event.pointerId !== drag.pointerId) {
+            return;
+        }
+        const delta = (event.clientX - drag.startX) * direction();
+        if (!drag.moved && Math.abs(delta) < SIDEBAR_DRAG_THRESHOLD) {
+            return;
+        }
+        if (!drag.moved) {
+            drag.moved = true;
+            // Switches the width transition off for the duration of the drag, or the sidebar trails the pointer.
+            layout.classList.add('slms-resizing');
+        }
+        applyWidth(drag.startWidth + delta);
+    });
+
+    const endDrag = (event) => {
+        if (!drag || event.pointerId !== drag.pointerId) {
+            return;
+        }
+        const moved = drag.moved;
+        drag = null;
+        layout.classList.remove('slms-resizing');
+        if (moved) {
+            dragEnded = true;
+            storeSidebarWidth(currentWidth());
+        }
+    };
+    btn.addEventListener('pointerup', endDrag);
+    btn.addEventListener('pointercancel', endDrag);
+
+    btn.addEventListener('keydown', (event) => {
+        dragEnded = false;
+        if ((event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') || isDrawer() || isCollapsed()) {
+            return;
+        }
+        event.preventDefault();
+        const towardsEnd = event.key === 'ArrowRight' ? 1 : -1;
+        storeSidebarWidth(applyWidth(currentWidth() + towardsEnd * direction() * SIDEBAR_KEY_STEP));
+    });
+
     btn.addEventListener('click', () => {
+        if (dragEnded) {
+            dragEnded = false;
+            return;
+        }
         const collapsed = sidebar.classList.toggle('slms-sidebar-collapsed');
         if (icon) {
             icon.classList.toggle('fa-chevron-right', collapsed);
@@ -1213,7 +1358,7 @@ const setupSaveTemplateButton = (canManageGlobal = false) => {
                     for (const entry of canvasBlocks) {
                         parts.push(await renderSingleBlockForInsert(entry.blockDef, entry.config));
                     }
-                    const content = parts.join('<p><br></p>');
+                    const content = parts.join('');
                     await saveTemplate(name, content, isglobal);
                     showInlineFeedback(await getString('tpl_saved', 'tiny_studiolms'), 'success');
                     invalidateTabCache(isglobal ? 'global' : 'mine');

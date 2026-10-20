@@ -154,9 +154,11 @@
 
 /* Sidebar */
 .tiny_studiolms .slms-sidebar {
-    width: 270px;
+    /* --slms-sidebar-w is set by app.js when the author drags the divider; 270px is the default. */
+    width: var(--slms-sidebar-w, 270px);
     min-width: 240px;
-    flex: 0 0 270px;
+    max-width: 60%;
+    flex: 0 0 var(--slms-sidebar-w, 270px);
     display: flex;
     flex-direction: column;
     border-inline-end: 1px solid var(--bs-border-color, #dee2e6);
@@ -438,7 +440,9 @@
     width: 18px;
     border: none;
     background: transparent;
-    cursor: pointer;
+    /* The divider is also the drag handle for resizing the sidebar. */
+    cursor: col-resize;
+    touch-action: none;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -512,6 +516,21 @@
     width: 0;
     min-width: 0;
     border-inline-end: none;
+}
+
+/* Nothing to resize while collapsed: the divider only expands the sidebar again. */
+.tiny_studiolms .slms-sidebar.slms-sidebar-collapsed + .slms-sidebar-toggle {
+    cursor: pointer;
+}
+
+/* While dragging, the sidebar must follow the pointer without the collapse animation lagging behind. */
+.tiny_studiolms .slms-composer-layout.slms-resizing {
+    cursor: col-resize;
+    user-select: none;
+}
+
+.tiny_studiolms .slms-composer-layout.slms-resizing .slms-sidebar {
+    transition: none;
 }
 
 .tiny_studiolms .slms-card {
@@ -724,7 +743,9 @@
 .tiny_studiolms .slms-canvas-blocks-list {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    /* Wide enough for the floating block header, which sits in the gap above each block. */
+    gap: 2.25rem;
+    padding-top: 1rem;
     max-width: 860px;
     margin: 0 auto;
     transform-origin: top center;
@@ -751,9 +772,21 @@
     box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1);
 }
 
-/* Block header — visible on hover / active */
+/*
+ * Block header — visible on hover / active.
+ *
+ * It sits in the gap above the block, out of the layout flow. It used to be display: none and then
+ * display: flex, which pushed the block's content down by the header height every time the pointer
+ * entered or left; the pointer then ended up over a different block, which switched the highlight
+ * again, so the blocks "pulsed" and clicking a button inside one made it jump.
+ */
 .tiny_studiolms .slms-canvas-block-header {
-    display: none;
+    visibility: hidden;
+    position: absolute;
+    /* The block has a 2px border, so reach past the padding box to line up with its outer edge. */
+    inset-inline: -2px;
+    bottom: calc(100% + 2px);
+    display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0.3rem 0.6rem;
@@ -764,7 +797,7 @@
 
 .tiny_studiolms .slms-canvas-block:hover .slms-canvas-block-header,
 .tiny_studiolms .slms-canvas-block.slms-active-block .slms-canvas-block-header {
-    display: flex;
+    visibility: visible;
 }
 
 .tiny_studiolms .slms-canvas-block-title {
@@ -2794,6 +2827,7 @@ a.studiolms-resources-item:focus-visible {
         height: 100%;
         width: 270px;
         min-width: 240px;
+        max-width: none;
         border-inline-end: 1px solid var(--bs-border-color, #dee2e6);
         flex-basis: auto;
     }
@@ -2809,12 +2843,13 @@ a.studiolms-resources-item:focus-visible {
         box-shadow: none;
     }
 
-    /* Larger touch target; z-index keeps it above the open drawer. */
+    /* Larger touch target; z-index keeps it above the open drawer. The drawer has a fixed width, so no resize cursor. */
     .tiny_studiolms .slms-sidebar-toggle {
         flex: 0 0 36px;
         width: 36px;
         position: relative;
         z-index: 51;
+        cursor: pointer;
     }
 
     .tiny_studiolms #slms-sidebar-toggle-icon {
