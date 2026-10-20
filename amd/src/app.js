@@ -213,6 +213,7 @@ export const initStudioApp = (
     aiState = {available: hasAi, keysUrl: aiKeysUrl};
     canvasBlocks = [];
     canvasBlockCounter = 0;
+    gridInsertTarget = null;
 
     if (editData && editData.node) {
         targetEditNode = editData.node;
@@ -220,6 +221,8 @@ export const initStudioApp = (
 
     setupNavigation(canManageGlobal);
     setupZoomControls();
+    setupGridTargeting();
+    setupSidebarSplit();
     setupTabs();
     setupSidebarToggle();
     setupSidebarSearch();
@@ -299,6 +302,304 @@ export const initStudioApp = (
 
         renderLibrary();
     }, 100);
+};
+
+// -----------------------------------------
+// SIDEBAR SPLIT (block properties / component list)
+// -----------------------------------------
+
+/** Where the author's choice of split is remembered between sessions. */
+const SPLIT_STORAGE_KEY = 'tiny_studiolms.sidebarSplit';
+/** Both areas shown; properties only (component list hidden); component list only (properties hidden). */
+const SPLIT_BOTH = 'both';
+const SPLIT_PROPERTIES = 'properties';
+const SPLIT_LIST = 'list';
+
+/** @type {string} The current split. */
+let sidebarSplit = SPLIT_BOTH;
+
+/** @type {object|null} Button labels, loaded once by setupSidebarSplit(). */
+let splitLabels = null;
+
+/**
+ * Read the split saved by a previous session; any failure of the storage means "both".
+ *
+ * @returns {string}
+ */
+const readStoredSplit = () => {
+    try {
+        const stored = window.localStorage.getItem(SPLIT_STORAGE_KEY);
+        return [SPLIT_PROPERTIES, SPLIT_LIST].includes(stored) ? stored : SPLIT_BOTH;
+    } catch (error) {
+        return SPLIT_BOTH;
+    }
+};
+
+/**
+ * Show the split on the sidebar and on the two buttons.
+ *
+ * The arrows move the bar between the areas: up hides the properties, down hides the component list,
+ * and from either end the opposite arrow comes back to the middle. The arrow with nowhere left to go is
+ * only marked as disabled, never removed, so keyboard focus stays on it.
+ */
+const renderSidebarSplit = () => {
+    const sidebar = document.getElementById('slms-sidebar');
+    const up = document.getElementById('slms-split-up');
+    const down = document.getElementById('slms-split-down');
+    if (!sidebar || !up || !down || !splitLabels) {
+        return;
+    }
+    sidebar.classList.toggle('slms-split-properties', sidebarSplit === SPLIT_PROPERTIES);
+    sidebar.classList.toggle('slms-split-list', sidebarSplit === SPLIT_LIST);
+
+    const upLabel = sidebarSplit === SPLIT_PROPERTIES ? splitLabels.showLibrary : splitLabels.hideProperties;
+    const downLabel = sidebarSplit === SPLIT_LIST ? splitLabels.showProperties : splitLabels.hideLibrary;
+    up.setAttribute('aria-label', upLabel);
+    up.setAttribute('title', upLabel);
+    down.setAttribute('aria-label', downLabel);
+    down.setAttribute('title', downLabel);
+    up.setAttribute('aria-disabled', sidebarSplit === SPLIT_LIST ? 'true' : 'false');
+    down.setAttribute('aria-disabled', sidebarSplit === SPLIT_PROPERTIES ? 'true' : 'false');
+};
+
+/**
+ * Change the split.
+ *
+ * @param {string} split One of the SPLIT_* values.
+ * @param {boolean} remember Save it for the next session.
+ */
+const setSidebarSplit = (split, remember = true) => {
+    sidebarSplit = split;
+    renderSidebarSplit();
+    if (!remember) {
+        return;
+    }
+    try {
+        window.localStorage.setItem(SPLIT_STORAGE_KEY, split);
+    } catch (error) {
+        // Not remembered; the split is simply "both" the next time the composer opens.
+    }
+};
+
+/**
+ * Wire the two arrows of the bar above the component list.
+ *
+ * @returns {Promise<void>}
+ */
+const setupSidebarSplit = async() => {
+    const up = document.getElementById('slms-split-up');
+    const down = document.getElementById('slms-split-down');
+    if (!up || !down) {
+        return;
+    }
+    const [hideProperties, hideLibrary, showProperties, showLibrary] = await Promise.all([
+        getString('split_hide_properties', 'tiny_studiolms'),
+        getString('split_hide_library', 'tiny_studiolms'),
+        getString('split_show_properties', 'tiny_studiolms'),
+        getString('split_show_library', 'tiny_studiolms'),
+    ]);
+    splitLabels = {hideProperties, hideLibrary, showProperties, showLibrary};
+
+    up.addEventListener('click', () => {
+        if (sidebarSplit === SPLIT_BOTH) {
+            setSidebarSplit(SPLIT_LIST);
+        } else if (sidebarSplit === SPLIT_PROPERTIES) {
+            setSidebarSplit(SPLIT_BOTH);
+        }
+    });
+    down.addEventListener('click', () => {
+        if (sidebarSplit === SPLIT_BOTH) {
+            setSidebarSplit(SPLIT_PROPERTIES);
+        } else if (sidebarSplit === SPLIT_LIST) {
+            setSidebarSplit(SPLIT_BOTH);
+        }
+    });
+
+    setSidebarSplit(readStoredSplit(), false);
+};
+
+// -----------------------------------------
+// GRID COLUMN TARGET
+// -----------------------------------------
+
+/**
+ * Columns of a grid block's own preview. The direct-child path keeps the columns of anything nested
+ * in a column out of the list.
+ */
+const GRID_SLOT_SELECTOR = ':scope > .studiolms-grid-wrap > .studiolms-grid-content > .slms-grid-slot';
+
+/** A column that only holds the editor's empty-paragraph placeholder counts as empty. */
+const EMPTY_SLOT_PATTERN = /^\s*<p>(?:\s|&nbsp;|<br[^>]*>)*<\/p>\s*$/i;
+
+/**
+ * The grid column that receives the next block picked from the library, or null when blocks are
+ * added to the end of the canvas as usual.
+ *
+ * @type {{blockId: number, slot: number}|null}
+ */
+let gridInsertTarget = null;
+
+/**
+ * Get the columns of a grid canvas entry.
+ *
+ * @param {object} entry Canvas entry of a gridcards block.
+ * @returns {Element[]}
+ */
+const getGridSlots = (entry) => (entry.previewEl ? Array.from(entry.previewEl.querySelectorAll(GRID_SLOT_SELECTOR)) : []);
+
+/**
+ * Remove the "next blocks go here" highlight from every column.
+ */
+const unmarkGridSlots = () => {
+    document.querySelectorAll('.slms-grid-slot.slms-slot-target').forEach((slot) => {
+        slot.classList.remove('slms-slot-target');
+        slot.removeAttribute('data-slms-target-label');
+        slot.setAttribute('aria-pressed', 'false');
+    });
+};
+
+/**
+ * Forget the chosen column, so the next block goes to the end of the canvas again.
+ */
+const clearGridTarget = () => {
+    gridInsertTarget = null;
+    unmarkGridSlots();
+};
+
+/**
+ * Highlight the chosen column. Run after every re-render of the grid preview, which rebuilds its columns.
+ *
+ * @returns {Promise<void>}
+ */
+const markGridTarget = async() => {
+    unmarkGridSlots();
+    if (!gridInsertTarget) {
+        return;
+    }
+    const entry = canvasBlocks.find((b) => b.id === gridInsertTarget.blockId);
+    const slot = entry ? getGridSlots(entry)[gridInsertTarget.slot] : null;
+    if (!slot) {
+        // The grid was removed or lost that column (fewer columns now).
+        gridInsertTarget = null;
+        return;
+    }
+    slot.classList.add('slms-slot-target');
+    slot.setAttribute('aria-pressed', 'true');
+    slot.setAttribute('data-slms-target-label', await getString('grid_slot_target', 'tiny_studiolms'));
+};
+
+/**
+ * Make the columns of a grid preview reachable by keyboard and by screen reader, then restore the highlight.
+ *
+ * @param {object} entry Canvas entry of a gridcards block.
+ * @returns {Promise<void>}
+ */
+const decorateGridSlots = async(entry) => {
+    await Promise.all(getGridSlots(entry).map(async(slot, index) => {
+        slot.setAttribute('role', 'button');
+        slot.setAttribute('tabindex', '0');
+        slot.setAttribute('aria-pressed', 'false');
+        slot.setAttribute('aria-label', await getString('grid_slot_aria', 'tiny_studiolms', index + 1));
+    }));
+    await markGridTarget();
+};
+
+/**
+ * Put a new block, with its default settings, at the end of a grid column.
+ *
+ * The block lands in the grid's slot HTML, so inside the modal it is static: to change it later,
+ * select it in the editor and open StudioLMS.
+ *
+ * @param {object} gridEntry Canvas entry of the gridcards block.
+ * @param {number} slotIndex Zero-based column.
+ * @param {object} blockDef Definition of the block to add.
+ * @returns {Promise<void>}
+ */
+const addBlockIntoGridSlot = async(gridEntry, slotIndex, blockDef) => {
+    if (blockDef.id === 'gridcards') {
+        // The grid's DOM reader (extractDOM) takes every .slms-grid-slot below the grid, so a grid nested
+        // in a column would be read as extra columns of the outer one the next time the block is edited.
+        showInlineFeedback(await getString('grid_nested_unsupported', 'tiny_studiolms'), 'warning');
+        return;
+    }
+    const nestedConfig = sanitizeUrlFields(JSON.parse(JSON.stringify(blockDef.defaultData)));
+    const html = await renderSingleBlockForInsert(blockDef, nestedConfig);
+    const slots = Array.isArray(gridEntry.config.slots) ? gridEntry.config.slots : [];
+    const current = slots[slotIndex] && !EMPTY_SLOT_PATTERN.test(slots[slotIndex]) ? slots[slotIndex] : '';
+    slots[slotIndex] = current + html;
+    gridEntry.config.slots = slots;
+    await renderBlockPreview(gridEntry);
+    showInlineFeedback(await getString('grid_block_added', 'tiny_studiolms', slotIndex + 1), 'success');
+};
+
+/**
+ * Add the block picked in the component library: into the chosen grid column when there is one,
+ * otherwise at the end of the canvas.
+ *
+ * @param {object} blockDef Block definition from the Blocks registry.
+ * @returns {Promise<void>}
+ */
+const addBlockFromLibrary = async(blockDef) => {
+    const gridEntry = gridInsertTarget ? canvasBlocks.find((b) => b.id === gridInsertTarget.blockId) : null;
+    if (gridEntry) {
+        await addBlockIntoGridSlot(gridEntry, gridInsertTarget.slot, blockDef);
+        return;
+    }
+    await addBlockToCanvas(blockDef, null);
+};
+
+/**
+ * Let the author choose a grid column in the canvas: a click (or Enter / Space) on a column makes it
+ * the place for the next blocks picked in the library; the same column again, or anywhere else in
+ * the canvas, undoes the choice.
+ */
+const setupGridTargeting = () => {
+    const canvasArea = document.getElementById('slms-canvas-area');
+    if (!canvasArea) {
+        return;
+    }
+
+    const ownSlot = (target) => {
+        const slot = target.closest ? target.closest('.slms-grid-slot') : null;
+        const preview = slot ? slot.closest('.slms-canvas-block-preview') : null;
+        const entry = preview ? canvasBlocks.find((b) => b.previewEl === preview) : null;
+        const index = entry ? getGridSlots(entry).indexOf(slot) : -1;
+        return index >= 0 ? {entry, index} : null;
+    };
+
+    const choose = (hit) => {
+        const isChosen = gridInsertTarget
+            && gridInsertTarget.blockId === hit.entry.id
+            && gridInsertTarget.slot === hit.index;
+        if (isChosen) {
+            clearGridTarget();
+            return;
+        }
+        gridInsertTarget = {blockId: hit.entry.id, slot: hit.index};
+        markGridTarget();
+    };
+
+    canvasArea.addEventListener('click', (event) => {
+        const hit = ownSlot(event.target);
+        if (hit) {
+            choose(hit);
+        } else {
+            clearGridTarget();
+        }
+    });
+
+    canvasArea.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') {
+            return;
+        }
+        const hit = event.target.classList && event.target.classList.contains('slms-grid-slot')
+            ? ownSlot(event.target)
+            : null;
+        if (hit) {
+            event.preventDefault();
+            choose(hit);
+        }
+    });
 };
 
 // -----------------------------------------
@@ -407,10 +708,19 @@ const addBlockToCanvas = async(blockDef, config = null, skipScroll = false) => {
         if (e.target.closest('.slms-canvas-block-actions')) {
             return;
         }
+        // Clicking a block means "edit this": bring the properties back if they were hidden. A click on a
+        // grid column only picks where the next blocks go, so it leaves the split alone.
+        if (sidebarSplit === SPLIT_LIST && !e.target.closest('.slms-grid-slot')) {
+            setSidebarSplit(SPLIT_BOTH);
+        }
         // Selecting rebuilds the whole toolbar and re-opens its first panel. Doing that for a block
         // that is already active threw away the tab the author was on, so every extra click on the
-        // block made the properties panel flicker and jump back to the first tab.
-        if (blockEl.classList.contains('slms-active-block')) {
+        // block made the properties panel flicker and jump back to the first tab. The panel being open is
+        // part of the condition: switching to a template tab closes it while the block stays active,
+        // and a click on the block must then bring it back.
+        const propertiesPanel = document.getElementById('slms-properties-panel');
+        const propertiesOpen = propertiesPanel && !propertiesPanel.classList.contains('d-none');
+        if (blockEl.classList.contains('slms-active-block') && propertiesOpen) {
             return;
         }
         selectCanvasBlock(blockId);
@@ -456,6 +766,10 @@ const renderBlockPreview = async(entry) => {
         // keeping the content readable by screen readers, which inert would hide.
         entry.previewEl.querySelectorAll('a[href], button, input, select, textarea, iframe, [tabindex]')
             .forEach((el) => el.setAttribute('tabindex', '-1'));
+        if (entry.blockDef.id === 'gridcards') {
+            // After the tabindex pass above, which would otherwise take the columns out of the tab order.
+            await decorateGridSlots(entry);
+        }
     } catch (error) {
         entry.previewEl.innerHTML = '';
         Notification.exception(error);
@@ -469,6 +783,10 @@ const renderBlockPreview = async(entry) => {
  * @returns {Promise<void>}
  */
 const selectCanvasBlock = async(blockId) => {
+    if (gridInsertTarget && gridInsertTarget.blockId !== blockId) {
+        clearGridTarget();
+    }
+
     document.querySelectorAll('.slms-canvas-block').forEach((el) => {
         el.classList.remove('slms-active-block');
     });
@@ -547,6 +865,9 @@ const removeCanvasBlock = (blockId) => {
         entry.element.remove();
     }
     canvasBlocks.splice(idx, 1);
+    if (gridInsertTarget && gridInsertTarget.blockId === blockId) {
+        clearGridTarget();
+    }
 
     if (canvasBlocks.length === 0) {
         showCanvasEmptyState();
@@ -1176,13 +1497,13 @@ const renderLibrary = () => {
 
             card.addEventListener('click', (e) => {
                 e.preventDefault();
-                addBlockToCanvas(blockDef, null);
+                addBlockFromLibrary(blockDef);
             });
 
             card.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    addBlockToCanvas(blockDef, null);
+                    addBlockFromLibrary(blockDef);
                 }
             });
 
@@ -1457,6 +1778,7 @@ export const PopupManager = {
         const panel = document.getElementById('slms-properties-panel');
         const content = document.getElementById('slms-properties-content');
         const grid = document.getElementById('slms-library-grid');
+        const heading = document.getElementById('slms-library-heading');
         const feedback = document.getElementById('slms-feedback-area');
         const tabToolbar = document.getElementById('slms-tab-toolbar');
 
@@ -1471,6 +1793,14 @@ export const PopupManager = {
         if (grid) {
             grid.classList.remove('d-none');
         }
+        if (heading) {
+            heading.classList.add('d-none');
+        }
+        // Nothing to split once no block's settings are open.
+        const sidebar = document.getElementById('slms-sidebar');
+        if (sidebar) {
+            sidebar.classList.remove('slms-split-on');
+        }
         if (feedback) {
             feedback.classList.remove('d-none');
         }
@@ -1484,7 +1814,7 @@ export const PopupManager = {
         const panel = document.getElementById('slms-properties-panel');
         const content = document.getElementById('slms-properties-content');
         const grid = document.getElementById('slms-library-grid');
-        const feedback = document.getElementById('slms-feedback-area');
+        const heading = document.getElementById('slms-library-heading');
         const tabToolbar = document.getElementById('slms-tab-toolbar');
 
         if (!panel || !content) {
@@ -1493,11 +1823,22 @@ export const PopupManager = {
 
         content.innerHTML = '';
 
+        // The component list stays under the block's settings, so the author can edit one block and
+        // add the next without going back through the tab. That only holds for the components tab:
+        // on the template tabs the list below would be templates, not blocks to add.
+        const activeTab = document.querySelector('[data-slms-tab].active');
+        const showLibrary = !activeTab || activeTab.getAttribute('data-slms-tab') === 'components';
         if (grid) {
-            grid.classList.add('d-none');
+            grid.classList.toggle('d-none', !showLibrary);
         }
-        if (feedback) {
-            feedback.classList.add('d-none');
+        if (heading) {
+            heading.classList.toggle('d-none', !showLibrary);
+        }
+        // The split only applies while the bar is there: on the template tabs the list is hidden and
+        // the properties must never be hidden with it.
+        const sidebar = document.getElementById('slms-sidebar');
+        if (sidebar) {
+            sidebar.classList.toggle('slms-split-on', showLibrary);
         }
         if (tabToolbar) {
             tabToolbar.classList.add('d-none');

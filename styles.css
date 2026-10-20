@@ -246,11 +246,81 @@
    PROPERTIES PANEL (sidebar contextual)
    ----------------------------------------- */
 .tiny_studiolms .slms-properties-panel {
-    flex: 1;
+    /* Sized by its content, up to 60% of the sidebar: the component list below keeps the rest. */
+    flex: 0 1 auto;
+    max-height: 60%;
     overflow-y: auto;
     min-height: 0;
     display: flex;
     flex-direction: column;
+}
+
+/*
+ * Bar between a block's settings and the component list: the heading of the list plus two arrows that
+ * move it. Up hides the settings, down hides the list; from either end the opposite arrow comes back
+ * to the middle.
+ */
+.tiny_studiolms .slms-library-heading {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.25rem 0.5rem 0.25rem 0.75rem;
+    border-top: 1px solid var(--bs-border-color, #dee2e6);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--bs-secondary-color, #6c757d);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.tiny_studiolms .slms-split-controls {
+    display: inline-flex;
+    gap: 0.25rem;
+}
+
+.tiny_studiolms .slms-split-btn {
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 4px;
+    background: var(--bs-white, #fff);
+    color: var(--slms-brand, #0d47a1);
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.tiny_studiolms .slms-split-btn:hover,
+.tiny_studiolms .slms-split-btn:focus-visible {
+    background: var(--slms-brand-bg, #e9f3ff);
+    border-color: var(--slms-brand, #0d47a1);
+}
+
+/* An arrow with nowhere left to go stays in place, dimmed, so keyboard focus is not lost. */
+.tiny_studiolms .slms-split-btn[aria-disabled="true"] {
+    opacity: 0.35;
+    cursor: default;
+    background: var(--bs-white, #fff);
+    border-color: var(--bs-border-color, #dee2e6);
+}
+
+/* Settings hidden: the component list takes the whole sidebar. */
+.tiny_studiolms .slms-sidebar.slms-split-on.slms-split-list .slms-properties-panel {
+    display: none;
+}
+
+/* List hidden: the settings take the whole sidebar, with the bar at the bottom. */
+.tiny_studiolms .slms-sidebar.slms-split-on.slms-split-properties .slms-library-grid {
+    display: none;
+}
+
+.tiny_studiolms .slms-sidebar.slms-split-on.slms-split-properties .slms-properties-panel {
+    flex: 1 1 auto;
+    max-height: none;
 }
 
 .tiny_studiolms .slms-properties-content {
@@ -281,6 +351,54 @@
     padding: 0.625rem;
     overflow-y: auto;
     min-height: 0;
+}
+
+/* The list is never squeezed out by a tall settings panel. */
+.tiny_studiolms .slms-properties-panel:not(.d-none) ~ .slms-library-grid {
+    flex: 1 1 0;
+    min-height: 9rem;
+}
+
+/* Grid column picked in the canvas as the place for the next blocks. */
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot {
+    /* The preview ignores the pointer; its columns are the one exception, as they are what is clicked. */
+    pointer-events: auto;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+/* What sits inside a column stays inert, so a click anywhere in it lands on the column itself and a
+   link or button of a nested block cannot be followed from the preview. */
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot * {
+    pointer-events: none;
+}
+
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot:hover,
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot:focus-visible {
+    border-color: var(--slms-brand, #0d47a1);
+}
+
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot.slms-slot-target {
+    border-style: solid;
+    border-color: var(--slms-brand, #0d47a1);
+    background-color: var(--slms-brand-bg, #e9f3ff);
+    position: relative;
+}
+
+/* The label sits on the column's own border, so it never overlaps the blocks inside it. */
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot.slms-slot-target::before {
+    content: attr(data-slms-target-label);
+    position: absolute;
+    top: -0.7rem;
+    inset-inline-start: 0.5rem;
+    padding: 0 0.4rem;
+    border-radius: 4px;
+    background: var(--slms-brand, #0d47a1);
+    color: var(--bs-white, #fff);
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1.4;
+    pointer-events: none;
 }
 
 /* Sidebar component cards — v1 thumbnail style */
@@ -1063,10 +1181,15 @@ body:not(.mce-content-body) .studiolms-resources.slms-closed > .studiolms-resour
 .tiny_studiolms .slms-btn-fit {
     height: fit-content;
 }
-/* Dashed grid slot borders are editor-only; hidden on the rendered page. */
+/*
+ * Dashed grid slot borders are editor-only; hidden on the rendered page.
+ * The canvas preview needs them too: without them the empty columns and the gap of a grid block
+ * are invisible there, and there is nothing to show where the blocks will go.
+ */
 body.mce-content-body div.slms-grid-slot,
 .tiny_studiolms div#slms-live-preview div.slms-grid-slot,
-.tiny_studiolms div.slms-card-thumb-content div.slms-grid-slot {
+.tiny_studiolms div.slms-card-thumb-content div.slms-grid-slot,
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot {
     border: 2px dashed var(--bs-border-color, #cbd5e1);
     background-color: rgba(241, 245, 249, 0.4);
     min-height: 70px;
@@ -2856,6 +2979,12 @@ a.studiolms-resources-item:focus-visible {
         width: 32px;
         height: 36px;
         font-size: 0.8rem;
+    }
+
+    /* Touch targets of at least 44px for the arrows above the component list. */
+    .tiny_studiolms .slms-split-btn {
+        width: 2.75rem;
+        height: 2.75rem;
     }
 
 }
