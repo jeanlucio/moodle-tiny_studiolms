@@ -1357,6 +1357,18 @@ a.studiolms-btn:focus-visible {
     max-width: 100%;
 }
 
+/* Stand-in for a card image whose address the author has not filled in yet. */
+.slms-card-media-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    background-color: var(--bs-light, #f8f9fa);
+    font-size: 3rem;
+}
+
 .studiolms-card-content {
     flex: 1 1 auto;
     padding: 1.5rem;

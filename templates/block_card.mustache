@@ -20,7 +20,7 @@
 
     Example context (json): {
         "bg": "#ffffff", "text": "#333333", "border": "#0d47a1", "radius": "8", "shadowCss": "none",
-        "hasMedia": true, "isImage": true, "mediaUrl": "https://picsum.photos/600/300",
+        "hasMedia": true, "isImage": true, "isImagePlaceholder": false, "mediaUrl": "https://picsum.photos/600/300",
         "isHorizontal": false, "hasButton": true, "btnText": "Click", "btnUrl": "#",
         "btnBg": "#0d47a1", "btnTextCol": "#fff", "isAlignCenter": true, "btnDisplayMode": "inline-flex"
     }
@@ -34,6 +34,9 @@
             {{#isImage}}
                 <img src="{{mediaUrl}}" alt="" class="w-100 h-100 object-fit-cover d-block">
             {{/isImage}}
+            {{#isImagePlaceholder}}
+                <div class="slms-card-media-placeholder" aria-hidden="true">&#128247;</div>
+            {{/isImagePlaceholder}}
             {{#isVideo}}
                 <div class="ratio ratio-16x9 h-100">
                     <iframe src="{{mediaUrl}}" title="Video" allowfullscreen></iframe>

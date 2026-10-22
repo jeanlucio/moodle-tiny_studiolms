@@ -227,7 +227,11 @@ export default {
         templateData.shadowCss = shadowMap[data.shadow] || shadowMap.md;
 
         templateData.hasMedia = data.mediaType !== 'none' && data.mediaUrl.trim() !== '';
-        templateData.isImage = data.mediaType === 'image';
+        // A preset leaves a marker such as [URL_DA_FOTO] for the author to replace. It is not an address, so a
+        // stand-in is drawn instead of a broken image.
+        const hasImageAddress = /^(?:https?:)?\/\//i.test(data.mediaUrl.trim()) || data.mediaUrl.trim().startsWith('/');
+        templateData.isImage = data.mediaType === 'image' && hasImageAddress;
+        templateData.isImagePlaceholder = data.mediaType === 'image' && !hasImageAddress;
 
         if (data.mediaType === 'video' && data.mediaUrl) {
             const ytPattern = '^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/)|' +
