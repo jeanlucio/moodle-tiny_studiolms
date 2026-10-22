@@ -107,6 +107,37 @@ class behat_tiny_studiolms extends behat_base {
     }
 
     /**
+     * Asserts that no element matching the selector exists inside the StudioLMS dialog.
+     *
+     * Only meaningful once something else in the dialog has been waited for: an absence can be
+     * asserted before the dialog has rendered anything at all.
+     *
+     * @Then the StudioLMS dialog does not contain the :selector element
+     * @param string $selector CSS selector relative to #studiolms-app.
+     */
+    public function studiolms_dialog_does_not_contain_element(string $selector): void {
+        $this->execute('behat_general::should_not_exist', [
+            '#studiolms-app ' . $selector,
+            'css_element',
+        ]);
+    }
+
+    /**
+     * Asserts that the AI tab currently shown carries the "no AI is available" notice.
+     *
+     * The tab content is rendered asynchronously, so this waits for the notice to appear.
+     *
+     * @Then the StudioLMS AI panel says no AI is available
+     */
+    public function studiolms_ai_panel_says_no_ai_is_available(): void {
+        $this->execute('behat_general::assert_element_contains_text', [
+            get_string('ai_generator_no_config', 'tiny_studiolms'),
+            '#studiolms-app .alert-warning',
+            'css_element',
+        ]);
+    }
+
+    /**
      * Asserts that the StudioLMS tab with the given data-slms-tab value is active.
      *
      * @Then the StudioLMS :tab tab is active
