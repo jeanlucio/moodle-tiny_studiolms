@@ -396,9 +396,125 @@ class behat_tiny_studiolms extends behat_base {
      * @Then every StudioLMS block opens settings panels with editable fields
      */
     public function every_studiolms_block_opens_settings_panels(): void {
-        // Cards are appended at once but only get their data-slms-block-id after a lang string
-        // resolves, so the list is complete only when every card carries it.
-        $blocktypes = $this->spin(function () {
+        foreach ($this->library_block_types() as $blocktype) {
+            $this->i_add_the_studiolms_block_to_the_canvas($blocktype);
+            $this->open_every_settings_panel($blocktype);
+            $this->remove_the_selected_canvas_block();
+        }
+    }
+
+    /**
+     * Types a script-carrying payload into every text field of every block's settings panels and
+     * asserts that nothing ran and no event-handler attribute reached the canvas preview.
+     *
+     * Covers the typed-input path, which the template and state regression scenarios do not: the
+     * design popups copy what is typed straight into the block config, and several blocks render
+     * parts of it unescaped. URL fields are not asserted here: a javascript: address typed into one
+     * is inert in the preview (links are not focusable or clickable there), TinyMCE drops it when
+     * the block is inserted, and sanitizeUrlFields() neutralises it when the block is loaded again.
+     *
+     * @Then no StudioLMS block runs markup typed into its settings fields
+     */
+    public function no_studiolms_block_runs_markup_typed_into_its_settings(): void {
+        foreach ($this->library_block_types() as $blocktype) {
+            $this->execute_script('window.__slmsXssFired = false;');
+            $this->i_add_the_studiolms_block_to_the_canvas($blocktype);
+            $this->open_every_settings_panel($blocktype, function () {
+                $this->type_payload_into_the_visible_settings_fields();
+            });
+
+            // The payloads fire asynchronously (an image request failing), so absence can only be
+            // asserted after a fixed window.
+            $this->getSession()->wait(1000);
+            $this->assert_canvas_ran_no_script("typing markup into the '{$blocktype}' settings");
+            $this->remove_the_selected_canvas_block();
+        }
+    }
+
+    /**
+     * Loads a hostile global template for every block onto the canvas, one after the other, and
+     * asserts that none of them ran script or left an unsafe attribute in the preview.
+     *
+     * The templates (see tests/fixtures/hostile_blocks.json) are the markup each block really
+     * produces with a payload in every rich-text region and in every string of its saved state, URL
+     * fields included. Also fails when a block exists in the library without a fixture, so a new
+     * block cannot be added without being covered.
+     *
+     * @Then loading a hostile template of every StudioLMS block runs no script
+     */
+    public function loading_a_hostile_template_of_every_block_runs_no_script(): void {
+        $blocktypes = $this->library_block_types();
+        $fixtures = array_keys($this->hostile_block_fixtures());
+        $missing = array_diff($blocktypes, $fixtures);
+        if (!empty($missing)) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                'No hostile template fixture for: ' . implode(', ', $missing) . '.',
+                $this->getSession()
+            );
+        }
+
+        foreach ($fixtures as $blocktype) {
+            $this->execute_script('window.__slmsXssFired = false;');
+            // The thumbnail is clicked rather than the name: a tall preview overlaps the name row, and
+            // the plugin wires the thumbnail to the same handler.
+            $this->execute('behat_general::i_click_on', [
+                $this->template_card_xpath('Hostile ' . $blocktype) . '//div[contains(@class, "slms-tpl-thumb")]',
+                'xpath_element',
+            ]);
+            $this->wait_for_canvas_preview();
+
+            $this->getSession()->wait(1000);
+            $this->assert_canvas_ran_no_script("loading the hostile '{$blocktype}' template", true);
+            $this->remove_the_selected_canvas_block();
+        }
+    }
+
+    /**
+     * Stores one global template per block, each holding the hostile markup of that block.
+     *
+     * @Given a malicious global StudioLMS template exists for every block
+     */
+    public function a_malicious_global_studiolms_template_exists_for_every_block(): void {
+        $generator = testing_util::get_data_generator()->get_plugin_generator('tiny_studiolms');
+
+        foreach ($this->hostile_block_fixtures() as $blocktype => $content) {
+            $generator->create_template([
+                'name' => 'Hostile ' . $blocktype,
+                'content' => $content,
+                'isglobal' => 1,
+            ]);
+        }
+    }
+
+    /**
+     * Reads the hostile template markup keyed by block id.
+     *
+     * @return string[]
+     */
+    private function hostile_block_fixtures(): array {
+        global $CFG;
+
+        $file = $CFG->dirroot . '/lib/editor/tiny/plugins/studiolms/tests/fixtures/hostile_blocks.json';
+        $fixtures = json_decode(file_get_contents($file), true);
+        if (!is_array($fixtures) || empty($fixtures)) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                'The hostile block fixture is missing or not valid JSON.',
+                $this->getSession()
+            );
+        }
+        return $fixtures;
+    }
+
+    /**
+     * Returns the ids of every block in the Components tab, once the whole list has loaded.
+     *
+     * Cards are appended at once but only get their data-slms-block-id after a lang string
+     * resolves, so the list is complete only when every card carries it.
+     *
+     * @return string[]
+     */
+    private function library_block_types(): array {
+        return $this->spin(function () {
             $ids = $this->evaluate_script(
                 'return (function () {' .
                 'var cards = document.querySelectorAll("#slms-library-grid .slms-card");' .
@@ -415,20 +531,85 @@ class behat_tiny_studiolms extends behat_base {
             }
             return $ids;
         });
+    }
 
-        foreach ($blocktypes as $blocktype) {
-            $this->i_add_the_studiolms_block_to_the_canvas($blocktype);
-            $this->open_every_settings_panel($blocktype);
-            $this->execute('behat_general::i_click_on', ['.slms-btn-block-remove', 'css_element']);
-            $this->spin(function () {
-                if ($this->getSession()->getPage()->find('css', '#slms-canvas-blocks .slms-canvas-block')) {
-                    throw new \Behat\Mink\Exception\ExpectationException(
-                        'The StudioLMS block was not removed from the canvas.',
-                        $this->getSession()
-                    );
-                }
-                return true;
-            });
+    /**
+     * Removes the only block on the canvas and waits until the canvas is empty again.
+     */
+    private function remove_the_selected_canvas_block(): void {
+        $this->execute('behat_general::i_click_on', ['.slms-btn-block-remove', 'css_element']);
+        $this->spin(function () {
+            if ($this->getSession()->getPage()->find('css', '#slms-canvas-blocks .slms-canvas-block')) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    'The StudioLMS block was not removed from the canvas.',
+                    $this->getSession()
+                );
+            }
+            return true;
+        });
+    }
+
+    /**
+     * Puts an <img onerror> payload into every text field of the settings panel on screen and
+     * fires the events the plugin listens to, as typing would.
+     */
+    private function type_payload_into_the_visible_settings_fields(): void {
+        $this->execute_script(
+            '(function () {' .
+            'var payload = \'<img src=x onerror="window.__slmsXssFired = true">\';' .
+            'var selector = "#slms-properties-content input, #slms-properties-content textarea";' .
+            'var types = ["text", "url", "search", "email", "tel", "textarea"];' .
+            'Array.prototype.forEach.call(document.querySelectorAll(selector), function (field) {' .
+            'if (types.indexOf(field.type) === -1) { return; }' .
+            'var proto = field.tagName === "TEXTAREA" ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;' .
+            'Object.getOwnPropertyDescriptor(proto, "value").set.call(field, payload);' .
+            'field.dispatchEvent(new Event("input", {bubbles: true}));' .
+            'field.dispatchEvent(new Event("change", {bubbles: true}));' .
+            '});' .
+            '})();'
+        );
+    }
+
+    /**
+     * Fails when a payload ran, or when a block in the canvas carries an event-handler attribute.
+     *
+     * With $checkurls it also fails on a link or image address whose scheme is not http(s), mailto
+     * or tel, which is what loading a stored block must never leave behind.
+     *
+     * @param string $action What was just done, for the failure message.
+     * @param bool $checkurls Whether unsafe URL schemes count as a failure.
+     */
+    private function assert_canvas_ran_no_script(string $action, bool $checkurls = false): void {
+        if ($this->evaluate_script('return window.__slmsXssFired === true;')) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                "A payload ran in the StudioLMS canvas after {$action}.",
+                $this->getSession()
+            );
+        }
+
+        $problems = $this->evaluate_script(
+            'return (function () {' .
+            'var found = [];' .
+            'var checkurls = ' . ($checkurls ? 'true' : 'false') . ';' .
+            'var root = document.getElementById("slms-canvas-blocks");' .
+            'Array.prototype.forEach.call(root.querySelectorAll("*"), function (el) {' .
+            'Array.prototype.forEach.call(el.attributes, function (a) {' .
+            'var name = a.name.toLowerCase();' .
+            'if (name.indexOf("on") === 0) { found.push(el.tagName + "[" + name + "]"); return; }' .
+            'if (!checkurls || ["href", "xlink:href", "src"].indexOf(name) === -1) { return; }' .
+            'var value = a.value.replace(/[\\u0000-\\u0020]/g, "").toLowerCase();' .
+            'if (/^[a-z][a-z0-9+.-]*:/.test(value) && !/^(https?|mailto|tel):/.test(value)) {' .
+            'found.push(el.tagName + "[" + name + "=" + value.slice(0, 20) + "]"); }' .
+            '});' .
+            '});' .
+            'return found;' .
+            '})();'
+        );
+        if (!empty($problems)) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                "Unsafe markup in the StudioLMS canvas after {$action}: " . implode(', ', $problems),
+                $this->getSession()
+            );
         }
     }
 
@@ -439,16 +620,22 @@ class behat_tiny_studiolms extends behat_base {
      * rendering), so a panel left over from the previous button cannot satisfy the check.
      *
      * @param string $blocktype The block id, used in the failure message.
+     * @param callable|null $afterpanel Called each time a panel is shown.
      */
-    private function open_every_settings_panel(string $blocktype): void {
+    private function open_every_settings_panel(string $blocktype, ?callable $afterpanel = null): void {
         $selector = '#slms-top-toolbar .slms-toolbar-btn';
-        $count = count($this->getSession()->getPage()->findAll('css', $selector));
-        if ($count === 0) {
-            throw new \Behat\Mink\Exception\ExpectationException(
-                "The '{$blocktype}' block has no settings buttons in the toolbar.",
-                $this->getSession()
-            );
-        }
+        // The toolbar is built after the block is selected, so the buttons are waited for rather
+        // than counted once: a count of zero taken too early would end the loop below silently.
+        $count = $this->spin(function () use ($selector, $blocktype) {
+            $found = count($this->getSession()->getPage()->findAll('css', $selector));
+            if ($found === 0) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    "The '{$blocktype}' block has no settings buttons in the toolbar.",
+                    $this->getSession()
+                );
+            }
+            return $found;
+        });
 
         for ($index = 0; $index < $count; $index++) {
             // Looked up again each time: the toolbar may be rebuilt while a panel renders.
@@ -472,6 +659,10 @@ class behat_tiny_studiolms extends behat_base {
                 }
                 return true;
             });
+
+            if ($afterpanel !== null) {
+                $afterpanel();
+            }
         }
     }
 
