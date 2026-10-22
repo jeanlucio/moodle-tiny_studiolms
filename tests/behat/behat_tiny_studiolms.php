@@ -585,6 +585,109 @@ class behat_tiny_studiolms extends behat_base {
     }
 
     /**
+     * Asserts that a StudioLMS block of the given type is on the page being viewed.
+     *
+     * @Then the StudioLMS :blocktype block is shown on the page
+     * @param string $blocktype The block id, for example accordion.
+     */
+    public function the_studiolms_block_is_shown_on_the_page(string $blocktype): void {
+        $this->execute('behat_general::should_exist', [
+            '[data-slms-block-type="' . $blocktype . '"]',
+            'css_element',
+        ]);
+    }
+
+    /**
+     * Asserts that the page being viewed no longer carries editor-only attributes on its blocks.
+     *
+     * The editor marks blocks (and their rich-text parts) contenteditable; a visitor must not be
+     * able to type into them. The attribute is removed by the front-end module once the page has
+     * loaded, so this waits for it to be gone instead of reading the markup once.
+     *
+     * @Then the StudioLMS blocks on the page have no editor-only attributes
+     */
+    public function the_studiolms_blocks_have_no_editor_only_attributes(): void {
+        $this->spin(function () {
+            $editable = $this->evaluate_script(
+                'return document.querySelectorAll("[data-slms-block-type] [contenteditable], ' .
+                '[data-slms-block-type][contenteditable]").length;'
+            );
+            if ((int) $editable !== 0) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    $editable . ' StudioLMS element(s) on the page are still contenteditable.',
+                    $this->getSession()
+                );
+            }
+            return true;
+        });
+    }
+
+    /**
+     * Clicks the header of a collapsible StudioLMS block (accordion or resources list).
+     *
+     * @When I toggle the StudioLMS :blocktype block
+     * @param string $blocktype Either accordion or resources.
+     */
+    public function i_toggle_the_studiolms_block(string $blocktype): void {
+        $this->execute('behat_general::i_click_on', [
+            $this->collapsible_header_selector($blocktype),
+            'css_element',
+        ]);
+    }
+
+    /**
+     * Asserts that a collapsible StudioLMS block is open or closed, as exposed to assistive tech.
+     *
+     * Reads aria-expanded on the block header, which the front-end module sets when the page
+     * loads and flips on every toggle, so it also proves the module ran.
+     *
+     * @Then the StudioLMS :blocktype block is :state
+     * @param string $blocktype Either accordion or resources.
+     * @param string $state Either expanded or collapsed.
+     */
+    public function the_studiolms_block_is_expanded_or_collapsed(string $blocktype, string $state): void {
+        if (!in_array($state, ['expanded', 'collapsed'], true)) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                "Unknown state '{$state}': expected expanded or collapsed.",
+                $this->getSession()
+            );
+        }
+        $expected = $state === 'expanded' ? 'true' : 'false';
+        $selector = $this->collapsible_header_selector($blocktype);
+
+        $this->spin(function () use ($selector, $expected, $blocktype, $state) {
+            $header = $this->getSession()->getPage()->find('css', $selector);
+            if (!$header || $header->getAttribute('aria-expanded') !== $expected) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    "The StudioLMS '{$blocktype}' block is not {$state}.",
+                    $this->getSession()
+                );
+            }
+            return true;
+        });
+    }
+
+    /**
+     * Returns the CSS selector of the clickable header of a collapsible block.
+     *
+     * @param string $blocktype Either accordion or resources.
+     * @return string
+     */
+    private function collapsible_header_selector(string $blocktype): string {
+        $headers = [
+            'accordion' => '.studiolms-accordion-summary',
+            'resources' => '.studiolms-resources-summary',
+        ];
+        if (!isset($headers[$blocktype])) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                "The StudioLMS '{$blocktype}' block is not collapsible.",
+                $this->getSession()
+            );
+        }
+        return $headers[$blocktype];
+    }
+
+    /**
      * Asserts that the StudioLMS toolbar button is NOT present in the TinyMCE toolbar.
      *
      * @Then the StudioLMS toolbar button is not visible
