@@ -90,6 +90,26 @@ final class provider_test extends provider_testcase {
     }
 
     /**
+     * The video services a card can embed are declared as external locations, each with a string that exists.
+     */
+    public function test_video_services_are_declared_as_external_locations(): void {
+        $collection = provider::get_metadata(new \core_privacy\local\metadata\collection('tiny_studiolms'));
+        $items = [];
+        foreach ($collection->get_collection() as $item) {
+            $items[$item->get_name()] = $item;
+        }
+
+        foreach (['youtube', 'vimeo'] as $service) {
+            $this->assertArrayHasKey($service, $items);
+            $this->assertInstanceOf(\core_privacy\local\metadata\types\external_location::class, $items[$service]);
+            $this->assertTrue(get_string_manager()->string_exists($items[$service]->get_summary(), 'tiny_studiolms'));
+            foreach ($items[$service]->get_privacy_fields() as $field) {
+                $this->assertTrue(get_string_manager()->string_exists($field, 'tiny_studiolms'));
+            }
+        }
+    }
+
+    /**
      * get_contexts_for_userid returns the system context when the user has templates.
      */
     public function test_get_contexts_for_userid_with_templates(): void {
@@ -295,18 +315,24 @@ final class provider_test extends provider_testcase {
     }
 
     /**
-     * AI goes only through local_aihub and core_ai, so the plugin declares no external location and
-     * no user preference of its own — only its two tables.
+     * AI goes only through local_aihub and core_ai, so the plugin declares no AI provider and no user
+     * preference of its own: its two tables, and the two video services a card can embed.
      */
-    public function test_metadata_declares_only_own_tables(): void {
+    public function test_metadata_declares_own_tables_and_the_video_services_only(): void {
         $collection = provider::get_metadata(new \core_privacy\local\metadata\collection('tiny_studiolms'));
 
-        $names = [];
+        $tables = [];
+        $locations = [];
         foreach ($collection->get_collection() as $item) {
-            $this->assertInstanceOf(\core_privacy\local\metadata\types\database_table::class, $item);
-            $names[] = $item->get_name();
+            if ($item instanceof \core_privacy\local\metadata\types\database_table) {
+                $tables[] = $item->get_name();
+            } else {
+                $this->assertInstanceOf(\core_privacy\local\metadata\types\external_location::class, $item);
+                $locations[] = $item->get_name();
+            }
         }
-        $this->assertEqualsCanonicalizing(['tiny_studiolms_templates', 'tiny_studiolms_favourites'], $names);
+        $this->assertEqualsCanonicalizing(['tiny_studiolms_templates', 'tiny_studiolms_favourites'], $tables);
+        $this->assertEqualsCanonicalizing(['youtube', 'vimeo'], $locations);
     }
 
     /**

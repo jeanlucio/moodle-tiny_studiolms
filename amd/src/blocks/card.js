@@ -26,6 +26,7 @@ import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {getContextId} from '../context';
+import {parseVideoUrl} from './video_embed';
 
 export default {
     id: 'advancedCard',
@@ -161,15 +162,24 @@ export default {
                             '#pop_card_mediaUrl': 'mediaUrl',
                             '#pop_card_layout': 'layout'
                         };
+                        // A video link the block cannot embed would make the media vanish without a word, so say so.
+                        const hint = popup.querySelector('#pop_card_mediaUrl_hint');
+                        const showVideoHint = () => {
+                            const unrecognised = data.mediaType === 'video' && data.mediaUrl.trim() !== '' &&
+                                parseVideoUrl(data.mediaUrl) === null;
+                            hint?.classList.toggle('d-none', !unrecognised);
+                        };
                         Object.keys(propMap).forEach(selector => {
                             const el = popup.querySelector(selector);
                             if (el) {
                                 el.addEventListener('input', (ev) => {
                                     data[propMap[selector]] = ev.target.value;
+                                    showVideoHint();
                                     onUpdate(data);
                                 });
                             }
                         });
+                        showVideoHint();
                     });
                 });
             }
@@ -234,13 +244,9 @@ export default {
         templateData.isImagePlaceholder = data.mediaType === 'image' && !hasImageAddress;
 
         if (data.mediaType === 'video' && data.mediaUrl) {
-            const ytPattern = '^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/)|' +
-                '(?:(?:watch)?\\?v(?:i)?=|&v(?:i)?=))([^#&?]*).*';
-            const regExp = new RegExp(ytPattern);
-            const match = data.mediaUrl.match(regExp);
-
-            if (match && match[1]) {
-                templateData.mediaUrl = `https://www.youtube.com/embed/${match[1]}`;
+            const video = parseVideoUrl(data.mediaUrl);
+            if (video) {
+                templateData.mediaUrl = video.embedUrl;
                 templateData.isVideo = true;
             } else {
                 templateData.hasMedia = false;

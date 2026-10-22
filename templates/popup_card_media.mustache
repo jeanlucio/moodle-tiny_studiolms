@@ -32,7 +32,9 @@
 </div>
 <div class="mb-3">
     <label for="pop_card_mediaUrl" class="form-label small fw-bold">{{#str}} media_url, tiny_studiolms {{/str}}</label>
-    <input type="text" class="form-control form-control-sm" id="pop_card_mediaUrl" value="{{mediaUrl}}" placeholder="https://...">
+    <input type="text" class="form-control form-control-sm" id="pop_card_mediaUrl" value="{{mediaUrl}}" placeholder="https://..."
+           aria-describedby="pop_card_mediaUrl_hint">
+    <div id="pop_card_mediaUrl_hint" class="form-text text-danger d-none" role="status">{{#str}} media_video_unrecognised, tiny_studiolms {{/str}}</div>
 </div>
 <div class="mb-1">
     <label for="pop_card_layout" class="form-label small fw-bold">{{#str}} layout, tiny_studiolms {{/str}}</label>

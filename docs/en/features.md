@@ -3,7 +3,7 @@
 * 🧱 **18 Instructional Blocks,** inserted from the editor toolbar and configured through forms — no HTML required:
   * **Stylised Heading** — `h3`/`h4` heading with icon and background colour.
   * **Action Button** — call-to-action button with configurable URL, target, colours, border radius and alignment.
-  * **Advanced Card** — card with image or YouTube video, a rich editable body and an internal button.
+  * **Advanced Card** — card with image or a YouTube or Vimeo video, a rich editable body and an internal button.
   * **Accordion** — expandable topic with 4 icon styles and an open/closed initial state.
   * **Resources** — resource library (PDF, video, audio, link) in list or grid layout.
   * **Grid Cards** — multi-column container with editable slots.

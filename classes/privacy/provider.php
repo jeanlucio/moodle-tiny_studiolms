@@ -40,6 +40,9 @@ use core_privacy\local\request\writer;
  * AI requests go only through local_aihub (when installed) and Moodle core_ai. Both declare the
  * external providers and keep their own usage records, so this plugin sends no personal data to an
  * external location itself and stores no AI key or AI log.
+ *
+ * A card can embed a YouTube or a Vimeo video. The player is loaded by the browser of whoever views the page,
+ * so the two services are declared as external locations even though the plugin never contacts them.
  */
 class provider implements
     \core_privacy\local\metadata\provider,
@@ -72,6 +75,18 @@ class provider implements
                 'timecreated' => 'privacy:metadata:tiny_studiolms_favourites:timecreated',
             ],
             'privacy:metadata:tiny_studiolms_favourites'
+        );
+
+        $collection->add_external_location_link(
+            'youtube',
+            ['ipaddress' => 'privacy:metadata:youtube:ipaddress'],
+            'privacy:metadata:youtube'
+        );
+
+        $collection->add_external_location_link(
+            'vimeo',
+            ['ipaddress' => 'privacy:metadata:vimeo:ipaddress'],
+            'privacy:metadata:vimeo'
         );
 
         return $collection;

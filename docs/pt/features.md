@@ -3,7 +3,7 @@
 * 🧱 **18 Blocos Instrucionais,** inseridos pela barra de ferramentas do editor e configurados por formulários — sem precisar de HTML:
   * **Título Estilizado** — título `h3`/`h4` com ícone e cor de fundo.
   * **Botão de Ação** — botão de chamada para ação com URL, destino, cores, raio de borda e alinhamento configuráveis.
-  * **Cartão Avançado** — cartão com imagem ou vídeo do YouTube, corpo rico editável e botão interno.
+  * **Cartão Avançado** — cartão com imagem ou vídeo do YouTube ou do Vimeo, corpo rico editável e botão interno.
   * **Accordion** — tópico expansível com 4 estilos de ícone e estado inicial aberto/fechado.
   * **Webteca** — biblioteca de recursos (PDF, vídeo, áudio, link) em lista ou grade.
   * **Grid de Cards** — container multi-coluna com slots editáveis.
