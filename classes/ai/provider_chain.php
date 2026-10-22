@@ -89,9 +89,9 @@ class provider_chain {
 
         if (self::has_core_ai($context)) {
             $coreresult = self::call_core_ai($system, $user, $context);
-            // Keep the hub's failure message when core_ai also fails without one of its own, so a real
-            // cause (e.g. an invalid key) is not masked.
-            if ($coreresult['success'] || $coreresult['message'] !== '' || !$result['attempted']) {
+            // When both sources fail, keep the hub's failure: its message carries the real cause (e.g. an
+            // invalid key), which core_ai's generic failure would mask.
+            if ($coreresult['success'] || !$result['attempted']) {
                 return $coreresult;
             }
         }

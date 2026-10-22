@@ -63,7 +63,20 @@ class generate_infographic_comparison extends external_api {
         self::validate_context($context);
         require_capability('tiny/studiolms:use', $context);
 
-        return generator::generate_infographic_comparison($params['topic'], $context);
+        try {
+            return generator::generate_infographic_comparison($params['topic'], $context);
+        } catch (\moodle_exception $e) {
+            throw $e;
+        } catch (\Throwable $t) {
+            // Never expose the raw exception message or file path to the caller: log it for a
+            // developer instead, and return only a generic, translated error.
+            debugging(
+                'StudioLMS AI: ' . get_class($t) . ': ' . $t->getMessage()
+                    . ' at ' . $t->getFile() . ':' . $t->getLine(),
+                DEBUG_DEVELOPER
+            );
+            throw new \moodle_exception('infographic_comparison_ai_error', 'tiny_studiolms');
+        }
     }
 
     /**
