@@ -23,6 +23,7 @@
 
 import Templates from 'core/templates';
 import Notification from 'core/notification';
+import {sanitizeUntrustedHtml} from '../htmlsanitizer';
 
 export default {
     id: 'gridcards',
@@ -123,6 +124,9 @@ export default {
 
     renderHtml: (data) => {
         const tData = Object.assign({}, data);
+        // The title is rendered unescaped (it is an editable heading), and the design popup feeds it
+        // from a plain text input, so whatever is typed there must not reach the preview as live markup.
+        tData.containerTitle = sanitizeUntrustedHtml(data.containerTitle);
 
         const pdMap = {'none': '0px', 'sm': '10px', 'md': '20px', 'lg': '40px'};
         const bg = data.background === 'transparent' ? 'transparent' : data.background;
