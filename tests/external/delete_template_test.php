@@ -25,6 +25,7 @@
 namespace tiny_studiolms\external;
 
 use advanced_testcase;
+use core_external\external_api;
 use tiny_studiolms\external\delete_template;
 
 /**
@@ -90,6 +91,7 @@ final class delete_template_test extends advanced_testcase {
         $result = delete_template::execute(\context_system::instance()->id, $this->templateid);
 
         $this->assertTrue($result['success']);
+        $this->assertEquals($result, external_api::clean_returnvalue(delete_template::execute_returns(), $result));
         $this->assertFalse($DB->record_exists('tiny_studiolms_templates', ['id' => $this->templateid]));
     }
 

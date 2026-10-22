@@ -25,6 +25,7 @@
 namespace tiny_studiolms\external;
 
 use advanced_testcase;
+use core_external\external_api;
 use tiny_studiolms\external\toggle_favourite;
 
 /**
@@ -106,6 +107,7 @@ final class toggle_favourite_test extends advanced_testcase {
         $result = toggle_favourite::execute(\context_system::instance()->id, $this->templateid);
 
         $this->assertTrue($result['favourited']);
+        $this->assertEquals($result, external_api::clean_returnvalue(toggle_favourite::execute_returns(), $result));
         $this->assertTrue(
             $DB->record_exists('tiny_studiolms_favourites', [
                 'userid'     => $this->teacher->id,

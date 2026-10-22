@@ -70,6 +70,43 @@ trait hub_stub_trait {
     }
 
     /**
+     * Installs a hub client whose provider call throws an unexpected, non-Moodle exception.
+     *
+     * Used to prove that callers never hand a raw exception message to the browser.
+     *
+     * @param string $message Message of the thrown exception.
+     */
+    protected function install_hub_stub_that_throws(string $message): void {
+        global $CFG;
+
+        if (!class_exists(\local_aihub\ai::class)) {
+            $this->markTestSkipped('local_aihub is not installed.');
+        }
+        require_once($CFG->dirroot . '/lib/editor/tiny/plugins/studiolms/tests/fixtures/hub_stub_client.php');
+
+        set_config('gemini_key', 'stub-key', 'local_aihub');
+
+        $client = new class ($message) extends hub_stub_client {
+            /**
+             * Creates the client.
+             *
+             * @param string $message Message of the thrown exception.
+             */
+            public function __construct(
+                /** @var string Message of the thrown exception. */
+                private string $message
+            ) {
+            }
+
+            #[\Override]
+            public function generate_text(string $system, string $user, bool $jsonmode = false, ?int $userid = null): array {
+                throw new \RuntimeException($this->message);
+            }
+        };
+        \local_aihub\ai::set_client_for_testing($client);
+    }
+
+    /**
      * Removes the stub client from the hub.
      */
     protected function reset_hub_stub(): void {

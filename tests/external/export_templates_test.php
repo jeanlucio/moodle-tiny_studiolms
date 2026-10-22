@@ -25,6 +25,7 @@
 namespace tiny_studiolms\external;
 
 use advanced_testcase;
+use core_external\external_api;
 use tiny_studiolms\external\export_templates;
 
 /**
@@ -114,6 +115,7 @@ final class export_templates_test extends advanced_testcase {
 
         $this->assertCount(1, $rows);
         $this->assertEquals('My Layout', $rows[0]['name']);
+        $this->assertEquals($rows, external_api::clean_returnvalue(export_templates::execute_returns(), $rows));
     }
 
     /**

@@ -52,10 +52,7 @@ final class hook_callbacks_test extends advanced_testcase {
             new before_footer_html_generation($PAGE->get_renderer('core'))
         );
 
-        // No assertion beyond "did not throw": js_call_amd() has no public getter to
-        // introspect pending AMD calls, so this is a smoke test of the course/module
-        // branch actually being taken without error.
-        $this->assertTrue(true);
+        $this->assertStringContainsString('tiny_studiolms/frontend', $PAGE->requires->get_end_code());
     }
 
     /**
@@ -70,6 +67,6 @@ final class hook_callbacks_test extends advanced_testcase {
             new before_footer_html_generation($PAGE->get_renderer('core'))
         );
 
-        $this->assertTrue(true);
+        $this->assertStringNotContainsString('tiny_studiolms/frontend', $PAGE->requires->get_end_code());
     }
 }

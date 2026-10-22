@@ -25,6 +25,7 @@
 namespace tiny_studiolms\external;
 
 use advanced_testcase;
+use core_external\external_api;
 use tiny_studiolms\external\save_template;
 
 /**
@@ -70,6 +71,7 @@ final class save_template_test extends advanced_testcase {
 
         $this->assertArrayHasKey('id', $result);
         $this->assertGreaterThan(0, $result['id']);
+        $this->assertEquals($result, external_api::clean_returnvalue(save_template::execute_returns(), $result));
 
         $record = $DB->get_record('tiny_studiolms_templates', ['id' => $result['id']], '*', MUST_EXIST);
         $this->assertEquals('My Layout', $record->name);

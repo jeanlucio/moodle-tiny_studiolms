@@ -25,6 +25,7 @@
 namespace tiny_studiolms\external;
 
 use advanced_testcase;
+use core_external\external_api;
 use tiny_studiolms\external\import_templates;
 
 /**
@@ -73,6 +74,7 @@ final class import_templates_test extends advanced_testcase {
         $this->assertCount(1, $result);
         $this->assertEquals('Imported', $result[0]['name']);
         $this->assertGreaterThan(0, $result[0]['id']);
+        $this->assertEquals($result, external_api::clean_returnvalue(import_templates::execute_returns(), $result));
         $this->assertTrue($DB->record_exists('tiny_studiolms_templates', ['id' => $result[0]['id']]));
     }
 

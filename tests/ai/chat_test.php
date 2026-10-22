@@ -109,4 +109,81 @@ final class chat_test extends advanced_testcase {
         $this->assertStringContainsString('generate_template', $prompt);
         $this->assertStringContainsString('apply_preset', $prompt);
     }
+
+    /**
+     * A JSON reply is cleaned and its whitelisted action is passed through as JSON.
+     */
+    public function test_json_reply_returns_whitelisted_action(): void {
+        $action = ['type' => 'generate_template', 'name' => 'Week 1', 'blocks' => 'callout', 'palette' => 'blue'];
+        $reply = json_encode(['reply' => '<b>Done</b>', 'action' => $action]);
+        $this->install_hub_stub(true, "\x60\x60\x60json\n" . $reply . "\n\x60\x60\x60");
+
+        $result = chat::send([['role' => 'user', 'content' => 'Make week 1']], '[]', \context_system::instance());
+
+        $this->assertSame('Done', $result['reply']);
+        $this->assertSame('Gemini', $result['provider']);
+        $this->assertSame($action, json_decode($result['action'], true));
+    }
+
+    /**
+     * Both documented action types are accepted.
+     */
+    public function test_apply_preset_action_is_accepted(): void {
+        $action = ['type' => 'apply_preset', 'preset_name' => 'Onboarding'];
+        $this->install_hub_stub(true, json_encode(['reply' => 'Applying it', 'action' => $action]));
+
+        $result = chat::send([['role' => 'user', 'content' => 'Use Onboarding']], '["Onboarding"]', \context_system::instance());
+
+        $this->assertSame($action, json_decode($result['action'], true));
+    }
+
+    /**
+     * An action type the model invents is dropped while the reply is kept.
+     *
+     * The type decides what the editor does next, so only the two documented ones may get through.
+     */
+    public function test_unknown_action_type_is_dropped(): void {
+        $this->install_hub_stub(true, json_encode([
+            'reply' => 'Sure',
+            'action' => ['type' => 'delete_everything', 'target' => 'all'],
+        ]));
+
+        $result = chat::send([['role' => 'user', 'content' => 'Hi']], '[]', \context_system::instance());
+
+        $this->assertSame('Sure', $result['reply']);
+        $this->assertNull($result['action']);
+    }
+
+    /**
+     * An action that is not an object, or has no type, is dropped.
+     */
+    public function test_malformed_action_is_dropped(): void {
+        $context = \context_system::instance();
+        $messages = [['role' => 'user', 'content' => 'Hi']];
+
+        foreach (['generate_template', ['name' => 'no type'], []] as $action) {
+            $this->install_hub_stub(true, json_encode(['reply' => 'Sure', 'action' => $action]));
+            $result = chat::send($messages, '[]', $context);
+
+            $this->assertSame('Sure', $result['reply']);
+            $this->assertNull($result['action']);
+        }
+    }
+
+    /**
+     * Only the most recent MAX_HISTORY messages are sent to the provider.
+     */
+    public function test_send_keeps_only_the_latest_history(): void {
+        $client = $this->install_hub_stub(true, '{"reply":"ok"}');
+        $messages = [];
+        for ($i = 1; $i <= chat::MAX_HISTORY + 5; $i++) {
+            $messages[] = ['role' => 'user', 'content' => "message {$i}"];
+        }
+
+        chat::send($messages, '[]', \context_system::instance());
+
+        $sent = explode("\n", $client->calls[0][1]);
+        $this->assertCount(chat::MAX_HISTORY, $sent);
+        $this->assertSame('User: message 6', $sent[0]);
+    }
 }
