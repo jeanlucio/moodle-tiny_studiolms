@@ -16,6 +16,9 @@
 
 // phpcs:disable moodle.Files.RequireLogin.Missing
 
+// NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
+require_once(__DIR__ . '/../../../../tests/behat/editor_tiny_helpers.php');
+
 /**
  * Custom Behat step definitions for the StudioLMS TinyMCE plugin.
  *
@@ -25,6 +28,8 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class behat_tiny_studiolms extends behat_base {
+    use editor_tiny_helpers;
+
     /**
      * Opens the StudioLMS dialog by clicking the toolbar button.
      *
@@ -300,6 +305,283 @@ class behat_tiny_studiolms extends behat_base {
 
             return true;
         });
+    }
+
+    /**
+     * Adds a block of the given type to the canvas by clicking its card in the Components tab.
+     *
+     * A card only carries data-slms-block-id once its click listener is attached, so waiting for
+     * that attribute is what makes a single click safe (a retry loop would add the block twice).
+     * Then waits until the block's preview has rendered.
+     *
+     * @When I add the StudioLMS :blocktype block to the canvas
+     * @param string $blocktype The block id, for example callout or infographicSteps.
+     */
+    public function i_add_the_studiolms_block_to_the_canvas(string $blocktype): void {
+        $this->execute('behat_general::i_click_on', [
+            '.slms-card[data-slms-block-id="' . $blocktype . '"]',
+            'css_element',
+        ]);
+        $this->wait_for_canvas_preview();
+    }
+
+    /**
+     * Waits until at least one canvas block has rendered its preview.
+     */
+    private function wait_for_canvas_preview(): void {
+        $this->spin(function () {
+            $rendered = $this->evaluate_script(
+                'return document.querySelectorAll("#slms-canvas-blocks .slms-canvas-block-preview *").length > 0;'
+            );
+            if (!$rendered) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    'The StudioLMS canvas has no rendered block preview.',
+                    $this->getSession()
+                );
+            }
+            return true;
+        });
+    }
+
+    /**
+     * Clicks Insert and waits for the dialog to close, so the editor holds the canvas blocks.
+     *
+     * @When I insert the StudioLMS canvas into the editor
+     */
+    public function i_insert_the_studiolms_canvas_into_the_editor(): void {
+        $this->execute('behat_general::i_click_on', ['#slms-btn-insert', 'css_element']);
+
+        $this->spin(function () {
+            if ($this->getSession()->getPage()->find('css', '#studiolms-app')) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    'The StudioLMS dialog is still open after inserting.',
+                    $this->getSession()
+                );
+            }
+            return true;
+        });
+    }
+
+    /**
+     * Asserts that the content of a TinyMCE editor holds a StudioLMS block of the given type,
+     * carrying the state attribute the plugin needs to reopen it for editing.
+     *
+     * @Then the :field TinyMCE editor contains a StudioLMS :blocktype block
+     * @param string $field The Moodle field locator of the editor, for example Page content.
+     * @param string $blocktype The block id, for example callout.
+     */
+    public function the_editor_contains_a_studiolms_block(string $field, string $blocktype): void {
+        $this->require_tiny_tags();
+        $editorid = $this->get_textarea_for_locator($field)->getAttribute('id');
+
+        $this->spin(function () use ($editorid, $blocktype) {
+            $html = (string) $this->evaluate_javascript_for_editor($editorid, 'resolve(instance.getContent());');
+            $hastype = strpos($html, 'data-slms-block-type="' . $blocktype . '"') !== false;
+            if (!$hastype || !preg_match('/data-slms-state="[^"]+"/', $html)) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    "The '{$field}' editor has no StudioLMS '{$blocktype}' block with a saved state.",
+                    $this->getSession()
+                );
+            }
+            return true;
+        });
+    }
+
+    /**
+     * Adds every block type in turn and opens each of its settings panels, asserting that every
+     * panel renders at least one editable field. A block is removed again before the next one so
+     * a single canvas block is ever selected. Not a plain assertion: it drives the canvas to
+     * reach each block, which keeps the whole sweep in one browser session.
+     *
+     * @Then every StudioLMS block opens settings panels with editable fields
+     */
+    public function every_studiolms_block_opens_settings_panels(): void {
+        // Cards are appended at once but only get their data-slms-block-id after a lang string
+        // resolves, so the list is complete only when every card carries it.
+        $blocktypes = $this->spin(function () {
+            $ids = $this->evaluate_script(
+                'return (function () {' .
+                'var cards = document.querySelectorAll("#slms-library-grid .slms-card");' .
+                'var ready = document.querySelectorAll("#slms-library-grid .slms-card[data-slms-block-id]");' .
+                'if (cards.length === 0 || cards.length !== ready.length) { return []; }' .
+                'return Array.prototype.map.call(ready, function (c) { return c.dataset.slmsBlockId; });' .
+                '})();'
+            );
+            if (empty($ids)) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    'The StudioLMS library has not finished listing its blocks.',
+                    $this->getSession()
+                );
+            }
+            return $ids;
+        });
+
+        foreach ($blocktypes as $blocktype) {
+            $this->i_add_the_studiolms_block_to_the_canvas($blocktype);
+            $this->open_every_settings_panel($blocktype);
+            $this->execute('behat_general::i_click_on', ['.slms-btn-block-remove', 'css_element']);
+            $this->spin(function () {
+                if ($this->getSession()->getPage()->find('css', '#slms-canvas-blocks .slms-canvas-block')) {
+                    throw new \Behat\Mink\Exception\ExpectationException(
+                        'The StudioLMS block was not removed from the canvas.',
+                        $this->getSession()
+                    );
+                }
+                return true;
+            });
+        }
+    }
+
+    /**
+     * Clicks each toolbar button of the selected block and waits for its panel to show fields.
+     *
+     * A panel counts as shown once its own button is marked active (the plugin does that after
+     * rendering), so a panel left over from the previous button cannot satisfy the check.
+     *
+     * @param string $blocktype The block id, used in the failure message.
+     */
+    private function open_every_settings_panel(string $blocktype): void {
+        $selector = '#slms-top-toolbar .slms-toolbar-btn';
+        $count = count($this->getSession()->getPage()->findAll('css', $selector));
+        if ($count === 0) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                "The '{$blocktype}' block has no settings buttons in the toolbar.",
+                $this->getSession()
+            );
+        }
+
+        for ($index = 0; $index < $count; $index++) {
+            // Looked up again each time: the toolbar may be rebuilt while a panel renders.
+            $button = $this->getSession()->getPage()->findAll('css', $selector)[$index];
+            $this->execute('behat_general::i_click_on', [$button, 'NodeElement']);
+
+            $this->spin(function () use ($index, $blocktype) {
+                $shown = $this->evaluate_script(
+                    'return (function () {' .
+                    'var button = document.querySelectorAll("#slms-top-toolbar .slms-toolbar-btn")[' . $index . '];' .
+                    'var panel = document.getElementById("slms-properties-panel");' .
+                    'return !!button && button.classList.contains("active") && !panel.classList.contains("d-none")' .
+                    ' && panel.querySelectorAll("input, select, textarea").length > 0;' .
+                    '})();'
+                );
+                if (!$shown) {
+                    throw new \Behat\Mink\Exception\ExpectationException(
+                        "Settings panel " . ($index + 1) . " of the '{$blocktype}' block shows no editable fields.",
+                        $this->getSession()
+                    );
+                }
+                return true;
+            });
+        }
+    }
+
+    /**
+     * Saves the canvas as a personal template through the footer form.
+     *
+     * @When I save the StudioLMS canvas as a template named :name
+     * @param string $name The template name.
+     */
+    public function i_save_the_studiolms_canvas_as_a_template(string $name): void {
+        $this->execute('behat_general::i_click_on', ['#slms-btn-save-template', 'css_element']);
+        $this->execute('behat_forms::i_set_the_field_to', [
+            get_string('btn_save_template', 'tiny_studiolms'),
+            $name,
+        ]);
+        $this->execute('behat_general::i_click_on', ['#slms-save-tpl-form .btn-primary', 'css_element']);
+    }
+
+    /**
+     * Asserts that the template library currently lists a template with the given name.
+     *
+     * @Then the StudioLMS library shows the template :name
+     * @param string $name The template name.
+     */
+    public function the_studiolms_library_shows_the_template(string $name): void {
+        $this->execute('behat_general::assert_element_contains_text', [
+            $name,
+            '#slms-library-grid .slms-tpl-card',
+            'css_element',
+        ]);
+    }
+
+    /**
+     * Asserts that the template library no longer lists a template with the given name.
+     *
+     * @Then the StudioLMS library does not show the template :name
+     * @param string $name The template name.
+     */
+    public function the_studiolms_library_does_not_show_the_template(string $name): void {
+        $this->execute('behat_general::assert_element_not_contains_text', [
+            $name,
+            '#slms-library-grid',
+            'css_element',
+        ]);
+    }
+
+    /**
+     * Asserts that the feedback line under the tabs shows the given lang string of the plugin.
+     *
+     * @Then the StudioLMS feedback says :stringkey
+     * @param string $stringkey Key of a tiny_studiolms lang string, for example tpl_saved.
+     */
+    public function the_studiolms_feedback_says(string $stringkey): void {
+        $this->execute('behat_general::assert_element_contains_text', [
+            get_string($stringkey, 'tiny_studiolms'),
+            '#slms-feedback-area',
+            'css_element',
+        ]);
+    }
+
+    /**
+     * Clicks the favourite star of the named template card.
+     *
+     * @When I toggle the StudioLMS favourite star of the template :name
+     * @param string $name The template name.
+     */
+    public function i_toggle_the_favourite_star_of_the_template(string $name): void {
+        $this->execute('behat_general::i_click_on', [
+            $this->template_card_xpath($name) . '//button[contains(@class, "slms-btn-fav")]',
+            'xpath_element',
+        ]);
+    }
+
+    /**
+     * Clicks the delete button of the named template card (the confirmation is a separate step).
+     *
+     * @When I click the StudioLMS delete button of the template :name
+     * @param string $name The template name.
+     */
+    public function i_click_the_delete_button_of_the_template(string $name): void {
+        $this->execute('behat_general::i_click_on', [
+            $this->template_card_xpath($name) . '//button[contains(@class, "slms-btn-tpl-delete")]',
+            'xpath_element',
+        ]);
+    }
+
+    /**
+     * Loads the named template onto the canvas by clicking its card.
+     *
+     * @When I load the StudioLMS template :name onto the canvas
+     * @param string $name The template name.
+     */
+    public function i_load_the_template_onto_the_canvas(string $name): void {
+        $this->execute('behat_general::i_click_on', [
+            $this->template_card_xpath($name) . '//div[contains(@class, "slms-tpl-insert")]',
+            'xpath_element',
+        ]);
+        $this->wait_for_canvas_preview();
+    }
+
+    /**
+     * Builds the XPath of the library card whose name matches exactly.
+     *
+     * @param string $name The template name.
+     * @return string
+     */
+    private function template_card_xpath(string $name): string {
+        $literal = behat_context_helper::escape($name);
+        return '//div[contains(@class, "slms-tpl-card")]'
+            . '[.//div[contains(@class, "slms-tpl-name")][normalize-space(.) = ' . $literal . ']]';
     }
 
     /**
