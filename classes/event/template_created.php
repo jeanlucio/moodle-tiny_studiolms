@@ -66,14 +66,4 @@ class template_created extends \core\event\base {
     public static function get_objectid_mapping(): array {
         return ['db' => 'tiny_studiolms_templates', 'restore' => \core\event\base::NOT_MAPPED];
     }
-
-    /**
-     * Returns the URL associated with this event.
-     *
-     * @return \moodle_url
-     */
-    #[\Override]
-    public function get_url(): \moodle_url {
-        return new \moodle_url('/lib/editor/tiny/plugins/studiolms/');
-    }
 }

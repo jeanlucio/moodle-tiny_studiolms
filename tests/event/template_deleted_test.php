@@ -91,7 +91,8 @@ final class template_deleted_test extends advanced_testcase {
 
         $this->assertCount(1, $events);
         $this->assertInstanceOf(template_deleted::class, $events[0]);
-        $this->assertInstanceOf(\moodle_url::class, $events[0]->get_url());
+        // The plugin has no page of its own, so the log must not link to one.
+        $this->assertNull($events[0]->get_url());
     }
 
     /**

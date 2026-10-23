@@ -80,14 +80,4 @@ class template_deleted extends \core\event\base {
     public static function get_other_mapping(): array|false {
         return false;
     }
-
-    /**
-     * Returns the URL associated with this event.
-     *
-     * @return \moodle_url
-     */
-    #[\Override]
-    public function get_url(): \moodle_url {
-        return new \moodle_url('/lib/editor/tiny/plugins/studiolms/');
-    }
 }

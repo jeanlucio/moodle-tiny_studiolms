@@ -62,7 +62,8 @@ final class template_created_test extends advanced_testcase {
         $this->assertSame(42, (int) $events[0]->objectid);
         $this->assertStringContainsString((string) $user->id, $events[0]->get_description());
         $this->assertStringContainsString('42', $events[0]->get_description());
-        $this->assertInstanceOf(\moodle_url::class, $events[0]->get_url());
+        // The plugin has no page of its own, so the log must not link to one.
+        $this->assertNull($events[0]->get_url());
     }
 
     /**
