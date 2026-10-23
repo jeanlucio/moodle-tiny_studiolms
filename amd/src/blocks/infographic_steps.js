@@ -242,7 +242,7 @@ export default {
                                     iconBtn.innerHTML = `<i class="${cls}" aria-hidden="true"></i>`;
                                     applyChanges();
                                 }, ICONS);
-                            }, ICONS);
+                            });
                         }
                     }
 

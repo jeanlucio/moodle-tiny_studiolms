@@ -63,11 +63,6 @@ export default {
         // specific markup shape has no matching child — fall back to empty, never to whatever
         // was already there.
         state.content = contentNode ? contentNode.innerHTML : '';
-        // Extract dynamically typed border color if it was overridden by contenteditable.
-        const headerNode = node.querySelector('h4');
-        if (headerNode && headerNode.style.color && headerNode.style.color !== 'inherit') {
-            // Keep the format standard if needed, but usually innerHTML extraction handles it.
-        }
     },
 
     buildToolbar: async(container, data, onUpdate, PopupManager) => {
