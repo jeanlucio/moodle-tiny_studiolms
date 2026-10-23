@@ -51,7 +51,7 @@ class import_templates extends external_api {
                     'name'     => new external_value(PARAM_TEXT, 'Template name', VALUE_REQUIRED),
                     'content'  => new external_value(PARAM_RAW, 'Full HTML content', VALUE_REQUIRED),
                     'isglobal' => new external_value(
-                        PARAM_INT,
+                        PARAM_BOOL,
                         'Whether to import as global (requires manageglobaltemplates)',
                         VALUE_DEFAULT,
                         0

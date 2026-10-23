@@ -105,6 +105,28 @@ final class save_template_test extends advanced_testcase {
     }
 
     /**
+     * The official flag takes only 0 or 1; any other number is refused and nothing is written.
+     *
+     * Regression test: the flag was an integer written as it came, so a 2 from a script produced a
+     * template that no tab lists (they match 0 and 1) and that neither the deletion nor the
+     * anonymisation of the privacy provider reaches.
+     */
+    public function test_a_flag_that_is_not_zero_or_one_is_refused(): void {
+        global $DB;
+
+        $this->setUser($this->manager);
+
+        foreach ([2, -1, 7] as $flag) {
+            try {
+                save_template::execute(\context_system::instance()->id, 'Odd flag', '<p>x</p>', $flag);
+                $this->fail('A flag of ' . $flag . ' was accepted.');
+            } catch (\invalid_parameter_exception $e) {
+                $this->assertSame(0, $DB->count_records('tiny_studiolms_templates'));
+            }
+        }
+    }
+
+    /**
      * Saving a template fires a template_created event.
      */
     public function test_save_fires_template_created_event(): void {

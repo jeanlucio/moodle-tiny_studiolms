@@ -82,6 +82,28 @@ final class import_templates_test extends advanced_testcase {
     }
 
     /**
+     * The official flag takes only 0 or 1; a batch with any other number is refused whole.
+     *
+     * Regression test: the flag was an integer written as it came, so a 2 became a template that no
+     * tab lists and that neither the deletion nor the anonymisation of the privacy provider reaches.
+     */
+    public function test_a_flag_that_is_not_zero_or_one_is_refused(): void {
+        global $DB;
+
+        $this->setUser($this->manager);
+
+        try {
+            import_templates::execute(\context_system::instance()->id, [
+                ['name' => 'Fine', 'content' => '<p>A</p>', 'isglobal' => 1],
+                ['name' => 'Odd flag', 'content' => '<p>B</p>', 'isglobal' => 2],
+            ]);
+            $this->fail('A flag of 2 was accepted.');
+        } catch (\invalid_parameter_exception $e) {
+            $this->assertSame(0, $DB->count_records('tiny_studiolms_templates'));
+        }
+    }
+
+    /**
      * Importing a batch of templates returns all IDs.
      */
     public function test_import_multiple_templates(): void {
