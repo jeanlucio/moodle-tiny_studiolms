@@ -119,30 +119,71 @@ final class plugininfo_test extends advanced_testcase {
     }
 
     /**
-     * The AI Hub personal-keys link is offered only when the teacher could actually use that page.
+     * The AI Hub personal-keys link follows the site toggle and the usepersonalkey capability.
+     *
+     * The teacher gets the role from a course enrolment only, which is how teachers hold it on a real
+     * site: a capability checked in the system context alone is never true for them. Assigning the
+     * role in the system context in a test would hide that, so it is never done here.
      */
-    public function test_aihubkeysurl_requires_personal_keys_enabled_and_capability(): void {
+    public function test_aihubkeysurl_is_offered_to_a_course_enrolled_teacher(): void {
         if (!class_exists(\local_aihub\ai::class)) {
             $this->markTestSkipped('local_aihub is not installed.');
         }
         $course = $this->getDataGenerator()->create_course();
         $coursecontext = \context_course::instance($course->id);
         $teacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
-        $this->setUser($teacher);
+        $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
 
+        $this->setUser($teacher);
         set_config('enablepersonalkeys', 0, 'local_aihub');
         $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
-        $this->assertSame('', $config['aihubkeysurl']);
+        $this->assertSame('', $config['aihubkeysurl'], 'The link needs the site toggle.');
 
         set_config('enablepersonalkeys', 1, 'local_aihub');
-        $userrole = $this->getDataGenerator()->create_role();
-        assign_capability('local/aihub:usepersonalkey', CAP_ALLOW, $userrole, \context_system::instance()->id);
         $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
-        $this->assertSame('', $config['aihubkeysurl']);
+        $this->assertStringEndsWith('/local/aihub/mykeys.php', $config['aihubkeysurl']);
 
-        role_assign($userrole, $teacher->id, \context_system::instance()->id);
-        accesslib_clear_all_caches_for_unit_testing();
+        $this->setUser($student);
         $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+        $this->assertSame('', $config['aihubkeysurl'], 'A student does not hold the capability.');
+    }
+
+    /**
+     * A teacher who is denied the capability in the course does not get the link there.
+     */
+    public function test_aihubkeysurl_is_hidden_when_the_course_denies_the_capability(): void {
+        if (!class_exists(\local_aihub\ai::class)) {
+            $this->markTestSkipped('local_aihub is not installed.');
+        }
+        set_config('enablepersonalkeys', 1, 'local_aihub');
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = \context_course::instance($course->id);
+        $teacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
+        $roleid = $this->getDataGenerator()->create_role();
+        assign_capability('local/aihub:usepersonalkey', CAP_PROHIBIT, $roleid, $coursecontext->id);
+        $this->getDataGenerator()->role_assign($roleid, $teacher->id, $coursecontext->id);
+        $this->setUser($teacher);
+
+        $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+
+        $this->assertSame('', $config['aihubkeysurl']);
+    }
+
+    /**
+     * Where the editor has no course (a profile page, the site front page) the capability a teacher
+     * holds in a course still counts, as it does on the hub's own page.
+     */
+    public function test_aihubkeysurl_is_offered_outside_a_course_to_a_course_teacher(): void {
+        if (!class_exists(\local_aihub\ai::class)) {
+            $this->markTestSkipped('local_aihub is not installed.');
+        }
+        set_config('enablepersonalkeys', 1, 'local_aihub');
+        $course = $this->getDataGenerator()->create_course();
+        $teacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
+        $this->setUser($teacher);
+
+        $config = plugininfo::get_plugin_configuration_for_context(\context_system::instance(), [], []);
+
         $this->assertStringEndsWith('/local/aihub/mykeys.php', $config['aihubkeysurl']);
     }
 

@@ -89,7 +89,7 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
             ),
             'presets'                  => self::load_presets(current_language()),
             'hasai'                    => ai\provider_chain::has_ai($context),
-            'aihubkeysurl'             => self::aihub_keys_url(),
+            'aihubkeysurl'             => self::aihub_keys_url($context),
             // Threaded back to every web service call so require_capability() there checks the
             // same real context this button's own visibility was gated on, instead of a
             // hardcoded context_system that an ordinary course-enrolled teacher never satisfies.
@@ -101,16 +101,24 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
      * Returns the local_aihub personal-keys page URL when the teacher can actually use it, or ''.
      *
      * Shown in the "AI not available" state so a teacher can plug in their own key without an admin.
-     * Mirrors the hub's own access rule for that page (personal keys enabled + the usepersonalkey
-     * capability) through its public surface only — config and capability — never its internal classes.
+     * Mirrors the hub's own access rule for that page through its public surface only: the site
+     * toggle plus the usepersonalkey capability. A teacher gets their role from a course enrolment,
+     * whose capabilities never reach the system context, so the capability counts when it is held in
+     * the editor's own context or in any course (the hub's own page accepts the same).
      *
+     * @param \context $context Context the editor is used in.
      * @return string
      */
-    private static function aihub_keys_url(): string {
+    private static function aihub_keys_url(\context $context): string {
+        global $USER;
+
         if (!class_exists(\local_aihub\ai::class) || !get_config('local_aihub', 'enablepersonalkeys')) {
             return '';
         }
-        if (!has_capability('local/aihub:usepersonalkey', \context_system::instance())) {
+        $capability = 'local/aihub:usepersonalkey';
+        $allowed = has_capability($capability, $context)
+            || !empty(get_user_capability_course($capability, (int) $USER->id, false, '', '', 1));
+        if (!$allowed) {
             return '';
         }
         return (new \moodle_url('/local/aihub/mykeys.php'))->out(false);
