@@ -1076,4 +1076,107 @@ class behat_tiny_studiolms extends behat_base {
             'timemodified' => $now,
         ]);
     }
+
+    /**
+     * Asserts how many blocks the StudioLMS canvas holds, waiting for the count to settle because
+     * a block is added to the list before its preview is drawn.
+     *
+     * @Then the StudioLMS canvas holds :count blocks
+     * @param string $count The expected number of blocks.
+     */
+    public function the_studiolms_canvas_holds_blocks(string $count): void {
+        $this->spin(function () use ($count) {
+            $actual = (int) $this->evaluate_script(
+                'return document.querySelectorAll("#slms-canvas-blocks .slms-canvas-block").length;'
+            );
+            if ($actual !== (int) $count) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    "The StudioLMS canvas holds {$actual} block(s), expected {$count}.",
+                    $this->getSession()
+                );
+            }
+            return true;
+        });
+    }
+
+    /** @var bool|null Whether the last click on a StudioLMS button in the editor had its default action cancelled. */
+    private ?bool $buttonclickprevented = null;
+
+    /**
+     * Clicks the text of the first StudioLMS action button inside a TinyMCE editor and records
+     * whether the editor cancelled the click, which is what stops the browser from following the link.
+     *
+     * @When I click the text of the StudioLMS button in the :field TinyMCE editor
+     * @param string $field The Moodle field locator of the editor, for example Page content.
+     */
+    public function i_click_the_text_of_the_studiolms_button(string $field): void {
+        $this->require_tiny_tags();
+        $editorid = $this->get_textarea_for_locator($field)->getAttribute('id');
+
+        $this->buttonclickprevented = (bool) $this->evaluate_javascript_for_editor($editorid, <<<'JS'
+            const anchor = instance.getBody().querySelector('a.studiolms-btn');
+            const target = anchor.querySelector('span') || anchor;
+            const click = new MouseEvent('click', {bubbles: true, cancelable: true, button: 0});
+            target.dispatchEvent(click);
+            resolve(click.defaultPrevented);
+JS);
+    }
+
+    /**
+     * Asserts that the last click on a StudioLMS button in the editor had its default action cancelled.
+     *
+     * @Then following the link of that StudioLMS button was prevented
+     */
+    public function following_the_link_of_that_studiolms_button_was_prevented(): void {
+        if ($this->buttonclickprevented !== true) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                'Clicking the text of the StudioLMS button in the editor would have followed its link.',
+                $this->getSession()
+            );
+        }
+    }
+
+    /**
+     * Puts the cursor in the first StudioLMS action button of a TinyMCE editor and runs the link
+     * commands the editor toolbar offers: remove the link, then insert or edit one.
+     *
+     * @When I remove the link of the StudioLMS button in the :field TinyMCE editor
+     * @param string $field The Moodle field locator of the editor, for example Page content.
+     */
+    public function i_remove_the_link_of_the_studiolms_button(string $field): void {
+        $this->require_tiny_tags();
+        $editorid = $this->get_textarea_for_locator($field)->getAttribute('id');
+
+        $this->evaluate_javascript_for_editor($editorid, <<<'JS'
+            const text = instance.getBody().querySelector('a.studiolms-btn span').firstChild;
+            instance.selection.setCursorLocation(text, 1);
+            instance.execCommand('unlink');
+            instance.execCommand('mceLink');
+            resolve(true);
+JS);
+    }
+
+    /**
+     * Asserts that the content of a TinyMCE editor still holds a StudioLMS action button as a link.
+     *
+     * @Then the :field TinyMCE editor still has the link of the StudioLMS button
+     * @param string $field The Moodle field locator of the editor, for example Page content.
+     */
+    public function the_editor_still_has_the_link_of_the_studiolms_button(string $field): void {
+        $this->require_tiny_tags();
+        $editorid = $this->get_textarea_for_locator($field)->getAttribute('id');
+
+        $this->spin(function () use ($editorid, $field) {
+            $html = (string) $this->evaluate_javascript_for_editor($editorid, 'resolve(instance.getContent());');
+            $classfirst = preg_match('/<a [^>]*class="[^"]*studiolms-btn[^"]*"[^>]*href="/', $html);
+            $hreffirst = preg_match('/<a [^>]*href="[^"]*"[^>]*class="[^"]*studiolms-btn/', $html);
+            if (!$classfirst && !$hreffirst) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    "The '{$field}' editor no longer has the StudioLMS button as a link.",
+                    $this->getSession()
+                );
+            }
+            return true;
+        });
+    }
 }
