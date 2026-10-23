@@ -262,6 +262,7 @@ $string['infographic_ai_section'] = 'Gerar com IA';
 $string['infographic_choose_icon'] = 'Escolher ícone';
 $string['infographic_comparison_ai_error'] = 'Não foi possível gerar o comparativo. Tente novamente.';
 $string['infographic_comparison_ai_prompt'] = 'Descreva o que deseja comparar (ex.: "Plano Gratuito vs Premium", "Python vs JavaScript")...';
+$string['infographic_comparison_check_label'] = 'Opção {$a->option}, critério {$a->row}';
 $string['infographic_comparison_col1'] = 'Nome da opção A';
 $string['infographic_comparison_col1_ph'] = 'ex.: Básico';
 $string['infographic_comparison_col2'] = 'Nome da opção B';

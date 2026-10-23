@@ -262,6 +262,7 @@ $string['infographic_ai_section'] = 'Generate with AI';
 $string['infographic_choose_icon'] = 'Choose icon';
 $string['infographic_comparison_ai_error'] = 'Could not generate the comparison. Please try again.';
 $string['infographic_comparison_ai_prompt'] = 'Describe what you want to compare (e.g. "Free vs Premium plan", "Python vs JavaScript")...';
+$string['infographic_comparison_check_label'] = 'Option {$a->option}, criterion {$a->row}';
 $string['infographic_comparison_col1'] = 'Option A name';
 $string['infographic_comparison_col1_ph'] = 'e.g. Basic';
 $string['infographic_comparison_col2'] = 'Option B name';
