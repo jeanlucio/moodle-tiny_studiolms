@@ -71,6 +71,12 @@ const BLOCKED_ELEMENTS = [
 const MAX_PASSES = 3;
 
 /**
+ * A '<' that the HTML parser reads as the start of a tag, end tag, comment or declaration. Any other
+ * '<' (as in "x < 5") is plain text.
+ */
+const MARKUP_START = /<[a-z/!?]/i;
+
+/**
  * One sanitization pass over an HTML string.
  *
  * @param {string} html
@@ -124,14 +130,17 @@ const sanitizeOnce = (html) => {
  * builds an inert document (no image loads, no event firing), so walking it here never executes
  * anything itself.
  *
- * Safe to call on a plain, non-HTML value too (a colour, an enum, a URL): a string with no markup
- * and no dangerous attributes round-trips unchanged.
+ * Safe to call on a plain, non-HTML value too (a colour, an enum, a URL, a title with an ampersand):
+ * a string with no markup is returned as it came, without being parsed.
  *
  * @param {string} html
  * @returns {string}
  */
 export const sanitizeUntrustedHtml = (html) => {
-    if (!html) {
+    // Without a '<' the HTML parser can see no tag, comment or declaration, so there is nothing to
+    // strip. Parsing anyway would not return the string as it came: serializing a text node writes
+    // '&' as '&amp;' and '>' as '&gt;', which a template then escapes a second time.
+    if (!html || !MARKUP_START.test(html)) {
         return html;
     }
 

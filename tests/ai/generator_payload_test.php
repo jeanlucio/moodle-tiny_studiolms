@@ -451,4 +451,30 @@ final class generator_payload_test extends advanced_testcase {
         $this->assertSame('callout', $block['blocktype']);
         $this->assertSame('[]', $block['config']);
     }
+
+    /**
+     * Plain text in a generated config is kept as the model wrote it; only real markup is purified.
+     *
+     * Regression test: any string with a '<' was purified, which entity-encodes '&' and '<' and made
+     * a template show "x &lt; 5". A '<' that no browser reads as a tag (before a space or a digit)
+     * is text, like an ampersand in a URL.
+     */
+    public function test_block_config_keeps_plain_text_with_symbols(): void {
+        $block = $this->generate('generate_block', json_encode([
+            'blocktype' => 'callout',
+            'config' => [
+                'btnUrl' => 'https://example.com/watch?v=abc&t=30s',
+                'title' => 'P&D',
+                'note' => 'x < 5 and y > 2',
+                'contentHtml' => '<b>ok</b><script>alert(1)</script>',
+            ],
+        ]));
+        $config = json_decode($block['config'], true);
+
+        $this->assertSame('https://example.com/watch?v=abc&t=30s', $config['btnUrl']);
+        $this->assertSame('P&D', $config['title']);
+        $this->assertSame('x < 5 and y > 2', $config['note']);
+        $this->assertStringContainsString('<b>ok</b>', $config['contentHtml']);
+        $this->assertStringNotContainsString('script', $config['contentHtml']);
+    }
 }

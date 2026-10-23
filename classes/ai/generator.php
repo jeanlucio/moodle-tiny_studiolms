@@ -1214,10 +1214,11 @@ class generator {
      * defaultData) — and the config reaches triple-mustache sinks rendered through innerHTML. Core's
      * HTMLPurifier (PARAM_CLEANHTML) is the one sanitizer that understands how a browser will
      * re-parse the markup: the client-side filter in htmlsanitizer.js parses with scripting
-     * disabled, so a <noscript> wrapper could smuggle a live element past it. Only strings containing
-     * '<' are purified: without one no element or comment can form, and purifying plain text would
-     * entity-encode '&' in URLs such as btnUrl. URL schemes are validated client-side
-     * (sanitizeUrlFields) for every block config either way.
+     * disabled, so a <noscript> wrapper could smuggle a live element past it. Only strings with a '<'
+     * that a browser reads as the start of a tag, comment or declaration are purified: without one no
+     * element can form, and purifying plain text would entity-encode '&' in URLs such as btnUrl and
+     * '<' in "x < 5". The client-side filter (htmlsanitizer.js) uses the same rule. URL schemes are
+     * validated client-side (sanitizeUrlFields) for every block config either way.
      *
      * @param array $config Decoded config from the model.
      * @return array The same shape, with markup purified.
@@ -1226,7 +1227,7 @@ class generator {
         foreach ($config as $key => $value) {
             if (is_array($value)) {
                 $config[$key] = self::clean_config($value);
-            } else if (is_string($value) && strpos($value, '<') !== false) {
+            } else if (is_string($value) && preg_match('/<[a-z\/!?]/i', $value)) {
                 $config[$key] = clean_param($value, PARAM_CLEANHTML);
             }
         }
