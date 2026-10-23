@@ -52,6 +52,21 @@ const invalidateTabCache = (...tabNames) => {
 };
 
 /**
+ * Save a template and drop the cached list of the tab it belongs to.
+ *
+ * Every caller that writes a template goes through here, so a tab already opened in this session
+ * never keeps showing a list from before the save.
+ *
+ * @param {string} name Template name.
+ * @param {string} content Template HTML.
+ * @param {number} isglobal 1 for an official template, 0 for a personal one.
+ */
+const saveTemplateAndRefresh = async(name, content, isglobal) => {
+    await saveTemplate(name, content, isglobal);
+    invalidateTabCache(isglobal ? 'global' : 'mine');
+};
+
+/**
  * Strip HTML markup from a string. Fields that are not excluded via excludeFromState are meant to
  * hold plain values only (colors, enums, emoji, short text) — the rich HTML fields are re-read
  * from the sanitized TinyMCE DOM via extractDOM instead. Any markup surviving in a plain field is
@@ -1441,7 +1456,7 @@ const switchTab = async(tabName) => {
                 const html = type === 'block'
                     ? await renderSingleBlockForInsert(data.blockDef, data.config)
                     : await renderPresetToHtml(data);
-                await saveTemplate(name, html, 0);
+                await saveTemplateAndRefresh(name, html, 0);
                 showInlineFeedback(await getString('tpl_saved', 'tiny_studiolms'), 'success');
             },
         };
@@ -1684,9 +1699,8 @@ const setupSaveTemplateButton = (canManageGlobal = false) => {
                         parts.push(await renderSingleBlockForInsert(entry.blockDef, entry.config));
                     }
                     const content = parts.join('');
-                    await saveTemplate(name, content, isglobal);
+                    await saveTemplateAndRefresh(name, content, isglobal);
                     showInlineFeedback(await getString('tpl_saved', 'tiny_studiolms'), 'success');
-                    invalidateTabCache(isglobal ? 'global' : 'mine');
                     await switchTab(isglobal ? 'global' : 'mine');
                     const mineTab = document.getElementById('slms-tab-mine');
                     if (mineTab && !isglobal) {
@@ -1751,7 +1765,7 @@ const setupImportExportButtons = () => {
                         await getString('import_success', 'tiny_studiolms'),
                         'success'
                     );
-                    invalidateTabCache('mine');
+                    invalidateTabCache('mine', 'global');
                     await switchTab('mine');
                 }
             } catch (error) {
