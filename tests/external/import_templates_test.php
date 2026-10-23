@@ -40,6 +40,9 @@ final class import_templates_test extends advanced_testcase {
     /** @var \stdClass Manager fixture. */
     private \stdClass $manager;
 
+    /** @var int[] Transaction nesting depth at each template_created event, in order. */
+    private static array $depths = [];
+
     protected function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
@@ -225,5 +228,100 @@ final class import_templates_test extends advanced_testcase {
 
         $created = array_filter($events, fn($e) => $e->eventname === '\tiny_studiolms\event\template_created');
         $this->assertCount(2, $created);
+    }
+
+    /**
+     * A name that already fills the column still gets its " (2)" suffix and fits.
+     *
+     * Regression test: the suffix used to be appended to the whole name, so a 255 character name came
+     * out at 259 and the insert failed with a database error.
+     */
+    public function test_collision_suffix_keeps_the_name_within_the_column(): void {
+        global $DB;
+
+        $this->setUser($this->teacher);
+        $longname = str_repeat('é', 255);
+        $contextid = \context_system::instance()->id;
+        save_template::execute($contextid, $longname, '<p>one</p>', 0);
+
+        $result = import_templates::execute($contextid, [
+            ['name' => $longname, 'content' => '<p>two</p>', 'isglobal' => 0],
+            ['name' => $longname, 'content' => '<p>three</p>', 'isglobal' => 0],
+        ]);
+
+        $this->assertCount(2, $result);
+        $this->assertSame(255, \core_text::strlen($result[0]['name']));
+        $this->assertStringEndsWith(' (2)', $result[0]['name']);
+        $this->assertSame(255, \core_text::strlen($result[1]['name']));
+        $this->assertStringEndsWith(' (3)', $result[1]['name']);
+        $this->assertSame(3, $DB->count_records('tiny_studiolms_templates', ['userid' => $this->teacher->id]));
+    }
+
+    /**
+     * unique_name() leaves a free name alone and numbers a taken one from 2.
+     */
+    public function test_unique_name(): void {
+        $this->assertSame('Plan', import_templates::unique_name('Plan', []));
+        $this->assertSame('Plan (2)', import_templates::unique_name('Plan', ['Plan' => true]));
+        $this->assertSame(
+            'Plan (3)',
+            import_templates::unique_name('Plan', ['Plan' => true, 'Plan (2)' => true])
+        );
+        $long = str_repeat('x', 255);
+        $unique = import_templates::unique_name($long, [$long => true]);
+        $this->assertSame(255, strlen($unique));
+        $this->assertSame(str_repeat('x', 251) . ' (2)', $unique);
+    }
+
+    /**
+     * The whole batch is written inside one database transaction of its own.
+     *
+     * Regression test: each template was saved on its own, so a failure halfway left the first ones
+     * in the library and importing the file again duplicated them. Inside a transaction a failure
+     * rolls the batch back as a whole. The PHPUnit runner already keeps a transaction open around
+     * every test, so "a transaction is open" proves nothing: what is compared is the nesting depth,
+     * read while each template is saved (an observer of the event it fires, which the core calls
+     * straight away even inside a transaction).
+     */
+    public function test_the_batch_is_written_in_a_single_transaction(): void {
+        $this->setUser($this->teacher);
+        $depthbefore = self::transaction_depth();
+        self::$depths = [];
+        \core\event\manager::phpunit_replace_observers([[
+            'eventname' => '\\tiny_studiolms\\event\\template_created',
+            'callback' => self::class . '::record_transaction_depth',
+        ]]);
+
+        import_templates::execute(\context_system::instance()->id, [
+            ['name' => 'First', 'content' => '<p>1</p>', 'isglobal' => 0],
+            ['name' => 'Second', 'content' => '<p>2</p>', 'isglobal' => 0],
+            ['name' => 'Third', 'content' => '<p>3</p>', 'isglobal' => 0],
+        ]);
+
+        $this->assertSame(
+            [$depthbefore + 1, $depthbefore + 1, $depthbefore + 1],
+            self::$depths,
+            'Every template must be saved inside the one transaction the batch opens.'
+        );
+        $this->assertSame($depthbefore, self::transaction_depth(), 'The batch left its transaction open.');
+    }
+
+    /**
+     * Returns how many transactions are nested open on the database connection.
+     *
+     * @return int
+     */
+    private static function transaction_depth(): int {
+        global $DB;
+
+        $property = new \ReflectionProperty(\moodle_database::class, 'transactions');
+        return count($property->getValue($DB));
+    }
+
+    /**
+     * Observer of template_created that records how deep the database transactions are nested.
+     */
+    public static function record_transaction_depth(): void {
+        self::$depths[] = self::transaction_depth();
     }
 }

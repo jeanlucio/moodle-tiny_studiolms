@@ -97,45 +97,76 @@ class import_templates extends external_api {
         );
         $nameset = array_flip($existingnames);
 
-        foreach ($params['templates'] as $item) {
-            $isglobal = (int) $item['isglobal'];
-            if ($isglobal && !$canmanageglobal) {
-                $isglobal = 0;
-            }
+        // The whole batch goes in or none of it does: a failure halfway would leave the first templates
+        // saved and make the next import of the same file duplicate them.
+        $transaction = $DB->start_delegated_transaction();
 
-            // Ensure unique name by appending a counter when a collision exists.
-            $name = $item['name'];
-            if (isset($nameset[$name])) {
-                $counter = 2;
-                while (isset($nameset["{$name} ({$counter})"])) {
-                    $counter++;
+        try {
+            foreach ($params['templates'] as $item) {
+                $isglobal = (int) $item['isglobal'];
+                if ($isglobal && !$canmanageglobal) {
+                    $isglobal = 0;
                 }
-                $name = "{$name} ({$counter})";
+
+                $name = self::unique_name(
+                    \core_text::substr($item['name'], 0, save_template::NAME_MAX_LENGTH),
+                    $nameset
+                );
+                $nameset[$name] = true;
+
+                $record = (object) [
+                    'name'         => $name,
+                    'content'      => $item['content'],
+                    'userid'       => $USER->id,
+                    'usermodified' => $USER->id,
+                    'isglobal'     => $isglobal,
+                    'timecreated'  => $now,
+                    'timemodified' => $now,
+                ];
+
+                $id = $DB->insert_record('tiny_studiolms_templates', $record);
+
+                $event = template_created::create([
+                    'objectid' => $id,
+                    'context'  => $context,
+                ]);
+                $event->trigger();
+
+                $created[] = ['id' => (int) $id, 'name' => $name];
             }
-            $nameset[$name] = true;
 
-            $record = (object) [
-                'name'         => $name,
-                'content'      => $item['content'],
-                'userid'       => $USER->id,
-                'usermodified' => $USER->id,
-                'isglobal'     => $isglobal,
-                'timecreated'  => $now,
-                'timemodified' => $now,
-            ];
-
-            $id = $DB->insert_record('tiny_studiolms_templates', $record);
-
-            $event = template_created::create([
-                'objectid' => $id,
-                'context'  => $context,
-            ]);
-            $event->trigger();
-
-            $created[] = ['id' => (int) $id, 'name' => $name];
+            $transaction->allow_commit();
+        } catch (\Exception $e) {
+            // Rolls the batch back and throws $e again, so a failed import is never reported as a success.
+            $transaction->rollback($e);
         }
 
         return $created;
+    }
+
+    /**
+     * Makes a template name unique among the names already taken, within the column length.
+     *
+     * A colliding name gets a " (n)" suffix. The base is shortened first so that the result still
+     * fits the column: appending to a name that already uses all of it would overflow.
+     *
+     * @param string $name The wanted name, at most save_template::NAME_MAX_LENGTH characters.
+     * @param array $taken Names already in use, as array keys.
+     * @return string
+     */
+    public static function unique_name(string $name, array $taken): string {
+        if (!isset($taken[$name])) {
+            return $name;
+        }
+        $counter = 2;
+        do {
+            $suffix = " ({$counter})";
+            $candidate = \core_text::substr($name, 0, save_template::NAME_MAX_LENGTH - \core_text::strlen($suffix))
+                . $suffix;
+            $counter++;
+        } while (isset($taken[$candidate]));
+
+        return $candidate;
     }
 
     /**

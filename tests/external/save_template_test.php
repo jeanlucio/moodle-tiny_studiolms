@@ -149,4 +149,18 @@ final class save_template_test extends advanced_testcase {
         $this->expectException(\required_capability_exception::class);
         save_template::execute($coursecontext->id, 'Phishing Link', '<p>x</p>', 1);
     }
+
+    /**
+     * A name longer than the column is cut to it instead of failing the insert.
+     */
+    public function test_name_longer_than_the_column_is_truncated(): void {
+        global $DB;
+
+        $this->setUser($this->teacher);
+
+        $result = save_template::execute(\context_system::instance()->id, str_repeat('ñ', 300), '<p>x</p>', 0);
+
+        $record = $DB->get_record('tiny_studiolms_templates', ['id' => $result['id']], '*', MUST_EXIST);
+        $this->assertSame(save_template::NAME_MAX_LENGTH, \core_text::strlen($record->name));
+    }
 }

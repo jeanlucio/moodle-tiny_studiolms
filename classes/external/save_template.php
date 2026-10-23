@@ -35,6 +35,9 @@ use tiny_studiolms\event\template_created;
  * Saves a new layout template for the current user.
  */
 class save_template extends external_api {
+    /** @var int Longest template name the name column holds, in characters. */
+    public const NAME_MAX_LENGTH = 255;
+
     /**
      * Declares the parameters accepted by execute().
      *
@@ -89,7 +92,7 @@ class save_template extends external_api {
 
         $now = time();
         $record = (object) [
-            'name'         => $params['name'],
+            'name'         => \core_text::substr($params['name'], 0, self::NAME_MAX_LENGTH),
             'content'      => $params['content'],
             'userid'       => $USER->id,
             'usermodified' => $USER->id,
