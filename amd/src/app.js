@@ -22,6 +22,7 @@
  */
 
 import {Blocks, localizeBlockDefaults} from './blocks/registry';
+import {INVALID_IMPORT_FILE} from './template_import';
 import {getString} from 'core/str';
 import Templates from 'core/templates';
 import Notification from 'core/notification';
@@ -1754,7 +1755,7 @@ const setupImportExportButtons = () => {
                     await switchTab('mine');
                 }
             } catch (error) {
-                const msgKey = error.message === 'invalid_import_file'
+                const msgKey = error.message === INVALID_IMPORT_FILE
                     ? 'import_invalid_file'
                     : null;
                 if (msgKey) {

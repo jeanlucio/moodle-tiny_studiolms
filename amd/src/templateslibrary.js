@@ -26,6 +26,7 @@ import Templates from 'core/templates';
 import Notification from 'core/notification';
 import {getString} from 'core/str';
 import {getContextId} from './context';
+import {parseTemplateImport} from './template_import';
 
 /**
  * Show a brief feedback message inside the modal's designated feedback area.
@@ -160,25 +161,9 @@ export const importTemplatesFromFile = () => {
 
             try {
                 const text = await file.text();
-                const parsed = JSON.parse(text);
-
-                // Accept both a bare array and our versioned envelope.
-                const items = Array.isArray(parsed) ? parsed : (parsed.templates ?? []);
-
-                if (!Array.isArray(items) || items.length === 0) {
-                    reject(new Error('invalid_import_file'));
-                    return;
-                }
-
                 // A template exported without a name still needs one: a translated placeholder.
                 const unnamed = await getString('imported_template_name', 'tiny_studiolms');
-
-                // Sanitise: keep only expected fields.
-                const payload = items.map((t) => ({
-                    name:     String(t.name ?? '').substring(0, 255) || unnamed,
-                    content:  String(t.content ?? ''),
-                    isglobal: Number(t.isglobal ?? 0) === 1 ? 1 : 0,
-                }));
+                const payload = parseTemplateImport(text, unnamed);
 
                 const created = await Ajax.call([{
                     methodname: 'tiny_studiolms_import_templates',
