@@ -32,6 +32,7 @@ import {initBlock as initAiBlock, initModel as initAiModel} from './aigenerator'
 import {init as initAiChat} from './aichat';
 import {setContextId} from './context';
 import {sanitizeUntrustedHtml, sanitizeUrlFields} from './htmlsanitizer';
+import {mergeAiConfig} from './ai_config_types';
 
 // Canvas state — array of {id, blockDef, config, element, previewEl}
 let canvasBlocks = [];
@@ -1076,8 +1077,13 @@ const renderPresetToHtml = async(preset) => {
         if (!blockDef) {
             continue;
         }
-        const config = Object.assign({}, blockDef.defaultData, block.config ?? {});
-        parts.push(await renderSingleBlockForInsert(blockDef, config));
+        const config = mergeAiConfig(blockDef.defaultData, block.config);
+        try {
+            parts.push(await renderSingleBlockForInsert(blockDef, config));
+        } catch (e) {
+            // One block that cannot be drawn must not take the whole layout down with it.
+            window.console.error('StudioLMS: render error for', block.type, e);
+        }
     }
     return parts.join('');
 };

@@ -32,6 +32,7 @@ import Notification from 'core/notification';
 import {Blocks} from './blocks/registry';
 import {getContextId} from './context';
 import {sanitizeAiConfig} from './htmlsanitizer';
+import {mergeAiConfig} from './ai_config_types';
 
 /**
  * Renders a bare preview HTML for a single block (no state attributes).
@@ -57,7 +58,7 @@ const renderPresetPreview = async(preset) => {
         if (!blockDef) {
             continue;
         }
-        const config = Object.assign({}, blockDef.defaultData, block.config ?? {});
+        const config = mergeAiConfig(blockDef.defaultData, block.config);
         try {
             const html = await blockDef.renderHtml(config);
             parts.push(html);
@@ -309,10 +310,7 @@ const setupBlockGenerator = (container, callbacks) => {
             // whatever JSON the LLM returned, unlike the dedicated per-block generators which
             // clean_param() each known field. A prompt-injected instruction could ask for a
             // field like contentHtml to contain a script-executing payload.
-            const mergedConfig = Object.assign(
-                JSON.parse(JSON.stringify(blockDef.defaultData)),
-                sanitizeAiConfig(parsedConfig)
-            );
+            const mergedConfig = mergeAiConfig(blockDef.defaultData, sanitizeAiConfig(parsedConfig));
 
             const htmlContent = await renderBlockPreview(blockDef, mergedConfig);
             showPreview(container, htmlContent, 'block', {blockDef, config: mergedConfig}, callbacks);
