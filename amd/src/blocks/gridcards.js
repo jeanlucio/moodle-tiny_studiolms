@@ -24,7 +24,7 @@
 import Templates from 'core/templates';
 import Notification from 'core/notification';
 import {sanitizeUntrustedHtml} from '../htmlsanitizer';
-import {gridGap, slotCount} from './grid_slots';
+import {borderThickness, gridGap, slotCount} from './grid_slots';
 
 export default {
     id: 'gridcards',
@@ -99,6 +99,7 @@ export default {
                             '#pop_grid_title_color': 'titleColor',
                             '#pop_grid_bg': 'background',
                             '#pop_grid_border': 'borderColor',
+                            '#pop_grid_border_width': 'borderWidth',
                             '#pop_grid_radius': 'borderRadius'
                         };
                         Object.keys(propMap).forEach(selector => {
@@ -133,7 +134,7 @@ export default {
         const pdMap = {'none': '0px', 'sm': '10px', 'md': '20px', 'lg': '40px'};
         const bg = data.background === 'transparent' ? 'transparent' : data.background;
         const pad = pdMap[data.padding] || '0px';
-        const bdw = data.borderWidth || 0;
+        const bdw = borderThickness(data.borderWidth);
 
         let borderStyle = 'none';
         if (bdw > 0) {

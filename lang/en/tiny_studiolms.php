@@ -109,6 +109,7 @@ $string['block_resources_title'] = 'Web Library (Resources)';
 $string['block_table_title'] = 'Styled Table';
 $string['border_color'] = 'Border Color';
 $string['border_radius'] = 'Border Radius (px)';
+$string['border_width'] = 'Border Width (px)';
 $string['btn_clear_canvas'] = 'Clear canvas';
 $string['btn_delete'] = 'Delete';
 $string['btn_export'] = 'Export';

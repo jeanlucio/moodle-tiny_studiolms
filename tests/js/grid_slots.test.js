@@ -14,11 +14,14 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Headless tests for slotCount() and gridGap(), run via `node --test`.
+ * Headless tests for slotCount(), gridGap() and borderThickness(), run via `node --test`.
  *
  * Regression test: the grid cards block drew exactly as many slots as columns and ignored the rest
  * of data.slots. A generated config puts every card in one block, so the cards beyond the column
  * count were dropped from the preview and, once inserted, from the content for good.
+ *
+ * Regression test: the border colour of the block had no effect: the border is drawn only when its thickness
+ * is above 0, the thickness starts at 0 and no field of the editor could change it.
  *
  * Regression test: the spacing control moves in steps of 5 up to 60, but the stylesheet had a class for
  * only 0, 4, 8, 12, 16, 20, 24 and 32, so 11 of its 13 positions drew the 20px default.
@@ -109,4 +112,25 @@ test('a spacing that is not a number is the default of 20', async() => {
     for (const gap of [undefined, null, '', 'wide', NaN, {}, []]) {
         assert.equal(gridGap(gap), 20, String(gap));
     }
+});
+
+test('the border thickness is a whole number from 0 to 4', async() => {
+    const {borderThickness} = await load();
+
+    assert.equal(borderThickness('2'), 2);
+    assert.equal(borderThickness(3), 3);
+    assert.equal(borderThickness('2.9'), 2);
+    assert.equal(borderThickness(9), 4);
+    assert.equal(borderThickness(-1), 0);
+    for (const value of [undefined, null, '', 'thick', NaN, {}, []]) {
+        assert.equal(borderThickness(value), 0, String(value));
+    }
+});
+
+test('the design popup lets the author change the thickness the block reads', () => {
+    const popup = read('templates/popup_gridcards_design.mustache');
+    const block = read('amd/src/blocks/gridcards.js');
+
+    assert.match(popup, /id="pop_grid_border_width"[^>]*min="0"[^>]*max="4"/);
+    assert.ok(block.includes("'#pop_grid_border_width': 'borderWidth'"));
 });

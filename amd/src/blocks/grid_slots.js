@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Number of slots and spacing of the grid cards block.
+ * Number of slots, spacing and border thickness of the grid cards block.
  *
  * Plain ES module with no core/* import, so Node can load it for the headless tests.
  *
@@ -84,4 +84,17 @@ export const gridGap = (value) => {
         return 20;
     }
     return GAP_STEPS.reduce((best, step) => (Math.abs(step - gap) < Math.abs(best - gap) ? step : best), GAP_STEPS[0]);
+};
+
+/**
+ * Returns the border thickness, in pixels, the block draws: a whole number from 0 (no border) to 4.
+ *
+ * The popup hands the field over as text, and a generated config may put anything there.
+ *
+ * @param {*} value The borderWidth field of the block data.
+ * @returns {number} 0 to 4.
+ */
+export const borderThickness = (value) => {
+    const width = parseInt(value, 10);
+    return Number.isFinite(width) ? Math.min(4, Math.max(0, width)) : 0;
 };

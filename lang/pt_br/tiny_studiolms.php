@@ -109,6 +109,7 @@ $string['block_resources_title'] = 'Webteca (Recursos)';
 $string['block_table_title'] = 'Tabela Estilizada';
 $string['border_color'] = 'Cor da borda';
 $string['border_radius'] = 'Raio da borda (px)';
+$string['border_width'] = 'Espessura da borda (px)';
 $string['btn_clear_canvas'] = 'Limpar canvas';
 $string['btn_delete'] = 'Excluir';
 $string['btn_export'] = 'Exportar';
