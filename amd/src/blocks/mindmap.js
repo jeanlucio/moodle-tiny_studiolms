@@ -26,6 +26,7 @@ import {call as ajaxCall} from 'core/ajax';
 import Notification from 'core/notification';
 import {getContextId} from '../context';
 import {escapeHtml as svgEsc} from './text_escape';
+import {defaultText} from './default_texts';
 
 const W = 900;
 const H = 620;
@@ -115,7 +116,7 @@ const wrapText = (text, lineMax) => {
  */
 const buildSvg = (data) => {
     const c = COLORS[data.theme] || COLORS.blue;
-    const topic = String(data.topic || 'Tópico Principal');
+    const topic = String(data.topic || defaultText('default_mindmap_topic'));
     const branches = Array.isArray(data.branches) ? data.branches.slice(0, 8) : [];
     const N = branches.length;
 
@@ -377,13 +378,13 @@ export default {
     icon: '🧠',
 
     defaultData: {
-        topic: 'Tópico Principal',
+        topic: '',
         theme: 'blue',
         branches: [
-            {label: 'Conceito A', children: []},
-            {label: 'Conceito B', children: []},
-            {label: 'Conceito C', children: []},
-            {label: 'Conceito D', children: []},
+            {label: '', children: []},
+            {label: '', children: []},
+            {label: '', children: []},
+            {label: '', children: []},
         ],
     },
 
@@ -420,7 +421,7 @@ export default {
 
                     const applyChanges = () => {
                         if (topicEl) {
-                            data.topic = topicEl.value.trim() || 'Tópico Principal';
+                            data.topic = topicEl.value.trim() || defaultText('default_mindmap_topic');
                         }
                         if (branchesEl) {
                             data.branches = parseBranchesText(branchesEl.value);
@@ -500,7 +501,7 @@ export default {
 
     renderHtml: async(data) => {
         const svgContent = buildSvg(data);
-        const topic = String(data.topic || 'Tópico Principal');
+        const topic = String(data.topic || defaultText('default_mindmap_topic'));
         const branches = Array.isArray(data.branches) ? data.branches : [];
         const branchParts = branches.map(b => {
             const label = String(b.label || '');

@@ -26,6 +26,7 @@ import {call as ajaxCall} from 'core/ajax';
 import Notification from 'core/notification';
 import {THEMES, esc, closePicker} from './infographic_shared';
 import {getContextId} from '../context';
+import {defaultText} from './default_texts';
 
 /**
  * Builds the inner HTML for the comparison table.
@@ -38,8 +39,8 @@ const buildComparisonHtml = (data, c) => {
     if (!items.length) {
         return '';
     }
-    const col1 = esc(data.col1 || 'A');
-    const col2 = esc(data.col2 || 'B');
+    const col1 = esc(data.col1 || defaultText('default_option_label', 'A'));
+    const col2 = esc(data.col2 || defaultText('default_option_label', 'B'));
     const parts = [];
     if (data.title && data.title.trim()) {
         parts.push(
@@ -162,7 +163,7 @@ const readItemsFromPopup = (popup, data) => {
             items.push({label, col1, col2});
         }
     }
-    data.items = items.length ? items : [{label: 'Feature 1', col1: true, col2: true}];
+    data.items = items.length ? items : [{label: defaultText('default_feature_title', 1), col1: true, col2: true}];
 };
 
 // ---------------------------------------------------------------------------
@@ -176,13 +177,13 @@ export default {
 
     defaultData: {
         title: '',
-        col1: 'Option A',
-        col2: 'Option B',
+        col1: '',
+        col2: '',
         theme: 'blue',
         items: [
-            {label: 'Feature 1', col1: true, col2: true},
-            {label: 'Feature 2', col1: false, col2: true},
-            {label: 'Feature 3', col1: true, col2: false},
+            {label: '', col1: true, col2: true},
+            {label: '', col1: false, col2: true},
+            {label: '', col1: true, col2: false},
         ],
     },
 

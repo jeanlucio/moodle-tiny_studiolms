@@ -26,6 +26,7 @@ import {call as ajaxCall} from 'core/ajax';
 import Notification from 'core/notification';
 import {THEMES, esc, closePicker} from './infographic_shared';
 import {getContextId} from '../context';
+import {defaultText} from './default_texts';
 
 /**
  * Builds the inner HTML for the timeline.
@@ -120,7 +121,7 @@ const readItemsFromPopup = (popup, data) => {
             items.push({date, title, description});
         }
     }
-    data.items = items.length ? items : [{date: '', title: 'Event 1', description: ''}];
+    data.items = items.length ? items : [{date: '', title: defaultText('default_event_title', 1), description: ''}];
 };
 
 // ---------------------------------------------------------------------------
@@ -136,9 +137,9 @@ export default {
         title: '',
         theme: 'blue',
         items: [
-            {date: '2020', title: 'Event 1', description: ''},
-            {date: '2021', title: 'Event 2', description: ''},
-            {date: '2022', title: 'Event 3', description: ''},
+            {date: '2020', title: '', description: ''},
+            {date: '2021', title: '', description: ''},
+            {date: '2022', title: '', description: ''},
         ],
     },
 

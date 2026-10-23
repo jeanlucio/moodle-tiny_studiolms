@@ -54,3 +54,22 @@ Feature: Build content with every StudioLMS block
     And I click on the "StudioLMS" button for the "Page content" TinyMCE editor
     When the StudioLMS dialog is open
     Then every StudioLMS block opens settings panels with editable fields
+
+  Scenario Outline: A new block shows its example texts in the site language
+    Given I log in as "teacher1"
+    And I am on the "Test page" "page activity editing" page
+    And I click on the "StudioLMS" button for the "Page content" TinyMCE editor
+    When I add the StudioLMS "<block>" block to the canvas
+    Then I should see "<text>" in the ".slms-canvas-block-preview" "css_element"
+
+    Examples:
+      | block                 | text              |
+      | chart                 | In progress       |
+      | chartBar              | In progress       |
+      | gauge                 | Approval          |
+      | mindmap               | Concept A         |
+      | infographic           | Modules completed |
+      | infographicSteps      | Step 2            |
+      | infographicTimeline   | Event 3           |
+      | infographicFeatures   | Feature 2         |
+      | infographicComparison | Option B          |

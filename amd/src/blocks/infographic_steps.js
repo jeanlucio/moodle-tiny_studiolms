@@ -26,6 +26,7 @@ import {call as ajaxCall} from 'core/ajax';
 import Notification from 'core/notification';
 import {THEMES, ICONS, esc, normaliseIcon, iconToSpan, openPicker, closePicker} from './infographic_shared';
 import {getContextId} from '../context';
+import {defaultText} from './default_texts';
 
 // HTML renderers — vertical (default) and horizontal.
 // ---------------------------------------------------------------------------
@@ -164,7 +165,7 @@ const readItemsFromPopup = (popup, data) => {
             items.push({icon, title, description});
         }
     }
-    data.items = items.length ? items : [{icon: '', title: 'Step 1', description: ''}];
+    data.items = items.length ? items : [{icon: '', title: defaultText('default_step_title', 1), description: ''}];
 };
 
 // ---------------------------------------------------------------------------
@@ -181,9 +182,9 @@ export default {
         theme: 'blue',
         layout: 'vertical',
         items: [
-            {icon: '', title: 'First step', description: ''},
-            {icon: '', title: 'Second step', description: ''},
-            {icon: '', title: 'Third step', description: ''},
+            {icon: '', title: '', description: ''},
+            {icon: '', title: '', description: ''},
+            {icon: '', title: '', description: ''},
         ],
     },
 

@@ -170,9 +170,12 @@ export const importTemplatesFromFile = () => {
                     return;
                 }
 
+                // A template exported without a name still needs one: a translated placeholder.
+                const unnamed = await getString('imported_template_name', 'tiny_studiolms');
+
                 // Sanitise: keep only expected fields.
                 const payload = items.map((t) => ({
-                    name:     String(t.name ?? '').substring(0, 255) || 'Imported',
+                    name:     String(t.name ?? '').substring(0, 255) || unnamed,
                     content:  String(t.content ?? ''),
                     isglobal: Number(t.isglobal ?? 0) === 1 ? 1 : 0,
                 }));

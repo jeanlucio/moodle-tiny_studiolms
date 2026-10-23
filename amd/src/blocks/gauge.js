@@ -185,7 +185,7 @@ export default {
     defaultData: {
         title: '',
         gauges: [
-            {value: 75, label: 'Aprovação'},
+            {value: 75, label: ''},
         ],
     },
 

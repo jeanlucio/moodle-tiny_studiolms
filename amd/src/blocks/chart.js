@@ -216,9 +216,9 @@ export default {
         type: 'donut',
         title: '',
         slices: [
-            {label: 'Aprovados', value: 75},
-            {label: 'Em progresso', value: 15},
-            {label: 'Reprovados', value: 10},
+            {label: '', value: 75},
+            {label: '', value: 15},
+            {label: '', value: 10},
         ],
     },
 

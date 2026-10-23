@@ -39,6 +39,8 @@ import infographicFeatures from './infographic_features';
 import infographicSteps from './infographic_steps';
 import infographicTimeline from './infographic_timeline';
 import infographicComparison from './infographic_comparison';
+import {applyDefaultTexts} from './localize_defaults';
+import {defaultText, loadDefaultTexts} from './default_texts';
 
 export const Blocks = {
     stylizedHeading,
@@ -59,4 +61,23 @@ export const Blocks = {
     infographicSteps,
     infographicTimeline,
     infographicComparison,
+};
+
+/** @var {boolean} Whether applyDefaultTexts() has already run on the blocks. */
+let localized = false;
+
+/**
+ * Loads the translated example texts and puts them into every block's defaultData.
+ *
+ * Idempotent: the work is done once, and later calls wait for or return the same result. Call it
+ * before anything reads defaultData (the library thumbnails, a block being added).
+ *
+ * @returns {Promise<void>}
+ */
+export const localizeBlockDefaults = async() => {
+    await loadDefaultTexts();
+    if (!localized) {
+        applyDefaultTexts(Blocks, defaultText);
+        localized = true;
+    }
 };

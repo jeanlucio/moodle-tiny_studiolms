@@ -21,7 +21,7 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {Blocks} from './blocks/registry';
+import {Blocks, localizeBlockDefaults} from './blocks/registry';
 import {getString} from 'core/str';
 import Templates from 'core/templates';
 import Notification from 'core/notification';
@@ -229,6 +229,9 @@ export const initStudioApp = (
     setupImportExportButtons();
 
     setTimeout(async() => {
+        // The blocks' example texts are translated strings: they must be in place before a block is
+        // added, drawn as a library thumbnail or filled in from its defaults.
+        await localizeBlockDefaults();
         showCanvasEmptyState();
 
         if (editData && editData.type && editData.state) {

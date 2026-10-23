@@ -146,9 +146,9 @@ export default {
         title: '',
         theme: 'blue',
         items: [
-            {icon: 'fa-solid fa-chart-line', value: '85%', label: 'Taxa de aprovação'},
-            {icon: 'fa-solid fa-book-open', value: '12', label: 'Módulos concluídos'},
-            {icon: 'fa-solid fa-users', value: '240', label: 'Participantes'},
+            {icon: 'fa-solid fa-chart-line', value: '85%', label: ''},
+            {icon: 'fa-solid fa-book-open', value: '12', label: ''},
+            {icon: 'fa-solid fa-users', value: '240', label: ''},
         ],
     },
 

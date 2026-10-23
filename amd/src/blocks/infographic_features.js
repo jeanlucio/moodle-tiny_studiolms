@@ -26,6 +26,7 @@ import {call as ajaxCall} from 'core/ajax';
 import Notification from 'core/notification';
 import {THEMES, ICONS, esc, normaliseIcon, iconToSpan, openPicker, closePicker} from './infographic_shared';
 import {getContextId} from '../context';
+import {defaultText} from './default_texts';
 
 const DEFAULT_ICON = 'fa-solid fa-star';
 
@@ -109,7 +110,7 @@ const readItemsFromPopup = (popup, data) => {
             items.push({icon, title, description});
         }
     }
-    data.items = items.length ? items : [{icon: DEFAULT_ICON, title: 'Feature 1', description: ''}];
+    data.items = items.length ? items : [{icon: DEFAULT_ICON, title: defaultText('default_feature_title', 1), description: ''}];
 };
 
 // ---------------------------------------------------------------------------
@@ -126,9 +127,9 @@ export default {
         theme: 'blue',
         columns: 3,
         items: [
-            {icon: 'fa-solid fa-star', title: 'Feature 1', description: ''},
-            {icon: 'fa-solid fa-bolt', title: 'Feature 2', description: ''},
-            {icon: 'fa-solid fa-globe', title: 'Feature 3', description: ''},
+            {icon: 'fa-solid fa-star', title: '', description: ''},
+            {icon: 'fa-solid fa-bolt', title: '', description: ''},
+            {icon: 'fa-solid fa-globe', title: '', description: ''},
         ],
     },
 
