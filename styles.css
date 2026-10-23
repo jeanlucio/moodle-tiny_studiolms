@@ -769,6 +769,8 @@
 }
 
 .tiny_studiolms .slms-tpl-select {
+    /* Bootstrap 4 (Moodle 4.5) positions .form-check-input absolutely, which put the checkbox over the star. */
+    position: static;
     cursor: pointer;
     flex: 0 0 auto;
     width: 1rem;

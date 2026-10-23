@@ -443,7 +443,10 @@ class behat_tiny_studiolms extends behat_base {
      * @Then loading a hostile template of every StudioLMS block runs no script
      */
     public function loading_a_hostile_template_of_every_block_runs_no_script(): void {
+        // The block list only exists in the Components tab; the hostile templates are in the Official one.
+        $this->i_click_on_studiolms_tab('components');
         $blocktypes = $this->library_block_types();
+        $this->i_click_on_studiolms_tab('global');
         $fixtures = array_keys($this->hostile_block_fixtures());
         $missing = array_diff($blocktypes, $fixtures);
         if (!empty($missing)) {
@@ -674,8 +677,10 @@ class behat_tiny_studiolms extends behat_base {
      */
     public function i_save_the_studiolms_canvas_as_a_template(string $name): void {
         $this->execute('behat_general::i_click_on', ['#slms-btn-save-template', 'css_element']);
+        // Located by its placeholder: Behat's field locator matches id, name, label and placeholder,
+        // not aria-label.
         $this->execute('behat_forms::i_set_the_field_to', [
-            get_string('btn_save_template', 'tiny_studiolms'),
+            get_string('placeholder_tpl_name', 'tiny_studiolms'),
             $name,
         ]);
         $this->execute('behat_general::i_click_on', ['#slms-save-tpl-form .btn-primary', 'css_element']);
