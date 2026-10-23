@@ -108,24 +108,6 @@ final class chat_message_test extends advanced_testcase {
     }
 
     /**
-     * History is trimmed to MAX_HISTORY messages before being sent to the provider.
-     */
-    public function test_history_is_trimmed_to_max(): void {
-        $this->assertLessThanOrEqual(30, chat_message::MAX_HISTORY);
-
-        // Build 40 valid messages (above the limit).
-        $history = [];
-        for ($i = 0; $i < 40; $i++) {
-            $history[] = ['role' => ($i % 2 === 0 ? 'user' : 'assistant'), 'content' => "msg {$i}"];
-        }
-
-        // The filter_history only strips invalid roles; MAX_HISTORY slicing happens
-        // inside execute()/chat::send(). All 40 valid messages survive filtering.
-        $filtered = chat_message::filter_history($history);
-        $this->assertCount(40, $filtered);
-    }
-
-    /**
      * When no AI source is available, execute() throws a moodle_exception.
      *
      * This verifies the fail-safe path: the function never returns a 200 with

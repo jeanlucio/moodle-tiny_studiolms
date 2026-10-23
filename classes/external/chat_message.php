@@ -40,9 +40,6 @@ use tiny_studiolms\ai\chat;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class chat_message extends external_api {
-    /** @var int Maximum conversation history entries accepted per request. */
-    public const MAX_HISTORY = 30;
-
     /**
      * Filters a raw history array to only include valid roles (user, assistant).
      *

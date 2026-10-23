@@ -225,4 +225,25 @@ final class generate_endpoints_test extends advanced_testcase {
 
         $this->assertSame('User: Hello', $client->calls[0][1]);
     }
+
+    /**
+     * Only the most recent messages of a long conversation reach the provider.
+     *
+     * Regression test: the old test of this limit only compared a constant that no code read and
+     * never ran the cut, so removing it would have left the suite green. This one goes through the
+     * web service and counts what the provider receives.
+     */
+    public function test_chat_message_sends_only_the_latest_history(): void {
+        $client = $this->install_hub_stub(true, '{"reply":"ok"}');
+        $history = [];
+        for ($i = 1; $i <= \tiny_studiolms\ai\chat::MAX_HISTORY + 10; $i++) {
+            $history[] = ['role' => $i % 2 ? 'user' : 'assistant', 'content' => "message {$i}"];
+        }
+
+        chat_message::execute(\context_system::instance()->id, $history, '[]');
+
+        $sent = explode("\n", $client->calls[0][1]);
+        $this->assertCount(\tiny_studiolms\ai\chat::MAX_HISTORY, $sent);
+        $this->assertStringEndsWith('message ' . count($history), end($sent));
+    }
 }
