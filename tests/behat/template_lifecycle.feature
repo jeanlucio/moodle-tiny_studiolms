@@ -42,7 +42,7 @@ Feature: Manage personal and official layout templates in StudioLMS
     And I add the StudioLMS "callout" block to the canvas
     When I save the StudioLMS canvas as an official template named "Saved as official"
     Then only the StudioLMS "global" tab is marked as selected
-    And the StudioLMS library shows the template "Saved as official"
+    And I should see "Saved as official" in the "#slms-library-grid" "css_element"
 
   Scenario: My templates lists only the templates of the current teacher
     Given I log in as "teacher1"
