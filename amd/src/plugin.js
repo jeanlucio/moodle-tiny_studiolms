@@ -46,6 +46,7 @@ export default Promise.all([
     getTinyMCE(),
     getPluginMetadata(component, pluginName),
     getString('button_tooltip', component),
+    getString('button_link_locked', component),
     getString('modal_title', component),
     getString('pluginname', component),
     getButtonImage('icon', component),
@@ -53,6 +54,7 @@ export default Promise.all([
     tinyMCE,
     pluginMetadata,
     tooltip,
+    buttonLinkLocked,
     modalTitle,
     pluginNameStr,
     buttonImage,
@@ -120,6 +122,23 @@ export default Promise.all([
 
             return slmsBlock;
         };
+
+        // The anchor of an action button is the block's own markup: its address and text are set in the
+        // StudioLMS panel. The generic link tools would rewrite or remove it and leave a plain label, so
+        // they are refused whenever the selection touches a button.
+        const LINK_COMMANDS = ['mcelink', 'mceinsertlink', 'createlink', 'unlink'];
+
+        const selectionTouchesButton = () => {
+            const range = editor.selection.getRng();
+            return [...editor.getBody().querySelectorAll('a.studiolms-btn')].some((anchor) => range.intersectsNode(anchor));
+        };
+
+        editor.on('BeforeExecCommand', (evt) => {
+            if (LINK_COMMANDS.includes(String(evt.command).toLowerCase()) && selectionTouchesButton()) {
+                evt.preventDefault();
+                editor.notificationManager.open({text: buttonLinkLocked, type: 'info', timeout: 4000});
+            }
+        });
 
         const SELECTED_CLASS = 'slms-noneditable-selected';
 

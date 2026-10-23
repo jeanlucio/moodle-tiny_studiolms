@@ -117,6 +117,7 @@ $string['btn_save_template'] = 'Salvar como template';
 $string['btn_update'] = 'Atualizar';
 $string['button_bg'] = 'Fundo do botão';
 $string['button_cta'] = 'Botão de ação (CTA)';
+$string['button_link_locked'] = 'O link do botão é alterado no painel do bloco do StudioLMS, não pelas ferramentas de link.';
 $string['button_text'] = 'Texto do botão';
 $string['button_tooltip'] = 'StudioLMS';
 $string['button_url'] = 'URL do botão';
