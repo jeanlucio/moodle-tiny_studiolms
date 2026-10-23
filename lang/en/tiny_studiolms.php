@@ -434,7 +434,6 @@ $string['state_closed'] = 'Collapsed (Closed)';
 $string['state_open'] = 'Expanded (Open)';
 $string['studiolms:manageglobaltemplates'] = 'Manage official templates';
 $string['studiolms:use'] = 'Use the StudioLMS editor plugin';
-$string['tab_ai'] = 'AI Generator';
 $string['tab_ai_block'] = 'AI Block';
 $string['tab_ai_chat'] = 'AI Chat';
 $string['tab_ai_model'] = 'AI Layout';
