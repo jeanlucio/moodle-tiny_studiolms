@@ -26,8 +26,7 @@
     }
 }}
 <div class="studiolms-card-wrap" contenteditable="false">
-    <div class="studiolms-card {{#isHorizontal}}slms-horizontal{{/isHorizontal}}"
-         data-slms-hover="{{hoverEffect}}"
+    <div class="studiolms-card slms-hov-{{hoverEffect}} {{#isHorizontal}}slms-horizontal{{/isHorizontal}}"
          style="background-color: {{bg}}; color: {{text}}; border-left-color: {{border}}; border-radius: {{radius}}px;">
         {{#hasMedia}}
         <div class="studiolms-card-media">
@@ -50,8 +49,8 @@
             </div>
             {{#hasButton}}
             <div class="mt-4{{#isAlignLeft}} text-start{{/isAlignLeft}}{{#isAlignCenter}} text-center{{/isAlignCenter}}{{#isAlignRight}} text-end{{/isAlignRight}}" contenteditable="false">
-                <a href="{{btnUrl}}" class="studiolms-btn" target="_blank" rel="noopener noreferrer"
-                   data-slms-hover="{{btnHoverEffect}}" data-slms-sound="{{btnClickSound}}"
+                <a href="{{btnUrl}}" class="studiolms-btn slms-hov-{{btnHoverEffect}} slms-snd-{{btnClickSound}}"
+                   target="_blank" rel="noopener noreferrer"
                    style="width: {{#isBtnFullWidth}}100%{{/isBtnFullWidth}}{{^isBtnFullWidth}}auto{{/isBtnFullWidth}}; background-color: {{btnBg}}; color: {{btnTextCol}}; border-radius: {{radius}}px;">
                     {{btnText}}
                 </a>

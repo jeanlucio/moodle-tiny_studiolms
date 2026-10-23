@@ -32,7 +32,7 @@
 const SELECTORS = {
     ACCORDION_SUMMARY: '.studiolms-accordion-summary',
     RESOURCES_SUMMARY: '.studiolms-resources-summary',
-    ANY_BLOCK: '.studiolms-accordion, .studiolms-resources, .studiolms-card, .studiolms-callout-wrap',
+    ANY_BLOCK: '.studiolms-accordion, .studiolms-resources, .studiolms-card, .studiolms-callout-wrap, .studiolms-btn-wrap',
 };
 
 // Counter for unique IDs assigned to accordion/resources toggle pairs.

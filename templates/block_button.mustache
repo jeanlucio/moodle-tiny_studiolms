@@ -24,9 +24,9 @@
     }
 }}
 <div class="studiolms-btn-wrap my-3{{#isAlignLeft}} text-start{{/isAlignLeft}}{{#isAlignCenter}} text-center{{/isAlignCenter}}{{#isAlignRight}} text-end{{/isAlignRight}}" contenteditable="false">
-    <a href="{{btnUrl}}" class="studiolms-btn" contenteditable="false" target="{{target}}"
+    <a href="{{btnUrl}}" class="studiolms-btn slms-hov-{{hoverEffect}} slms-snd-{{clickSound}}"
+       contenteditable="false" target="{{target}}"
        {{#isTargetBlank}}rel="noopener noreferrer"{{/isTargetBlank}}
-       data-slms-hover="{{hoverEffect}}" data-slms-sound="{{clickSound}}"
        style="width: {{#isFullWidth}}100%{{/isFullWidth}}{{^isFullWidth}}auto{{/isFullWidth}}; border-radius: {{radius}}px; background-color: {{btnBg}}; color: {{btnTextCol}};">
         <span contenteditable="true">{{#btnText}}{{btnText}}{{/btnText}}{{^btnText}}{{#str}} button_text, tiny_studiolms {{/str}}{{/btnText}}</span>
     </a>
