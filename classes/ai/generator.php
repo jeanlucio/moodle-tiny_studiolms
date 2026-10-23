@@ -139,7 +139,6 @@ class generator {
         $s .= '   - borderColor: string (hex for card borders)' . "\n";
         $s .= '   - borderWidth: number (0–4)' . "\n";
         $s .= '   - borderRadius: number (0–20)' . "\n";
-        $s .= '   - shadow: "none", "sm", "md", or "lg"' . "\n";
         $s .= '   - slots: array of HTML strings (one per card; use <h4>, <p>, <a href="...">' . "\n";
         $s .= '     inside each slot to represent the card content)' . "\n";
         $s .= '   IMPORTANT: ALL cards go inside the slots array of ONE gridcards block.' . "\n";
@@ -161,7 +160,7 @@ class generator {
         $s .= '   config keys:' . "\n";
         $s .= '   - cols: number (2–6)' . "\n";
         $s .= '   - rows: number (total rows including header, 2–10)' . "\n";
-        $s .= '   - style: "striped" or "bordered"' . "\n";
+        $s .= '   - style: "striped" or "default"' . "\n";
         $s .= '   - headerBg: string (hex for header row background)' . "\n";
         $s .= '   - headerText: string (hex for header row text)' . "\n";
         $s .= '   - cellData: array of arrays (rows × cols of HTML strings;' . "\n";
@@ -226,7 +225,7 @@ class generator {
         $s .= '    config keys:' . "\n";
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
         $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
-        $s .= '    - columns: 2, 3, or 4' . "\n";
+        $s .= '    - columns: 2 or 3' . "\n";
         $s .= '    - items: array of {icon: string (from the allowed list above or ""),' . "\n";
         $s .= '        title: string, description: string}' . "\n";
         $s .= '    Generate 3–6 items.' . "\n\n";
@@ -354,6 +353,48 @@ class generator {
         $prompt .= '- Respond ONLY with JSON.' . "\n";
 
         return $prompt;
+    }
+
+    /**
+     * Returns a field of the model's JSON as plain text, or $default when it is not a scalar.
+     *
+     * The model answers with whatever shape it likes: a field asked for as text may come back as an
+     * object or a list, and clean_param() throws on an array while a (string) cast turns it into the
+     * word "Array". A value that is not a string, number or boolean is treated as missing.
+     *
+     * @param mixed $value Field of the decoded response.
+     * @param string $default Returned when the value is not a scalar.
+     * @return string
+     */
+    private static function text(mixed $value, string $default = ''): string {
+        return is_scalar($value) ? clean_param((string) $value, PARAM_TEXT) : $default;
+    }
+
+    /**
+     * Returns a field of the model's JSON as purified HTML, or '' when it is not a scalar.
+     *
+     * @param mixed $value Field of the decoded response.
+     * @return string
+     */
+    private static function html(mixed $value): string {
+        return is_scalar($value) ? clean_param((string) $value, PARAM_CLEANHTML) : '';
+    }
+
+    /**
+     * Returns a field of the model's JSON as a boolean.
+     *
+     * A cast would make the string "false" true, and a model that writes booleans as text is no rarer
+     * than one that writes them as booleans. A value that is not recognisable as one is $default.
+     *
+     * @param mixed $value Field of the decoded response.
+     * @param bool $default Returned when the value is missing or not a boolean.
+     * @return bool
+     */
+    private static function flag(mixed $value, bool $default): bool {
+        if (!is_scalar($value)) {
+            return $default;
+        }
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $default;
     }
 
     /**
@@ -495,18 +536,23 @@ class generator {
             throw new \moodle_exception('mindmap_ai_error', 'tiny_studiolms');
         }
 
-        $safetopic = clean_param($data['topic'] ?? $topic, PARAM_TEXT);
+        $safetopic = self::text($data['topic'] ?? null, $topic);
         $safebranches = [];
         foreach ($data['branches'] as $branch) {
-            if (!is_array($branch) || empty($branch['label'])) {
+            $label = is_array($branch) ? self::text($branch['label'] ?? null) : '';
+            if ($label === '') {
                 continue;
             }
             $safechildren = [];
-            foreach (($branch['children'] ?? []) as $child) {
-                $safechildren[] = clean_param((string)$child, PARAM_TEXT);
+            $children = is_array($branch['children'] ?? null) ? $branch['children'] : [];
+            foreach ($children as $child) {
+                $safechild = self::text($child);
+                if ($safechild !== '') {
+                    $safechildren[] = $safechild;
+                }
             }
             $safebranches[] = [
-                'label'    => clean_param((string)$branch['label'], PARAM_TEXT),
+                'label'    => $label,
                 'children' => $safechildren,
             ];
         }
@@ -615,16 +661,18 @@ class generator {
             throw new \moodle_exception('infographic_ai_error', 'tiny_studiolms');
         }
 
-        $safetitle = clean_param($data['title'] ?? '', PARAM_TEXT);
+        $safetitle = self::text($data['title'] ?? null);
         $safeitems = [];
         foreach ($data['items'] as $item) {
-            if (!is_array($item) || (empty($item['value']) && empty($item['label']))) {
+            $value = is_array($item) ? self::text($item['value'] ?? null) : '';
+            $label = is_array($item) ? self::text($item['label'] ?? null) : '';
+            if ($value === '' && $label === '') {
                 continue;
             }
             $safeitems[] = [
-                'icon'  => self::allowed_icon((string)($item['icon'] ?? '')),
-                'value' => clean_param((string)($item['value'] ?? ''), PARAM_TEXT),
-                'label' => clean_param((string)($item['label'] ?? ''), PARAM_TEXT),
+                'icon'  => self::allowed_icon(self::text($item['icon'] ?? null)),
+                'value' => $value,
+                'label' => $label,
             ];
         }
 
@@ -690,16 +738,17 @@ class generator {
             throw new \moodle_exception('infographic_steps_ai_error', 'tiny_studiolms');
         }
 
-        $safetitle = clean_param($data['title'] ?? '', PARAM_TEXT);
+        $safetitle = self::text($data['title'] ?? null);
         $safeitems = [];
         foreach ($data['items'] as $item) {
-            if (!is_array($item) || empty($item['title'])) {
+            $title = is_array($item) ? self::text($item['title'] ?? null) : '';
+            if ($title === '') {
                 continue;
             }
             $safeitems[] = [
-                'icon'        => self::allowed_icon((string)($item['icon'] ?? '')),
-                'title'       => clean_param((string)($item['title'] ?? ''), PARAM_TEXT),
-                'description' => clean_param((string)($item['description'] ?? ''), PARAM_TEXT),
+                'icon'        => self::allowed_icon(self::text($item['icon'] ?? null)),
+                'title'       => $title,
+                'description' => self::text($item['description'] ?? null),
             ];
         }
 
@@ -763,16 +812,17 @@ class generator {
             throw new \moodle_exception('infographic_features_ai_error', 'tiny_studiolms');
         }
 
-        $safetitle = clean_param($data['title'] ?? '', PARAM_TEXT);
+        $safetitle = self::text($data['title'] ?? null);
         $safeitems = [];
         foreach ($data['items'] as $item) {
-            if (!is_array($item) || empty($item['title'])) {
+            $title = is_array($item) ? self::text($item['title'] ?? null) : '';
+            if ($title === '') {
                 continue;
             }
             $safeitems[] = [
-                'icon'        => self::allowed_icon((string)($item['icon'] ?? '')),
-                'title'       => clean_param((string)($item['title'] ?? ''), PARAM_TEXT),
-                'description' => clean_param((string)($item['description'] ?? ''), PARAM_TEXT),
+                'icon'        => self::allowed_icon(self::text($item['icon'] ?? null)),
+                'title'       => $title,
+                'description' => self::text($item['description'] ?? null),
             ];
         }
 
@@ -841,16 +891,17 @@ class generator {
             throw new \moodle_exception('infographic_timeline_ai_error', 'tiny_studiolms');
         }
 
-        $safetitle = clean_param($data['title'] ?? '', PARAM_TEXT);
+        $safetitle = self::text($data['title'] ?? null);
         $safeitems = [];
         foreach ($data['items'] as $item) {
-            if (!is_array($item) || empty($item['title'])) {
+            $title = is_array($item) ? self::text($item['title'] ?? null) : '';
+            if ($title === '') {
                 continue;
             }
             $safeitems[] = [
-                'date'        => clean_param((string)($item['date'] ?? ''), PARAM_TEXT),
-                'title'       => clean_param((string)($item['title'] ?? ''), PARAM_TEXT),
-                'description' => clean_param((string)($item['description'] ?? ''), PARAM_TEXT),
+                'date'        => self::text($item['date'] ?? null),
+                'title'       => $title,
+                'description' => self::text($item['description'] ?? null),
             ];
         }
 
@@ -916,18 +967,19 @@ class generator {
             throw new \moodle_exception('infographic_comparison_ai_error', 'tiny_studiolms');
         }
 
-        $safetitle = clean_param($data['title'] ?? '', PARAM_TEXT);
-        $safecol1 = clean_param($data['col1'] ?? 'A', PARAM_TEXT);
-        $safecol2 = clean_param($data['col2'] ?? 'B', PARAM_TEXT);
+        $safetitle = self::text($data['title'] ?? null);
+        $safecol1 = self::text($data['col1'] ?? null, get_string('default_option_label', 'tiny_studiolms', 'A'));
+        $safecol2 = self::text($data['col2'] ?? null, get_string('default_option_label', 'tiny_studiolms', 'B'));
         $safeitems = [];
         foreach ($data['items'] as $item) {
-            if (!is_array($item) || empty($item['label'])) {
+            $label = is_array($item) ? self::text($item['label'] ?? null) : '';
+            if ($label === '') {
                 continue;
             }
             $safeitems[] = [
-                'label' => clean_param((string)($item['label'] ?? ''), PARAM_TEXT),
-                'col1'  => (bool)($item['col1'] ?? true),
-                'col2'  => (bool)($item['col2'] ?? true),
+                'label' => $label,
+                'col1'  => self::flag($item['col1'] ?? null, true),
+                'col2'  => self::flag($item['col2'] ?? null, true),
             ];
         }
 
@@ -985,13 +1037,14 @@ class generator {
 
         $data = json_decode(trim($raw), true);
 
-        if (!is_array($data) || empty($data['contentHtml'])) {
+        $contenthtml = is_array($data) ? self::html($data['contentHtml'] ?? null) : '';
+        if ($contenthtml === '') {
             throw new \moodle_exception('callout_ai_error', 'tiny_studiolms');
         }
 
         return [
-            'icon'        => clean_param((string)($data['icon'] ?? '💡'), PARAM_TEXT),
-            'contenthtml' => clean_param((string)$data['contentHtml'], PARAM_CLEANHTML),
+            'icon'        => self::text($data['icon'] ?? null, '💡'),
+            'contenthtml' => $contenthtml,
             'provider'    => $result['provider'],
         ];
     }
@@ -1037,13 +1090,14 @@ class generator {
 
         $data = json_decode(trim($raw), true);
 
-        if (!is_array($data) || empty($data['content'])) {
+        $content = is_array($data) ? self::html($data['content'] ?? null) : '';
+        if ($content === '') {
             throw new \moodle_exception('card_ai_error', 'tiny_studiolms');
         }
 
         return [
-            'content'  => clean_param((string)$data['content'], PARAM_CLEANHTML),
-            'btntext'  => clean_param((string)($data['btnText'] ?? ''), PARAM_TEXT),
+            'content'  => $content,
+            'btntext'  => self::text($data['btnText'] ?? null),
             'provider' => $result['provider'],
         ];
     }
@@ -1089,13 +1143,14 @@ class generator {
 
         $data = json_decode(trim($raw), true);
 
-        if (!is_array($data) || empty($data['content'])) {
+        $content = is_array($data) ? self::html($data['content'] ?? null) : '';
+        if ($content === '') {
             throw new \moodle_exception('accordion_ai_error', 'tiny_studiolms');
         }
 
         return [
-            'title'    => clean_param((string)($data['title'] ?? ''), PARAM_TEXT),
-            'content'  => clean_param((string)$data['content'], PARAM_CLEANHTML),
+            'title'    => self::text($data['title'] ?? null),
+            'content'  => $content,
             'provider' => $result['provider'],
         ];
     }
@@ -1152,13 +1207,14 @@ class generator {
         $saferesources = [];
         $validtypes = ['link', 'pdf', 'video'];
         foreach ($data['resources'] as $res) {
-            if (!is_array($res) || empty($res['title'])) {
+            $restitle = is_array($res) ? self::text($res['title'] ?? null) : '';
+            if ($restitle === '') {
                 continue;
             }
             $type = in_array($res['type'] ?? '', $validtypes, true) ? $res['type'] : 'link';
             $saferesources[] = [
                 'type'  => $type,
-                'title' => clean_param((string)$res['title'], PARAM_TEXT),
+                'title' => $restitle,
                 'url'   => '#',
             ];
         }
@@ -1168,8 +1224,8 @@ class generator {
         }
 
         return [
-            'title'     => clean_param((string)($data['title'] ?? ''), PARAM_TEXT),
-            'desc'      => clean_param((string)($data['desc'] ?? ''), PARAM_TEXT),
+            'title'     => self::text($data['title'] ?? null),
+            'desc'      => self::text($data['desc'] ?? null),
             'resources' => json_encode($saferesources),
             'provider'  => $result['provider'],
         ];
@@ -1294,10 +1350,8 @@ class generator {
             'mindmap', 'profileCard', 'stylizedHeading', 'table', 'resources',
         ];
 
-        if (
-            !is_array($preset) || empty($preset['name']) || !isset($preset['blocks'])
-            || !is_array($preset['blocks']) || empty($preset['blocks'])
-        ) {
+        $name = is_array($preset) ? self::text($preset['name'] ?? null) : '';
+        if ($name === '' || !is_array($preset['blocks'] ?? null) || empty($preset['blocks'])) {
             throw new \moodle_exception('ai_preset_error', 'tiny_studiolms');
         }
 
@@ -1318,7 +1372,7 @@ class generator {
         }
 
         return [
-            'name'   => clean_param($preset['name'], PARAM_TEXT),
+            'name'   => $name,
             'blocks' => json_encode($blocks),
         ];
     }

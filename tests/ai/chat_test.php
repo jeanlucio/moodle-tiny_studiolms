@@ -186,4 +186,22 @@ final class chat_test extends advanced_testcase {
         $this->assertCount(chat::MAX_HISTORY, $sent);
         $this->assertSame('User: message 6', $sent[0]);
     }
+
+    /**
+     * A reply that is not text (an object or a list) is handled like a reply that is not JSON.
+     *
+     * Regression test: clean_param() threw on it and the teacher saw the core's "coding error" page.
+     */
+    public function test_a_reply_that_is_not_text_does_not_break_the_chat(): void {
+        $context = \context_system::instance();
+        $messages = [['role' => 'user', 'content' => 'Hi']];
+
+        foreach ([['Hello'], ['text' => 'Hello'], null, '', '   '] as $reply) {
+            $this->install_hub_stub(true, json_encode(['reply' => $reply, 'action' => null]));
+            $result = chat::send($messages, '[]', $context);
+
+            $this->assertIsString($result['reply']);
+            $this->assertNull($result['action']);
+        }
+    }
 }

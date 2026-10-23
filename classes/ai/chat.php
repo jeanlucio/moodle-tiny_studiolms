@@ -152,7 +152,9 @@ class chat {
 
         $decoded = json_decode(trim($cleaned), true);
 
-        if (!is_array($decoded) || empty($decoded['reply'])) {
+        // A reply that is not a piece of text (an object or a list) is as unusable as no JSON at all.
+        $reply = is_array($decoded) && is_scalar($decoded['reply'] ?? null) ? trim((string) $decoded['reply']) : '';
+        if ($reply === '') {
             // Same cleaning as the JSON branch below: a prompt can steer the model into this path.
             return [
                 'reply'    => clean_param(trim($text), PARAM_TEXT),
@@ -171,7 +173,7 @@ class chat {
         }
 
         return [
-            'reply'    => clean_param($decoded['reply'], PARAM_TEXT),
+            'reply'    => clean_param($reply, PARAM_TEXT),
             'action'   => $action,
             'provider' => $provider,
         ];

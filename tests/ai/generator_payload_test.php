@@ -223,8 +223,8 @@ final class generator_payload_test extends advanced_testcase {
         ]));
 
         $this->assertSame('', $result['title']);
-        $this->assertSame('A', $result['col1']);
-        $this->assertSame('B', $result['col2']);
+        $this->assertSame(get_string('default_option_label', 'tiny_studiolms', 'A'), $result['col1']);
+        $this->assertSame(get_string('default_option_label', 'tiny_studiolms', 'B'), $result['col2']);
         $this->assertSame([
             ['label' => 'Needs light', 'col1' => true, 'col2' => false],
             ['label' => 'Makes oxygen', 'col1' => false, 'col2' => true],
@@ -476,5 +476,145 @@ final class generator_payload_test extends advanced_testcase {
         $this->assertSame('x < 5 and y > 2', $config['note']);
         $this->assertStringContainsString('<b>ok</b>', $config['contentHtml']);
         $this->assertStringNotContainsString('script', $config['contentHtml']);
+    }
+
+    /**
+     * A field of the wrong type never reaches clean_param(), which throws on an array.
+     *
+     * Regression test: the model may answer with an object or a list where text was asked for, and the
+     * teacher then saw the core's "coding error" page instead of the generator's own message. Each
+     * generator gets a response whose top-level text fields are the wrong type but whose list is fine:
+     * it must return a result with those fields empty, never throw anything but its own error.
+     */
+    public function test_wrong_typed_text_fields_do_not_break_a_generator(): void {
+        $wrong = ['text' => 'object'];
+        $cases = [
+            'generate_mindmap' => ['topic' => $wrong, 'branches' => [['label' => 'Light']]],
+            'generate_infographic' => ['title' => $wrong, 'items' => [['value' => '1']]],
+            'generate_infographic_steps' => ['title' => $wrong, 'items' => [['title' => 'a']]],
+            'generate_infographic_features' => ['title' => ['x'], 'items' => [['title' => 'a']]],
+            'generate_infographic_timeline' => ['title' => $wrong, 'items' => [['title' => 'a']]],
+            'generate_infographic_comparison' => [
+                'title' => $wrong, 'col1' => $wrong, 'col2' => ['B'], 'items' => [['label' => 'a']],
+            ],
+            'generate_accordion' => ['title' => $wrong, 'content' => '<p>x</p>'],
+            'generate_card' => ['btnText' => $wrong, 'content' => '<p>x</p>'],
+            'generate_callout' => ['icon' => $wrong, 'contentHtml' => '<p>x</p>'],
+            'generate_resources' => ['title' => $wrong, 'desc' => ['x'], 'resources' => [['title' => 'a']]],
+        ];
+
+        foreach ($cases as $method => $payload) {
+            $result = $this->generate($method, json_encode($payload));
+            $this->assertIsArray($result, $method);
+            foreach (['title', 'btntext', 'desc'] as $key) {
+                if (array_key_exists($key, $result)) {
+                    $this->assertSame('', $result[$key], "{$method} {$key}");
+                }
+            }
+        }
+    }
+
+    /**
+     * A list item whose fields are the wrong type is dropped, and a response left with none is rejected.
+     */
+    public function test_wrong_typed_item_fields_drop_the_item(): void {
+        $this->assert_rejected('generate_mindmap', 'mindmap_ai_error', json_encode(['branches' => [['label' => ['x']]]]));
+        $this->assert_rejected(
+            'generate_infographic_steps',
+            'infographic_steps_ai_error',
+            json_encode(['items' => [['title' => ['x']], ['title' => new \stdClass()]]])
+        );
+        $this->assert_rejected(
+            'generate_infographic_comparison',
+            'infographic_comparison_ai_error',
+            json_encode(['items' => [['label' => ['x']]]])
+        );
+        $this->assert_rejected('generate_resources', 'resources_ai_error', json_encode(['resources' => [['title' => ['x']]]]));
+        $this->assert_rejected('generate_card', 'card_ai_error', json_encode(['content' => ['<p>x</p>']]));
+        $this->assert_rejected('generate_callout', 'callout_ai_error', json_encode(['contentHtml' => new \stdClass()]));
+        $this->assert_rejected('generate_accordion', 'accordion_ai_error', json_encode(['content' => [1]]));
+
+        // The preset has its own signature, so it does not go through the shared helper.
+        foreach ([['x'], new \stdClass()] as $name) {
+            $this->install_hub_stub(true, json_encode(['name' => $name, 'blocks' => [['type' => 'callout']]]));
+            try {
+                generator::generate_preset('Layout', 'Intro', '', 'blue', \context_system::instance());
+                $this->fail('generate_preset accepted a name that is not text.');
+            } catch (\moodle_exception $e) {
+                $this->assertSame('ai_preset_error', $e->errorcode);
+            }
+        }
+    }
+
+    /**
+     * A mind map child that is not text is skipped, not written as the word "Array".
+     */
+    public function test_mindmap_skips_children_that_are_not_text(): void {
+        $result = $this->generate('generate_mindmap', json_encode([
+            'topic' => 'Water',
+            'branches' => [['label' => 'Cycle', 'children' => [['Evaporation'], 'Rain', 5, null, '']]],
+        ]));
+
+        $this->assertSame(
+            [['label' => 'Cycle', 'children' => ['Rain', '5']]],
+            json_decode($result['branches'], true)
+        );
+        $this->assertStringNotContainsString('Array', $result['branches']);
+    }
+
+    /**
+     * Comparison flags written as text keep their meaning, and a missing one defaults to true.
+     */
+    public function test_comparison_flags_written_as_text(): void {
+        $result = $this->generate('generate_infographic_comparison', json_encode(['items' => [
+            ['label' => 'a', 'col1' => 'false', 'col2' => 'true'],
+            ['label' => 'b', 'col1' => 0, 'col2' => 'no'],
+            ['label' => 'c', 'col1' => 'yes', 'col2' => 'maybe'],
+            ['label' => 'd', 'col1' => ['x']],
+        ]]));
+
+        $this->assertSame([
+            ['label' => 'a', 'col1' => false, 'col2' => true],
+            ['label' => 'b', 'col1' => false, 'col2' => false],
+            ['label' => 'c', 'col1' => true, 'col2' => true],
+            ['label' => 'd', 'col1' => true, 'col2' => true],
+        ], json_decode($result['items'], true));
+    }
+
+    /**
+     * The names of the two compared options come from a language string when the model gives none.
+     */
+    public function test_comparison_default_option_names_are_translated(): void {
+        $result = $this->generate('generate_infographic_comparison', json_encode(['items' => [['label' => 'a']]]));
+
+        $this->assertSame(get_string('default_option_label', 'tiny_studiolms', 'A'), $result['col1']);
+        $this->assertSame(get_string('default_option_label', 'tiny_studiolms', 'B'), $result['col2']);
+    }
+
+    /**
+     * The prompt offers a block only the values and fields the block really uses.
+     *
+     * Regression test: the schema said "2, 3, or 4" columns for the feature cards (the block draws two
+     * or three, and drew three for a four), "bordered" for the table style (the block knows "default")
+     * and a shadow for the grid, which the grid never reads. Each was a request the block ignored
+     * without saying so.
+     */
+    public function test_the_prompt_offers_only_what_the_blocks_support(): void {
+        $method = new \ReflectionMethod(generator::class, 'block_types_schema');
+        $schema = $method->invoke(null);
+        $section = function (string $type) use ($schema): string {
+            $start = strpos($schema, ' ' . $type . ' ');
+            $this->assertNotFalse($start, $type);
+            preg_match('/\n\d+\. /', $schema, $next, PREG_OFFSET_CAPTURE, $start + 1);
+            return substr($schema, $start, isset($next[0]) ? $next[0][1] - $start : null);
+        };
+
+        $features = $section('infographicFeatures');
+        $this->assertStringContainsString('- columns: 2 or 3', $features);
+        $this->assertStringNotContainsString('4', substr($features, 0, strpos($features, 'items')));
+        $this->assertStringContainsString('- style: "striped" or "default"', $section('table'));
+        $this->assertStringNotContainsString('bordered', $section('table'));
+        $this->assertStringNotContainsString('shadow', $section('gridcards'));
+        $this->assertStringContainsString('- columns: "2", "3", or "4"', $section('gridcards'));
     }
 }
