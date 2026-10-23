@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Number of slots in the grid cards block.
+ * Number of slots and spacing of the grid cards block.
  *
  * Plain ES module with no core/* import, so Node can load it for the headless tests.
  *
@@ -60,4 +60,28 @@ export const slotCount = (columns, slots) => {
     });
 
     return Math.max(colCount, lastFilled + 1);
+};
+
+/**
+ * Spacings the stylesheet has a slms-gap-N class for: every step of the popup's range (multiples of 5 up
+ * to 60) plus the older values saved blocks may still carry.
+ */
+const GAP_STEPS = [0, 4, 5, 8, 10, 12, 15, 16, 20, 24, 25, 30, 32, 35, 40, 45, 50, 55, 60];
+
+/**
+ * Returns the spacing, in pixels, the block draws: the closest one that has a class in the stylesheet.
+ *
+ * The class name is built from this value, so one without a rule (a 17 from a generated config, a 10 the
+ * range once produced) would silently draw the 20px default. Anything that is not a number is 20, the
+ * block's default.
+ *
+ * @param {*} value The gap field of the block data.
+ * @returns {number} One of GAP_STEPS.
+ */
+export const gridGap = (value) => {
+    const gap = parseFloat(value);
+    if (!Number.isFinite(gap)) {
+        return 20;
+    }
+    return GAP_STEPS.reduce((best, step) => (Math.abs(step - gap) < Math.abs(best - gap) ? step : best), GAP_STEPS[0]);
 };

@@ -1456,6 +1456,50 @@ a.studiolms-btn:focus-visible {
     gap: 32px;
 }
 
+.studiolms-grid-content.slms-gap-5 {
+    gap: 5px;
+}
+
+.studiolms-grid-content.slms-gap-10 {
+    gap: 10px;
+}
+
+.studiolms-grid-content.slms-gap-15 {
+    gap: 15px;
+}
+
+.studiolms-grid-content.slms-gap-25 {
+    gap: 25px;
+}
+
+.studiolms-grid-content.slms-gap-30 {
+    gap: 30px;
+}
+
+.studiolms-grid-content.slms-gap-35 {
+    gap: 35px;
+}
+
+.studiolms-grid-content.slms-gap-40 {
+    gap: 40px;
+}
+
+.studiolms-grid-content.slms-gap-45 {
+    gap: 45px;
+}
+
+.studiolms-grid-content.slms-gap-50 {
+    gap: 50px;
+}
+
+.studiolms-grid-content.slms-gap-55 {
+    gap: 55px;
+}
+
+.studiolms-grid-content.slms-gap-60 {
+    gap: 60px;
+}
+
 /* Heading */
 .studiolms-heading-h3 {
     background-color: var(--slms-bg, transparent);

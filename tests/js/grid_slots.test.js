@@ -14,11 +14,14 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Headless tests for slotCount(), run via `node --test`.
+ * Headless tests for slotCount() and gridGap(), run via `node --test`.
  *
  * Regression test: the grid cards block drew exactly as many slots as columns and ignored the rest
  * of data.slots. A generated config puts every card in one block, so the cards beyond the column
  * count were dropped from the preview and, once inserted, from the content for good.
+ *
+ * Regression test: the spacing control moves in steps of 5 up to 60, but the stylesheet had a class for
+ * only 0, 4, 8, 12, 16, 20, 24 and 32, so 11 of its 13 positions drew the 20px default.
  *
  * @package    tiny_studiolms
  * @copyright  2026 Jean Lúcio
@@ -29,6 +32,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 
 const load = () => import('../../amd/src/blocks/grid_slots.js');
 
@@ -69,4 +73,40 @@ test('a slot that is not text counts as empty', async() => {
 
     assert.equal(slotCount(2, [5, null, {}, ['x'], '<p>ok</p>']), 5);
     assert.equal(slotCount(2, [5, null, {}, ['x']]), 2);
+});
+
+const read = (file) => fs.readFileSync(require.resolve(`../../${file}`), 'utf8');
+
+test('every position of the spacing control has a class in both stylesheets', () => {
+    const popup = read('templates/popup_gridcards_layout.mustache');
+    const range = popup.match(/id="pop_grid_gap"[^>]*min="(\d+)"[^>]*max="(\d+)"[^>]*step="(\d+)"/);
+    assert.ok(range, 'the spacing range is in the layout popup');
+    const [min, max, step] = range.slice(1).map(Number);
+
+    for (const file of ['styles.css', 'editor_styles.css']) {
+        const css = read(file);
+        for (let gap = min; gap <= max; gap += step) {
+            assert.ok(css.includes(`.studiolms-grid-content.slms-gap-${gap} {`), `${file} has no class for ${gap}`);
+        }
+    }
+});
+
+test('a spacing keeps its value when it has a class and otherwise moves to the closest one', async() => {
+    const {gridGap} = await load();
+
+    for (const gap of [0, 4, 5, 10, 20, 25, 32, 60, '15', '40']) {
+        assert.equal(gridGap(gap), Number(gap), String(gap));
+    }
+    assert.equal(gridGap(17), 16);
+    assert.equal(gridGap(18.5), 20);
+    assert.equal(gridGap(70), 60);
+    assert.equal(gridGap(-5), 0);
+});
+
+test('a spacing that is not a number is the default of 20', async() => {
+    const {gridGap} = await load();
+
+    for (const gap of [undefined, null, '', 'wide', NaN, {}, []]) {
+        assert.equal(gridGap(gap), 20, String(gap));
+    }
 });
