@@ -32,7 +32,9 @@
 const SELECTORS = {
     ACCORDION_SUMMARY: '.studiolms-accordion-summary',
     RESOURCES_SUMMARY: '.studiolms-resources-summary',
-    ANY_BLOCK: '.studiolms-accordion, .studiolms-resources, .studiolms-card, .studiolms-callout-wrap, .studiolms-btn-wrap',
+    // Every block root carries data-slms-block-type, so this also matches the blocks that need no script
+    // of their own (heading, table, charts): the page still has to be cleaned of editing attributes.
+    ANY_BLOCK: '[data-slms-block-type]',
 };
 
 // Counter for unique IDs assigned to accordion/resources toggle pairs.

@@ -92,16 +92,18 @@ final class interaction_classes_test extends advanced_testcase {
     }
 
     /**
-     * The front-end script starts on a page whose only StudioLMS block is a button.
+     * The front-end script starts on a page whose only StudioLMS blocks need no script of their own.
      *
      * Regression test: init() returned early unless the page had an accordion, resources, card or
-     * callout, so the click sound of a lone button was never wired.
+     * callout, so on a page with only a heading and a button the editing attributes were never
+     * removed and a student, or a teacher outside the editor, could type into the text of the blocks.
+     * Every block root carries data-slms-block-type, which is what the check has to look for.
      */
-    public function test_frontend_script_starts_for_a_page_with_only_a_button(): void {
+    public function test_frontend_script_starts_for_any_block(): void {
         global $CFG;
 
         $source = file_get_contents($CFG->dirroot . '/lib/editor/tiny/plugins/studiolms/amd/src/frontend.js');
 
-        $this->assertMatchesRegularExpression('/ANY_BLOCK:[^\n]*\.studiolms-btn-wrap/', $source);
+        $this->assertMatchesRegularExpression("/ANY_BLOCK: '\\[data-slms-block-type\\]'/", $source);
     }
 }
