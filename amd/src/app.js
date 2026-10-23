@@ -1361,16 +1361,9 @@ const setupTabs = () => {
         if (!btn) {
             return;
         }
-        const app = btn.closest('#studiolms-app');
-        if (!app) {
+        if (!btn.closest('#studiolms-app')) {
             return;
         }
-        app.querySelectorAll('[data-slms-tab]').forEach((t) => {
-            t.classList.remove('active');
-            t.setAttribute('aria-selected', 'false');
-        });
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
         switchTab(btn.getAttribute('data-slms-tab'));
     }, true);
 };
@@ -1406,7 +1399,24 @@ const renderPresetsAsTemplates = async(presets) => {
     return result;
 };
 
+/**
+ * Mark one tab as the active one, and every other as not.
+ *
+ * The search, the properties panel and the screen reader all find the current tab through this mark, so it
+ * is set here, the single place every tab change goes through, and not by each caller.
+ *
+ * @param {string} tabName Value of the tab's data-slms-tab attribute.
+ */
+const markActiveTab = (tabName) => {
+    document.querySelectorAll('#studiolms-app [data-slms-tab]').forEach((tab) => {
+        const isActive = tab.getAttribute('data-slms-tab') === tabName;
+        tab.classList.toggle('active', isActive);
+        tab.setAttribute('aria-selected', String(isActive));
+    });
+};
+
 const switchTab = async(tabName) => {
+    markActiveTab(tabName);
     PopupManager.closeAll();
 
     const grid = document.getElementById('slms-library-grid');
@@ -1753,15 +1763,6 @@ const setupSaveTemplateButton = (canManageGlobal = false) => {
                     await saveTemplateAndRefresh(name, content, isglobal);
                     showInlineFeedback(await getString('tpl_saved', 'tiny_studiolms'), 'success');
                     await switchTab(isglobal ? 'global' : 'mine');
-                    const mineTab = document.getElementById('slms-tab-mine');
-                    if (mineTab && !isglobal) {
-                        document.querySelectorAll('[data-slms-tab]').forEach((t) => {
-                            t.classList.remove('active');
-                            t.setAttribute('aria-selected', 'false');
-                        });
-                        mineTab.classList.add('active');
-                        mineTab.setAttribute('aria-selected', 'true');
-                    }
                 } catch (saveError) {
                     Notification.exception(saveError);
                 }

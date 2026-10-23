@@ -687,6 +687,45 @@ class behat_tiny_studiolms extends behat_base {
     }
 
     /**
+     * Saves the canvas as an official template through the footer form, ticking the official box.
+     *
+     * @When I save the StudioLMS canvas as an official template named :name
+     * @param string $name The template name.
+     */
+    public function i_save_the_studiolms_canvas_as_an_official_template(string $name): void {
+        $this->execute('behat_general::i_click_on', ['#slms-btn-save-template', 'css_element']);
+        $this->execute('behat_forms::i_set_the_field_to', [
+            get_string('placeholder_tpl_name', 'tiny_studiolms'),
+            $name,
+        ]);
+        $this->execute('behat_general::i_click_on', ['#slms-chk-global', 'css_element']);
+        $this->execute('behat_general::i_click_on', ['#slms-save-tpl-form .btn-primary', 'css_element']);
+    }
+
+    /**
+     * Asserts that exactly one StudioLMS tab is marked as active and as selected for assistive technology.
+     *
+     * @Then only the StudioLMS :tab tab is marked as selected
+     * @param string $tab The data-slms-tab attribute value.
+     */
+    public function only_the_studiolms_tab_is_marked_as_selected(string $tab): void {
+        $this->spin(function () use ($tab) {
+            $marks = $this->evaluate_script(
+                'return Array.from(document.querySelectorAll("#studiolms-app [data-slms-tab]")).filter((t) => '
+                . 't.classList.contains("active") || t.getAttribute("aria-selected") === "true")'
+                . '.map((t) => t.getAttribute("data-slms-tab"));'
+            );
+            if ($marks !== [$tab]) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    'The StudioLMS tabs marked as selected are [' . implode(', ', (array) $marks) . "], expected only {$tab}.",
+                    $this->getSession()
+                );
+            }
+            return true;
+        });
+    }
+
+    /**
      * Asserts that the template library currently lists a template with the given name.
      *
      * @Then the StudioLMS library shows the template :name

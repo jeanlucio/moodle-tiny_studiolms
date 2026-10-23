@@ -35,6 +35,15 @@ Feature: Manage personal and official layout templates in StudioLMS
     And the StudioLMS library shows the template "Saved from canvas"
     And the StudioLMS feedback says "tpl_saved"
 
+  Scenario: A template saved as official from the canvas marks the Official tab as the selected one
+    Given I log in as "admin"
+    And I am on the "Test page" "page activity editing" page
+    And I click on the "StudioLMS" button for the "Page content" TinyMCE editor
+    And I add the StudioLMS "callout" block to the canvas
+    When I save the StudioLMS canvas as an official template named "Saved as official"
+    Then only the StudioLMS "global" tab is marked as selected
+    And the StudioLMS library shows the template "Saved as official"
+
   Scenario: My templates lists only the templates of the current teacher
     Given I log in as "teacher1"
     And I am on the "Test page" "page activity editing" page
