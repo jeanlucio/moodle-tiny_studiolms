@@ -24,7 +24,10 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import {getStrings} from 'core/str';
+import Notification from 'core/notification';
 import {escapeHtml as esc} from './text_escape';
+import {iconStringKey} from './icon_names';
 
 export {esc};
 
@@ -219,6 +222,24 @@ export const iconToSpan = (iconClass) => {
 let activePickerEl = null;
 let activePickerRemoveOutside = null;
 
+/** Translated icon names, by icon class, filled the first time the picker opens. */
+const iconNames = new Map();
+
+/**
+ * Loads the translated names of the icons the picker is about to show.
+ *
+ * @param {string[]} icons Font Awesome 6 class strings.
+ * @returns {Promise<void>}
+ */
+const loadIconNames = async(icons) => {
+    const missing = icons.filter((cls) => !iconNames.has(cls));
+    if (missing.length === 0) {
+        return;
+    }
+    const names = await getStrings(missing.map((cls) => ({key: iconStringKey(cls), component: 'tiny_studiolms'})));
+    missing.forEach((cls, index) => iconNames.set(cls, names[index]));
+};
+
 /** Closes and removes the icon picker overlay if open. */
 export const closePicker = () => {
     if (activePickerEl) {
@@ -238,8 +259,18 @@ export const closePicker = () => {
  * @param {Element} triggerBtn
  * @param {Function} onSelect
  * @param {string[]} icons Array of FA6 icon class strings to show.
+ * @returns {Promise<void>}
  */
-export const openPicker = (triggerBtn, onSelect, icons) => {
+export const openPicker = async(triggerBtn, onSelect, icons) => {
+    closePicker();
+
+    try {
+        await loadIconNames(icons);
+    } catch (error) {
+        Notification.exception(error);
+        return;
+    }
+    // A second click while the names were loading opened another picker: keep only the last one.
     closePicker();
 
     const picker = document.createElement('div');
@@ -249,7 +280,9 @@ export const openPicker = (triggerBtn, onSelect, icons) => {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'slms-ig-icon-option';
-        btn.title = cls.replace('fa-solid fa-', '').replace(/-/g, ' ');
+        // The icon is aria-hidden, so this name is also what a screen reader announces for the button.
+        btn.title = iconNames.get(cls);
+        btn.setAttribute('aria-label', iconNames.get(cls));
         btn.innerHTML = `<i class="${cls}" aria-hidden="true"></i>`;
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
