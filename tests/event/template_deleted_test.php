@@ -100,4 +100,26 @@ final class template_deleted_test extends advanced_testcase {
     public function test_get_name_returns_translated_string(): void {
         $this->assertNotEmpty(template_deleted::get_name());
     }
+
+    /**
+     * The template id is declared as not remapped when course logs are restored.
+     *
+     * Templates belong to the site, not to a course, so a restored log must not point at whatever
+     * template happens to have the same id in the target site. Without the declaration the core
+     * reports a debugging message for every restored record of this event.
+     */
+    public function test_objectid_is_not_remapped_on_restore(): void {
+        $mapping = template_deleted::get_objectid_mapping();
+
+        $this->assertSame('tiny_studiolms_templates', $mapping['db']);
+        $this->assertSame(\core\event\base::NOT_MAPPED, $mapping['restore']);
+        $this->assertDebuggingNotCalled();
+    }
+
+    /**
+     * The only value in other is the template name, a text, so nothing in it is remapped on restore.
+     */
+    public function test_other_data_is_not_remapped(): void {
+        $this->assertFalse(template_deleted::get_other_mapping());
+    }
 }

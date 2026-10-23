@@ -56,6 +56,18 @@ class template_created extends \core\event\base {
     }
 
     /**
+     * Declares that the template id is not remapped when course logs are restored.
+     *
+     * Templates belong to the site, not to a course, so the id a backup carries is not translated.
+     *
+     * @return array
+     */
+    #[\Override]
+    public static function get_objectid_mapping(): array {
+        return ['db' => 'tiny_studiolms_templates', 'restore' => \core\event\base::NOT_MAPPED];
+    }
+
+    /**
      * Returns the URL associated with this event.
      *
      * @return \moodle_url

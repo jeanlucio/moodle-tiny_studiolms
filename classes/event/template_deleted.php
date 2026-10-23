@@ -58,6 +58,30 @@ class template_deleted extends \core\event\base {
     }
 
     /**
+     * Declares that the template id is not remapped when course logs are restored.
+     *
+     * Templates belong to the site, not to a course, so the id a backup carries is not translated.
+     *
+     * @return array
+     */
+    #[\Override]
+    public static function get_objectid_mapping(): array {
+        return ['db' => 'tiny_studiolms_templates', 'restore' => \core\event\base::NOT_MAPPED];
+    }
+
+    /**
+     * Declares that nothing in the event's other data is remapped when course logs are restored.
+     *
+     * The only value in other is the template name, which is text, not an id.
+     *
+     * @return array|false
+     */
+    #[\Override]
+    public static function get_other_mapping(): array|false {
+        return false;
+    }
+
+    /**
      * Returns the URL associated with this event.
      *
      * @return \moodle_url
