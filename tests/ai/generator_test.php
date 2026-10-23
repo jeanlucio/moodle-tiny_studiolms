@@ -279,4 +279,61 @@ final class generator_test extends advanced_testcase {
         $this->assertSame('', $this->allowed_icon($payload));
         $this->assertSame('', $this->allowed_icon('fa-solid fa-not-a-real-icon'));
     }
+
+    /**
+     * Reads the colour theme names the visual blocks accept from their JavaScript sources.
+     *
+     * @return string[] Theme names, for example blue.
+     */
+    private function block_theme_names(): array {
+        global $CFG;
+
+        $dir = $CFG->dirroot . '/lib/editor/tiny/plugins/studiolms/amd/src/blocks/';
+        $names = [];
+        foreach (['infographic_shared.js' => 'THEMES', 'mindmap.js' => 'COLORS'] as $file => $table) {
+            $source = file_get_contents($dir . $file);
+            $this->assertSame(1, preg_match('/const ' . $table . ' = \{(.*?)\n\};/s', $source, $body), $file);
+            preg_match_all('/^    (\w+): \{/m', $body[1], $keys);
+            $names[$file] = $keys[1];
+        }
+        $this->assertSame($names['infographic_shared.js'], $names['mindmap.js']);
+        return $names['mindmap.js'];
+    }
+
+    /**
+     * Every palette asks the visual blocks for a theme they have, and the neutral one asks for black.
+     *
+     * Regression test: the prompt told the model to set "theme" to the palette name, but the blocks only
+     * know blue, green, purple, orange, red and black, so a neutral layout drew its infographics and
+     * mind maps in blue next to grey text blocks.
+     */
+    public function test_each_palette_asks_for_a_theme_the_blocks_have(): void {
+        $themes = $this->block_theme_names();
+        $expected = ['blue' => 'blue', 'green' => 'green', 'purple' => 'purple', 'orange' => 'orange', 'neutral' => 'black'];
+
+        foreach ($expected as $palette => $theme) {
+            $client = $this->install_hub_stub(true, '{"name":"Layout","blocks":[{"type":"callout"}]}');
+            generator::generate_preset('Layout', 'Intro', '', $palette, \context_system::instance());
+
+            $this->assertSame(1, preg_match('/"theme" field to "(\w+)"/', $client->calls[0][0], $match), $palette);
+            $this->assertSame($theme, $match[1], $palette);
+            $this->assertContains($match[1], $themes, $palette);
+        }
+    }
+
+    /**
+     * The themes the block schema offers to the model are exactly the ones the blocks have.
+     */
+    public function test_block_schema_lists_every_theme_the_blocks_have(): void {
+        $client = $this->install_hub_stub(true, '{"blocktype":"callout","config":{}}');
+        generator::generate_block('Anything', \context_system::instance());
+
+        $prompt = $client->calls[0][0];
+        preg_match_all('/theme: ((?:"\w+"(?:, or | or |, )?)+)/', $prompt, $lists);
+        $this->assertNotEmpty($lists[1]);
+        foreach ($lists[1] as $list) {
+            preg_match_all('/"(\w+)"/', $list, $offered);
+            $this->assertEqualsCanonicalizing($this->block_theme_names(), $offered[1]);
+        }
+    }
 }

@@ -189,7 +189,7 @@ class generator {
         $s .= '13. mindmap — Radial SVG mind map.' . "\n";
         $s .= '    config keys:' . "\n";
         $s .= '    - topic: string (central node, max 20 chars)' . "\n";
-        $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
+        $s .= '    - theme: "blue", "green", "purple", "orange", "red", or "black"' . "\n";
         $s .= '    - branches: array of {label: string, children: [string, ...]}' . "\n";
         $s .= '    Generate 4–6 branches, each with 2–4 children (1–4 word strings).' . "\n\n";
 
@@ -197,7 +197,7 @@ class generator {
         $s .= '    config keys:' . "\n";
         $s .= '    - layout: always "stats"' . "\n";
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
-        $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
+        $s .= '    - theme: "blue", "green", "purple", "orange", "red", or "black"' . "\n";
         $s .= '    - items: array of {icon: string, value: string (short metric, max 8 chars),' . "\n";
         $s .= '        label: string}' . "\n";
         $s .= '    Generate 2–4 items.' . "\n";
@@ -215,7 +215,7 @@ class generator {
         $s .= '15. infographicSteps — Numbered process flow.' . "\n";
         $s .= '    config keys:' . "\n";
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
-        $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
+        $s .= '    - theme: "blue", "green", "purple", "orange", "red", or "black"' . "\n";
         $s .= '    - layout: "vertical" or "horizontal"' . "\n";
         $s .= '    - items: array of {icon: string (from the allowed list above or ""),' . "\n";
         $s .= '        title: string, description: string}' . "\n";
@@ -224,7 +224,7 @@ class generator {
         $s .= '16. infographicFeatures — Feature/benefit card grid.' . "\n";
         $s .= '    config keys:' . "\n";
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
-        $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
+        $s .= '    - theme: "blue", "green", "purple", "orange", "red", or "black"' . "\n";
         $s .= '    - columns: 2 or 3' . "\n";
         $s .= '    - items: array of {icon: string (from the allowed list above or ""),' . "\n";
         $s .= '        title: string, description: string}' . "\n";
@@ -233,7 +233,7 @@ class generator {
         $s .= '17. infographicTimeline — Vertical chronological timeline.' . "\n";
         $s .= '    config keys:' . "\n";
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
-        $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
+        $s .= '    - theme: "blue", "green", "purple", "orange", "red", or "black"' . "\n";
         $s .= '    - items: array of {date: string (year/period, max 15 chars), title: string,' . "\n";
         $s .= '        description: string}' . "\n";
         $s .= '    Generate 3–6 items in chronological order.' . "\n\n";
@@ -243,7 +243,7 @@ class generator {
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
         $s .= '    - col1: string (first option name, max 20 chars)' . "\n";
         $s .= '    - col2: string (second option name, max 20 chars)' . "\n";
-        $s .= '    - theme: "blue", "green", "purple", or "orange"' . "\n";
+        $s .= '    - theme: "blue", "green", "purple", "orange", "red", or "black"' . "\n";
         $s .= '    - items: array of {label: string, col1: boolean, col2: boolean}' . "\n";
         $s .= '    Generate 3–6 items with genuine differences between the two options.' . "\n\n";
 
@@ -330,6 +330,10 @@ class generator {
 
         $p = $palettes[$palette] ?? $palettes['blue'];
 
+        // The visual blocks know six colour themes (blue, green, purple, orange, red, black), not the
+        // palette names: the neutral palette is the black theme, and anything unknown is blue.
+        $theme = $palette === 'neutral' ? 'black' : (isset($palettes[$palette]) ? $palette : 'blue');
+
         $prompt = 'You are a Moodle LMS instructional design assistant. Generate a StudioLMS preset:' . "\n";
         $prompt .= 'a sequence of 2 to 6 content blocks tailored to the teacher\'s pedagogical context.' . "\n\n";
         $prompt .= 'Respond ONLY with a valid JSON object — no markdown, no code fences, no explanation.' . "\n\n";
@@ -346,8 +350,7 @@ class generator {
         $prompt .= '- Order blocks logically: heading → content blocks → actions.' . "\n";
         $prompt .= '- For text-based blocks (1–9): use ONLY the hex values from the palette above.' . "\n";
         $prompt .= '- For visual blocks (10–18: chart, chartBar, gauge, mindmap, infographic*):'
-            . ' set their "theme" field to match the palette name ('
-            . $palette . ').' . "\n";
+            . ' set their "theme" field to "' . $theme . '".' . "\n";
         $prompt .= self::language_instruction() . "\n";
         $prompt .= '- Generate rich, placeholder-quality HTML content in contentHtml/content fields.' . "\n";
         $prompt .= '- Respond ONLY with JSON.' . "\n";
