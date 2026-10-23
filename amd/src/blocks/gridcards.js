@@ -24,6 +24,7 @@
 import Templates from 'core/templates';
 import Notification from 'core/notification';
 import {sanitizeUntrustedHtml} from '../htmlsanitizer';
+import {slotCount} from './grid_slots';
 
 export default {
     id: 'gridcards',
@@ -142,13 +143,13 @@ export default {
             `border-radius: ${data.borderRadius}px; padding: ${pad}; ` +
             `width: 100%; box-sizing: border-box; margin-bottom: 1.5rem;`;
 
-        const colCount = parseInt(data.columns) || 2;
+        const total = slotCount(data.columns, data.slots);
         const slotsArray = [];
 
-        for (let i = 0; i < colCount; i++) {
-            let content = (data.slots && data.slots[i]) ? data.slots[i] : '';
+        for (let i = 0; i < total; i++) {
+            let content = data.slots?.[i];
 
-            if (!content || content.trim() === '') {
+            if (typeof content !== 'string' || content.trim() === '') {
                 content = '<p><br></p>';
             }
 
