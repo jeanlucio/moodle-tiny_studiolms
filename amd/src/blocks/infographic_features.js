@@ -27,6 +27,7 @@ import Notification from 'core/notification';
 import {THEMES, ICONS, esc, normaliseIcon, iconToSpan, openPicker, closePicker} from './infographic_shared';
 import {getContextId} from '../context';
 import {defaultText} from './default_texts';
+import {featureColumns} from './features_layout';
 
 const DEFAULT_ICON = 'fa-solid fa-star';
 
@@ -41,7 +42,7 @@ const buildFeaturesHtml = (data, c) => {
     if (!items.length) {
         return '';
     }
-    const cols = data.columns === 2 ? 2 : 3;
+    const cols = featureColumns(data.columns);
     const parts = [];
     if (data.title && data.title.trim()) {
         parts.push(
@@ -75,7 +76,7 @@ const buildFeaturesHtml = (data, c) => {
  */
 const dataToPopupVars = (data) => {
     const items = Array.isArray(data.items) ? data.items : [];
-    const cols = data.columns === 2 ? 2 : 3;
+    const cols = featureColumns(data.columns);
     const out = {
         title: data.title || '',
         themeBlue: (data.theme || 'blue') === 'blue',
@@ -289,7 +290,7 @@ export default {
     renderHtml: async(data) => {
         const theme = data.theme || 'blue';
         const palette = THEMES[theme] || THEMES.blue;
-        const cols = data.columns === 2 ? 2 : 3;
+        const cols = featureColumns(data.columns);
         const content = buildFeaturesHtml(data, palette);
 
         return Templates.render('tiny_studiolms/block_infographic_features', {

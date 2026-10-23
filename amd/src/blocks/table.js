@@ -98,7 +98,8 @@ export default {
                 btnDesign.addEventListener('click', () => {
                     const tplData = Object.assign({}, data);
                     tplData.isStriped = data.style === 'striped';
-                    tplData.isDefault = data.style === 'default';
+                    // Anything that is not striped is drawn bordered, so a stored "bordered" selects "default".
+                    tplData.isDefault = data.style !== 'striped';
 
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_table_design', tplData, (popup) => {
                         const propMap = {
