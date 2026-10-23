@@ -27,24 +27,18 @@ use core\hook\output\before_footer_html_generation;
  */
 class hook_callbacks {
     /**
-     * Load the student-facing frontend AMD module on course and module context pages.
+     * Load the student-facing frontend AMD module on every page.
      *
-     * Exits without action on pages outside course/module context so the AMD
-     * module is not requested unnecessarily. The module itself also exits early
-     * if no StudioLMS blocks are present in the DOM.
+     * The editor offers the StudioLMS button wherever the user holds the capability, so blocks can be saved
+     * in a category description, a dashboard text block or a profile as well as in a course. The stylesheet
+     * hides the content of a closed accordion on every page and only this module opens it again, so the
+     * module cannot be limited to course and module pages. It exits at once when the page holds no block.
      *
-     * @param before_footer_html_generation $hook
+     * @param before_footer_html_generation $hook The hook event, not used: the module is loaded on every page.
      */
     public static function before_footer_html_generation(before_footer_html_generation $hook): void {
         global $PAGE;
 
-        if (!$PAGE->context) {
-            return;
-        }
-
-        $level = $PAGE->context->contextlevel;
-        if ($level === CONTEXT_COURSE || $level === CONTEXT_MODULE) {
-            $PAGE->requires->js_call_amd('tiny_studiolms/frontend', 'init');
-        }
+        $PAGE->requires->js_call_amd('tiny_studiolms/frontend', 'init');
     }
 }

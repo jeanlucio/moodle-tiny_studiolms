@@ -56,17 +56,31 @@ final class hook_callbacks_test extends advanced_testcase {
     }
 
     /**
-     * The AMD module is not requested on a system-context page (outside course/module).
+     * The module is requested at every context level a block can be shown in.
+     *
+     * Regression test: it was requested only for course and module pages, so a closed accordion saved in a
+     * category description, a dashboard text block or a profile stayed hidden with nothing to open it.
      */
-    public function test_does_nothing_on_system_context(): void {
+    public function test_amd_module_requested_on_every_context_level(): void {
         global $PAGE;
 
-        $PAGE->set_context(\context_system::instance());
+        $category = $this->getDataGenerator()->create_category();
+        $user = $this->getDataGenerator()->create_user();
+        $contexts = [
+            'system' => \context_system::instance(),
+            'category' => \context_coursecat::instance($category->id),
+            'user' => \context_user::instance($user->id),
+        ];
 
-        hook_callbacks::before_footer_html_generation(
-            new before_footer_html_generation($PAGE->get_renderer('core'))
-        );
+        foreach ($contexts as $name => $context) {
+            $PAGE = new \moodle_page();
+            $PAGE->set_context($context);
 
-        $this->assertStringNotContainsString('tiny_studiolms/frontend', $PAGE->requires->get_end_code());
+            hook_callbacks::before_footer_html_generation(
+                new before_footer_html_generation($PAGE->get_renderer('core'))
+            );
+
+            $this->assertStringContainsString('tiny_studiolms/frontend', $PAGE->requires->get_end_code(), $name);
+        }
     }
 }
