@@ -133,6 +133,17 @@ export default Promise.all([
             return [...editor.getBody().querySelectorAll('a.studiolms-btn')].some((anchor) => range.intersectsNode(anchor));
         };
 
+        // Inside the editor the button is only something to edit: following its link would open the
+        // address (usually in a new tab) every time the teacher clicks the text to change it.
+        const blockButtonNavigation = (evt) => {
+            if (evt.target.closest?.('a.studiolms-btn')) {
+                evt.preventDefault();
+            }
+        };
+        editor.on('click', blockButtonNavigation);
+        // The editor does not forward the middle button, so it is listened to on the document itself.
+        editor.on('init', () => editor.getDoc().addEventListener('auxclick', blockButtonNavigation, true));
+
         editor.on('BeforeExecCommand', (evt) => {
             if (LINK_COMMANDS.includes(String(evt.command).toLowerCase()) && selectionTouchesButton()) {
                 evt.preventDefault();
