@@ -314,7 +314,7 @@ export const initStudioApp = (
                                 }
                             );
                         };
-                        footerLeft.appendChild(btnDelete);
+                        footerLeft.prepend(btnDelete);
                     }
                 }
             }
@@ -645,6 +645,7 @@ const addBlockToCanvas = async(blockDef, config = null, skipScroll = false) => {
 
     const entry = {id: blockId, blockDef, config: blockConfig, element: null, previewEl: null};
     canvasBlocks.push(entry);
+    updateClearCanvasButton();
 
     const blocksList = document.getElementById('slms-canvas-blocks');
 
@@ -870,6 +871,14 @@ const showToolbarHint = () => {
 };
 
 /**
+ * Show the "Clear canvas" button only while the canvas holds two or more blocks; with one block the
+ * block's own remove button already does the job.
+ */
+const updateClearCanvasButton = () => {
+    document.getElementById('slms-btn-clear-canvas')?.classList.toggle('d-none', canvasBlocks.length < 2);
+};
+
+/**
  * Remove a block from the canvas.
  *
  * @param {number} blockId
@@ -885,6 +894,7 @@ const removeCanvasBlock = (blockId) => {
         entry.element.remove();
     }
     canvasBlocks.splice(idx, 1);
+    updateClearCanvasButton();
     if (gridInsertTarget && gridInsertTarget.blockId === blockId) {
         clearGridTarget();
     }
@@ -1143,6 +1153,7 @@ const setupNavigation = (canManageGlobal = false) => {
     }
 
     setupSaveTemplateButton(canManageGlobal);
+    setupClearCanvasButton();
 };
 
 /** Where the author's sidebar width is remembered between sessions. */
@@ -1604,6 +1615,40 @@ const setupSidebarSearch = () => {
 // -----------------------------------------
 // SAVE TEMPLATE
 // -----------------------------------------
+
+// -----------------------------------------
+// CLEAR CANVAS
+// -----------------------------------------
+
+/**
+ * Wire the "Clear canvas" button: after a confirmation it empties the canvas. Only the draft is
+ * affected; the content already in the editor is changed by Insert/Update, never by this button.
+ */
+const setupClearCanvasButton = () => {
+    const btn = document.getElementById('slms-btn-clear-canvas');
+    if (!btn) {
+        return;
+    }
+
+    btn.addEventListener('click', async() => {
+        const total = canvasBlocks.length;
+        const [title, message, yes, no] = await Promise.all([
+            getString('btn_clear_canvas', 'tiny_studiolms'),
+            getString('confirm_clear_canvas', 'tiny_studiolms', total),
+            getString('yes', 'core'),
+            getString('no', 'core'),
+        ]);
+
+        Notification.confirm(title, message, yes, no, () => {
+            canvasBlocks.forEach((entry) => entry.element?.remove());
+            canvasBlocks = [];
+            clearGridTarget();
+            updateClearCanvasButton();
+            showCanvasEmptyState();
+            selectCanvasBlock(null);
+        });
+    });
+};
 
 const setupSaveTemplateButton = (canManageGlobal = false) => {
     const btn = document.getElementById('slms-btn-save-template');

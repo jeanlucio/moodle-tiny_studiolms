@@ -190,7 +190,13 @@
 
             <div id="slms-editor-footer"
                  class="slms-editor-footer d-flex justify-content-between align-items-center">
-                <div id="slms-footer-left"></div>
+                <div id="slms-footer-left" class="d-flex align-items-center gap-2">
+                    <button type="button" id="slms-btn-clear-canvas"
+                            class="btn btn-sm btn-outline-danger rounded-pill d-none">
+                        <i class="fa-solid fa-eraser" aria-hidden="true"></i>
+                        {{#str}} btn_clear_canvas, tiny_studiolms {{/str}}
+                    </button>
+                </div>
                 <div class="d-flex align-items-center gap-2">
                     <button type="button" id="slms-btn-save-template"
                             class="btn btn-sm btn-outline-primary rounded-pill">
