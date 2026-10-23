@@ -49,5 +49,5 @@ Feature: Empty the StudioLMS canvas in one step
     And I add the StudioLMS "actionButton" block to the canvas
     And the StudioLMS canvas holds "2" blocks
     When I click on "Clear canvas" "button" in the "#slms-footer-left" "css_element"
-    And I click on "No" "button" in the "Clear canvas" "dialogue"
+    And I click on "Cancel" "button" in the "Clear canvas" "dialogue"
     Then the StudioLMS canvas holds "2" blocks
