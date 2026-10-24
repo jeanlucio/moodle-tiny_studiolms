@@ -1209,6 +1209,38 @@ body.mce-content-body div.slms-grid-slot,
     gap: 0.5rem;
 }
 
+/*
+ * Bootstrap 5 utilities the composer uses and Moodle 4.5 (Bootstrap 4) does not have. :where() gives them no
+ * specificity, so on Bootstrap 5, which defines the same classes, the theme's own rules always win and nothing
+ * changes there; on Bootstrap 4 nothing else defines them and these apply.
+ */
+:where(.tiny_studiolms) :where(.gap-1) {
+    gap: 0.25rem;
+}
+
+:where(.tiny_studiolms) :where(.gap-2) {
+    gap: 0.5rem;
+}
+
+:where(.tiny_studiolms) :where(.form-select) {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--bs-body-color, #212529);
+    background-color: var(--bs-body-bg, #fff);
+    border: 1px solid var(--bs-border-color, #ced4da);
+    border-radius: 0.375rem;
+}
+
+:where(.tiny_studiolms) :where(.form-select-sm) {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+}
+
 /* =========================================
    STUDIOLMS: RUNTIME BLOCKS (NO INLINE CSS)
    These selectors are unscoped so they apply
