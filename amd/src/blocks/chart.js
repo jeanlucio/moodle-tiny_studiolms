@@ -24,12 +24,8 @@
 import Templates from 'core/templates';
 import Notification from 'core/notification';
 import {escapeHtml as esc} from './text_escape';
+import {SVG_SIZE, slicePathData} from './chart_geometry';
 
-const SVG_SIZE = 280;
-const CX = SVG_SIZE / 2;
-const CY = SVG_SIZE / 2;
-const RADIUS = 118;
-const INNER_RADIUS = 56;
 const MAX_SLICES = 6;
 
 const SLICE_COLORS = [
@@ -42,22 +38,6 @@ const SLICE_COLORS = [
 ];
 
 /**
- * Escape HTML special characters.
- * @param {string} str Raw string.
- * @returns {string} Escaped string safe for HTML attributes and text nodes.
- */
-/**
- * Convert polar coordinates to cartesian point on the circle.
- * @param {number} angle Angle in radians, 0 = top.
- * @param {number} r Radius.
- * @returns {{x: number, y: number}}
- */
-const polarToXY = (angle, r) => ({
-    x: CX + r * Math.sin(angle),
-    y: CY - r * Math.cos(angle),
-});
-
-/**
  * Build a single SVG path for one chart slice.
  * @param {number} startAngle Start angle in radians.
  * @param {number} endAngle End angle in radians.
@@ -66,33 +46,8 @@ const polarToXY = (angle, r) => ({
  * @param {string} type 'pie' or 'donut'.
  * @returns {string} SVG <path> element string.
  */
-const buildSlicePath = (startAngle, endAngle, color, label, type) => {
-    const outer1 = polarToXY(startAngle, RADIUS);
-    const outer2 = polarToXY(endAngle, RADIUS);
-    const large = (endAngle - startAngle) > Math.PI ? 1 : 0;
-
-    let d;
-    if (type === 'donut') {
-        const inner1 = polarToXY(startAngle, INNER_RADIUS);
-        const inner2 = polarToXY(endAngle, INNER_RADIUS);
-        d = [
-            `M ${outer1.x.toFixed(2)} ${outer1.y.toFixed(2)}`,
-            `A ${RADIUS} ${RADIUS} 0 ${large} 1 ${outer2.x.toFixed(2)} ${outer2.y.toFixed(2)}`,
-            `L ${inner2.x.toFixed(2)} ${inner2.y.toFixed(2)}`,
-            `A ${INNER_RADIUS} ${INNER_RADIUS} 0 ${large} 0 ${inner1.x.toFixed(2)} ${inner1.y.toFixed(2)}`,
-            'Z',
-        ].join(' ');
-    } else {
-        d = [
-            `M ${CX} ${CY}`,
-            `L ${outer1.x.toFixed(2)} ${outer1.y.toFixed(2)}`,
-            `A ${RADIUS} ${RADIUS} 0 ${large} 1 ${outer2.x.toFixed(2)} ${outer2.y.toFixed(2)}`,
-            'Z',
-        ].join(' ');
-    }
-
-    return `<path d="${d}" fill="${color}" aria-label="${esc(label)}"/>`;
-};
+const buildSlicePath = (startAngle, endAngle, color, label, type) =>
+    `<path d="${slicePathData(startAngle, endAngle, type)}" fill="${color}" aria-label="${esc(label)}"/>`;
 
 /**
  * Build the complete SVG string for the chart.
