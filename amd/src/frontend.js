@@ -30,6 +30,7 @@
  */
 
 import {eventTypes as filterEventTypes} from 'core_filters/events';
+import {splitEmoji, hasTextBesidesEmoji} from './emoji_text';
 
 const SELECTORS = {
     ACCORDION_SUMMARY: '.studiolms-accordion-summary',
@@ -239,6 +240,59 @@ const fixLegacyButtons = (root) => {
 };
 
 /**
+ * Hide the emoji of the blocks from screen readers.
+ *
+ * An emoji in a block is an illustration, and a screen reader would read its name ("file folder", "calendar")
+ * in front of the words. aria-hidden cannot be stored with the content: Moodle's HTMLPurifier removes it, so
+ * it is set here, as the toggle attributes of the accordions are. An emoji that is all an element says (a
+ * button with only a calendar) stays, or the element would be left without a name.
+ *
+ * @param {Element|Document} root The page, or a piece of content that has just entered it.
+ */
+const hideDecorativeEmoji = (root) => {
+    const texts = [];
+    within(root, SELECTORS.ANY_BLOCK).forEach((block) => {
+        const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+        while (walker.nextNode()) {
+            texts.push(walker.currentNode);
+        }
+    });
+
+    texts.forEach((node) => {
+        const parent = node.parentElement;
+        // Already hidden (by an earlier pass, or by a block that did it itself), or not text a reader reads.
+        if (!parent || parent.closest('[aria-hidden="true"], script, style') || !node.isConnected) {
+            return;
+        }
+        const pieces = splitEmoji(node.data);
+        if (!pieces.some((piece) => piece.emoji)) {
+            return;
+        }
+        const container = parent.closest('h1, h2, h3, h4, h5, h6, p, li, a, button, [role="heading"], div') ?? parent;
+        if (!hasTextBesidesEmoji(container.textContent)) {
+            return;
+        }
+        // An icon span that holds only the emoji is hidden itself, with no span added inside it.
+        if (parent !== container && pieces.length === 1) {
+            parent.setAttribute('aria-hidden', 'true');
+            return;
+        }
+        const fragment = document.createDocumentFragment();
+        pieces.forEach((piece) => {
+            if (!piece.emoji) {
+                fragment.append(piece.text);
+                return;
+            }
+            const span = document.createElement('span');
+            span.setAttribute('aria-hidden', 'true');
+            span.textContent = piece.text;
+            fragment.append(span);
+        });
+        node.replaceWith(fragment);
+    });
+};
+
+/**
  * Wire every StudioLMS block under a root.
  *
  * @param {Element|Document} root The page, or a piece of content that has just entered it.
@@ -251,6 +305,7 @@ const initIn = (root) => {
     initToggles(root);
     fixLegacyButtons(root);
     initButtonSounds(root);
+    hideDecorativeEmoji(root);
 };
 
 /**
