@@ -308,6 +308,12 @@ export const openPicker = async(triggerBtn, onSelect, icons) => {
         if (e.type === 'click' && (picker.contains(e.target) || e.target === triggerBtn)) {
             return;
         }
+        if (e.type === 'keydown') {
+            // Escape closes only the picker: left to travel on, it also reached the dialog around it, which
+            // closed the whole composer and threw away what the author was building.
+            e.stopPropagation();
+            e.preventDefault();
+        }
         closePicker();
     };
     activePickerRemoveOutside = dismiss;

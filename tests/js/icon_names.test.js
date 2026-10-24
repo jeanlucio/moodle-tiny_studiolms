@@ -68,3 +68,11 @@ test('the picker takes the names from the lang strings and not from the class', 
     assert.ok(source.includes('iconNames.get(cls)'));
     assert.match(source, /setAttribute\('aria-label', iconNames\.get\(cls\)\)/);
 });
+
+test('the Escape that closes the picker does not reach the dialog around it', () => {
+    const source = read('amd/src/blocks/infographic_shared.js');
+    const dismiss = source.match(/const dismiss = \(e\) => \{[\s\S]*?\n {4}\};/);
+
+    assert.ok(dismiss, 'the dismiss handler is in infographic_shared.js');
+    assert.match(dismiss[0], /e\.type === 'keydown'[\s\S]*?e\.stopPropagation\(\)/);
+});

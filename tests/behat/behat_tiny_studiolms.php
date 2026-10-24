@@ -726,6 +726,47 @@ class behat_tiny_studiolms extends behat_base {
     }
 
     /**
+     * Opens the icon picker of the first item of the infographic block being edited.
+     *
+     * @When I open the StudioLMS icon picker
+     */
+    public function i_open_the_studiolms_icon_picker(): void {
+        $this->execute('behat_general::i_click_on', ['.slms-ig-icon-btn', 'css_element']);
+        $this->execute('behat_general::should_exist', ['.slms-ig-icon-option', 'css_element']);
+    }
+
+    /**
+     * Presses the Escape key, as a keyboard user would, on the element that has the focus.
+     *
+     * @When I press Escape in the StudioLMS composer
+     */
+    public function i_press_escape_in_the_studiolms_composer(): void {
+        $this->evaluate_script(
+            'const target = document.activeElement || document.body;'
+            . 'target.dispatchEvent(new KeyboardEvent("keydown", '
+            . '{key: "Escape", code: "Escape", keyCode: 27, bubbles: true, cancelable: true}));'
+            . 'return true;'
+        );
+    }
+
+    /**
+     * Asserts that the icon picker is no longer open, waiting for it to be removed.
+     *
+     * @Then the StudioLMS icon picker is closed
+     */
+    public function the_studiolms_icon_picker_is_closed(): void {
+        $this->spin(function () {
+            if ($this->getSession()->getPage()->find('css', '.slms-ig-icon-option')) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    'The StudioLMS icon picker is still open.',
+                    $this->getSession()
+                );
+            }
+            return true;
+        });
+    }
+
+    /**
      * Asserts that the template library currently lists a template with the given name.
      *
      * @Then the StudioLMS library shows the template :name
