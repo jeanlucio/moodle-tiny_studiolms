@@ -150,3 +150,13 @@ test('the divider beside the canvas shows the resize cursor over the theme\'s po
         assert.match(css, /\.slms-sidebar-toggle:not\(:disabled\) \{\s*cursor: pointer;/, file);
     }
 });
+
+test('the settings fill the sidebar when the component list is not shown', () => {
+    // On a template or AI tab the list is hidden and the split is off: a 60% cap would leave a blank area.
+    ['styles.css', 'editor_styles.css'].forEach((file) => {
+        assert.match(
+            read(file),
+            /\.slms-sidebar:not\(\.slms-split-on\) \.slms-properties-panel:not\(\.d-none\) \{\s*flex: 1 1 auto;\s*max-height: none;/
+        );
+    });
+});
