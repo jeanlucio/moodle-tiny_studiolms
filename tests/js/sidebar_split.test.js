@@ -130,3 +130,15 @@ test('the labels of the line come from lang strings in both languages', () => {
         assert.ok(lang.includes("$string['split_line_hint'] = '"), file);
     }
 });
+
+test('the divider beside the canvas shows the resize cursor over the theme\'s pointer for buttons', () => {
+    for (const file of ['styles.css', 'editor_styles.css']) {
+        const css = read(file);
+
+        // The class alone loses to the reboot's rule for enabled buttons, so the state is named as well.
+        assert.match(css, /\.tiny_studiolms \.slms-sidebar-toggle:not\(:disabled\) \{\s*cursor: col-resize;/, file);
+        // Collapsed, and in the drawer layout, there is nothing to resize: the hand comes back.
+        assert.match(css, /\.slms-sidebar-collapsed \+ \.slms-sidebar-toggle \{\s*cursor: pointer;/, file);
+        assert.match(css, /\.slms-sidebar-toggle:not\(:disabled\) \{\s*cursor: pointer;/, file);
+    }
+});

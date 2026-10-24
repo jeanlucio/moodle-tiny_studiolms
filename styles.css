@@ -665,6 +665,14 @@
     outline: none;
 }
 
+/*
+ * Bootstrap's reboot gives every enabled button the pointer cursor, and its selector is stronger than the class
+ * above, so the divider showed a hand. Naming the same state raises this one over it.
+ */
+.tiny_studiolms .slms-sidebar-toggle:not(:disabled) {
+    cursor: col-resize;
+}
+
 .tiny_studiolms .slms-sidebar-toggle::before {
     content: '';
     position: absolute;
@@ -3195,6 +3203,10 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
         width: 36px;
         position: relative;
         z-index: 51;
+        cursor: pointer;
+    }
+
+    .tiny_studiolms .slms-sidebar-toggle:not(:disabled) {
         cursor: pointer;
     }
 
