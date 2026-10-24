@@ -77,9 +77,17 @@ test('the line is a separator the pointer and the keyboard can move', () => {
     assert.ok(line, 'the line is in the modal template');
     assert.match(line[0], /role="separator"/);
     assert.match(line[0], /aria-orientation="horizontal"/);
-    assert.match(line[0], /aria-valuemin="0"[\s\S]*aria-valuemax="100"[\s\S]*aria-valuenow=/);
+    // The range is given by app.js, not here: the HTML checker of the plugin CI refuses it on the element as written.
+    assert.ok(!/aria-value/.test(line[0]), 'the template does not carry aria-value* attributes');
     assert.match(line[0], /tabindex="0"/);
     assert.match(line[0], /aria-keyshortcuts="ArrowUp ArrowDown Home End Enter"/);
+});
+
+test('the range of the separator is given by the script, and the value follows the line', () => {
+    const app = read('amd/src/app.js');
+
+    assert.match(app, /line\.setAttribute\('aria-valuemin', '0'\);\s*line\.setAttribute\('aria-valuemax', '100'\);/);
+    assert.match(app, /line\.setAttribute\('aria-valuenow', String\(splitPercent\(/);
 });
 
 test('dragging the line keeps the pointer on it and tells a drag from a click', () => {

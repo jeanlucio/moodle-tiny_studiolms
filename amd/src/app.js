@@ -505,6 +505,11 @@ const setupSidebarSplit = async() => {
     splitLabels = {hideProperties, hideLibrary, showProperties, showLibrary};
     line.setAttribute('aria-label', lineLabel);
     line.setAttribute('title', lineHint);
+    // The range of a focusable separator is set here and not in the template: the HTML checker of the
+    // plugin CI refuses these three attributes on the element as written, though a screen reader needs them.
+    line.setAttribute('aria-valuemin', '0');
+    line.setAttribute('aria-valuemax', '100');
+    updateSplitSeparator();
 
     // Gives the line the state and height the pointer or a key asked for.
     const moveTo = ({state, height}) => {
