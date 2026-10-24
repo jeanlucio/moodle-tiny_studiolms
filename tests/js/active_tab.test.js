@@ -43,8 +43,12 @@ test('only markActiveTab() writes the selected state of a tab', () => {
     assert.match(source, /const markActiveTab = \(tabName\) => \{[\s\S]*?aria-selected[\s\S]*?\n\};/);
 });
 
-test('every tab change goes through switchTab(), which marks the tab first', () => {
-    assert.match(source, /const switchTab = async\(tabName\) => \{\n {4}markActiveTab\(tabName\);/);
+test('every tab change goes through switchTab(), which marks the tab before drawing anything', () => {
+    // The only thing allowed to come first is the AI usage policy, which can keep the tab from opening.
+    const start = source.indexOf('const switchTab = async(tabName) => {');
+    const body = source.slice(start, start + 600);
+
+    assert.match(body, /\n {4}currentTab = tabName;\n {4}markActiveTab\(tabName\);\n {4}PopupManager\.closeAll\(\);/);
 });
 
 test('no caller toggles the active class of a tab by hand', () => {

@@ -89,12 +89,31 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
             ),
             'presets'                  => self::load_presets(current_language()),
             'hasai'                    => ai\provider_chain::has_ai($context),
+            'policyagreed'             => self::ai_policy_agreed(),
             'aihubkeysurl'             => self::aihub_keys_url($context),
             // Threaded back to every web service call so require_capability() there checks the
             // same real context this button's own visibility was gated on, instead of a
             // hardcoded context_system that an ordinary course-enrolled teacher never satisfies.
             'contextid'                => $context->id,
         ];
+    }
+
+    /**
+     * Tells whether the current user has accepted the site's AI usage policy.
+     *
+     * The text a teacher types into the AI tabs goes to an external provider, and the core asks whoever
+     * offers an AI feature to show the policy before the first use and keeps the answer in
+     * ai_policy_register. The editor reads this value to know whether to show it, as tiny_aiplacement does.
+     *
+     * @return bool
+     */
+    private static function ai_policy_agreed(): bool {
+        global $USER;
+
+        if (!class_exists(\core_ai\manager::class) || !method_exists(\core_ai\manager::class, 'get_user_policy_status')) {
+            return true;
+        }
+        return \core_ai\manager::get_user_policy_status((int) $USER->id);
     }
 
     /**

@@ -56,6 +56,33 @@ final class plugininfo_test extends advanced_testcase {
     }
 
     /**
+     * The configuration tells the editor whether the user has accepted the site's AI usage policy.
+     *
+     * Regression test: the plugin sent what teachers type to an external AI provider without ever asking for
+     * the policy the core shows for every other AI feature, and nothing told the editor whether it was
+     * accepted. The value is per user and follows the core's own record of the acceptance.
+     */
+    public function test_policyagreed_follows_the_core_ai_policy_acceptance(): void {
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = \context_course::instance($course->id);
+        $teacher = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
+        $other = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
+
+        $this->setUser($teacher);
+        $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+        $this->assertFalse($config['policyagreed']);
+
+        \core_ai\manager::user_policy_accepted($teacher->id, $coursecontext->id);
+        $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+        $this->assertTrue($config['policyagreed']);
+
+        // Another teacher has not accepted anything.
+        $this->setUser($other);
+        $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+        $this->assertFalse($config['policyagreed']);
+    }
+
+    /**
      * get_plugin_configuration_for_context() threads back the real context id.
      *
      * This is what lets every web service call re-check the capability in the same

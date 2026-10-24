@@ -26,6 +26,8 @@ import {INVALID_IMPORT_FILE} from './template_import';
 import {getString} from 'core/str';
 import Templates from 'core/templates';
 import Notification from 'core/notification';
+import Config from 'core/config';
+import ModalEvents from 'core/modal_events';
 import {loadTemplates, renderTemplateGrid, saveTemplate, showInlineFeedback,
     exportTemplates, importTemplatesFromFile} from './templateslibrary';
 import {initBlock as initAiBlock, initModel as initAiModel} from './aigenerator';
@@ -44,6 +46,8 @@ let currentZoom = 1;
 let targetEditNode = null;
 let presetsData = [];
 let aiState = {available: false, keysUrl: ''};
+let aiPolicyAgreed = false;
+let currentTab = 'components';
 let tabsListenerAttached = false;
 
 const tabDataCache = new Map();
@@ -219,7 +223,8 @@ export const initStudioApp = (
     presets = [],
     hasAi = false,
     contextId = 0,
-    aiKeysUrl = ''
+    aiKeysUrl = '',
+    policyAgreed = false
 ) => {
     tinyEditorInstance = editor;
     moodleModalInstance = modal;
@@ -228,6 +233,8 @@ export const initStudioApp = (
     presetsData = presets;
     setContextId(contextId);
     aiState = {available: hasAi, keysUrl: aiKeysUrl};
+    aiPolicyAgreed = policyAgreed;
+    currentTab = 'components';
     canvasBlocks = [];
     canvasBlockCounter = 0;
     gridInsertTarget = null;
@@ -1415,7 +1422,48 @@ const markActiveTab = (tabName) => {
     });
 };
 
+const AI_TABS = ['ai-block', 'ai-model', 'ai-chat'];
+
+/**
+ * Make sure the user has accepted the site's AI usage policy before an AI tab opens.
+ *
+ * What is typed in those tabs goes to an external provider, so, as tiny_aiplacement does, the core's own
+ * policy dialogue is shown the first time and the answer is kept by the core. Nothing is asked when no AI
+ * is available, since nothing would be sent. The core AI modules are loaded here and not at the top of the
+ * file, so a problem with them can only affect the AI tabs and never the whole editor toolbar.
+ *
+ * @returns {Promise<boolean>} True when the policy is accepted, false when the user dismissed it.
+ */
+const ensureAiPolicy = async() => {
+    if (!aiState.available) {
+        return true;
+    }
+
+    const [Policy, PolicyModal] = await Promise.all([
+        import('core_ai/policy'),
+        import('core_ai/policymodal'),
+    ]);
+
+    Policy.preconfigurePolicyState(Config.userId, aiPolicyAgreed);
+    if (await Policy.getPolicyStatus(Config.userId)) {
+        return true;
+    }
+
+    const modal = await PolicyModal.create();
+    // Whichever way the dialogue closes, the answer is read back from the policy module: accepting sets it
+    // at once, so it does not depend on the order in which the dialogue's own handlers run.
+    return new Promise((resolve) => {
+        modal.getRoot().on(ModalEvents.hidden, async() => resolve(Boolean(await Policy.getPolicyStatus(Config.userId))));
+    });
+};
+
 const switchTab = async(tabName) => {
+    if (AI_TABS.includes(tabName) && !(await ensureAiPolicy())) {
+        // Declined: the tab the user came from stays on the screen.
+        markActiveTab(currentTab);
+        return;
+    }
+    currentTab = tabName;
     markActiveTab(tabName);
     PopupManager.closeAll();
 

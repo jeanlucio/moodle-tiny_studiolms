@@ -77,6 +77,7 @@ $string['ai_preview_discard'] = 'Descartar';
 $string['ai_preview_insert'] = 'Inserir no recurso';
 $string['ai_preview_save'] = 'Salvar template';
 $string['ai_preview_title'] = 'Pré-visualização gerada';
+$string['ai_privacy_notice'] = 'O que você digitar aqui é enviado ao provedor de IA configurado no seu site. Não inclua dados pessoais de estudantes.';
 $string['ai_unavailable_mykeys'] = 'Adicione sua própria chave de IA na Central de IA (abre em uma nova aba)';
 $string['align_center'] = 'Centralizado';
 $string['align_full'] = 'Justificado';

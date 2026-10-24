@@ -77,6 +77,7 @@ $string['ai_preview_discard'] = 'Discard';
 $string['ai_preview_insert'] = 'Insert into Resource';
 $string['ai_preview_save'] = 'Save as Template';
 $string['ai_preview_title'] = 'Generated Preview';
+$string['ai_privacy_notice'] = 'What you type here is sent to the AI provider configured for your site. Do not include personal data of students.';
 $string['ai_unavailable_mykeys'] = 'Add your own AI key in the AI Hub (opens in a new tab)';
 $string['align_center'] = 'Center';
 $string['align_full'] = 'Full Width (100%)';
