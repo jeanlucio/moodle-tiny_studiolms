@@ -151,12 +151,27 @@ test('the divider beside the canvas shows the resize cursor over the theme\'s po
     }
 });
 
-test('the settings fill the sidebar when the component list is not shown', () => {
-    // On a template or AI tab the list is hidden and the split is off: a 60% cap would leave a blank area.
+test('the area under the settings follows the tab and is named after it', () => {
+    const app = read('amd/src/app.js');
+    const open = app.slice(app.indexOf('open: async(btnElement'));
+
+    // Every tab keeps its content under the settings; none of them hides the list any more.
+    assert.ok(!open.includes('showLibrary'), 'no tab is excluded from the area under the settings');
+    assert.match(open, /grid\.classList\.remove\('d-none'\);/);
+    assert.match(open, /await setLibraryHeading\(/);
+
+    ['components', 'global', 'mine', 'favourites', 'ai-block', 'ai-model', 'ai-chat'].forEach((tab) => {
+        assert.match(app, new RegExp(`'${tab}': '[a-z_]+'`), `the bar has a title for the ${tab} tab`);
+        assert.match(read('templates/modal.mustache'), new RegExp(`data-slms-tab="${tab}"`));
+    });
+});
+
+test('the import and export buttons of My templates stay with the list, under the bar', () => {
+    const template = read('templates/modal.mustache');
+
+    assert.ok(template.indexOf('id="slms-library-heading"') < template.indexOf('id="slms-tab-toolbar"'));
+    assert.ok(template.indexOf('id="slms-tab-toolbar"') < template.indexOf('id="slms-library-grid"'));
     ['styles.css', 'editor_styles.css'].forEach((file) => {
-        assert.match(
-            read(file),
-            /\.slms-sidebar:not\(\.slms-split-on\) \.slms-properties-panel:not\(\.d-none\) \{\s*flex: 1 1 auto;\s*max-height: none;/
-        );
+        assert.match(read(file), /slms-split-properties \.slms-sidebar-tab-toolbar/);
     });
 });

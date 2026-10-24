@@ -116,14 +116,6 @@
     </div>
     <div class="slms-composer-layout">
         <aside class="slms-sidebar" id="slms-sidebar">
-            <div id="slms-tab-toolbar" class="d-none slms-sidebar-tab-toolbar px-2 py-2">
-                <button type="button" id="slms-btn-export" class="btn btn-sm btn-outline-secondary">
-                    <i class="fa-solid fa-file-export" aria-hidden="true"></i> {{#str}} btn_export, tiny_studiolms {{/str}}
-                </button>
-                <button type="button" id="slms-btn-import" class="btn btn-sm btn-outline-secondary ms-1">
-                    <i class="fa-solid fa-file-import" aria-hidden="true"></i> {{#str}} btn_import, tiny_studiolms {{/str}}
-                </button>
-            </div>
             <div id="slms-feedback-area" class="px-2" aria-live="polite"></div>
             <div id="slms-properties-panel" class="slms-properties-panel d-none" role="region"
                  aria-label="{{#str}} properties_panel, tiny_studiolms {{/str}}">
@@ -146,7 +138,15 @@
                         </button>
                     </span>
                 </span>
-                <span role="heading" aria-level="3">{{#str}} library_add_heading, tiny_studiolms {{/str}}</span>
+                <span role="heading" aria-level="3" id="slms-library-heading-text">{{#str}} library_add_heading, tiny_studiolms {{/str}}</span>
+            </div>
+            <div id="slms-tab-toolbar" class="d-none slms-sidebar-tab-toolbar px-2 py-2">
+                <button type="button" id="slms-btn-export" class="btn btn-sm btn-outline-secondary">
+                    <i class="fa-solid fa-file-export" aria-hidden="true"></i> {{#str}} btn_export, tiny_studiolms {{/str}}
+                </button>
+                <button type="button" id="slms-btn-import" class="btn btn-sm btn-outline-secondary ms-1">
+                    <i class="fa-solid fa-file-import" aria-hidden="true"></i> {{#str}} btn_import, tiny_studiolms {{/str}}
+                </button>
             </div>
             <div class="slms-library-grid" id="slms-library-grid" role="tabpanel"></div>
         </aside>

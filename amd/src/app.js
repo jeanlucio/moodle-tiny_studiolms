@@ -2119,6 +2119,31 @@ const setupImportExportButtons = () => {
     }
 };
 
+/**
+ * Strings of the title above the area under the block's settings, by tab: it names what that area shows.
+ */
+const LIBRARY_HEADING_STRINGS = {
+    'components': 'library_add_heading',
+    'global': 'tab_official',
+    'mine': 'tab_mine',
+    'favourites': 'tab_favourites',
+    'ai-block': 'tab_ai_block',
+    'ai-model': 'tab_ai_model',
+    'ai-chat': 'tab_ai_chat',
+};
+
+/**
+ * Name, in the bar above it, what the area under the block's settings is showing.
+ *
+ * @param {string} tabName Value of the tab's data-slms-tab attribute.
+ */
+const setLibraryHeading = async(tabName) => {
+    const title = document.getElementById('slms-library-heading-text');
+    if (title) {
+        title.textContent = await getString(LIBRARY_HEADING_STRINGS[tabName] ?? 'library_add_heading', 'tiny_studiolms');
+    }
+};
+
 // -----------------------------------------
 // POPUP MANAGER
 // -----------------------------------------
@@ -2165,7 +2190,6 @@ export const PopupManager = {
         const content = document.getElementById('slms-properties-content');
         const grid = document.getElementById('slms-library-grid');
         const heading = document.getElementById('slms-library-heading');
-        const tabToolbar = document.getElementById('slms-tab-toolbar');
 
         if (!panel || !content) {
             return;
@@ -2173,25 +2197,19 @@ export const PopupManager = {
 
         content.innerHTML = '';
 
-        // The component list stays under the block's settings, so the author can edit one block and
-        // add the next without going back through the tab. That only holds for the components tab:
-        // on the template tabs the list below would be templates, not blocks to add.
-        const activeTab = document.querySelector('[data-slms-tab].active');
-        const showLibrary = !activeTab || activeTab.getAttribute('data-slms-tab') === 'components';
+        // What the current tab shows (the component list, the templates, the AI form) stays under the block's
+        // settings, so the author can edit one block and carry on in the same tab without going back to it.
         if (grid) {
-            grid.classList.toggle('d-none', !showLibrary);
+            grid.classList.remove('d-none');
         }
         if (heading) {
-            heading.classList.toggle('d-none', !showLibrary);
+            heading.classList.remove('d-none');
         }
-        // The split only applies while the bar is there: on the template tabs the list is hidden and
-        // the properties must never be hidden with it.
+        const activeTab = document.querySelector('[data-slms-tab].active');
+        await setLibraryHeading(activeTab ? activeTab.getAttribute('data-slms-tab') : 'components');
         const sidebar = document.getElementById('slms-sidebar');
         if (sidebar) {
-            sidebar.classList.toggle('slms-split-on', showLibrary);
-        }
-        if (tabToolbar) {
-            tabToolbar.classList.add('d-none');
+            sidebar.classList.add('slms-split-on');
         }
 
         try {

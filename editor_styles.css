@@ -373,15 +373,6 @@
     max-height: none;
 }
 
-/*
- * Without the split the component list is not shown (the template tabs and the AI tabs fill the sidebar with
- * something else), so the settings take the whole sidebar instead of stopping at 60% with a blank area below.
- */
-.tiny_studiolms .slms-sidebar:not(.slms-split-on) .slms-properties-panel:not(.d-none) {
-    flex: 1 1 auto;
-    max-height: none;
-}
-
 /* While the line is dragged the text must not select and the cursor must not flicker. */
 .tiny_studiolms .slms-sidebar.slms-resizing-split {
     cursor: row-resize;
@@ -399,7 +390,8 @@
 }
 
 /* List hidden: the settings take the whole sidebar, with the bar at the bottom. */
-.tiny_studiolms .slms-sidebar.slms-split-on.slms-split-properties .slms-library-grid {
+.tiny_studiolms .slms-sidebar.slms-split-on.slms-split-properties .slms-library-grid,
+.tiny_studiolms .slms-sidebar.slms-split-on.slms-split-properties .slms-sidebar-tab-toolbar {
     display: none;
 }
 
