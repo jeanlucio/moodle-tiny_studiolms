@@ -742,10 +742,12 @@ class behat_tiny_studiolms extends behat_base {
      */
     public function i_press_escape_in_the_studiolms_composer(): void {
         $this->evaluate_script(
-            'const target = document.activeElement || document.body;'
+            'return (function() {'
+            . 'const target = document.activeElement || document.body;'
             . 'target.dispatchEvent(new KeyboardEvent("keydown", '
             . '{key: "Escape", code: "Escape", keyCode: 27, bubbles: true, cancelable: true}));'
             . 'return true;'
+            . '})();'
         );
     }
 
