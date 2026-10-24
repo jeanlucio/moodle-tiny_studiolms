@@ -52,27 +52,45 @@ final class presets_test extends advanced_testcase {
     }
 
     /**
-     * Every layout of pt_br has an English one with the same file name, the same blocks and the same settings.
+     * Every layout of pt_br has an English one with the same blocks and the same settings.
      *
      * Regression test: only the Portuguese layouts existed. Translating them is a copy of the structure with
      * the text changed, so the check is that nothing else moved: the block types and every setting key stay, and
-     * only text differs.
+     * only text differs. The files are named after their English title, so each pair is matched through this map.
      */
     public function test_each_english_layout_mirrors_the_portuguese_one(): void {
+        $pairs = [
+            'aviso_de_prazo.json' => 'deadline_notice.json',
+            'card_acesso_plano.json' => 'course_plan_access_card.json',
+            'card_de_conceito.json' => 'concept_card.json',
+            'contatos_professor.json' => 'teacher_contacts.json',
+            'dica_de_estudo.json' => 'study_tip.json',
+            'encarte_playerhud.json' => 'playerhud_flyer.json',
+            'encontros_sincronos.json' => 'live_sessions.json',
+            'fechamento_de_modulo.json' => 'module_wrap_up.json',
+            'forum_avaliativo_com_rubrica.json' => 'graded_forum_with_rubric.json',
+            'informacao_importante.json' => 'important_information.json',
+            'inicio_de_modulo.json' => 'module_start.json',
+            'material_de_apoio.json' => 'support_material.json',
+            'plano_de_disciplina.json' => 'course_syllabus.json',
+            'quadro_de_missoes.json' => 'mission_board.json',
+            'roteiro_de_atividade.json' => 'activity_guide.json',
+        ];
         $portuguese = $this->presets('pt_br');
         $english = $this->presets('en');
 
-        $this->assertNotEmpty($portuguese);
-        $this->assertSame(array_keys($portuguese), array_keys($english));
+        $this->assertSame(array_keys($pairs), array_keys($portuguese));
+        $this->assertEqualsCanonicalizing(array_values($pairs), array_keys($english));
 
-        foreach ($portuguese as $file => $preset) {
-            $this->assertSame(array_keys($preset), array_keys($english[$file]), $file);
+        foreach ($pairs as $ptfile => $enfile) {
+            $preset = $portuguese[$ptfile];
+            $this->assertSame(array_keys($preset), array_keys($english[$enfile]), $enfile);
             $this->assertSame(
                 array_column($preset['blocks'] ?? [], 'type'),
-                array_column($english[$file]['blocks'] ?? [], 'type'),
-                $file
+                array_column($english[$enfile]['blocks'] ?? [], 'type'),
+                $enfile
             );
-            $this->assertNotSame($preset['name'], $english[$file]['name'], $file);
+            $this->assertNotSame($preset['name'], $english[$enfile]['name'], $enfile);
         }
     }
 
