@@ -77,5 +77,5 @@ test('the editor hands the policy status to the composer', () => {
 
     assert.ok(plugin.includes("getPluginOptionName(pluginName, 'policyagreed')"));
     assert.match(plugin, /initStudioApp\(\s*editor, modal, editData, canManageGlobal, presets, hasAi, contextId, aiHubKeysUrl,/);
-    assert.match(plugin, /aiHubKeysUrl, policyAgreed\s*\)/);
+    assert.match(plugin, /aiHubKeysUrl, policyAgreed,/);
 });

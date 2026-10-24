@@ -298,6 +298,58 @@ final class plugininfo_test extends advanced_testcase {
     }
 
     /**
+     * The teacher is told once that the ready-made layouts are not in their language.
+     *
+     * Only a language with no folder of its own under presets/ is shown the English layouts as a stand-in, so only
+     * it needs the notice; once the editor has saved the preference, it is not asked for again.
+     */
+    public function test_presetnotice_is_due_once_and_only_for_a_stand_in_language(): void {
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = \context_course::instance($course->id);
+        $teacher = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
+        $other = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
+        $this->setUser($teacher);
+
+        foreach (['en' => false, 'pt_br' => false, 'fr' => true, 'pt' => true] as $lang => $due) {
+            $this->force_language_for_test($lang);
+            $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+            $this->assertSame($due, $config['presetnotice'], $lang);
+        }
+
+        // Saved as seen: not asked again, in any language.
+        $this->force_language_for_test('fr');
+        set_user_preference('tiny_studiolms_presetnotice_seen', 1);
+        $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+        $this->assertFalse($config['presetnotice']);
+
+        // The preference is the user's own: another teacher is still to be told.
+        $this->setUser($other);
+        $this->force_language_for_test('fr');
+        $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+        $this->assertTrue($config['presetnotice']);
+    }
+
+    /**
+     * The preference is declared, so the core lets the browser save it, and only for the user it belongs to.
+     *
+     * Regression test for the declaration: without the lib.php callback the core refuses to save a preference
+     * the browser sets, and the notice would be shown on every visit.
+     */
+    public function test_the_preference_is_declared_for_the_current_user_only(): void {
+        $preferences = component_callback('tiny_studiolms', 'user_preferences');
+
+        $this->assertArrayHasKey('tiny_studiolms_presetnotice_seen', $preferences);
+        $definition = $preferences['tiny_studiolms_presetnotice_seen'];
+        $this->assertSame(PARAM_BOOL, $definition['type']);
+        $this->assertSame([\core_user::class, 'is_current_user'], $definition['permissioncallback']);
+
+        $user = $this->getDataGenerator()->create_user();
+        $this->setUser($user);
+        $this->assertTrue(\core_user::is_current_user($user));
+        $this->assertFalse(\core_user::is_current_user($this->getDataGenerator()->create_user()));
+    }
+
+    /**
      * get_available_buttons() declares exactly the one toolbar button owned by this plugin.
      */
     public function test_get_available_buttons(): void {

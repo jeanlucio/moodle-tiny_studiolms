@@ -27,6 +27,7 @@ namespace tiny_studiolms\privacy;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\userlist;
+use core_privacy\local\request\writer;
 use core_privacy\tests\provider_testcase;
 use tiny_studiolms\privacy\provider;
 
@@ -315,24 +316,48 @@ final class provider_test extends provider_testcase {
     }
 
     /**
-     * AI goes only through local_aihub and core_ai, so the plugin declares no AI provider and no user
-     * preference of its own: its two tables, and the two video services a card can embed.
+     * AI goes only through local_aihub and core_ai, so the plugin declares no AI provider: its two tables, the
+     * one preference that remembers a notice was shown, and the two video services a card can embed.
      */
     public function test_metadata_declares_own_tables_and_the_video_services_only(): void {
         $collection = provider::get_metadata(new \core_privacy\local\metadata\collection('tiny_studiolms'));
 
         $tables = [];
         $locations = [];
+        $preferences = [];
         foreach ($collection->get_collection() as $item) {
             if ($item instanceof \core_privacy\local\metadata\types\database_table) {
                 $tables[] = $item->get_name();
+            } else if ($item instanceof \core_privacy\local\metadata\types\user_preference) {
+                $preferences[] = $item->get_name();
             } else {
                 $this->assertInstanceOf(\core_privacy\local\metadata\types\external_location::class, $item);
                 $locations[] = $item->get_name();
             }
         }
+        $this->assertSame(['tiny_studiolms_presetnotice_seen'], $preferences);
         $this->assertEqualsCanonicalizing(['tiny_studiolms_templates', 'tiny_studiolms_favourites'], $tables);
         $this->assertEqualsCanonicalizing(['youtube', 'vimeo'], $locations);
+    }
+
+    /**
+     * The preference that remembers the notice was shown is exported for the user who has it, and only for them.
+     */
+    public function test_the_notice_preference_is_exported(): void {
+        $this->setUser($this->user1);
+        set_user_preference('tiny_studiolms_presetnotice_seen', 1, $this->user1);
+
+        provider::export_user_preferences($this->user1->id);
+        $exported = writer::with_context(\context_system::instance())->get_user_preferences('tiny_studiolms');
+        $this->assertSame(
+            'tiny_studiolms_presetnotice_seen',
+            array_key_first((array) $exported)
+        );
+
+        // A user with no such preference exports nothing.
+        writer::reset();
+        provider::export_user_preferences($this->user2->id);
+        $this->assertEmpty((array) writer::with_context(\context_system::instance())->get_user_preferences('tiny_studiolms'));
     }
 
     /**

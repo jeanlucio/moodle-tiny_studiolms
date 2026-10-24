@@ -48,6 +48,7 @@ let targetEditNode = null;
 let presetsData = [];
 let aiState = {available: false, keysUrl: ''};
 let aiPolicyAgreed = false;
+let presetNoticePending = false;
 let currentTab = 'components';
 let tabsListenerAttached = false;
 
@@ -225,7 +226,8 @@ export const initStudioApp = (
     hasAi = false,
     contextId = 0,
     aiKeysUrl = '',
-    policyAgreed = false
+    policyAgreed = false,
+    presetNotice = false
 ) => {
     tinyEditorInstance = editor;
     moodleModalInstance = modal;
@@ -235,6 +237,7 @@ export const initStudioApp = (
     setContextId(contextId);
     aiState = {available: hasAi, keysUrl: aiKeysUrl};
     aiPolicyAgreed = policyAgreed;
+    presetNoticePending = presetNotice;
     currentTab = 'components';
     canvasBlocks = [];
     canvasBlockCounter = 0;
@@ -1423,6 +1426,47 @@ const markActiveTab = (tabName) => {
     });
 };
 
+/**
+ * Tell the teacher, once, that the ready-made layouts are not in their language and can be made so.
+ *
+ * Only a language without a folder of its own under presets/ gets here: it is shown the English layouts. The
+ * notice is saved as seen the moment it is shown, so it is never asked again, here or in another session; the
+ * preference is declared by lib.php. A failure to save it is not worth an error: the notice would at worst
+ * appear once more.
+ *
+ * @param {HTMLElement} grid The library grid, already drawn.
+ */
+const showPresetLanguageNotice = async(grid) => {
+    presetNoticePending = false;
+
+    const [message, closeLabel, UserRepository] = await Promise.all([
+        getString('preset_language_notice', 'tiny_studiolms'),
+        getString('closebuttontitle', 'core'),
+        import('core_user/repository'),
+    ]);
+
+    const notice = document.createElement('div');
+    notice.className = 'alert alert-info slms-preset-notice small mb-0';
+    notice.setAttribute('role', 'note');
+    notice.textContent = message;
+
+    const close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'slms-preset-notice-close';
+    close.setAttribute('aria-label', closeLabel);
+    close.innerHTML = '<span aria-hidden="true">&times;</span>';
+    close.addEventListener('click', () => notice.remove());
+    notice.appendChild(close);
+
+    grid.prepend(notice);
+    try {
+        await UserRepository.setUserPreference('tiny_studiolms_presetnotice_seen', 1);
+    } catch (error) {
+        // Not worth an error: at worst the notice appears once more.
+        window.console.warn('StudioLMS: could not save the notice preference', error);
+    }
+};
+
 const AI_TABS = ['ai-block', 'ai-model', 'ai-chat'];
 
 /**
@@ -1564,6 +1608,9 @@ const switchTab = async(tabName) => {
             onLoadToCanvas: loadTemplateToCanvas,
             onInvalidateCache: invalidateTabCache,
         });
+        if (tabName === 'global' && presetNoticePending && presetsData.length > 0) {
+            await showPresetLanguageNotice(grid);
+        }
     } catch (error) {
         Notification.exception(error);
     }

@@ -89,6 +89,7 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
             ),
             'presets'                  => self::load_presets(current_language()),
             'hasai'                    => ai\provider_chain::has_ai($context),
+            'presetnotice'             => self::preset_notice_due(current_language()),
             'policyagreed'             => self::ai_policy_agreed(),
             'aihubkeysurl'             => self::aihub_keys_url($context),
             // Threaded back to every web service call so require_capability() there checks the
@@ -144,7 +145,40 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
     }
 
     /**
+     * Tells whether the ready-made layouts shown in this language are a stand-in for it.
+     *
+     * @param string $lang Current Moodle language code.
+     * @return bool True when there is no folder under presets/ for the language, so the English ones are used.
+     */
+    private static function presets_are_a_stand_in(string $lang): bool {
+        return !is_dir(dirname(__DIR__) . '/presets/' . $lang);
+    }
+
+    /**
+     * Tells whether the teacher is still to be told that the layouts are not in their language.
+     *
+     * Asked once: the editor saves the preference as soon as it shows the notice, and a language that has a
+     * folder of its own under presets/ never needs it.
+     *
+     * @param string $lang Current Moodle language code.
+     * @return bool
+     */
+    private static function preset_notice_due(string $lang): bool {
+        return self::presets_are_a_stand_in($lang) && !get_user_preferences('tiny_studiolms_presetnotice_seen', false);
+    }
+
+    /**
      * Load preset templates for the given language, falling back to English.
+     *
+     * Design decision (not a defect): the ready-made layouts are JSON files in one folder per language
+     * (presets/en, presets/pt_br), not language strings. A layout is HTML with inline styles and block settings,
+     * which does not belong in a lang string, and splitting each one into a few hundred translatable fragments
+     * would make a layout impossible to read, review or edit as a whole. A language without a folder of its own
+     * gets the English layouts, and the teacher is told once (see preset_notice_due()) that they can load one,
+     * write the text in their own language and keep it with "Save as template"; the saved template then lives in
+     * "My templates" in any language. A new language is added by copying presets/en to presets/<code>. Moving
+     * the text to lang strings, so that AMOS could translate it, is a possible future step, to be taken if
+     * translators ask for it.
      *
      * @param string $lang Current Moodle language code (e.g. 'pt_br', 'en').
      * @return array Array of preset definitions, each with 'name' and either 'blocks' or 'content'.

@@ -39,6 +39,7 @@ const canManageGlobalOption = getPluginOptionName(pluginName, 'canmanageglobalte
 const presetsOption = getPluginOptionName(pluginName, 'presets');
 const hasAiOption = getPluginOptionName(pluginName, 'hasai');
 const policyAgreedOption = getPluginOptionName(pluginName, 'policyagreed');
+const presetNoticeOption = getPluginOptionName(pluginName, 'presetnotice');
 const contextIdOption = getPluginOptionName(pluginName, 'contextid');
 const aiHubKeysUrlOption = getPluginOptionName(pluginName, 'aihubkeysurl');
 
@@ -84,6 +85,11 @@ export default Promise.all([
         });
 
         editor.options.register(policyAgreedOption, {
+            processor: 'boolean',
+            'default': false,
+        });
+
+        editor.options.register(presetNoticeOption, {
             processor: 'boolean',
             'default': false,
         });
@@ -231,8 +237,10 @@ export default Promise.all([
                 const contextId = editor.options.get(contextIdOption);
                 const aiHubKeysUrl = editor.options.get(aiHubKeysUrlOption);
                 const policyAgreed = editor.options.get(policyAgreedOption);
+                const presetNotice = editor.options.get(presetNoticeOption);
                 initStudioApp(
-                    editor, modal, editData, canManageGlobal, presets, hasAi, contextId, aiHubKeysUrl, policyAgreed
+                    editor, modal, editData, canManageGlobal, presets, hasAi, contextId, aiHubKeysUrl, policyAgreed,
+                    presetNotice
                 );
             } catch (error) {
                 Notification.exception(error);

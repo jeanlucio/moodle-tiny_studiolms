@@ -29,6 +29,7 @@ use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\core_userlist_provider;
+use core_privacy\local\request\transform;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 
@@ -47,6 +48,7 @@ use core_privacy\local\request\writer;
 class provider implements
     \core_privacy\local\metadata\provider,
     \core_privacy\local\request\plugin\provider,
+    \core_privacy\local\request\user_preference_provider,
     core_userlist_provider {
     /**
      * Returns metadata about data stored by this plugin.
@@ -77,6 +79,11 @@ class provider implements
             'privacy:metadata:tiny_studiolms_favourites'
         );
 
+        $collection->add_user_preference(
+            'tiny_studiolms_presetnotice_seen',
+            'privacy:metadata:userpreference:tiny_studiolms_presetnotice_seen'
+        );
+
         $collection->add_external_location_link(
             'youtube',
             ['ipaddress' => 'privacy:metadata:youtube:ipaddress'],
@@ -90,6 +97,24 @@ class provider implements
         );
 
         return $collection;
+    }
+
+    /**
+     * Exports the user preferences of the plugin.
+     *
+     * @param int $userid The user to export for.
+     */
+    public static function export_user_preferences(int $userid): void {
+        $seen = get_user_preferences('tiny_studiolms_presetnotice_seen', null, $userid);
+        if ($seen === null) {
+            return;
+        }
+        writer::with_context(\context_system::instance())->export_user_preference(
+            'tiny_studiolms',
+            'tiny_studiolms_presetnotice_seen',
+            transform::yesno((bool) $seen),
+            get_string('privacy:metadata:userpreference:tiny_studiolms_presetnotice_seen', 'tiny_studiolms')
+        );
     }
 
     /**
