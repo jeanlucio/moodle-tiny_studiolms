@@ -29,12 +29,28 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import {eventTypes as filterEventTypes} from 'core_filters/events';
+
 const SELECTORS = {
     ACCORDION_SUMMARY: '.studiolms-accordion-summary',
     RESOURCES_SUMMARY: '.studiolms-resources-summary',
     // Every block root carries data-slms-block-type, so this also matches the blocks that need no script
     // of their own (heading, table, charts): the page still has to be cleaned of editing attributes.
     ANY_BLOCK: '[data-slms-block-type]',
+};
+
+/**
+ * Every element under a root that matches a selector, the root itself included.
+ *
+ * A node handed over by filterContentUpdated can be a block itself, which querySelectorAll() on it would skip.
+ *
+ * @param {Element|Document} root Where to look.
+ * @param {string} selector CSS selector.
+ * @returns {Element[]}
+ */
+const within = (root, selector) => {
+    const found = [...root.querySelectorAll(selector)];
+    return root.matches?.(selector) ? [root, ...found] : found;
 };
 
 // Counter for unique IDs assigned to accordion/resources toggle pairs.
@@ -106,10 +122,14 @@ const playSound = (type) => {
  * allows it, so it survives into the student-facing page. Screen readers (NVDA, JAWS,
  * VoiceOver) announce contenteditable="true" regions as "editable area" or "text",
  * which confuses students reading course content that should be read-only.
+ *
+ * @param {Element|Document} root The page, or a piece of content that has just entered it.
  */
-const stripEditorAttributes = () => {
-    document.querySelectorAll('[data-slms-block-type] [contenteditable], [data-slms-block-type][contenteditable]')
-        .forEach(el => el.removeAttribute('contenteditable'));
+const stripEditorAttributes = (root) => {
+    // Every block root carries data-slms-block-type: the blocks inside root, and the ones that are root itself.
+    within(root, '[data-slms-block-type]').forEach((block) => {
+        within(block, '[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+    });
 };
 
 /**
@@ -131,10 +151,18 @@ const getSoundClass = (el) => {
  * Each summary/panel pair receives unique IDs so that aria-controls can
  * associate the button with its controlled panel, following the WAI-ARIA
  * Accordion pattern (APG).
+ *
+ * @param {Element|Document} root The page, or a piece of content that has just entered it.
  */
-const initToggles = () => {
+const initToggles = (root) => {
     const summarySelector = `${SELECTORS.ACCORDION_SUMMARY}, ${SELECTORS.RESOURCES_SUMMARY}`;
-    document.querySelectorAll(summarySelector).forEach(summary => {
+    within(root, summarySelector).forEach(summary => {
+        // A summary already wired must not get a second pair of handlers, or one click would toggle twice.
+        if (summary.dataset.slmsBound === '1') {
+            return;
+        }
+        summary.dataset.slmsBound = '1';
+
         const container = summary.closest('.studiolms-accordion, .studiolms-resources');
         if (!container) {
             return;
@@ -181,9 +209,15 @@ const initToggles = () => {
 /**
  * Attach click-sound handlers to button <a> elements.
  * Only wires up elements whose class includes slms-snd-* with a non-"none" value.
+ *
+ * @param {Element|Document} root The page, or a piece of content that has just entered it.
  */
-const initButtonSounds = () => {
-    document.querySelectorAll('a.studiolms-btn').forEach(el => {
+const initButtonSounds = (root) => {
+    within(root, 'a.studiolms-btn').forEach(el => {
+        if (el.dataset.slmsSoundBound === '1') {
+            return;
+        }
+        el.dataset.slmsSoundBound = '1';
         const sound = getSoundClass(el);
         if (sound && sound !== 'none') {
             el.addEventListener('click', () => playSound(sound));
@@ -195,23 +229,41 @@ const initButtonSounds = () => {
  * Remove contenteditable from any button <a> elements saved before the
  * block_button.mustache was updated to use contenteditable="false" on the anchor.
  * Without this, legacy buttons remain non-clickable for students.
+ *
+ * @param {Element|Document} root The page, or a piece of content that has just entered it.
  */
-const fixLegacyButtons = () => {
-    document.querySelectorAll('a.studiolms-btn[contenteditable]').forEach(btn => {
+const fixLegacyButtons = (root) => {
+    within(root, 'a.studiolms-btn[contenteditable]').forEach(btn => {
         btn.removeAttribute('contenteditable');
     });
 };
 
 /**
- * Initialise the StudioLMS frontend engine.
- * Exits immediately if no StudioLMS blocks are present on the page.
+ * Wire every StudioLMS block under a root.
+ *
+ * @param {Element|Document} root The page, or a piece of content that has just entered it.
  */
-export const init = () => {
-    if (!document.querySelector(SELECTORS.ANY_BLOCK)) {
+const initIn = (root) => {
+    if (!root.querySelector || (!within(root, SELECTORS.ANY_BLOCK).length)) {
         return;
     }
-    stripEditorAttributes();
-    initToggles();
-    fixLegacyButtons();
-    initButtonSounds();
+    stripEditorAttributes(root);
+    initToggles(root);
+    fixLegacyButtons(root);
+    initButtonSounds(root);
+};
+
+/**
+ * Initialise the StudioLMS frontend engine.
+ *
+ * Runs on the blocks the page already holds and on the content that enters it later: the course editor
+ * replaces a whole activity when it is moved, shown or hidden, and some pages load content by AJAX, and in
+ * both cases the core announces it with filterContentUpdated. Without that, a closed accordion in such content
+ * has no handler and, with its panel hidden by the stylesheet, can never be opened.
+ */
+export const init = () => {
+    initIn(document);
+    document.addEventListener(filterEventTypes.filterContentUpdated, (event) => {
+        Array.from(event.detail?.nodes ?? []).forEach(initIn);
+    });
 };
