@@ -259,15 +259,15 @@
 }
 
 /*
- * Bar between a block's settings and the component list: the heading of the list plus two arrows that
- * move it. Up hides the settings, down hides the list; from either end the opposite arrow comes back
- * to the middle.
+ * Bar between a block's settings and the component list: the heading of the list, with a handle on the line
+ * above it. The handle holds the arrows that move the line: in the middle both, up hiding the settings and
+ * down hiding the list; at either end only the one that comes back.
  */
 .tiny_studiolms .slms-library-heading {
+    position: relative;
     flex: 0 0 auto;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     padding: 0.25rem 0.5rem 0.25rem 0.75rem;
     border-top: 1px solid var(--bs-border-color, #dee2e6);
     font-size: 0.8rem;
@@ -277,38 +277,63 @@
     letter-spacing: 0.04em;
 }
 
+/* The handle straddles the line, centred, like the one on the divider beside the canvas. */
+.tiny_studiolms .slms-split-handle {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    z-index: 2;
+    pointer-events: none;
+}
+
 .tiny_studiolms .slms-split-controls {
     display: inline-flex;
-    gap: 0.25rem;
+    align-items: center;
+    transform: translateY(-50%);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 4px;
+    background: var(--bs-white, #fff);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    pointer-events: auto;
 }
 
 .tiny_studiolms .slms-split-btn {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 1.6rem;
+    height: 1.2rem;
     padding: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--bs-border-color, #dee2e6);
-    border-radius: 4px;
-    background: var(--bs-white, #fff);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
     color: var(--slms-brand, #0d47a1);
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     cursor: pointer;
+}
+
+.tiny_studiolms .slms-split-btn + .slms-split-btn {
+    border-inline-start: 1px solid var(--bs-border-color, #dee2e6);
 }
 
 .tiny_studiolms .slms-split-btn:hover,
 .tiny_studiolms .slms-split-btn:focus-visible {
     background: var(--slms-brand-bg, #e9f3ff);
-    border-color: var(--slms-brand, #0d47a1);
 }
 
-/* An arrow with nowhere left to go stays in place, dimmed, so keyboard focus is not lost. */
-.tiny_studiolms .slms-split-btn[aria-disabled="true"] {
-    opacity: 0.35;
-    cursor: default;
-    background: var(--bs-white, #fff);
-    border-color: var(--bs-border-color, #dee2e6);
+.tiny_studiolms .slms-split-btn:focus-visible {
+    outline: 2px solid var(--slms-brand, #0d47a1);
+    outline-offset: -2px;
+}
+
+/* With the settings hidden the line is the top of the sidebar: leave room for the handle that straddles it. */
+.tiny_studiolms .slms-sidebar.slms-split-on.slms-split-list .slms-library-heading {
+    margin-top: 0.75rem;
 }
 
 /* Settings hidden: the component list takes the whole sidebar. */
@@ -3131,10 +3156,14 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
         font-size: 0.8rem;
     }
 
-    /* Touch targets of at least 44px for the arrows above the component list. */
+    /* Touch targets of at least 44px for the arrows on the line above the component list. */
     .tiny_studiolms .slms-split-btn {
         width: 2.75rem;
         height: 2.75rem;
+    }
+
+    .tiny_studiolms .slms-sidebar.slms-split-on.slms-split-list .slms-library-heading {
+        margin-top: 1.5rem;
     }
 
 }

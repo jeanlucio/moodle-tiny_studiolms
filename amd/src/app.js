@@ -369,9 +369,10 @@ const readStoredSplit = () => {
 /**
  * Show the split on the sidebar and on the two buttons.
  *
- * The arrows move the bar between the areas: up hides the properties, down hides the component list,
- * and from either end the opposite arrow comes back to the middle. The arrow with nowhere left to go is
- * only marked as disabled, never removed, so keyboard focus stays on it.
+ * The handle sits on the line between the settings and the component list. In the middle both arrows are
+ * there: up hides the settings, down hides the list. At either end only the arrow that comes back is left,
+ * since the other has nowhere to go; when the arrow that had the keyboard focus is the one that goes, the
+ * focus moves to the one that stays, so it is never lost.
  */
 const renderSidebarSplit = () => {
     const sidebar = document.getElementById('slms-sidebar');
@@ -380,6 +381,7 @@ const renderSidebarSplit = () => {
     if (!sidebar || !up || !down || !splitLabels) {
         return;
     }
+    const focused = [up, down].find((arrow) => arrow === document.activeElement);
     sidebar.classList.toggle('slms-split-properties', sidebarSplit === SPLIT_PROPERTIES);
     sidebar.classList.toggle('slms-split-list', sidebarSplit === SPLIT_LIST);
 
@@ -389,8 +391,11 @@ const renderSidebarSplit = () => {
     up.setAttribute('title', upLabel);
     down.setAttribute('aria-label', downLabel);
     down.setAttribute('title', downLabel);
-    up.setAttribute('aria-disabled', sidebarSplit === SPLIT_LIST ? 'true' : 'false');
-    down.setAttribute('aria-disabled', sidebarSplit === SPLIT_PROPERTIES ? 'true' : 'false');
+    up.classList.toggle('d-none', sidebarSplit === SPLIT_LIST);
+    down.classList.toggle('d-none', sidebarSplit === SPLIT_PROPERTIES);
+    if (focused?.classList.contains('d-none')) {
+        (focused === up ? down : up).focus();
+    }
 };
 
 /**
