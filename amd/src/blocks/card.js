@@ -223,13 +223,10 @@ export default {
 
     renderHtml: async(data) => {
         const templateData = Object.assign({}, data);
-        const shadowMap = {
-            'none': 'none',
-            'sm': '0 1px 3px rgba(0, 0, 0, 0.1)',
-            'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-            'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-        };
-        templateData.shadowCss = shadowMap[data.shadow] || shadowMap.md;
+        // A class, not an inline box-shadow: HTMLPurifier drops that property from stored content, so the
+        // shadow would show in the editor and vanish on the course page.
+        const shadowClasses = {none: '', sm: 'slms-shadow-sm', md: 'slms-shadow-md', lg: 'slms-shadow-lg'};
+        templateData.shadowClass = shadowClasses[data.shadow] ?? shadowClasses.md;
 
         templateData.hasMedia = data.mediaType !== 'none' && data.mediaUrl.trim() !== '';
         // A preset leaves a marker such as [URL_DA_FOTO] for the author to replace. It is not an address, so a

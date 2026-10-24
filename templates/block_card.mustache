@@ -19,14 +19,14 @@
     @copyright 2026 Jean Lúcio
 
     Example context (json): {
-        "bg": "#ffffff", "text": "#333333", "border": "#0d47a1", "radius": "8", "shadowCss": "none",
+        "bg": "#ffffff", "text": "#333333", "border": "#0d47a1", "radius": "8", "shadowClass": "slms-shadow-md",
         "hasMedia": true, "isImage": true, "isImagePlaceholder": false, "mediaUrl": "https://picsum.photos/600/300",
         "isHorizontal": false, "hasButton": true, "btnText": "Click", "btnUrl": "#",
         "btnBg": "#0d47a1", "btnTextCol": "#fff", "isAlignCenter": true, "btnDisplayMode": "inline-flex"
     }
 }}
 <div class="studiolms-card-wrap" contenteditable="false">
-    <div class="studiolms-card slms-hov-{{hoverEffect}} {{#isHorizontal}}slms-horizontal{{/isHorizontal}}"
+    <div class="studiolms-card slms-hov-{{hoverEffect}}{{#shadowClass}} {{shadowClass}}{{/shadowClass}} {{#isHorizontal}}slms-horizontal{{/isHorizontal}}"
          style="background-color: {{bg}}; color: {{text}}; border-left-color: {{border}}; border-radius: {{radius}}px;">
         {{#hasMedia}}
         <div class="studiolms-card-media">
