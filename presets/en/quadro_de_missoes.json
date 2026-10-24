@@ -1,0 +1,27 @@
+{
+  "name": "Mission Board",
+  "description": "Gamified grid layout to list the week's tasks as missions (Main, Side and Bonus).",
+  "blocks": [
+    {
+      "type": "gridcards",
+      "config": {
+        "columns": "3",
+        "gap": 20,
+        "containerTitle": "<span aria-hidden=\"true\">🛡️</span> Mission Board<br><small style=\"font-size: 14px; font-weight: 400; color: #666;\">Complete the objectives below to earn experience and advance in this module.</small>",
+        "containerTitleSize": "24px",
+        "titleColor": "#333333",
+        "background": "#fdfdfd",
+        "borderColor": "#e3e3e3",
+        "borderWidth": 1,
+        "borderRadius": 8,
+        "shadow": "none",
+        "padding": "md",
+        "slots": [
+          "<div style=\"border: 2px solid #d4af37; border-radius: 8px; padding: 16px; background-color: #fffaf0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 100%; box-sizing: border-box;\"><h4 style=\"color: #b8860b; margin-top: 0; font-size: 1.1em;\"><span aria-hidden=\"true\">⚔️</span> Main Mission</h4><p style=\"margin-bottom: 10px;\"><strong>Objective:</strong> [Describe the essential task. E.g.: Read the core material and set up your local environment]</p><p style=\"margin-bottom: 0;\"><strong>Reward:</strong> [E.g.: 50 XP and a solid base for the challenges]</p></div>",
+          "<div style=\"border: 1px solid #bdc3c7; border-radius: 8px; padding: 16px; background-color: #f8f9fa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 100%; box-sizing: border-box;\"><h4 style=\"color: #2c3e50; margin-top: 0; font-size: 1.1em;\"><span aria-hidden=\"true\">📜</span> Side Mission</h4><p style=\"margin-bottom: 10px;\"><strong>Objective:</strong> [Describe the interaction task. E.g.: Join the forum and share your installation experience]</p><p style=\"margin-bottom: 0;\"><strong>Reward:</strong> [E.g.: 20 XP and networking with the class]</p></div>",
+          "<div style=\"border: 1px dashed #9b59b6; border-radius: 8px; padding: 16px; background-color: #fcf8ff; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 100%; box-sizing: border-box;\"><h4 style=\"color: #8e44ad; margin-top: 0; font-size: 1.1em;\"><span aria-hidden=\"true\">💎</span> Bonus Mission</h4><p style=\"margin-bottom: 10px;\"><strong>Objective:</strong> [Optional challenge. E.g.: Help a classmate in the forum or try an extra plugin]</p><p style=\"margin-bottom: 0;\"><strong>Reward:</strong> [E.g.: 'Code Paladin' badge]</p></div>"
+        ]
+      }
+    }
+  ]
+}

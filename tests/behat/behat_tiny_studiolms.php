@@ -775,9 +775,11 @@ class behat_tiny_studiolms extends behat_base {
      * @param string $name The template name.
      */
     public function the_studiolms_library_shows_the_template(string $name): void {
+        // Looked for in the whole grid: the Official tab lists the ready-made layouts before the saved templates,
+        // so the template asked for is not necessarily the first card.
         $this->execute('behat_general::assert_element_contains_text', [
             $name,
-            '#slms-library-grid .slms-tpl-card',
+            '#slms-library-grid',
             'css_element',
         ]);
     }

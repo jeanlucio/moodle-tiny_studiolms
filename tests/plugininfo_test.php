@@ -234,9 +234,8 @@ final class plugininfo_test extends advanced_testcase {
     /**
      * Presets are loaded from the language-specific directory when one exists.
      *
-     * presets/pt_br/ ships real preset JSON files; this is the only language directory
-     * that currently has content (presets/en/ is an empty placeholder), so pt_br is what
-     * exercises the real glob-and-decode path.
+     * presets/pt_br/ and presets/en/ ship real preset JSON files; pt_br exercises the real
+     * glob-and-decode path for a language that has a directory of its own.
      */
     public function test_presets_are_loaded_for_a_language_with_real_files(): void {
         $course = $this->getDataGenerator()->create_course();
@@ -255,12 +254,13 @@ final class plugininfo_test extends advanced_testcase {
     }
 
     /**
-     * Presets fall back to an empty list, not an error, for a language with no preset files.
+     * English sites get the ready-made layouts, in English.
      *
-     * presets/en/ exists but only holds a .gitkeep placeholder, so is_dir() short-circuits
-     * the fallback-to-'en' branch yet glob() still finds nothing to load.
+     * Regression test: only presets/pt_br/ had content and presets/en/ held a .gitkeep, so every site or teacher
+     * not using Brazilian Portuguese had no ready-made layout in the official library, and the AI assistant
+     * had none to apply.
      */
-    public function test_presets_are_empty_for_language_with_no_preset_files(): void {
+    public function test_english_presets_are_loaded(): void {
         $course = $this->getDataGenerator()->create_course();
         $coursecontext = \context_course::instance($course->id);
         $teacher = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
@@ -269,27 +269,32 @@ final class plugininfo_test extends advanced_testcase {
 
         $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
 
-        $this->assertSame([], $config['presets']);
+        $names = array_column($config['presets'], 'name');
+        $this->assertCount(15, $names);
+        $this->assertContains('Module Start', $names);
+        $this->assertNotContains('Início de Módulo', $names);
     }
 
     /**
-     * A language with no preset directory of its own falls back to 'en' rather than erroring.
+     * A language with no preset directory of its own gets the English layouts rather than none.
      *
-     * This exercises a different branch than the 'en' test above: for 'fr', the plugin's own
-     * is_dir($langdir) check fails first (no presets/fr/ at all), triggering the fallback
-     * assignment to presets/en/ — whereas requesting 'en' directly matches on the first check
-     * and never reaches that fallback line.
+     * For 'fr' the plugin's own is_dir($langdir) check fails first (there is no presets/fr/), which triggers the
+     * fallback assignment to presets/en/, a branch that requesting 'en' directly never reaches.
      */
     public function test_presets_fall_back_to_english_for_a_language_with_no_directory(): void {
         $course = $this->getDataGenerator()->create_course();
         $coursecontext = \context_course::instance($course->id);
         $teacher = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
         $this->setUser($teacher);
-        $this->force_language_for_test('fr');
 
+        $this->force_language_for_test('en');
+        $english = plugininfo::get_plugin_configuration_for_context($coursecontext, [], [])['presets'];
+
+        $this->force_language_for_test('fr');
         $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
 
-        $this->assertSame([], $config['presets']);
+        $this->assertNotEmpty($config['presets']);
+        $this->assertSame($english, $config['presets']);
     }
 
     /**

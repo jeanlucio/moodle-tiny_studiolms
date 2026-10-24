@@ -1,0 +1,28 @@
+{
+    "name": "Module Wrap-up",
+    "blocks": [
+        {
+            "type": "callout",
+            "config": {
+                "icon": "✅",
+                "backgroundColor": "#f0fdf4",
+                "textColor": "#14532d",
+                "borderColor": "#22c55e",
+                "borderLeftWidth": 4,
+                "borderRadius": 6,
+                "contentHtml": "<p class=\"m-0\"><strong>Congratulations!</strong> You have reached the end of this module. Review the main points before moving on.</p>"
+            }
+        },
+        {
+            "type": "accordion",
+            "config": {
+                "title": "Key Points of the Module",
+                "color": "#16a34a",
+                "bg": "#ffffff",
+                "icon": "▼ / ▲",
+                "state": "closed",
+                "content": "<p>Review the most important concepts covered in this module:</p><ul><li>Concept 1</li><li>Concept 2</li><li>Concept 3</li></ul>"
+            }
+        }
+    ]
+}

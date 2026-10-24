@@ -1,0 +1,38 @@
+{
+    "name": "Activity Guide",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Activity Guide",
+                "level": "h3",
+                "icon": "📋",
+                "bgColor": "#fce7f3",
+                "textColor": "#9d174d"
+            }
+        },
+        {
+            "type": "accordion",
+            "config": {
+                "title": "Activity Instructions",
+                "color": "#db2777",
+                "bg": "#ffffff",
+                "icon": "▼ / ▲",
+                "state": "open",
+                "content": "<p>Follow the steps below to complete this activity successfully.</p><ol><li>Read the indicated support material.</li><li>Carry out the proposed activity.</li><li>Submit your answer in the indicated field.</li></ol>"
+            }
+        },
+        {
+            "type": "actionButton",
+            "config": {
+                "btnText": "Open the Activity",
+                "btnUrl": "#",
+                "btnBg": "#db2777",
+                "btnTextCol": "#ffffff",
+                "radius": 6,
+                "target": "_blank",
+                "align": "left"
+            }
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Course Plan Access Card",
+  "description": "Card with a quick-access button to the Course Plan. Ideal for the home page of the course.",
+  "blocks": [
+    {
+      "type": "advancedCard",
+      "config": {
+        "bg": "#fffde7",
+        "text": "#5d4037",
+        "border": "#fbc02d",
+        "radius": 10,
+        "shadow": "sm",
+        "mediaType": "none",
+        "mediaUrl": "",
+        "layout": "vertical",
+        "content": "<h3 style=\"margin-top:0;color:#f57f17;\"><span aria-hidden=\"true\">🗂️</span> <strong>Course Plan</strong></h3><p style=\"text-align:justify;margin-bottom:0;\">Here you will find the full schedule with the activities, dates and assessment criteria defined for the course.</p>",
+        "btnText": "📅 Open the Plan",
+        "btnUrl": "#",
+        "btnBg": "#fbc02d",
+        "btnTextCol": "#ffffff",
+        "btnAlign": "left",
+        "hoverEffect": "none",
+        "btnHoverEffect": "lift",
+        "btnClickSound": "none"
+      }
+    }
+  ]
+}

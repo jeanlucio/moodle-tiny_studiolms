@@ -1,0 +1,17 @@
+{
+    "name": "Deadline Notice",
+    "blocks": [
+        {
+            "type": "callout",
+            "config": {
+                "icon": "⚠️",
+                "backgroundColor": "#fff1f2",
+                "textColor": "#9f1239",
+                "borderColor": "#f43f5e",
+                "borderLeftWidth": 4,
+                "borderRadius": 6,
+                "contentHtml": "<p class=\"m-0\"><strong>Mind the deadline!</strong> This activity closes on [DATE]. Submit your answer ahead of time.</p>"
+            }
+        }
+    ]
+}

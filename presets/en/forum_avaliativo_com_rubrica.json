@@ -1,0 +1,101 @@
+{
+    "name": "Graded Forum with Rubric",
+    "description": "Welcome card with the teacher's photo, a card with the challenge/questions and a table of assessment criteria with scores.",
+    "blocks": [
+        {
+            "type": "advancedCard",
+            "config": {
+                "bg": "#fff3e0",
+                "text": "#333333",
+                "border": "#e65100",
+                "radius": 12,
+                "shadow": "sm",
+                "mediaType": "image",
+                "mediaUrl": "[TEACHER_PHOTO_URL]",
+                "layout": "horizontal",
+                "btnText": "",
+                "btnUrl": "#",
+                "btnBg": "#e65100",
+                "btnTextCol": "#ffffff",
+                "btnAlign": "left",
+                "content": "<h3 style=\"color: #e65100; margin-top: 0;\"><span aria-hidden=\"true\">📢</span> <strong>Graded Forum [N]</strong></h3><p style=\"text-align: justify;\">Hello, [firstname]! How are you? This is graded activity <strong>#[N]</strong> of the course!</p><p style=\"text-align: justify;\">This is an <strong>individual forum</strong>. Each student must post their answer <strong>in the comments</strong>. <span aria-hidden=\"true\">💬</span></p>"
+            }
+        },
+        {
+            "type": "advancedCard",
+            "config": {
+                "bg": "#e8f5e9",
+                "text": "#1b5e20",
+                "border": "#4caf50",
+                "radius": 12,
+                "shadow": "sm",
+                "mediaType": "none",
+                "mediaUrl": "",
+                "layout": "vertical",
+                "btnText": "",
+                "btnUrl": "#",
+                "btnBg": "#1b5e20",
+                "btnTextCol": "#ffffff",
+                "btnAlign": "left",
+                "content": "<h3 style=\"color: #1b5e20; margin-top: 0;\"><span aria-hidden=\"true\">🧩</span> <strong>About the Challenge</strong></h3><p style=\"text-align: justify;\">This week's lesson covered <strong>[Central Topic]</strong>. Based on the course material, reflect and answer:</p><ul><li>[Reflective question 1]?</li><li>[Reflective question 2]?</li><li>[Reflective question 3]?</li><li>[Reflective question 4]?</li></ul><p style=\"text-align: justify;\">Support your answer with examples from your practice or personal experience.</p>"
+            }
+        },
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Scoring Board — Assessment",
+                "level": "h3",
+                "icon": "🏆",
+                "bgColor": "#01579b",
+                "textColor": "#ffffff"
+            }
+        },
+        {
+            "type": "table",
+            "config": {
+                "cols": 3,
+                "rows": 7,
+                "style": "striped",
+                "headerBg": "#0288d1",
+                "headerText": "#ffffff",
+                "cellData": [
+                    [
+                        "🎯 Criterion",
+                        "📋 Description",
+                        "💯 Score"
+                    ],
+                    [
+                        "<strong>1. Clarity and organization of ideas</strong>",
+                        "The answer has a logical structure and is well articulated, making it easy for the reader to follow.",
+                        "4 pts"
+                    ],
+                    [
+                        "<strong>2. Consistent argumentation</strong>",
+                        "The student states their opinion coherently and justifies their views with relevant examples or reflections.",
+                        "4 pts"
+                    ],
+                    [
+                        "<strong>3. Connection with the reading</strong>",
+                        "The answer shows that the student made connections with the content studied.",
+                        "3 pts"
+                    ],
+                    [
+                        "<strong>4. Creativity and originality</strong>",
+                        "The answer brings original ideas and new ways of thinking about the topic.",
+                        "2 pts"
+                    ],
+                    [
+                        "<strong>5. Grammatical correctness</strong>",
+                        "The text follows the norms of the language and has no spelling or agreement errors.",
+                        "2 pts"
+                    ],
+                    [
+                        "<strong>TOTAL</strong>",
+                        "—",
+                        "<strong>15 pts</strong>"
+                    ]
+                ]
+            }
+        }
+    ]
+}

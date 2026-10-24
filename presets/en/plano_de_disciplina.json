@@ -1,0 +1,190 @@
+{
+  "name": "Course Syllabus",
+  "description": "Complete course syllabus template for online learning: description, objectives, methodology, weekly schedule, assessment table and bibliography.",
+  "blocks": [
+    {
+      "type": "stylizedHeading",
+      "config": {
+        "text": "Course Syllabus — [Course Name]",
+        "level": "h3",
+        "icon": "📚",
+        "bgColor": "#1F4E79",
+        "textColor": "#ffffff"
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "📋",
+        "backgroundColor": "#e3f2fd",
+        "textColor": "#0d47a1",
+        "borderColor": "#1F4E79",
+        "borderLeftWidth": 6,
+        "borderRadius": 6,
+        "hoverEffect": "none",
+        "contentHtml": "<strong>Course Description:</strong><ol style=\"text-align: justify; margin-top: 8px;\"><li><span aria-hidden=\"true\">📖</span> <strong>[Topic 1]</strong> — short description;</li><li><span aria-hidden=\"true\">🧠</span> <strong>[Topic 2]</strong> — short description;</li><li><span aria-hidden=\"true\">🔬</span> <strong>[Topic 3]</strong> — short description;</li><li><span aria-hidden=\"true\">👩‍🎓</span> <strong>[Topic 4]</strong> — short description;</li><li><span aria-hidden=\"true\">🗓️</span> <strong>[Topic 5]</strong> — short description;</li><li><span aria-hidden=\"true\">🚀</span> <strong>[Topic 6]</strong> — short description.</li></ol>"
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "🎯",
+        "backgroundColor": "#f0f4ff",
+        "textColor": "#1a237e",
+        "borderColor": "#3949ab",
+        "borderLeftWidth": 6,
+        "borderRadius": 6,
+        "hoverEffect": "none",
+        "contentHtml": "<strong>Course Objectives:</strong><p style=\"margin: 8px 0 4px;\"><strong><span aria-hidden=\"true\">🎓</span> General Objective:</strong></p><p style=\"text-align: justify;\">Develop the ability to understand and apply [describe the general objective of the course]. <span aria-hidden=\"true\">📌</span> By the end, the student is expected to be able to [expected result].</p><p style=\"margin: 8px 0 4px;\"><strong><span aria-hidden=\"true\">✅</span> Specific Objectives:</strong></p><ol style=\"text-align: justify;\"><li><span aria-hidden=\"true\">📖</span> [Specific objective 1];</li><li><span aria-hidden=\"true\">💡</span> [Specific objective 2];</li><li><span aria-hidden=\"true\">🧩</span> [Specific objective 3];</li><li><span aria-hidden=\"true\">🔬</span> [Specific objective 4];</li><li><span aria-hidden=\"true\">🗓️</span> [Specific objective 5];</li><li><span aria-hidden=\"true\">🚀</span> [Specific objective 6].</li></ol>"
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "⚙️",
+        "backgroundColor": "#f3f4f6",
+        "textColor": "#1f2937",
+        "borderColor": "#6b7280",
+        "borderLeftWidth": 6,
+        "borderRadius": 6,
+        "hoverEffect": "none",
+        "contentHtml": "<strong>Methodology:</strong><p style=\"text-align: justify; margin-top: 8px;\">The course is organized into <strong>[N] thematic weeks</strong>, with teaching strategies that combine synchronous and asynchronous moments:</p><ul style=\"text-align: justify;\"><li><span aria-hidden=\"true\">📡</span> <strong>[N] live synchronous sessions</strong> — dates to be defined;</li><li><span aria-hidden=\"true\">📝</span> <strong>Weekly graded forums</strong> — reflection and debate on the content;</li><li><span aria-hidden=\"true\">📚</span> <strong>Reading of digital material, ebooks and video lessons</strong> — available in the LMS;</li><li><span aria-hidden=\"true\">❓</span> <strong>Questions Forum</strong> open every week;</li><li><span aria-hidden=\"true\">📋</span> <strong>Final Exam</strong> — covering all chapters.</li></ul>"
+      }
+    },
+    {
+      "type": "stylizedHeading",
+      "config": {
+        "text": "Weekly Organization",
+        "level": "h3",
+        "icon": "🗓️",
+        "bgColor": "#e3f2fd",
+        "textColor": "#0d47a1"
+      }
+    },
+    {
+      "type": "gridcards",
+      "config": {
+        "columns": "4",
+        "gap": 16,
+        "containerTitle": "",
+        "containerTitleSize": "24px",
+        "titleColor": "#333333",
+        "background": "transparent",
+        "borderColor": "#e2e8f0",
+        "borderWidth": 0,
+        "borderRadius": 0,
+        "shadow": "none",
+        "padding": "none",
+        "slots": [
+          "<div style=\"border: 2px solid #1F4E79; border-radius: 8px; padding: 14px; background-color: #f0f7ff; height: 100%; box-sizing: border-box;\"><h4 style=\"color: #1F4E79; margin-top: 0; font-size: 1em; border-bottom: 1px solid #1F4E79; padding-bottom: 6px;\"><span aria-hidden=\"true\">📅</span> Week 1<br><small style=\"font-size: 12px; font-weight: 400;\">[Start date] to [End date]</small></h4><p style=\"font-size: 13px; margin-bottom: 8px;\"><strong>Ch. 1 — [Chapter title]</strong></p><p style=\"font-size: 12px; margin-bottom: 8px; color: #444;\">[Short description of the content of week 1.]</p><p style=\"font-size: 12px; margin: 0;\"><span aria-hidden=\"true\">✅</span> Graded Forum 1 — <strong>[X] pts</strong><br>Due: [date]</p></div>",
+          "<div style=\"border: 2px solid #1F4E79; border-radius: 8px; padding: 14px; background-color: #f0f7ff; height: 100%; box-sizing: border-box;\"><h4 style=\"color: #1F4E79; margin-top: 0; font-size: 1em; border-bottom: 1px solid #1F4E79; padding-bottom: 6px;\"><span aria-hidden=\"true\">📅</span> Week 2<br><small style=\"font-size: 12px; font-weight: 400;\">[Start date] to [End date]</small></h4><p style=\"font-size: 13px; margin-bottom: 8px;\"><strong>Ch. 2 — [Chapter title]</strong></p><p style=\"font-size: 12px; margin-bottom: 8px; color: #444;\">[Short description of the content of week 2.]</p><p style=\"font-size: 12px; margin: 0;\"><span aria-hidden=\"true\">✅</span> Graded Forum 2 — <strong>[X] pts</strong><br>Due: [date]</p></div>",
+          "<div style=\"border: 2px solid #1F4E79; border-radius: 8px; padding: 14px; background-color: #f0f7ff; height: 100%; box-sizing: border-box;\"><h4 style=\"color: #1F4E79; margin-top: 0; font-size: 1em; border-bottom: 1px solid #1F4E79; padding-bottom: 6px;\"><span aria-hidden=\"true\">📅</span> Week 3<br><small style=\"font-size: 12px; font-weight: 400;\">[Start date] to [End date]</small></h4><p style=\"font-size: 13px; margin-bottom: 8px;\"><strong>Ch. 3 — [Chapter title]</strong></p><p style=\"font-size: 12px; margin-bottom: 8px; color: #444;\">[Short description of the content of week 3.]</p><p style=\"font-size: 12px; margin: 0;\"><span aria-hidden=\"true\">✅</span> Graded Forum 3 — <strong>[X] pts</strong><br>Due: [date]</p></div>",
+          "<div style=\"border: 2px solid #1F4E79; border-radius: 8px; padding: 14px; background-color: #f0f7ff; height: 100%; box-sizing: border-box;\"><h4 style=\"color: #1F4E79; margin-top: 0; font-size: 1em; border-bottom: 1px solid #1F4E79; padding-bottom: 6px;\"><span aria-hidden=\"true\">📅</span> Week 4<br><small style=\"font-size: 12px; font-weight: 400;\">[Start date] to [End date]</small></h4><p style=\"font-size: 13px; margin-bottom: 8px;\"><strong>Ch. 4 — [Chapter title]</strong></p><p style=\"font-size: 12px; margin-bottom: 8px; color: #444;\">[Short description of the content of week 4.]</p><p style=\"font-size: 12px; margin: 0;\"><span aria-hidden=\"true\">✅</span> Graded Forum 4 — <strong>[X] pts</strong><br>Due: [date]<br><span aria-hidden=\"true\">📋</span> Final Exam — <strong>[Y] pts</strong><br>Due: [date]</p></div>"
+        ]
+      }
+    },
+    {
+      "type": "stylizedHeading",
+      "config": {
+        "text": "Assessment System",
+        "level": "h3",
+        "icon": "📊",
+        "bgColor": "#e3f2fd",
+        "textColor": "#0d47a1"
+      }
+    },
+    {
+      "type": "table",
+      "config": {
+        "cols": 4,
+        "rows": 7,
+        "style": "striped",
+        "headerBg": "#1F4E79",
+        "headerText": "#ffffff",
+        "cellData": [
+          [
+            "Atividade",
+            "Tipo",
+            "Semana",
+            "Score"
+          ],
+          [
+            "Graded Forum 1",
+            "Online",
+            "1ª",
+            "[X] pts"
+          ],
+          [
+            "Graded Forum 2",
+            "Online",
+            "2ª",
+            "[X] pts"
+          ],
+          [
+            "Graded Forum 3",
+            "Online",
+            "3ª",
+            "[X] pts"
+          ],
+          [
+            "Graded Forum 4",
+            "Online",
+            "4ª",
+            "[X] pts"
+          ],
+          [
+            "<strong>Final Exam</strong>",
+            "Online",
+            "4ª",
+            "<strong>[Y] pts</strong>"
+          ],
+          [
+            "<strong>TOTAL</strong>",
+            "—",
+            "—",
+            "<strong>100 pts</strong>"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "📚",
+        "backgroundColor": "#f8fafc",
+        "textColor": "#1e293b",
+        "borderColor": "#94a3b8",
+        "borderLeftWidth": 4,
+        "borderRadius": 6,
+        "hoverEffect": "none",
+        "contentHtml": "<strong>Core Material:</strong><ul style=\"text-align: justify; margin-top: 8px;\"><li>AUTHOR, Name. <em>Title of the Work</em>. City: Publisher, year. <a href=\"#\" target=\"_blank\">Open here</a>.</li><li>AUTHOR, Name. <em>Title of the Work</em>. City: Publisher, year.</li><li>AUTHOR, Name. <em>Title of the Work</em>. Journal, vol. X, pp. XX-XX, year.</li></ul>"
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "📖",
+        "backgroundColor": "#f8fafc",
+        "textColor": "#1e293b",
+        "borderColor": "#94a3b8",
+        "borderLeftWidth": 4,
+        "borderRadius": 6,
+        "hoverEffect": "none",
+        "contentHtml": "<strong>Further Reading:</strong><ul style=\"text-align: justify; margin-top: 8px;\"><li>AUTHOR, Name. <em>Title of the Work</em>. City: Publisher, year.</li><li>AUTHOR, Name. <em>Title of the Work</em>. City: Publisher, year.</li><li>AUTHOR, Name. <em>Title of the Work</em>. City: Publisher, year.</li></ul>"
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "⚠️",
+        "backgroundColor": "#fff8e1",
+        "textColor": "#5d4037",
+        "borderColor": "#ffc107",
+        "borderLeftWidth": 6,
+        "borderRadius": 6,
+        "hoverEffect": "none",
+        "contentHtml": "<strong>Attention:</strong> Read the full Course Syllabus available in the LMS carefully before starting the activities. If you have questions, use the <strong>Questions Forum</strong> of each week. Happy studying! <span aria-hidden=\"true\">🎓</span>"
+      }
+    }
+  ]
+}

@@ -1,0 +1,262 @@
+{
+  "name": "PlayerHUD Flyer",
+  "description": "Educational flyer about the PlayerHUD plugin: what it is, features, how to set it up, the student journey and a comparison.",
+  "blocks": [
+    {
+      "type": "stylizedHeading",
+      "config": {
+        "text": "PlayerHUD — Gamification that Engages",
+        "level": "h3",
+        "icon": "🎮",
+        "bgColor": "#1e0a3c",
+        "textColor": "#f3e8ff"
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "🕹️",
+        "backgroundColor": "#f5f3ff",
+        "textColor": "#3b0764",
+        "borderColor": "#7c3aed",
+        "borderLeftWidth": 6,
+        "borderRadius": 8,
+        "hoverEffect": "none",
+        "contentHtml": "<strong>What is PlayerHUD?</strong><p style=\"margin: 8px 0 0; text-align: justify;\"><strong>PlayerHUD</strong> is a gamification plugin for Moodle that turns the learning experience into a journey of progress. Students earn <strong>Experience Points (XP)</strong> by completing activities, rise through <strong>levels</strong>, win <strong>badges</strong>, unlock <strong>drops</strong> and compete on the <strong>overall ranking</strong> — all inside the LMS itself, with no external tools.</p>"
+      }
+    },
+    {
+      "type": "infographic",
+      "config": {
+        "layout": "stats",
+        "title": "PlayerHUD in Numbers",
+        "theme": "purple",
+        "items": [
+          {
+            "icon": "fa-solid fa-users",
+            "value": "+500",
+            "label": "Active installations"
+          },
+          {
+            "icon": "fa-solid fa-chart-line",
+            "value": "87%",
+            "label": "Increase in engagement"
+          },
+          {
+            "icon": "fa-solid fa-graduation-cap",
+            "value": "12",
+            "label": "Supported activity types"
+          },
+          {
+            "icon": "fa-solid fa-trophy",
+            "value": "∞",
+            "label": "Configurable achievements"
+          }
+        ]
+      }
+    },
+    {
+      "type": "stylizedHeading",
+      "config": {
+        "text": "Main Features",
+        "level": "h4",
+        "icon": "⭐",
+        "bgColor": "#ede9fe",
+        "textColor": "#4c1d95"
+      }
+    },
+    {
+      "type": "infographicFeatures",
+      "config": {
+        "title": "",
+        "theme": "purple",
+        "columns": 3,
+        "items": [
+          {
+            "icon": "fa-solid fa-bolt",
+            "title": "XP System",
+            "description": "Every completed activity grants configurable XP. The teacher sets the weight of each submission."
+          },
+          {
+            "icon": "fa-solid fa-chart-line",
+            "title": "Progression Levels",
+            "description": "Students level up as they accumulate XP, unlocking new statuses and rewards."
+          },
+          {
+            "icon": "fa-solid fa-star",
+            "title": "Badges and Achievements",
+            "description": "Automatic badges for milestones reached: first submission, access streak, top grade."
+          },
+          {
+            "icon": "fa-solid fa-globe",
+            "title": "Random Drops",
+            "description": "Surprise rewards for completing activities — items, XP bonuses or unlocked cosmetics."
+          },
+          {
+            "icon": "fa-solid fa-trophy",
+            "title": "Global Ranking",
+            "description": "Leaderboard visible to everyone — encourages healthy competition and continued motivation."
+          },
+          {
+            "icon": "fa-solid fa-gear",
+            "title": "Settings Panel",
+            "description": "A complete interface for the teacher to manage XP, levels, drops and achievements per course."
+          }
+        ]
+      }
+    },
+    {
+      "type": "stylizedHeading",
+      "config": {
+        "text": "How to Set It Up in 5 Steps",
+        "level": "h4",
+        "icon": "🪜",
+        "bgColor": "#ede9fe",
+        "textColor": "#4c1d95"
+      }
+    },
+    {
+      "type": "infographicSteps",
+      "config": {
+        "title": "",
+        "theme": "purple",
+        "layout": "vertical",
+        "items": [
+          {
+            "icon": "fa-solid fa-download",
+            "title": "Install the plugin",
+            "description": "Download PlayerHUD from the Moodle Plugin Directory and install it via Site administration → Plugins → Install plugin."
+          },
+          {
+            "icon": "fa-solid fa-gear",
+            "title": "Set the XP per activity",
+            "description": "In the plugin panel, define how many points each type of activity grants when completed."
+          },
+          {
+            "icon": "fa-solid fa-trophy",
+            "title": "Create the progression levels",
+            "description": "Define the XP thresholds for each level (e.g. Level 1 = 0–99 XP, Level 2 = 100–299 XP…)."
+          },
+          {
+            "icon": "fa-solid fa-star",
+            "title": "Set up badges and drops",
+            "description": "Create automatic achievements for milestones and enable drops to make every activity a surprise."
+          },
+          {
+            "icon": "fa-solid fa-play",
+            "title": "Launch it to the students",
+            "description": "Enable the PlayerHUD block in the course. Students will see their HUD and start accumulating XP right away."
+          }
+        ]
+      }
+    },
+    {
+      "type": "stylizedHeading",
+      "config": {
+        "text": "The Student Journey",
+        "level": "h4",
+        "icon": "📅",
+        "bgColor": "#ede9fe",
+        "textColor": "#4c1d95"
+      }
+    },
+    {
+      "type": "infographicTimeline",
+      "config": {
+        "title": "",
+        "theme": "purple",
+        "items": [
+          {
+            "date": "Day 1",
+            "title": "First access — starting XP",
+            "description": "On first accessing the course, the student earns their first XP and sees the HUD appear with level, progress bar and ranking."
+          },
+          {
+            "date": "Week 1",
+            "title": "Level 2 unlocked",
+            "description": "After submitting the first activities, the accumulated XP takes the student to the second level — a notification celebrates the achievement."
+          },
+          {
+            "date": "Week 2",
+            "title": "First badge earned",
+            "description": "Active participation in the forum or a top grade in an assessment earns the first badge, shown on everyone's profile."
+          },
+          {
+            "date": "Week 3",
+            "title": "Top 10 on the ranking",
+            "description": "With consistent submissions, the student enters the leaderboard and inspires the class to excel."
+          },
+          {
+            "date": "End of the course",
+            "title": "Mission accomplished!",
+            "description": "All activities completed, maximum XP reached and achievements unlocked. The student ends the journey as a champion."
+          }
+        ]
+      }
+    },
+    {
+      "type": "stylizedHeading",
+      "config": {
+        "text": "PlayerHUD vs. Traditional Gamification",
+        "level": "h4",
+        "icon": "⚖️",
+        "bgColor": "#ede9fe",
+        "textColor": "#4c1d95"
+      }
+    },
+    {
+      "type": "infographicComparison",
+      "config": {
+        "title": "",
+        "col1": "PlayerHUD",
+        "col2": "Tradicional",
+        "theme": "purple",
+        "items": [
+          {
+            "label": "Natively integrated into Moodle",
+            "col1": true,
+            "col2": false
+          },
+          {
+            "label": "Automatic XP per completed activity",
+            "col1": true,
+            "col2": false
+          },
+          {
+            "label": "Real-time ranking",
+            "col1": true,
+            "col2": false
+          },
+          {
+            "label": "Drops and surprise rewards",
+            "col1": true,
+            "col2": false
+          },
+          {
+            "label": "No external tools needed",
+            "col1": true,
+            "col2": false
+          },
+          {
+            "label": "Granular setup per course",
+            "col1": true,
+            "col2": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "🚀",
+        "backgroundColor": "#1e0a3c",
+        "textColor": "#f3e8ff",
+        "borderColor": "#7c3aed",
+        "borderLeftWidth": 0,
+        "borderRadius": 8,
+        "hoverEffect": "none",
+        "contentHtml": "<strong style=\"font-size: 1.1em;\">Start gamifying now!</strong><p style=\"margin: 8px 0 0;\">Install <strong>PlayerHUD</strong> for free from the Moodle Plugin Directory and turn your course into a journey of progress that students will not want to stop.</p>"
+      }
+    }
+  ]
+}

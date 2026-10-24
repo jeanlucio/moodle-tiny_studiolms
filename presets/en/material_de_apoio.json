@@ -1,0 +1,39 @@
+{
+    "name": "Support Material",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Support Material",
+                "level": "h3",
+                "icon": "📂",
+                "bgColor": "#f0fdf4",
+                "textColor": "#15803d"
+            }
+        },
+        {
+            "type": "resources",
+            "config": {
+                "title": "Support Materials",
+                "desc": "Additional resources to deepen your studies.",
+                "bg": "#ffffff",
+                "headerBg": "#f8f9fa",
+                "color": "#15803d",
+                "isOpen": true,
+                "layout": "list",
+                "resources": [
+                    {
+                        "type": "pdf",
+                        "title": "Reference Guide",
+                        "url": "#"
+                    },
+                    {
+                        "type": "video",
+                        "title": "Complementary Video Lesson",
+                        "url": "#"
+                    }
+                ]
+            }
+        }
+    ]
+}
