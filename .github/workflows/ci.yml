@@ -148,7 +148,7 @@ jobs:
       - name: JS unit tests
         if: ${{ !cancelled() && matrix.runchecks == 'all' }}
         working-directory: plugin
-        run: node --test tests/js/text_escape.test.js tests/js/sanitize_url_fields.test.js tests/js/video_embed.test.js tests/js/sanitize_ai_config.test.js tests/js/localize_defaults.test.js tests/js/hardcoded_texts.test.js tests/js/template_import.test.js tests/js/features_layout.test.js tests/js/template_cache.test.js tests/js/grid_slots.test.js tests/js/ai_config_types.test.js tests/js/active_tab.test.js tests/js/icon_names.test.js tests/js/chart_geometry.test.js tests/js/ai_policy.test.js tests/js/frontend_events.test.js tests/js/bs4_utilities.test.js
+        run: node --test tests/js/text_escape.test.js tests/js/sanitize_url_fields.test.js tests/js/video_embed.test.js tests/js/sanitize_ai_config.test.js tests/js/localize_defaults.test.js tests/js/hardcoded_texts.test.js tests/js/template_import.test.js tests/js/features_layout.test.js tests/js/template_cache.test.js tests/js/grid_slots.test.js tests/js/ai_config_types.test.js tests/js/active_tab.test.js tests/js/icon_names.test.js tests/js/chart_geometry.test.js tests/js/ai_policy.test.js tests/js/frontend_events.test.js tests/js/bs4_utilities.test.js tests/js/preset_match.test.js
 
       - name: PHPUnit tests
         if: ${{ !cancelled() }}

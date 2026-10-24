@@ -42,6 +42,7 @@ $string['ai_chat_confirm'] = 'Aplicar';
 $string['ai_chat_desc'] = 'Cole aqui qualquer conteúdo do seu curso, como ementa, objetivos, planos ou descreva o que quer fazer e a IA irá sugerir o melhor template para você!';
 $string['ai_chat_error'] = 'Falha ao obter resposta da IA. Tente novamente.';
 $string['ai_chat_placeholder'] = 'Digite sua mensagem ou cole o conteúdo aqui...';
+$string['ai_chat_preset_not_found'] = 'O layout "{$a}" não foi encontrado na biblioteca. Tente pedir outro.';
 $string['ai_chat_send'] = 'Enviar';
 $string['ai_chat_title'] = 'Assistente IA';
 $string['ai_chat_you'] = 'Você';

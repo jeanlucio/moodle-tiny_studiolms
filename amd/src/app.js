@@ -35,6 +35,7 @@ import {init as initAiChat} from './aichat';
 import {setContextId} from './context';
 import {sanitizeUntrustedHtml, sanitizeUrlFields} from './htmlsanitizer';
 import {mergeAiConfig} from './ai_config_types';
+import {findPreset} from './preset_match';
 
 // Canvas state — array of {id, blockDef, config, element, previewEl}
 let canvasBlocks = [];
@@ -1501,11 +1502,14 @@ const switchTab = async(tabName) => {
         if (tabName === 'ai-chat') {
             await initAiChat(grid, aiState, presetsData, {
                 onApplyPreset: async(presetName) => {
-                    const found = presetsData.find((p) => p.name === presetName);
-                    if (found) {
-                        const html = await renderPresetToHtml(found);
-                        await loadTemplateToCanvas(html, found.name);
+                    const found = findPreset(presetsData, presetName);
+                    if (!found) {
+                        // The card was confirmed, so silence would look like a broken feature.
+                        showInlineFeedback(await getString('ai_chat_preset_not_found', 'tiny_studiolms', presetName), 'warning');
+                        return;
                     }
+                    const html = await renderPresetToHtml(found);
+                    await loadTemplateToCanvas(html, found.name);
                 },
                 onGenerateTemplate: async(preset) => {
                     const html = await renderPresetToHtml(preset);

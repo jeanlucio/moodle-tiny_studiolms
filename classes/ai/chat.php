@@ -48,7 +48,44 @@ class chat {
         $limited = array_slice($messages, -self::MAX_HISTORY);
         $systemprompt = self::build_system_prompt($presetscontext);
         $result = generator::call_chat($systemprompt, $limited, $context);
-        return self::parse_response($result['data'], $result['provider']);
+        return self::parse_response($result['data'], $result['provider'], self::preset_names($presetscontext));
+    }
+
+    /**
+     * Reads the names of the ready-made layouts from the JSON the editor sends.
+     *
+     * @param string $presetscontext JSON-encoded array of preset name strings, or an empty string.
+     * @return string[] The names, in the order received; empty when the JSON is missing or malformed.
+     */
+    private static function preset_names(string $presetscontext): array {
+        if (empty($presetscontext)) {
+            return [];
+        }
+        $decoded = json_decode($presetscontext, true);
+        return is_array($decoded) ? array_values(array_filter($decoded, 'is_string')) : [];
+    }
+
+    /**
+     * Finds the layout a name asked for among the ones the editor offered.
+     *
+     * The model answers with the name it read in the list, but may change the case, the spacing or even translate
+     * it to the language of the conversation. Case and spacing are forgiven; anything else is not a layout.
+     *
+     * @param mixed $name The preset_name field of the action.
+     * @param string[] $presetnames Names of the layouts the editor offered.
+     * @return string|null The name as the editor knows it, or null when there is none like it.
+     */
+    private static function match_preset_name(mixed $name, array $presetnames): ?string {
+        if (!is_string($name)) {
+            return null;
+        }
+        $wanted = \core_text::strtolower(trim(preg_replace('/\s+/u', ' ', $name)));
+        foreach ($presetnames as $candidate) {
+            if (\core_text::strtolower(trim(preg_replace('/\s+/u', ' ', $candidate))) === $wanted && $wanted !== '') {
+                return $candidate;
+            }
+        }
+        return null;
     }
 
     /**
@@ -58,13 +95,7 @@ class chat {
      * @return string
      */
     public static function build_system_prompt(string $presetscontext): string {
-        $presetnames = [];
-        if (!empty($presetscontext)) {
-            $decoded = json_decode($presetscontext, true);
-            if (is_array($decoded)) {
-                $presetnames = $decoded;
-            }
-        }
+        $presetnames = self::preset_names($presetscontext);
 
         $prompt = 'You are StudioLMS Assistant, the AI helper embedded in the StudioLMS plugin for Moodle.' . "\n";
         $prompt .= 'StudioLMS was created by Jean Lúcio (jeanlucio@gmail.com).' . "\n";
@@ -143,9 +174,10 @@ class chat {
      *
      * @param string $text     Raw text returned by the LLM.
      * @param string $provider Provider label reported by the provider chain.
+     * @param string[] $presetnames Names of the layouts the editor offered, to check an apply_preset action against.
      * @return array With keys 'reply' (string), 'action' (string|null), 'provider' (string).
      */
-    private static function parse_response(string $text, string $provider): array {
+    private static function parse_response(string $text, string $provider, array $presetnames = []): array {
         $cleaned = trim($text);
         $cleaned = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $cleaned);
         $cleaned = preg_replace('/\s*\x60{3}$/i', '', $cleaned);
@@ -168,7 +200,14 @@ class chat {
             $allowed = ['apply_preset', 'generate_template'];
             $type = $decoded['action']['type'] ?? '';
             if (in_array($type, $allowed, true)) {
-                $action = json_encode($decoded['action']);
+                $candidate = $decoded['action'];
+                if ($type === 'apply_preset') {
+                    // A layout that was not offered cannot be applied; offering the teacher a button that does
+                    // nothing is worse than offering none. A near miss in case or spacing is put right.
+                    $name = self::match_preset_name($candidate['preset_name'] ?? null, $presetnames);
+                    $candidate = $name === null ? null : ['type' => 'apply_preset', 'preset_name' => $name];
+                }
+                $action = $candidate === null ? null : json_encode($candidate);
             }
         }
 

@@ -155,6 +155,67 @@ final class chat_test extends advanced_testcase {
     }
 
     /**
+     * An apply_preset action naming a layout the editor did not offer is dropped, and the reply is kept.
+     *
+     * Regression test: only the type of the action was checked, so a translated, paraphrased or invented name
+     * became a card the teacher could confirm and that then did nothing, with no message.
+     */
+    public function test_apply_preset_with_an_unknown_layout_is_dropped(): void {
+        $offered = json_encode(['Module Start', 'Mission Board']);
+
+        foreach (['Fechamento de Módulo', 'Module Starting', '', 'Module Start now'] as $name) {
+            $this->install_hub_stub(true, json_encode([
+                'reply' => 'Applying it',
+                'action' => ['type' => 'apply_preset', 'preset_name' => $name],
+            ]));
+            $result = chat::send([['role' => 'user', 'content' => 'Use it']], $offered, \context_system::instance());
+
+            $this->assertSame('Applying it', $result['reply']);
+            $this->assertNull($result['action'], var_export($name, true));
+        }
+    }
+
+    /**
+     * A layout named with another case or spacing is applied under the name the editor knows it by.
+     */
+    public function test_apply_preset_forgives_case_and_spacing(): void {
+        $offered = json_encode(['Module Start', 'Mission Board']);
+
+        foreach (['module start', 'MODULE START', '  Module   Start ', 'Module Start'] as $name) {
+            $this->install_hub_stub(true, json_encode([
+                'reply' => 'Applying it',
+                'action' => ['type' => 'apply_preset', 'preset_name' => $name, 'extra' => 'ignored'],
+            ]));
+            $result = chat::send([['role' => 'user', 'content' => 'Use it']], $offered, \context_system::instance());
+
+            $this->assertSame(
+                ['type' => 'apply_preset', 'preset_name' => 'Module Start'],
+                json_decode($result['action'], true),
+                var_export($name, true)
+            );
+        }
+    }
+
+    /**
+     * With no layouts offered, no apply_preset action can be right; a generate_template action is untouched.
+     */
+    public function test_apply_preset_needs_an_offered_list(): void {
+        foreach (['[]', '', 'not json{{{'] as $offered) {
+            $this->install_hub_stub(true, json_encode([
+                'reply' => 'Applying it',
+                'action' => ['type' => 'apply_preset', 'preset_name' => 'Module Start'],
+            ]));
+            $result = chat::send([['role' => 'user', 'content' => 'Use it']], $offered, \context_system::instance());
+            $this->assertNull($result['action'], var_export($offered, true));
+        }
+
+        $action = ['type' => 'generate_template', 'name' => 'Week 1', 'blocks' => 'callout', 'palette' => 'blue'];
+        $this->install_hub_stub(true, json_encode(['reply' => 'Done', 'action' => $action]));
+        $result = chat::send([['role' => 'user', 'content' => 'Make it']], '[]', \context_system::instance());
+        $this->assertSame($action, json_decode($result['action'], true));
+    }
+
+    /**
      * An action that is not an object, or has no type, is dropped.
      */
     public function test_malformed_action_is_dropped(): void {

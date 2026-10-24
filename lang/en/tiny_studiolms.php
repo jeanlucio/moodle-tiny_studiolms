@@ -42,6 +42,7 @@ $string['ai_chat_confirm'] = 'Apply';
 $string['ai_chat_desc'] = 'Paste a syllabus or describe your content and the AI will suggest the best template.';
 $string['ai_chat_error'] = 'Failed to get AI response. Please try again.';
 $string['ai_chat_placeholder'] = 'Type your message or paste content here...';
+$string['ai_chat_preset_not_found'] = 'The layout "{$a}" was not found in the library. Try asking for another one.';
 $string['ai_chat_send'] = 'Send';
 $string['ai_chat_title'] = 'AI Assistant';
 $string['ai_chat_you'] = 'You';
