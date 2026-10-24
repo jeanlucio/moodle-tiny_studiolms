@@ -331,6 +331,54 @@
     outline-offset: -2px;
 }
 
+/*
+ * The line itself, a strip a few pixels tall over the border: the pointer drags it and the keyboard moves it. The
+ * thin rule shows on hover and focus, as on the divider beside the canvas.
+ */
+.tiny_studiolms .slms-split-line {
+    position: absolute;
+    inset-inline: 0;
+    top: -4px;
+    height: 9px;
+    z-index: 1;
+    cursor: row-resize;
+    touch-action: none;
+    outline: none;
+}
+
+.tiny_studiolms .slms-split-line::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 4px;
+    height: 1px;
+    background: transparent;
+    transition: background 0.2s ease, height 0.2s ease, top 0.2s ease;
+}
+
+.tiny_studiolms .slms-split-line:hover::before,
+.tiny_studiolms .slms-split-line:focus-visible::before {
+    top: 3px;
+    height: 3px;
+    background: rgba(13, 71, 161, 0.35);
+}
+
+.tiny_studiolms .slms-split-line:focus-visible::before {
+    background: var(--slms-brand, #0d47a1);
+}
+
+/* A height the author set holds the settings at that height, and scrolls them inside when they are taller. */
+.tiny_studiolms .slms-sidebar.slms-split-on.slms-has-split-height .slms-properties-panel {
+    flex: 0 1 var(--slms-props-h);
+    max-height: none;
+}
+
+/* While the line is dragged the text must not select and the cursor must not flicker. */
+.tiny_studiolms .slms-sidebar.slms-resizing-split {
+    cursor: row-resize;
+    user-select: none;
+}
+
 /* With the settings hidden the line is the top of the sidebar: leave room for the handle that straddles it. */
 .tiny_studiolms .slms-sidebar.slms-split-on.slms-split-list .slms-library-heading {
     margin-top: 0.75rem;

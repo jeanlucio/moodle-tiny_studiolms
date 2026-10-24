@@ -36,6 +36,9 @@ import {setContextId} from './context';
 import {sanitizeUntrustedHtml, sanitizeUrlFields} from './htmlsanitizer';
 import {mergeAiConfig} from './ai_config_types';
 import {findPreset} from './preset_match';
+import {
+    STATE_BOTH, STATE_LIST, STATE_SETTINGS, parseStoredHeight, resolveSplit, splitPercent, stepSplit
+} from './split_geometry';
 
 // Canvas state — array of {id, blockDef, config, element, previewEl}
 let canvasBlocks = [];
@@ -346,8 +349,23 @@ const SPLIT_BOTH = 'both';
 const SPLIT_PROPERTIES = 'properties';
 const SPLIT_LIST = 'list';
 
+/** Where the height the author gave the settings is remembered between sessions. */
+const SPLIT_HEIGHT_STORAGE_KEY = 'tiny_studiolms.sidebarSplitHeight';
+/** Pixels the pointer must travel before a press on the line counts as a drag. */
+const SPLIT_DRAG_THRESHOLD = 4;
+/** Pixels moved by each arrow key press on the line. */
+const SPLIT_KEY_STEP = 24;
+
 /** @type {string} The current split. */
 let sidebarSplit = SPLIT_BOTH;
+
+/**
+ * Pixels the author gave the settings while both areas are shown, or null for the height the content asks for.
+ * It is kept while one of the areas is hidden, so showing it again brings the line back where it was.
+ *
+ * @type {number|null}
+ */
+let splitHeight = null;
 
 /** @type {object|null} Button labels, loaded once by setupSidebarSplit(). */
 let splitLabels = null;
@@ -393,8 +411,54 @@ const renderSidebarSplit = () => {
     down.setAttribute('title', downLabel);
     up.classList.toggle('d-none', sidebarSplit === SPLIT_LIST);
     down.classList.toggle('d-none', sidebarSplit === SPLIT_PROPERTIES);
+
+    // A height the author set holds only while both areas are shown; otherwise the content decides.
+    const explicit = sidebarSplit === SPLIT_BOTH && splitHeight !== null;
+    sidebar.classList.toggle('slms-has-split-height', explicit);
+    if (explicit) {
+        sidebar.style.setProperty('--slms-props-h', `${splitHeight}px`);
+    } else {
+        sidebar.style.removeProperty('--slms-props-h');
+    }
+    updateSplitSeparator();
     if (focused?.classList.contains('d-none')) {
         (focused === up ? down : up).focus();
+    }
+};
+
+/**
+ * Pixels shared by the settings and the component list: what the line can be moved over.
+ *
+ * @returns {number}
+ */
+const splitTotal = () => {
+    const panel = document.getElementById('slms-properties-panel');
+    const grid = document.getElementById('slms-library-grid');
+    return (panel?.offsetHeight ?? 0) + (grid?.offsetHeight ?? 0);
+};
+
+/** Tell a screen reader where the line is, as a percentage. */
+const updateSplitSeparator = () => {
+    const line = document.getElementById('slms-split-line');
+    const panel = document.getElementById('slms-properties-panel');
+    if (!line) {
+        return;
+    }
+    line.setAttribute('aria-valuenow', String(splitPercent(sidebarSplit, panel?.offsetHeight ?? 0, splitTotal())));
+};
+
+/**
+ * Remember the height of the settings for the next session; silently skipped when storage is unavailable.
+ */
+const storeSplitHeight = () => {
+    try {
+        if (splitHeight === null) {
+            window.localStorage.removeItem(SPLIT_HEIGHT_STORAGE_KEY);
+        } else {
+            window.localStorage.setItem(SPLIT_HEIGHT_STORAGE_KEY, String(splitHeight));
+        }
+    } catch (error) {
+        // The height simply falls back to what the content asks for the next time the composer opens.
     }
 };
 
@@ -425,16 +489,118 @@ const setSidebarSplit = (split, remember = true) => {
 const setupSidebarSplit = async() => {
     const up = document.getElementById('slms-split-up');
     const down = document.getElementById('slms-split-down');
-    if (!up || !down) {
+    const line = document.getElementById('slms-split-line');
+    const sidebar = document.getElementById('slms-sidebar');
+    if (!up || !down || !line || !sidebar) {
         return;
     }
-    const [hideProperties, hideLibrary, showProperties, showLibrary] = await Promise.all([
+    const [hideProperties, hideLibrary, showProperties, showLibrary, lineLabel, lineHint] = await Promise.all([
         getString('split_hide_properties', 'tiny_studiolms'),
         getString('split_hide_library', 'tiny_studiolms'),
         getString('split_show_properties', 'tiny_studiolms'),
         getString('split_show_library', 'tiny_studiolms'),
+        getString('split_line', 'tiny_studiolms'),
+        getString('split_line_hint', 'tiny_studiolms'),
     ]);
     splitLabels = {hideProperties, hideLibrary, showProperties, showLibrary};
+    line.setAttribute('aria-label', lineLabel);
+    line.setAttribute('title', lineHint);
+
+    // Gives the line the state and height the pointer or a key asked for.
+    const moveTo = ({state, height}) => {
+        if (state === STATE_BOTH) {
+            splitHeight = height;
+        }
+        setSidebarSplit(state, false);
+    };
+    const persist = () => {
+        setSidebarSplit(sidebarSplit);
+        storeSplitHeight();
+    };
+
+    // The settings open and close with the block selected, so the percentage is read when the line is reached.
+    line.addEventListener('focus', updateSplitSeparator);
+
+    let drag = null;
+    line.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0) {
+            return;
+        }
+        const panel = document.getElementById('slms-properties-panel');
+        drag = {
+            pointerId: event.pointerId,
+            startY: event.clientY,
+            startHeight: panel?.offsetHeight ?? 0,
+            total: splitTotal(),
+            moved: false,
+        };
+        // Keeps the pointer on the line however fast it moves, and over whatever it passes.
+        line.setPointerCapture(event.pointerId);
+    });
+    line.addEventListener('pointermove', (event) => {
+        if (!drag || event.pointerId !== drag.pointerId) {
+            return;
+        }
+        const delta = event.clientY - drag.startY;
+        if (!drag.moved && Math.abs(delta) < SPLIT_DRAG_THRESHOLD) {
+            return;
+        }
+        if (!drag.moved) {
+            drag.moved = true;
+            sidebar.classList.add('slms-resizing-split');
+        }
+        moveTo(resolveSplit(drag.total, drag.startHeight + delta));
+    });
+    const endDrag = (event) => {
+        if (!drag || event.pointerId !== drag.pointerId) {
+            return;
+        }
+        const moved = drag.moved;
+        drag = null;
+        sidebar.classList.remove('slms-resizing-split');
+        if (moved) {
+            persist();
+        }
+    };
+    line.addEventListener('pointerup', endDrag);
+    line.addEventListener('pointercancel', endDrag);
+
+    // Double click: back to the height the content asks for.
+    line.addEventListener('dblclick', () => {
+        splitHeight = null;
+        setSidebarSplit(SPLIT_BOTH);
+        storeSplitHeight();
+    });
+
+    line.addEventListener('keydown', (event) => {
+        const panel = document.getElementById('slms-properties-panel');
+        const total = splitTotal();
+        const height = panel?.offsetHeight ?? 0;
+        let next = null;
+        if (event.key === 'ArrowUp') {
+            next = stepSplit(sidebarSplit, height, total, -SPLIT_KEY_STEP);
+        } else if (event.key === 'ArrowDown') {
+            next = stepSplit(sidebarSplit, height, total, SPLIT_KEY_STEP);
+        } else if (event.key === 'Home') {
+            next = {state: STATE_LIST, height: 0};
+        } else if (event.key === 'End') {
+            next = {state: STATE_SETTINGS, height: total};
+        } else if (event.key === 'Enter') {
+            splitHeight = null;
+            next = {state: STATE_BOTH, height: null};
+        }
+        if (next === null) {
+            return;
+        }
+        event.preventDefault();
+        if (next.height === null) {
+            setSidebarSplit(SPLIT_BOTH);
+            storeSplitHeight();
+            return;
+        }
+        moveTo(next);
+        persist();
+    });
 
     up.addEventListener('click', () => {
         if (sidebarSplit === SPLIT_BOTH) {
@@ -451,6 +617,11 @@ const setupSidebarSplit = async() => {
         }
     });
 
+    try {
+        splitHeight = parseStoredHeight(window.localStorage.getItem(SPLIT_HEIGHT_STORAGE_KEY));
+    } catch (error) {
+        splitHeight = null;
+    }
     setSidebarSplit(readStoredSplit(), false);
 };
 

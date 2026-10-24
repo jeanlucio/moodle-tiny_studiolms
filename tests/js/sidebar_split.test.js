@@ -69,3 +69,64 @@ test('the handle straddles the line and the list-only state leaves room for it',
         assert.match(css, /\.slms-split-list \.slms-library-heading \{\s*margin-top: 0\.75rem;/, file);
     }
 });
+
+test('the line is a separator the pointer and the keyboard can move', () => {
+    const template = read('templates/modal.mustache');
+    const line = template.match(/<span id="slms-split-line"[\s\S]*?><\/span>/);
+
+    assert.ok(line, 'the line is in the modal template');
+    assert.match(line[0], /role="separator"/);
+    assert.match(line[0], /aria-orientation="horizontal"/);
+    assert.match(line[0], /aria-valuemin="0"[\s\S]*aria-valuemax="100"[\s\S]*aria-valuenow=/);
+    assert.match(line[0], /tabindex="0"/);
+    assert.match(line[0], /aria-keyshortcuts="ArrowUp ArrowDown Home End Enter"/);
+});
+
+test('dragging the line keeps the pointer on it and tells a drag from a click', () => {
+    const app = read('amd/src/app.js');
+
+    assert.match(app, /line\.setPointerCapture\(event\.pointerId\)/);
+    assert.match(app, /Math\.abs\(delta\) < SPLIT_DRAG_THRESHOLD/);
+    assert.match(app, /moveTo\(resolveSplit\(drag\.total, drag\.startHeight \+ delta\)\)/);
+    assert.match(app, /line\.addEventListener\('pointercancel', endDrag\)/);
+});
+
+test('the keys move, hide and restore, and a double click restores too', () => {
+    const app = read('amd/src/app.js');
+
+    for (const key of ['ArrowUp', 'ArrowDown', 'Home', 'End', 'Enter']) {
+        assert.ok(app.includes(`event.key === '${key}'`), key);
+    }
+    assert.match(app, /stepSplit\(sidebarSplit, height, total, -SPLIT_KEY_STEP\)/);
+    assert.match(app, /line\.addEventListener\('dblclick'/);
+});
+
+test('the height is remembered in the browser and a failure of the storage is not an error', () => {
+    const app = read('amd/src/app.js');
+
+    assert.ok(app.includes("'tiny_studiolms.sidebarSplitHeight'"));
+    assert.match(app, /parseStoredHeight\(window\.localStorage\.getItem\(SPLIT_HEIGHT_STORAGE_KEY\)\)/);
+    assert.match(app, /const storeSplitHeight = \(\) => \{\s*try \{/);
+});
+
+test('a height the author set holds only while both areas are shown', () => {
+    const app = read('amd/src/app.js');
+
+    assert.match(app, /const explicit = sidebarSplit === SPLIT_BOTH && splitHeight !== null;/);
+    for (const file of ['styles.css', 'editor_styles.css']) {
+        const css = read(file);
+
+        assert.match(css, /\.slms-has-split-height \.slms-properties-panel \{\s*flex: 0 1 var\(--slms-props-h\);/, file);
+        assert.match(css, /\.slms-split-line \{[^}]*touch-action: none;/s, file);
+        assert.match(css, /\.slms-split-line \{[^}]*cursor: row-resize;/s, file);
+    }
+});
+
+test('the labels of the line come from lang strings in both languages', () => {
+    for (const file of ['lang/en/tiny_studiolms.php', 'lang/pt_br/tiny_studiolms.php']) {
+        const lang = read(file);
+
+        assert.ok(lang.includes("$string['split_line'] = '"), file);
+        assert.ok(lang.includes("$string['split_line_hint'] = '"), file);
+    }
+});
