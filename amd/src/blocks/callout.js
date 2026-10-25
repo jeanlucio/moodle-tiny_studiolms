@@ -25,6 +25,7 @@ import Templates from 'core/templates';
 import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
 import Notification from 'core/notification';
+import {calloutPalette} from './contrast';
 import {getContextId} from '../context';
 
 export default {
@@ -64,9 +65,23 @@ export default {
             if (btnDesign) {
                 btnDesign.addEventListener('click', () => {
                     const tplData = Object.assign({}, data);
-                    tplData['hover_' + (data.hoverEffect || 'none')] = true;
+                    tplData[`hover_${data.hoverEffect || 'none'}`] = true;
+                    tplData.blockColorValue = data.borderColor;
 
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_callout_design', tplData, (popup) => {
+                        // One colour for the block fills the three below, which stay there to be fine tuned.
+                        popup.querySelector('#pop_callout_block_color')?.addEventListener('input', (ev) => {
+                            const palette = calloutPalette(ev.target.value);
+                            if (!palette) {
+                                return;
+                            }
+                            Object.assign(data, palette);
+                            popup.querySelector('#pop_callout_bg').value = palette.backgroundColor;
+                            popup.querySelector('#pop_callout_text').value = palette.textColor;
+                            popup.querySelector('#pop_callout_border').value = palette.borderColor;
+                            onUpdate(data);
+                        });
+
                         const propMap = {
                             '#pop_callout_icon': 'icon',
                             '#pop_callout_bg': 'backgroundColor',

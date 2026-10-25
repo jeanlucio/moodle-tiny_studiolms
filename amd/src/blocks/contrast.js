@@ -40,6 +40,9 @@ const TITLE_FALLBACKS = ['#212529', '#ffffff', '#000000'];
 // How much of the block colour is left in the band behind the cards: little, so that it is a tone of it.
 const BAND_SHARE = 0.12;
 
+// And in the card of a profile, which is the whole background of the block: less still.
+const CARD_SHARE = 0.07;
+
 /**
  * Reads a colour written as #rgb, #rrggbb or rgb()/rgba() into its three channels.
  *
@@ -180,4 +183,65 @@ export const accordionPalette = (colour) => {
         return null;
     }
     return {...palette, contentColor: readableOn(palette.bg, '#212529', ['#000000'])};
+};
+
+/**
+ * The colours of a callout from the one colour its author chose for the block.
+ *
+ * The border takes the colour, the background a light tone of it, and the text whichever of the dark greys reads on
+ * that tone.
+ *
+ * @param {string} colour The colour chosen, as hexadecimal.
+ * @returns {{backgroundColor: string, borderColor: string, textColor: string}|null} The three colours, or null when it
+ *     cannot be read.
+ */
+export const calloutPalette = (colour) => {
+    const palette = blockPalette(colour);
+    if (!palette) {
+        return null;
+    }
+    return {
+        backgroundColor: palette.bg,
+        borderColor: palette.headerBg,
+        textColor: readableOn(palette.bg, '#212529', ['#000000']),
+    };
+};
+
+/**
+ * The colours of a table header from the one colour its author chose for the block.
+ *
+ * @param {string} colour The colour chosen, as hexadecimal.
+ * @returns {{headerBg: string, headerText: string}|null} The two colours, or null when it cannot be read.
+ */
+export const tablePalette = (colour) => {
+    const rgb = channels(colour);
+    if (!rgb) {
+        return null;
+    }
+    const headerBg = toHex(rgb);
+    return {headerBg, headerText: readableOn(headerBg, '#ffffff', ['#212529', '#000000'])};
+};
+
+/**
+ * The colours of a profile card from the one colour its author chose for the block.
+ *
+ * The card takes a very light tone of it, and the accent, which is also the colour of the role and of the links
+ * written on that tone, is the colour darkened until it reads there.
+ *
+ * @param {string} colour The colour chosen, as hexadecimal.
+ * @returns {{bgColor: string, accentColor: string}|null} The two colours, or null when it cannot be read.
+ */
+export const profilePalette = (colour) => {
+    const rgb = channels(colour);
+    if (!rgb) {
+        return null;
+    }
+    const bgColor = toHex(rgb.map((channel) => channel * CARD_SHARE + 255 * (1 - CARD_SHARE)));
+    for (let step = 0; step <= 20; step++) {
+        const accent = toHex(rgb.map((channel) => channel * (1 - step * 0.05)));
+        if (contrastRatio(accent, bgColor) >= MINIMUM_RATIO) {
+            return {bgColor, accentColor: accent};
+        }
+    }
+    return {bgColor, accentColor: '#000000'};
 };

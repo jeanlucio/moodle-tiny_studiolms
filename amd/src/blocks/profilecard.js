@@ -24,6 +24,7 @@
 import Templates from 'core/templates';
 import {getString} from 'core/str';
 import Notification from 'core/notification';
+import {profilePalette} from './contrast';
 
 export default {
     id: 'profileCard',
@@ -65,7 +66,19 @@ export default {
             if (btnContent) {
                 btnContent.addEventListener('click', () => {
                     PopupManager.open(btnContent, 'tiny_studiolms/popup_profilecard_content',
-                        Object.assign({}, data), (popup) => {
+                        Object.assign({}, data, {blockColorValue: data.accentColor}), (popup) => {
+                        // One colour for the block fills the two below, which stay there to be fine tuned.
+                        popup.querySelector('#pop_pc_block_color')?.addEventListener('input', (ev) => {
+                            const palette = profilePalette(ev.target.value);
+                            if (!palette) {
+                                return;
+                            }
+                            Object.assign(data, palette);
+                            popup.querySelector('#pop_pc_bg').value = palette.bgColor;
+                            popup.querySelector('#pop_pc_accent').value = palette.accentColor;
+                            onUpdate(data);
+                        });
+
                         const textFields = {
                             '#pop_pc_photo':      'photoUrl',
                             '#pop_pc_link0label': 'link0label',

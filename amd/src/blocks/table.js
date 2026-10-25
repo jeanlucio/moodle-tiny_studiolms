@@ -23,6 +23,7 @@
 
 import Templates from 'core/templates';
 import Notification from 'core/notification';
+import {tablePalette} from './contrast';
 
 export default {
     id: 'table',
@@ -100,8 +101,21 @@ export default {
                     tplData.isStriped = data.style === 'striped';
                     // Anything that is not striped is drawn bordered, so a stored "bordered" selects "default".
                     tplData.isDefault = data.style !== 'striped';
+                    tplData.blockColorValue = data.headerBg;
 
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_table_design', tplData, (popup) => {
+                        // One colour for the block fills the two below, which stay there to be fine tuned.
+                        popup.querySelector('#pop_table_block_color')?.addEventListener('input', (ev) => {
+                            const palette = tablePalette(ev.target.value);
+                            if (!palette) {
+                                return;
+                            }
+                            Object.assign(data, palette);
+                            popup.querySelector('#pop_table_header_bg').value = palette.headerBg;
+                            popup.querySelector('#pop_table_header_text').value = palette.headerText;
+                            onUpdate(data);
+                        });
+
                         const propMap = {
                             '#pop_table_style': 'style',
                             '#pop_table_header_bg': 'headerBg',

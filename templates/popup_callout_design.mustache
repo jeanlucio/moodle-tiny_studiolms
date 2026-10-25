@@ -18,7 +18,7 @@
     @template tiny_studiolms/popup_callout_design
     @copyright 2026 Jean Lúcio
 
-    Example context (json): {}
+    Example context (json): {"blockColorValue": "#eab308"}
 }}
 <div class="mb-3 pb-3 border-bottom">
     <label for="pop_callout_icon" class="form-label small fw-bold">{{#str}} callout_icon, tiny_studiolms {{/str}}</label>
@@ -30,6 +30,11 @@
     </div>
     <div class="form-text small">{{#str}} hint_emoji, tiny_studiolms {{/str}}</div>
 </div>
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <label for="pop_callout_block_color" class="form-label m-0 small fw-bold">{{#str}} block_color, tiny_studiolms {{/str}}</label>
+    <input type="color" class="slms-color-picker" id="pop_callout_block_color" value="{{blockColorValue}}">
+</div>
+<div class="form-text small mb-3">{{#str}} block_color_sets, tiny_studiolms {{/str}}</div>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <label for="pop_callout_bg" class="form-label m-0 small fw-bold">{{#str}} bg_color, tiny_studiolms {{/str}}</label>
     <input type="color" class="slms-color-picker" id="pop_callout_bg" value="{{backgroundColor}}">

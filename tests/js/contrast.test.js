@@ -194,3 +194,57 @@ test('no text colour of the interface or of a block is the light grey of the the
     });
 });
 
+const PICKS = [
+    '#ffffff', '#f8f9fa', '#ffeb3b', '#ffc107', '#4caf50', '#3a905c', '#0d47a1', '#6b3b3b', '#e67e22', '#8e44ad', '#000000',
+];
+
+test('the callout, the table and the profile card palettes read, whatever the colour that is picked', () => {
+    PICKS.forEach((colour) => {
+        const callout = contrast.calloutPalette(colour);
+        const table = contrast.tablePalette(colour);
+        const profile = contrast.profilePalette(colour);
+
+        assert.equal(callout.borderColor, contrast.blockPalette(colour).headerBg, colour);
+        assert.ok(contrast.contrastRatio(callout.textColor, callout.backgroundColor) >= 4.5, `callout ${colour}`);
+        assert.ok(contrast.contrastRatio(table.headerText, table.headerBg) >= 4.5, `table ${colour}`);
+        assert.ok(contrast.contrastRatio(profile.accentColor, profile.bgColor) >= 4.5, `profile ${colour}`);
+    });
+    ['', 'red', null, undefined].forEach((colour) => {
+        assert.equal(contrast.calloutPalette(colour), null);
+        assert.equal(contrast.tablePalette(colour), null);
+        assert.equal(contrast.profilePalette(colour), null);
+    });
+});
+
+test('the profile card keeps the colour that was picked when it already reads on the light card', () => {
+    assert.equal(contrast.profilePalette('#0d47a1').accentColor, '#0d47a1');
+    // A light colour is darkened, not replaced by black.
+    assert.notEqual(contrast.profilePalette('#ffc107').accentColor, '#000000');
+    assert.notEqual(contrast.profilePalette('#ffc107').accentColor, '#ffc107');
+});
+
+test('the callout, the table and the profile card take one block colour for the colours they keep', () => {
+    const popups = {
+        callout: [
+            'templates/popup_callout_design.mustache', 'pop_callout_block_color', 'amd/src/blocks/callout.js', 'calloutPalette',
+        ],
+        table: [
+            'templates/popup_table_design.mustache', 'pop_table_block_color', 'amd/src/blocks/table.js', 'tablePalette',
+        ],
+        profile: [
+            'templates/popup_profilecard_content.mustache', 'pop_pc_block_color', 'amd/src/blocks/profilecard.js', 'profilePalette',
+        ],
+    };
+
+    Object.entries(popups).forEach(([name, [popup, id, block, palette]]) => {
+        assert.match(read(popup), new RegExp(`id="${id}" value="\\{\\{blockColorValue\\}\\}"`), name);
+        assert.match(read(block), new RegExp(`const palette = ${palette}\\(ev\\.target\\.value\\);`), name);
+        assert.match(read(block), /Object\.assign\(data, palette\);/, name);
+    });
+    ['en', 'pt_br'].forEach((lang) => {
+        ['block_color', 'block_color_sets'].forEach((key) => {
+            assert.ok(read(`lang/${lang}/tiny_studiolms.php`).includes(`$string['${key}'] = `), `${lang} ${key}`);
+        });
+    });
+});
+
