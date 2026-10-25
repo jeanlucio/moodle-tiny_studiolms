@@ -38,7 +38,22 @@ const SELECTORS = {
     RESOURCES_SUMMARY: '.studiolms-resources-summary',
     // Every block root carries data-slms-block-type, so this also matches the blocks that need no script
     // of their own (heading, table, charts): the page still has to be cleaned of editing attributes.
-    ANY_BLOCK: '[data-slms-block-type]',
+    // Moodle's HTMLPurifier removes data-* attributes wherever it cleans the text (a forum post, a glossary
+    // entry, a question), so the root classes name the blocks there too, or nothing would be wired and a
+    // closed accordion could never be opened.
+    ANY_BLOCK: [
+        '[data-slms-block-type]',
+        '.studiolms-heading-wrap',
+        '.studiolms-btn-wrap',
+        '.studiolms-card-wrap',
+        '.studiolms-accordion-wrap',
+        '.studiolms-resources-wrap',
+        '.studiolms-grid-wrap',
+        '.studiolms-callout-wrap',
+        '.studiolms-table-wrap',
+        '.studiolms-profilecard',
+        '.slms-block',
+    ].join(', '),
 };
 
 /**
@@ -129,7 +144,7 @@ const playSound = (type) => {
  */
 const stripEditorAttributes = (root) => {
     // Every block root carries data-slms-block-type: the blocks inside root, and the ones that are root itself.
-    within(root, '[data-slms-block-type]').forEach((block) => {
+    within(root, SELECTORS.ANY_BLOCK).forEach((block) => {
         within(block, '[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
     });
 };
