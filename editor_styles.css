@@ -1481,6 +1481,14 @@ body:not(.mce-content-body) .studiolms-accordion.slms-closed > .studiolms-accord
     border-top-width: 0;
 }
 
+/* An accordion set not to animate opens and closes at once. The selectors outweigh the rules they switch off. */
+.studiolms-accordion.slms-static .slms-acc-icon > span,
+.studiolms-accordion.slms-static > .studiolms-accordion-body,
+.studiolms-accordion.slms-static > .studiolms-accordion-body > .studiolms-accordion-content,
+body:not(.mce-content-body) .studiolms-accordion.slms-static.slms-closed > .studiolms-accordion-body {
+    transition: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .slms-acc-icon > span,
     .studiolms-accordion-body,

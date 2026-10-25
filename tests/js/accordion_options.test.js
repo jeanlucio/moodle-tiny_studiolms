@@ -133,6 +133,37 @@ test('the content opens and closes by its height, hidden from reader and keyboar
     });
 });
 
+test('the title and the content have a text colour each', () => {
+    const block = read('amd/src/blocks/accordion.js');
+    const design = read('templates/popup_accordion_design.mustache');
+
+    assert.match(design, /id="pop_acc_color"/);
+    assert.match(design, /id="pop_acc_content_color"/);
+    assert.match(block, /contentColor: '',/);
+    assert.match(block, /'#pop_acc_content_color': 'contentColor'/);
+    assert.match(block, /tplData\.contentColorValue = data\.contentColor \|\| '#212529';/);
+    assert.match(
+        read('templates/block_accordion.mustache'),
+        /accordion-content" contenteditable="true"\{\{#contentColor\}\} style="color: \{\{contentColor\}\};"\{\{\/contentColor\}\}>/
+    );
+});
+
+test('the opening can be switched off per accordion, and is on unless a block says otherwise', () => {
+    const block = read('amd/src/blocks/accordion.js');
+
+    assert.match(block, /animate: true,/);
+    assert.match(block, /templateData\.animate = data\.animate !== false;/);
+    assert.match(block, /tplData\.animate = data\.animate !== false;/);
+    assert.match(block, /data\.animate = animateEl\.checked;/);
+    assert.match(read('templates/popup_accordion_design.mustache'), /id="pop_acc_animate"/);
+    assert.match(read('templates/block_accordion.mustache'), /\{\{\^animate\}\} slms-static\{\{\/animate\}\}/);
+    ['styles.css', 'editor_styles.css'].forEach((file) => {
+        const css = read(file);
+        assert.match(css, /\.studiolms-accordion\.slms-static \.slms-acc-icon > span,/);
+        assert.match(css, /slms-static\.slms-closed > \.studiolms-accordion-body \{\s*transition: none;/);
+    });
+});
+
 test('the icon opens and closes the accordion on the canvas and the state it starts in is left alone', () => {
     const app = read('amd/src/app.js');
     const css = read('styles.css');
@@ -144,8 +175,11 @@ test('the icon opens and closes the accordion on the canvas and the state it sta
     assert.ok(!toggle.includes('config'));
 });
 
-test('the strings of the two backgrounds exist in both languages', () => {
-    ['accordion_header_bg', 'accordion_content_bg'].forEach((key) => {
+test('the strings of the options exist in both languages', () => {
+    const keys = [
+        'accordion_header_bg', 'accordion_content_bg', 'accordion_title_color', 'accordion_content_color', 'animate_opening',
+    ];
+    keys.forEach((key) => {
         ['en', 'pt_br'].forEach((lang) => {
             assert.ok(read(`lang/${lang}/tiny_studiolms.php`).includes(`$string['${key}'] = `), `${lang} ${key}`);
         });

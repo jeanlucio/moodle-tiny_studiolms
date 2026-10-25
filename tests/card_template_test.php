@@ -137,4 +137,29 @@ final class card_template_test extends advanced_testcase {
             $html
         );
     }
+
+    /**
+     * An accordion set not to animate carries the class that switches the movement off, and a content colour only when set.
+     *
+     * Regression test for the animation option and the text colour of the content: the stylesheet switches the
+     * transitions off by a class, and the colour is an inline style the purifier keeps, written only when set so
+     * that an accordion saved without it keeps the colour of the page's text.
+     */
+    public function test_accordion_animation_and_content_colour_are_written_only_as_chosen(): void {
+        global $PAGE;
+
+        $this->resetAfterTest();
+        $PAGE->set_url('/');
+        $renderer = $PAGE->get_renderer('core');
+
+        $plain = $renderer->render_from_template('tiny_studiolms/block_accordion', ['animate' => true, 'bg' => '#fff']);
+        $this->assertStringNotContainsString('slms-static', $plain);
+        $this->assertDoesNotMatchRegularExpression('/studiolms-accordion-content"[^>]*style=/', $plain);
+
+        $chosen = $renderer->render_from_template('tiny_studiolms/block_accordion', [
+            'animate' => false, 'contentColor' => '#112233', 'bg' => '#fff',
+        ]);
+        $this->assertStringContainsString('slms-static', $chosen);
+        $this->assertMatchesRegularExpression('/studiolms-accordion-content"[^>]*style="color: #112233;"/', $chosen);
+    }
 }

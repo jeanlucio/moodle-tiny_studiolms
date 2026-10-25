@@ -21,11 +21,11 @@
     Example context (json): {
         "state": "open", "isOpen": true, "bg": "#ffffff", "color": "#3b82f6", "title": "Topic",
         "openSound": "none", "hoverEffect": "none",
-        "headerBg": "#e3f2fd", "iconFirst": "❯", "iconSecond": "❯", "iconTurns": true, "content": "<p>Content</p>"
+        "headerBg": "#e3f2fd", "contentColor": "#212529", "animate": true, "iconFirst": "❯", "iconSecond": "❯", "iconTurns": true, "content": "<p>Content</p>"
     }
 }}
 <div class="studiolms-accordion-wrap mb-4 w-100">
-    <div class="studiolms-accordion slms-snd-{{openSound}} {{^isOpen}}slms-closed{{/isOpen}}"
+    <div class="studiolms-accordion slms-snd-{{openSound}} {{^isOpen}}slms-closed{{/isOpen}}{{^animate}} slms-static{{/animate}}"
          style="background-color: {{bg}};">
         <div class="studiolms-accordion-summary slms-hov-{{hoverEffect}}">
             <span class="studiolms-accordion-header" style="color: {{color}};{{#headerBg}} background-color: {{headerBg}};{{/headerBg}}">
@@ -34,7 +34,7 @@
             </span>
         </div>
         <div class="studiolms-accordion-body">
-            <div class="studiolms-editable-area studiolms-accordion-content" contenteditable="true">
+            <div class="studiolms-editable-area studiolms-accordion-content" contenteditable="true"{{#contentColor}} style="color: {{contentColor}};"{{/contentColor}}>
                 {{{content}}}
             </div>
         </div>

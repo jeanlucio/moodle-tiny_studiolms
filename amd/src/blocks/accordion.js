@@ -49,6 +49,10 @@ export default {
         bg: '#ffffff',
         // Background of the title bar. Empty (a block saved before it existed) is the colour of the content.
         headerBg: '',
+        // Colour of the text of the content. Empty is the colour of the page's own text.
+        contentColor: '',
+        // Whether the accordion opens and closes with a movement.
+        animate: true,
         icon: '❯ / ❯',
         state: 'closed',
         content: '',
@@ -96,12 +100,15 @@ export default {
                     tplData[`sound_opt_${data.openSound || 'none'}`] = true;
                     tplData.isOpen = data.state === 'open';
                     tplData.isClosed = data.state === 'closed';
+                    tplData.animate = data.animate !== false;
+                    tplData.contentColorValue = data.contentColor || '#212529';
 
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_accordion_design', tplData, (popup) => {
                         const propMap = {
                             '#pop_acc_color': 'color',
                             '#pop_acc_bg': 'bg',
                             '#pop_acc_header_bg': 'headerBg',
+                            '#pop_acc_content_color': 'contentColor',
                             '#pop_acc_icon': 'icon',
                             '#pop_acc_hover': 'hoverEffect',
                             '#pop_acc_sound': 'openSound',
@@ -115,6 +122,12 @@ export default {
                                     onUpdate(data);
                                 });
                             }
+                        });
+
+                        const animateEl = popup.querySelector('#pop_acc_animate');
+                        animateEl?.addEventListener('change', () => {
+                            data.animate = animateEl.checked;
+                            onUpdate(data);
                         });
 
                         const aiBtnEl = popup.querySelector('#accordion-ai-btn');
@@ -174,6 +187,7 @@ export default {
     renderHtml: async(data) => {
         const templateData = Object.assign({}, data);
         templateData.isOpen = data.state === 'open';
+        templateData.animate = data.animate !== false;
         // The pair is the closed icon and the open one, each shown in its own state by the stylesheet. A pair of one
         // icon twice is a single icon that turns a quarter when the accordion opens.
         const [iconFirst, iconSecond] = iconPair(data.icon).split(' / ');
