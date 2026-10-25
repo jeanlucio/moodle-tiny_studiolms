@@ -26,6 +26,7 @@ import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {getContextId} from '../context';
+import {textGlyph} from './text_glyph';
 
 export default {
     id: 'accordion',
@@ -185,8 +186,8 @@ export default {
         templateData.isOpen = data.state === 'open';
         // The pair is the closed icon and the open one, each shown in its own state by the stylesheet.
         const [iconFirst, iconSecond] = data.icon.split(' / ');
-        templateData.iconFirst = iconFirst;
-        templateData.iconSecond = iconSecond || iconFirst;
+        templateData.iconFirst = textGlyph(iconFirst);
+        templateData.iconSecond = textGlyph(iconSecond || iconFirst);
 
         if (!templateData.title || templateData.title.trim() === '') {
             templateData.title = await getString('accordion_default_title', 'tiny_studiolms');

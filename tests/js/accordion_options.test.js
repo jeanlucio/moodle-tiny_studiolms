@@ -61,7 +61,7 @@ test('the pair of icons is drawn as two, one per state, and none is turned', () 
     const template = read('templates/block_accordion.mustache');
 
     assert.match(block, /const \[iconFirst, iconSecond\] = data\.icon\.split\(' \/ '\);/);
-    assert.match(block, /templateData\.iconSecond = iconSecond \|\| iconFirst;/);
+    assert.match(block, /templateData\.iconSecond = textGlyph\(iconSecond \|\| iconFirst\);/);
     assert.match(template, /slms-acc-icon-closed">\{\{iconFirst\}\}.*slms-acc-icon-open">\{\{iconSecond\}\}/);
     ['styles.css', 'editor_styles.css'].forEach((file) => {
         const css = read(file);
