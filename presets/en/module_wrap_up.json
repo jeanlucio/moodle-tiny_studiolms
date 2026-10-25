@@ -19,7 +19,7 @@
                 "title": "Key Points of the Module",
                 "color": "#16a34a",
                 "bg": "#ffffff",
-                "icon": "▼ / ▲",
+                "icon": "❯ / ❯",
                 "state": "closed",
                 "content": "<p>Review the most important concepts covered in this module:</p><ul><li>Concept 1</li><li>Concept 2</li><li>Concept 3</li></ul>"
             }

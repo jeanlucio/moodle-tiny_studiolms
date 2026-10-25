@@ -1287,25 +1287,46 @@
     transform: rotate(0deg);
 }
 
-/* The two icons of an accordion: the first while it is closed, the second while it is open. */
+/*
+ * The two icons of an accordion are drawn one over the other and cross-fade: the first while it is closed, the second
+ * while it is open. A pair of one icon twice (the chevron) is a single icon that turns a quarter instead.
+ */
 .slms-acc-icon {
-    display: inline-block;
+    display: inline-grid;
+    place-items: center;
     user-select: none;
 }
 
+.slms-acc-icon > span {
+    grid-area: 1 / 1;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
 .slms-acc-icon-open {
-    display: none;
+    opacity: 0;
 }
 
 .studiolms-accordion:not(.slms-closed) .slms-acc-icon-closed {
-    display: none;
+    opacity: 0;
 }
 
 .studiolms-accordion:not(.slms-closed) .slms-acc-icon-open {
-    display: inline;
+    opacity: 1;
 }
 
-/* Hide content when accordion is closed — student view only (not in TinyMCE editor). */
+.slms-acc-icon-turns > .slms-acc-icon-closed {
+    display: inline-block;
+}
+
+.studiolms-accordion:not(.slms-closed) .slms-acc-icon-turns > .slms-acc-icon-closed {
+    opacity: 1;
+    transform: rotate(90deg);
+}
+
+/*
+ * Hide content when accordion is closed — student view only (not in TinyMCE editor). The first selector is an
+ * accordion saved before its content had a body around it, which has no animation.
+ */
 body:not(.mce-content-body) .studiolms-accordion.slms-closed > .studiolms-accordion-content,
 body:not(.mce-content-body) .studiolms-resources.slms-closed > .studiolms-resources-content {
     display: none;
@@ -1429,6 +1450,43 @@ body.mce-content-body div.slms-grid-slot,
     font-weight: normal;
     color: var(--bs-body-color, #212529);
     outline: none;
+}
+
+/*
+ * The content opens and closes by its height: the body is a one-row grid whose row goes from its content's height
+ * to nothing, which a plain height cannot do since the content's height is not known. A closed body is also hidden
+ * from the reader and the keyboard, once the closing has run. Not in the editor, where the content is always shown.
+ */
+.studiolms-accordion-body {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.3s ease, visibility 0s;
+}
+
+.studiolms-accordion-body > .studiolms-accordion-content {
+    min-height: 0;
+    overflow: hidden;
+    transition: padding 0.3s ease, border-top-width 0.3s ease;
+}
+
+body:not(.mce-content-body) .studiolms-accordion.slms-closed > .studiolms-accordion-body {
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    transition: grid-template-rows 0.3s ease, visibility 0s linear 0.3s;
+}
+
+body:not(.mce-content-body) .studiolms-accordion.slms-closed > .studiolms-accordion-body > .studiolms-accordion-content {
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top-width: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .slms-acc-icon > span,
+    .studiolms-accordion-body,
+    .studiolms-accordion-body > .studiolms-accordion-content {
+        transition: none;
+    }
 }
 
 /* Button */

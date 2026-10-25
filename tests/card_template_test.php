@@ -111,4 +111,30 @@ final class card_template_test extends advanced_testcase {
         ]);
         $this->assertStringContainsString('color: #3b82f6; background-color: #e3f2fd;', $coloured);
     }
+
+    /**
+     * A pair of one icon twice is one icon that turns, and the content has a body to animate.
+     *
+     * Regression test for the chevron option: it is drawn once, with the class the stylesheet turns, and not as
+     * two icons that would cross-fade; and the content sits in a body whose height the stylesheet animates.
+     */
+    public function test_accordion_chevron_is_one_turning_icon_and_content_has_a_body(): void {
+        global $PAGE;
+
+        $this->resetAfterTest();
+        $PAGE->set_url('/');
+        $renderer = $PAGE->get_renderer('core');
+
+        $html = $renderer->render_from_template('tiny_studiolms/block_accordion', [
+            'bg' => '#ffffff', 'color' => '#3b82f6', 'iconFirst' => '❯', 'iconSecond' => '❯', 'iconTurns' => true,
+            'content' => '<p>Text</p>',
+        ]);
+        $this->assertStringContainsString('slms-acc-icon slms-acc-icon-turns', $html);
+        $this->assertSame(1, substr_count($html, '❯'));
+        $this->assertStringNotContainsString('slms-acc-icon-open', $html);
+        $this->assertMatchesRegularExpression(
+            '/<div class="studiolms-accordion-body">\s*<div class="studiolms-editable-area studiolms-accordion-content"/',
+            $html
+        );
+    }
 }

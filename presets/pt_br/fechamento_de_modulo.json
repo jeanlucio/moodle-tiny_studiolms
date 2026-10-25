@@ -19,7 +19,7 @@
                 "title": "Pontos-Chave do Módulo",
                 "color": "#16a34a",
                 "bg": "#ffffff",
-                "icon": "▼ / ▲",
+                "icon": "❯ / ❯",
                 "state": "closed",
                 "content": "<p>Revise os conceitos mais importantes vistos neste módulo:</p><ul><li>Conceito 1</li><li>Conceito 2</li><li>Conceito 3</li></ul>"
             }

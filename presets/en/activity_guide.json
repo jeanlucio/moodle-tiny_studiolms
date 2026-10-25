@@ -17,7 +17,7 @@
                 "title": "Activity Instructions",
                 "color": "#db2777",
                 "bg": "#ffffff",
-                "icon": "▼ / ▲",
+                "icon": "❯ / ❯",
                 "state": "open",
                 "content": "<p>Follow the steps below to complete this activity successfully.</p><ol><li>Read the indicated support material.</li><li>Carry out the proposed activity.</li><li>Submit your answer in the indicated field.</li></ol>"
             }

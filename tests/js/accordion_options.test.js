@@ -56,18 +56,62 @@ test('the title bar and the content have a background each, and a block saved be
     );
 });
 
-test('the pair of icons is drawn as two, one per state, and none is turned', () => {
+test('the pair of icons is drawn as two, cross-fading, and a pair of one icon is a single icon that turns', () => {
     const block = read('amd/src/blocks/accordion.js');
     const template = read('templates/block_accordion.mustache');
 
-    assert.match(block, /const \[iconFirst, iconSecond\] = data\.icon\.split\(' \/ '\);/);
+    assert.match(block, /const \[iconFirst, iconSecond\] = iconPair\(data\.icon\)\.split\(' \/ '\);/);
     assert.match(block, /templateData\.iconSecond = textGlyph\(iconSecond \|\| iconFirst\);/);
-    assert.match(template, /slms-acc-icon-closed">\{\{iconFirst\}\}.*slms-acc-icon-open">\{\{iconSecond\}\}/);
+    assert.match(block, /templateData\.iconTurns = templateData\.iconFirst === templateData\.iconSecond;/);
+    assert.match(
+        template,
+        /slms-acc-icon-closed">\{\{iconFirst\}\}<\/span>\{\{\^iconTurns\}\}<span class="slms-acc-icon-open">/
+    );
     ['styles.css', 'editor_styles.css'].forEach((file) => {
         const css = read(file);
-        assert.match(css, /\.slms-acc-icon-open \{\s*display: none;/);
-        assert.match(css, /\.studiolms-accordion:not\(\.slms-closed\) \.slms-acc-icon-closed \{\s*display: none;/);
-        assert.match(css, /\.studiolms-accordion:not\(\.slms-closed\) \.slms-acc-icon-open \{\s*display: inline;/);
+        assert.match(css, /\.slms-acc-icon > span \{\s*grid-area: 1 \/ 1;\s*transition: opacity 0\.25s ease,/);
+        assert.match(css, /\.slms-acc-icon-open \{\s*opacity: 0;/);
+        assert.match(css, /\.studiolms-accordion:not\(\.slms-closed\) \.slms-acc-icon-closed \{\s*opacity: 0;/);
+        assert.match(css, /\.studiolms-accordion:not\(\.slms-closed\) \.slms-acc-icon-open \{\s*opacity: 1;/);
+        assert.match(
+            css,
+            /:not\(\.slms-closed\) \.slms-acc-icon-turns > \.slms-acc-icon-closed \{\s*opacity: 1;\s*transform: rotate\(90deg\);/
+        );
+    });
+});
+
+test('the arrows pair is not offered any more, and a block that has it keeps the look it had', () => {
+    const popup = read('templates/popup_accordion_design.mustache');
+    const block = read('amd/src/blocks/accordion.js');
+
+    assert.ok(!popup.includes('\u25BC / \u25B2'), 'no option for down / up');
+    assert.match(popup, /<option value="\u276F \/ \u276F"/);
+    assert.match(block, /icon === '\\u25BC \/ \\u25B2' \? '\\u25B6 \/ \\u25BC' : icon/);
+    ['en', 'pt_br'].forEach((lang) => {
+        const strings = read(`lang/${lang}/tiny_studiolms.php`);
+        assert.ok(!strings.includes("$string['icon_arrows']"), `${lang}: no string for the dropped option`);
+        assert.ok(strings.includes("$string['icon_chevron']"), `${lang}: string for the chevron`);
+    });
+});
+
+test('the content opens and closes by its height, hidden from reader and keyboard once closed', () => {
+    const template = read('templates/block_accordion.mustache');
+
+    assert.match(
+        template,
+        /<div class="studiolms-accordion-body">\s*<div class="studiolms-editable-area studiolms-accordion-content"/
+    );
+    ['styles.css', 'editor_styles.css'].forEach((file) => {
+        const css = read(file);
+        assert.match(
+            css,
+            /\.studiolms-accordion-body \{\s*display: grid;\s*grid-template-rows: 1fr;\s*transition: grid-template-rows 0\.3s ease/
+        );
+        const closed = /slms-closed > \.studiolms-accordion-body \{\s*grid-template-rows: 0fr;\s*visibility: hidden;\s*/;
+        assert.match(css, closed);
+        assert.match(css, /visibility 0s linear 0\.3s;/);
+        // The movement stops for whoever asks the system for less of it.
+        assert.match(css, /prefers-reduced-motion: reduce\) \{[^}]*\.slms-acc-icon > span,[^}]*transition: none;/);
     });
 });
 

@@ -28,6 +28,17 @@ import Notification from 'core/notification';
 import {getContextId} from '../context';
 import {textGlyph} from './text_glyph';
 
+/**
+ * The icon pair of a block, with the one that was dropped from the options taken to the one it looked like.
+ *
+ * The arrows pair (down, up) was shown as the triangles pair (right, down) in the pages, since the first icon was
+ * turned a quarter when closed, so a block that has it keeps looking the way it did.
+ *
+ * @param {string} icon The pair as saved.
+ * @returns {string} The pair to draw.
+ */
+const iconPair = (icon) => (icon === '\u25BC / \u25B2' ? '\u25B6 / \u25BC' : icon);
+
 export default {
     id: 'accordion',
     titleString: 'block_accordion_title',
@@ -38,7 +49,7 @@ export default {
         bg: '#ffffff',
         // Background of the title bar. Empty (a block saved before it existed) is the colour of the content.
         headerBg: '',
-        icon: '▼ / ▲',
+        icon: '❯ / ❯',
         state: 'closed',
         content: '',
         hoverEffect: 'none',
@@ -138,11 +149,11 @@ export default {
 
                     // Maps the selected icon to the Mustache variable.
                     const iconKey = {
-                        '▼ / ▲': 'icon_arrow',
+                        '❯ / ❯': 'icon_chevron',
                         '➕ / ➖': 'icon_plus',
                         '📁 / 📂': 'icon_folder',
                         '▶ / ▼': 'icon_triangle'
-                    }[data.icon] || 'icon_arrow';
+                    }[iconPair(data.icon)] || 'icon_chevron';
 
                     tplData[iconKey] = true;
                     tplData.headerBgValue = data.headerBg || data.bg;
@@ -184,10 +195,12 @@ export default {
     renderHtml: async(data) => {
         const templateData = Object.assign({}, data);
         templateData.isOpen = data.state === 'open';
-        // The pair is the closed icon and the open one, each shown in its own state by the stylesheet.
-        const [iconFirst, iconSecond] = data.icon.split(' / ');
+        // The pair is the closed icon and the open one, each shown in its own state by the stylesheet. A pair of one
+        // icon twice is a single icon that turns a quarter when the accordion opens.
+        const [iconFirst, iconSecond] = iconPair(data.icon).split(' / ');
         templateData.iconFirst = textGlyph(iconFirst);
         templateData.iconSecond = textGlyph(iconSecond || iconFirst);
+        templateData.iconTurns = templateData.iconFirst === templateData.iconSecond;
 
         if (!templateData.title || templateData.title.trim() === '') {
             templateData.title = await getString('accordion_default_title', 'tiny_studiolms');

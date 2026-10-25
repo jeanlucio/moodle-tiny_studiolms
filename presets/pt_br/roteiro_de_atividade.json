@@ -17,7 +17,7 @@
                 "title": "Instruções da Atividade",
                 "color": "#db2777",
                 "bg": "#ffffff",
-                "icon": "▼ / ▲",
+                "icon": "❯ / ❯",
                 "state": "open",
                 "content": "<p>Siga as etapas abaixo para realizar esta atividade com sucesso.</p><ol><li>Leia o material de apoio indicado.</li><li>Realize a atividade proposta.</li><li>Envie sua resposta no campo indicado.</li></ol>"
             }
