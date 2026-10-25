@@ -27,6 +27,7 @@ import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {getContextId} from '../context';
 import {parseVideoUrl} from './video_embed';
+import {applyTitleColor} from './title_color';
 
 export default {
     id: 'advancedCard',
@@ -35,6 +36,8 @@ export default {
     defaultData: {
         bg: '#ffffff',
         text: '#212529',
+        // Colour of the headings of the text. Empty is the colour of the text.
+        titleColor: '',
         border: '#0d47a1',
         radius: 8,
         shadow: 'md',
@@ -82,12 +85,14 @@ export default {
                     tplData['hover_' + (data.hoverEffect || 'none')] = true;
                     // A card saved before the accent could be turned off has no such key, and has the accent.
                     tplData.accent = data.accent !== false;
+                    tplData.titleColorValue = data.titleColor || data.text;
 
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_card_design', tplData, (popup) => {
                         // Explicit property mapping.
                         const propMap = {
                             '#pop_card_bg': 'bg',
                             '#pop_card_text': 'text',
+                            '#pop_card_title_color': 'titleColor',
                             '#pop_card_border': 'border',
                             '#pop_card_radius': 'radius',
                             '#pop_card_shadow': 'shadow',
@@ -271,6 +276,8 @@ export default {
             templateData.content = '<h4 style="margin-top: 0; color: inherit; font-weight: bold;">' +
                 defaultTitle + '</h4><p style="margin-bottom: 0;">' + defaultText + '</p>';
         }
+
+        templateData.content = applyTitleColor(templateData.content, data.titleColor);
 
         templateData.isAlignLeft = data.btnAlign === 'left';
         templateData.isAlignCenter = data.btnAlign === 'center';

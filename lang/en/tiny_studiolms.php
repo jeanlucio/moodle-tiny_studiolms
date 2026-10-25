@@ -144,6 +144,7 @@ $string['card_ai_generate'] = 'Generate with AI';
 $string['card_ai_prompt'] = 'Describe the card content (e.g. Introduction to Machine Learning, Unit 3 summary)...';
 $string['card_ai_section'] = 'Generate with AI';
 $string['card_design'] = 'Card Design';
+$string['card_title_color'] = 'Title color';
 $string['chart_bar_horizontal'] = 'Horizontal';
 $string['chart_bar_item_label'] = 'Label';
 $string['chart_bar_item_label_ph'] = 'e.g. Approved';
