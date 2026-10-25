@@ -309,6 +309,7 @@ export default {
         const content = renderer(data, palette);
 
         return Templates.render('tiny_studiolms/block_infographic', {
+            hoverEffect: data.hoverEffect,
             layout,
             theme,
             content,

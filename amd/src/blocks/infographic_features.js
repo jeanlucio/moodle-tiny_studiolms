@@ -294,6 +294,7 @@ export default {
         const content = buildFeaturesHtml(data, palette);
 
         return Templates.render('tiny_studiolms/block_infographic_features', {
+            hoverEffect: data.hoverEffect,
             theme,
             columns: cols,
             content,

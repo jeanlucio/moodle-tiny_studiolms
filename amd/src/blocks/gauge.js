@@ -239,6 +239,7 @@ export default {
         });
 
         return Templates.render('tiny_studiolms/block_gauge', {
+            hoverEffect: data.hoverEffect,
             title: data.title || '',
             gauges: items,
         });

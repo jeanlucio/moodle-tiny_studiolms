@@ -1104,12 +1104,46 @@ const selectCanvasBlock = async(blockId) => {
             PopupManager
         );
         const firstBtn = toolbarContainer.querySelector('.slms-toolbar-btn');
+        if (entry.blockDef.sharedHover) {
+            await addInteractivityTab(toolbarContainer, entry);
+        }
         if (firstBtn) {
             firstBtn.click();
         }
     } else {
         showToolbarHint();
     }
+};
+
+/**
+ * Add the Interactivity tab to the toolbar of a block that has no hover effect of its own.
+ *
+ * The effect is the same for every block (a class on its root), so one tab serves them all instead of a field in
+ * the settings of each. The block's own tabs are built by the block; this one is appended to the same row.
+ *
+ * @param {HTMLElement} toolbarContainer The toolbar row, already built by the block.
+ * @param {object} entry Canvas block entry.
+ * @returns {Promise<void>}
+ */
+const addInteractivityTab = async(toolbarContainer, entry) => {
+    const label = await getString('toolbar_interactivity', 'tiny_studiolms');
+    const row = toolbarContainer.querySelector('.slms-toolbar-seg') ?? toolbarContainer;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'slms-toolbar-btn';
+    button.id = 'tb-interactivity';
+    button.innerHTML = `<i class="fa-solid fa-hand-pointer" aria-hidden="true"></i> ${label}`;
+    row.appendChild(button);
+
+    button.addEventListener('click', () => {
+        const current = entry.config.hoverEffect || 'none';
+        PopupManager.open(button, 'tiny_studiolms/popup_interactivity', {[`hover_${current}`]: true}, (popup) => {
+            popup.querySelector('#pop_hover')?.addEventListener('input', async(event) => {
+                entry.config.hoverEffect = event.target.value;
+                await renderBlockPreview(entry);
+            });
+        });
+    });
 };
 
 /**

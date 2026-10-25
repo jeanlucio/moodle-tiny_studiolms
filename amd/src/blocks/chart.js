@@ -237,6 +237,7 @@ export default {
         const legend = buildLegend(slices);
 
         return Templates.render('tiny_studiolms/block_chart', {
+            hoverEffect: data.hoverEffect,
             type,
             title: data.title || '',
             svg,

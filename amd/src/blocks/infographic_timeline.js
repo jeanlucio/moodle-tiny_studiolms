@@ -270,6 +270,7 @@ export default {
         const content = buildTimelineHtml(data, palette);
 
         return Templates.render('tiny_studiolms/block_infographic_timeline', {
+            hoverEffect: data.hoverEffect,
             theme,
             content,
         });

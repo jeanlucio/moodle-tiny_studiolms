@@ -352,6 +352,7 @@ export default {
             : buildVerticalHtml(data, palette);
 
         return Templates.render('tiny_studiolms/block_infographic_steps', {
+            hoverEffect: data.hoverEffect,
             theme,
             layout,
             content,

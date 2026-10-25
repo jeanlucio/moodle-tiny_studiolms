@@ -63,6 +63,16 @@ export const Blocks = {
     infographicComparison,
 };
 
+// A block that has no hover effect of its own gets the shared one: a "None" default, and a flag the Studio reads to
+// add the Interactivity tab to its toolbar. The effect is a class on the block's root, so the template of every such
+// block carries it, and what is drawn on the course page, in the editor and in the Studio is the same.
+Object.values(Blocks).forEach((block) => {
+    if (!('hoverEffect' in block.defaultData)) {
+        block.defaultData.hoverEffect = 'none';
+        block.sharedHover = true;
+    }
+});
+
 /** @var {boolean} Whether applyDefaultTexts() has already run on the blocks. */
 let localized = false;
 

@@ -524,6 +524,7 @@ $string['toolbar_infographic_edit'] = 'Editar Infográfico';
 $string['toolbar_infographic_features_edit'] = 'Editar Funcionalidades';
 $string['toolbar_infographic_steps_edit'] = 'Editar Passos';
 $string['toolbar_infographic_timeline_edit'] = 'Editar Linha do Tempo';
+$string['toolbar_interactivity'] = 'Interatividade';
 $string['toolbar_media'] = 'Mídia';
 $string['toolbar_mindmap_edit'] = 'Editar Mapa';
 $string['toolbar_resources'] = 'Recursos';

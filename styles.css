@@ -1948,6 +1948,19 @@ a.studiolms-resources-item:focus-visible {
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
 }
 
+/* The zoom and the lift move the block; for whoever asks the system for less movement they do not. */
+@media (prefers-reduced-motion: reduce) {
+    .slms-hov-scale,
+    .slms-hov-lift {
+        transition: none;
+    }
+
+    .slms-hov-scale:hover,
+    .slms-hov-lift:hover {
+        transform: none;
+    }
+}
+
 /* -----------------------------------------
    PROPERTIES PANEL — SECTION GROUPS
    ----------------------------------------- */

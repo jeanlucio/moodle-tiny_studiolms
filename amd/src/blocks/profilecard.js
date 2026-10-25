@@ -121,6 +121,7 @@ export default {
             links,
             bgColor:    data.bgColor || '#ffffff',
             accentColor: data.accentColor || '#0f6cbf',
+            hoverEffect: data.hoverEffect,
         };
 
         return Templates.render('tiny_studiolms/block_profilecard', tData);

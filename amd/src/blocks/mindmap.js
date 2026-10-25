@@ -511,6 +511,6 @@ export default {
         const textAlt = branchParts.length > 0
             ? `${topic}: ${branchParts.join('; ')}`
             : topic;
-        return Templates.render('tiny_studiolms/block_mindmap', {svgContent, textAlt});
+        return Templates.render('tiny_studiolms/block_mindmap', {svgContent, textAlt, hoverEffect: data.hoverEffect});
     },
 };

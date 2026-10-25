@@ -276,6 +276,7 @@ export default {
             : buildHorizontalSvg(items);
 
         return Templates.render('tiny_studiolms/block_chart_bar', {
+            hoverEffect: data.hoverEffect,
             type,
             title: data.title || '',
             svg,

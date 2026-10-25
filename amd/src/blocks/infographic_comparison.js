@@ -314,6 +314,7 @@ export default {
         const content = buildComparisonHtml(data, palette);
 
         return Templates.render('tiny_studiolms/block_infographic_comparison', {
+            hoverEffect: data.hoverEffect,
             theme,
             content,
         });
