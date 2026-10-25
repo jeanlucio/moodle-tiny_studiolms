@@ -75,17 +75,36 @@ export default {
             const {html, js} = await Templates.renderForPromise('tiny_studiolms/toolbar_accordion', {});
             Templates.replaceNodeContents(container, html, js);
 
-            const btnContent = container.querySelector('#tb-acc-content');
             const btnDesign = container.querySelector('#tb-acc-design');
 
-            if (btnContent) {
-                btnContent.addEventListener('click', () => {
+            if (btnDesign) {
+                btnDesign.addEventListener('click', () => {
                     const tplData = Object.assign({}, data);
+
+                    // Maps the selected icon to the Mustache variable.
+                    const iconKey = {
+                        '❯ / ❯': 'icon_chevron',
+                        '➕ / ➖': 'icon_plus',
+                        '📁 / 📂': 'icon_folder',
+                        '▶ / ▼': 'icon_triangle'
+                    }[iconPair(data.icon)] || 'icon_chevron';
+
+                    tplData[iconKey] = true;
+                    tplData.headerBgValue = data.headerBg || data.bg;
+
+                    tplData[`hover_${data.hoverEffect || 'none'}`] = true;
+                    tplData[`sound_opt_${data.openSound || 'none'}`] = true;
                     tplData.isOpen = data.state === 'open';
                     tplData.isClosed = data.state === 'closed';
 
-                    PopupManager.open(btnContent, 'tiny_studiolms/popup_accordion_content', tplData, (popup) => {
+                    PopupManager.open(btnDesign, 'tiny_studiolms/popup_accordion_design', tplData, (popup) => {
                         const propMap = {
+                            '#pop_acc_color': 'color',
+                            '#pop_acc_bg': 'bg',
+                            '#pop_acc_header_bg': 'headerBg',
+                            '#pop_acc_icon': 'icon',
+                            '#pop_acc_hover': 'hoverEffect',
+                            '#pop_acc_sound': 'openSound',
                             '#pop_acc_state': 'state'
                         };
                         Object.keys(propMap).forEach(selector => {
@@ -139,46 +158,6 @@ export default {
                                 }
                             });
                         }
-                    });
-                });
-            }
-
-            if (btnDesign) {
-                btnDesign.addEventListener('click', () => {
-                    const tplData = Object.assign({}, data);
-
-                    // Maps the selected icon to the Mustache variable.
-                    const iconKey = {
-                        '❯ / ❯': 'icon_chevron',
-                        '➕ / ➖': 'icon_plus',
-                        '📁 / 📂': 'icon_folder',
-                        '▶ / ▼': 'icon_triangle'
-                    }[iconPair(data.icon)] || 'icon_chevron';
-
-                    tplData[iconKey] = true;
-                    tplData.headerBgValue = data.headerBg || data.bg;
-
-                    tplData['hover_' + (data.hoverEffect || 'none')] = true;
-                    tplData['sound_opt_' + (data.openSound || 'none')] = true;
-
-                    PopupManager.open(btnDesign, 'tiny_studiolms/popup_accordion_design', tplData, (popup) => {
-                        const propMap = {
-                            '#pop_acc_color': 'color',
-                            '#pop_acc_bg': 'bg',
-                            '#pop_acc_header_bg': 'headerBg',
-                            '#pop_acc_icon': 'icon',
-                            '#pop_acc_hover': 'hoverEffect',
-                            '#pop_acc_sound': 'openSound'
-                        };
-                        Object.keys(propMap).forEach(selector => {
-                            const el = popup.querySelector(selector);
-                            if (el) {
-                                el.addEventListener('input', (ev) => {
-                                    data[propMap[selector]] = ev.target.value;
-                                    onUpdate(data);
-                                });
-                            }
-                        });
                     });
                 });
             }

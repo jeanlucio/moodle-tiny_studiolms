@@ -36,9 +36,27 @@ const fs = require('node:fs');
 const read = (file) => fs.readFileSync(require.resolve(`../../${file}`), 'utf8');
 
 test('the title has no field in the settings, since it is typed on the canvas', () => {
-    assert.ok(!read('templates/popup_accordion_content.mustache').includes('pop_acc_title'));
+    assert.ok(!read('templates/popup_accordion_design.mustache').includes('pop_acc_title'));
     assert.ok(!read('amd/src/blocks/accordion.js').includes('pop_acc_title'));
     assert.match(read('templates/block_accordion.mustache'), /class="slms-acc-title flex-grow-1" contenteditable="true"/);
+});
+
+test('the settings are one tab: design, with the state it starts in and the AI generator in it', () => {
+    const toolbar = read('templates/toolbar_accordion.mustache');
+    const design = read('templates/popup_accordion_design.mustache');
+    const block = read('amd/src/blocks/accordion.js');
+
+    assert.ok(!toolbar.includes('tb-acc-content'), 'no tab of its own for what is left of the content');
+    assert.match(toolbar, /id="tb-acc-design"/);
+    const popupOfTheOldTab = require.resolve('../../templates/toolbar_accordion.mustache')
+        .replace('toolbar_accordion', 'popup_accordion_content');
+    assert.ok(!fs.existsSync(popupOfTheOldTab), 'the popup of the old tab is gone');
+    assert.match(design, /id="pop_acc_state"/);
+    assert.match(design, /id="accordion-ai-btn"/);
+    assert.match(block, /'#pop_acc_state': 'state'/);
+    assert.match(block, /tplData\.isClosed = data\.state === 'closed';/);
+    assert.match(block, /methodname: 'tiny_studiolms_generate_accordion'/);
+    assert.ok(!block.includes('tb-acc-content'));
 });
 
 test('the title bar and the content have a background each, and a block saved before keeps one', () => {
