@@ -27,6 +27,7 @@ import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {getContextId} from '../context';
 import {iconPair, iconView} from './icon_pair';
+import {accordionPalette} from './contrast';
 
 export default {
     id: 'accordion',
@@ -34,7 +35,8 @@ export default {
     icon: '📑',
     defaultData: {
         title: '',
-        color: '#3b82f6',
+        // The blue of a title that reads on the light header (the previous, lighter one was 3.7 to 1 on white).
+        color: '#0d47a1',
         bg: '#ffffff',
         // Background of the title bar. Empty (a block saved before it existed) is the colour of the content.
         headerBg: '',
@@ -91,6 +93,7 @@ export default {
                     tplData.isClosed = data.state === 'closed';
                     tplData.animate = data.animate !== false;
                     tplData.contentColorValue = data.contentColor || '#212529';
+                    tplData.blockColorValue = data.headerBg || data.bg;
 
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_accordion_design', tplData, (popup) => {
                         const propMap = {
@@ -111,6 +114,29 @@ export default {
                                     onUpdate(data);
                                 });
                             }
+                        });
+
+                        // One colour for the block fills the four below, which stay there to be fine tuned.
+                        const blockColorEl = popup.querySelector('#pop_acc_block_color');
+                        blockColorEl?.addEventListener('input', (ev) => {
+                            const palette = accordionPalette(ev.target.value);
+                            if (!palette) {
+                                return;
+                            }
+                            Object.assign(data, palette);
+                            const fields = {
+                                '#pop_acc_header_bg': palette.headerBg,
+                                '#pop_acc_bg': palette.bg,
+                                '#pop_acc_color': palette.color,
+                                '#pop_acc_content_color': palette.contentColor,
+                            };
+                            Object.entries(fields).forEach(([selector, value]) => {
+                                const field = popup.querySelector(selector);
+                                if (field) {
+                                    field.value = value;
+                                }
+                            });
+                            onUpdate(data);
                         });
 
                         const animateEl = popup.querySelector('#pop_acc_animate');

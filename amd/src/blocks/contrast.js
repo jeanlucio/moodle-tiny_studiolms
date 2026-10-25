@@ -162,3 +162,21 @@ export const blockPalette = (colour) => {
         color: readableOn(toHex(rgb), TITLE_COLOUR, TITLE_FALLBACKS),
     };
 };
+
+/**
+ * The colours of an accordion from the one colour its author chose for the block.
+ *
+ * The same as the list of resources, and the text of the content too, since an accordion's content is free text: the
+ * dark grey of the page's text, or black, whichever reads on the light band the content has.
+ *
+ * @param {string} colour The colour chosen, as hexadecimal.
+ * @returns {{headerBg: string, bg: string, color: string, contentColor: string}|null} The four colours, or null when it
+ *     cannot be read.
+ */
+export const accordionPalette = (colour) => {
+    const palette = blockPalette(colour);
+    if (!palette) {
+        return null;
+    }
+    return {...palette, contentColor: readableOn(palette.bg, '#212529', ['#000000'])};
+};

@@ -137,3 +137,38 @@ test('a colour that cannot be read gives no palette, and the block takes the col
     });
 });
 
+test('the accordion palette adds a text colour for the content that reads on its band', () => {
+    ['#6b3b3b', '#f8f9fa', '#ffeb3b', '#0d47a1', '#4caf50', '#ffffff', '#000000'].forEach((colour) => {
+        const palette = contrast.accordionPalette(colour);
+
+        assert.deepEqual(Object.keys(palette).sort(), ['bg', 'color', 'contentColor', 'headerBg']);
+        assert.equal(palette.headerBg, contrast.blockPalette(colour).headerBg);
+        assert.ok(contrast.contrastRatio(palette.contentColor, palette.bg) >= 4.5, `${colour}: content text on the band`);
+        assert.ok(contrast.contrastRatio(palette.color, palette.headerBg) >= 4.5, `${colour}: title on the header`);
+    });
+    assert.equal(contrast.accordionPalette('red'), null);
+});
+
+test('the accordion takes one block colour for the four and keeps the four to be fine tuned', () => {
+    const block = read('amd/src/blocks/accordion.js');
+    const popup = read('templates/popup_accordion_design.mustache');
+
+    assert.match(popup, /id="pop_acc_block_color" value="\{\{blockColorValue\}\}"/);
+    ['pop_acc_color', 'pop_acc_header_bg', 'pop_acc_content_color', 'pop_acc_bg'].forEach((id) => {
+        assert.ok(popup.includes(`id="${id}"`), id);
+        assert.ok(block.includes(`'#${id}': palette.`) || block.includes(`'#${id}': '`) || block.includes(`'#${id}'`), id);
+    });
+    assert.match(block, /const palette = accordionPalette\(ev\.target\.value\);/);
+    assert.match(block, /Object\.assign\(data, palette\);/);
+    assert.match(block, /tplData\.blockColorValue = data\.headerBg \|\| data\.bg;/);
+    // The title colour a new accordion starts with reads on white: the blue it had was 3.7 to 1.
+    assert.match(block, /color: '#0d47a1',/);
+    assert.ok(contrast.contrastRatio('#0d47a1', '#ffffff') >= 4.5);
+    assert.ok(contrast.contrastRatio('#3b82f6', '#ffffff') < 4.5);
+    ['en', 'pt_br'].forEach((lang) => {
+        ['accordion_block_color', 'accordion_colors_fine_tune'].forEach((key) => {
+            assert.ok(read(`lang/${lang}/tiny_studiolms.php`).includes(`$string['${key}'] = `), `${lang} ${key}`);
+        });
+    });
+});
+
