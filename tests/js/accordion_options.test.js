@@ -76,11 +76,13 @@ test('the title bar and the content have a background each, and a block saved be
 
 test('the pair of icons is drawn as two, cross-fading, and a pair of one icon is a single icon that turns', () => {
     const block = read('amd/src/blocks/accordion.js');
+    const pair = read('amd/src/blocks/icon_pair.js');
     const template = read('templates/block_accordion.mustache');
 
-    assert.match(block, /const \[iconFirst, iconSecond\] = iconPair\(data\.icon\)\.split\(' \/ '\);/);
-    assert.match(block, /templateData\.iconSecond = textGlyph\(iconSecond \|\| iconFirst\);/);
-    assert.match(block, /templateData\.iconTurns = templateData\.iconFirst === templateData\.iconSecond;/);
+    assert.match(block, /Object\.assign\(templateData, iconView\(data\.icon\)\);/);
+    assert.match(pair, /const \[first, second\] = iconPair\(icon\)\.split\(' \/ '\);/);
+    assert.match(pair, /const iconSecond = textGlyph\(second \|\| first\);/);
+    assert.match(pair, /iconTurns: iconFirst === iconSecond/);
     assert.match(
         template,
         /slms-acc-icon-closed">\{\{iconFirst\}\}<\/span>\{\{\^iconTurns\}\}<span class="slms-acc-icon-open">/
@@ -89,22 +91,20 @@ test('the pair of icons is drawn as two, cross-fading, and a pair of one icon is
         const css = read(file);
         assert.match(css, /\.slms-acc-icon > span \{\s*grid-area: 1 \/ 1;\s*transition: opacity 0\.25s ease,/);
         assert.match(css, /\.slms-acc-icon-open \{\s*opacity: 0;/);
-        assert.match(css, /\.studiolms-accordion:not\(\.slms-closed\) \.slms-acc-icon-closed \{\s*opacity: 0;/);
-        assert.match(css, /\.studiolms-accordion:not\(\.slms-closed\) \.slms-acc-icon-open \{\s*opacity: 1;/);
+        assert.match(css, /\.studiolms-accordion:not\(\.slms-closed\) \.slms-acc-icon-closed,[^{]*\{\s*opacity: 0;/);
+        assert.match(css, /\.studiolms-accordion:not\(\.slms-closed\) \.slms-acc-icon-open,[^{]*\{\s*opacity: 1;/);
         assert.match(
             css,
-            /:not\(\.slms-closed\) \.slms-acc-icon-turns > \.slms-acc-icon-closed \{\s*opacity: 1;\s*transform: rotate\(90deg\);/
+            /icon-turns > \.slms-acc-icon-closed,[^{]*\{\s*opacity: 1;\s*transform: rotate\(90deg\);/
         );
     });
 });
 
 test('the arrows pair is not offered any more, and a block that has it keeps the look it had', () => {
     const popup = read('templates/popup_accordion_design.mustache');
-    const block = read('amd/src/blocks/accordion.js');
-
     assert.ok(!popup.includes('\u25BC / \u25B2'), 'no option for down / up');
     assert.match(popup, /<option value="\u276F \/ \u276F"/);
-    assert.match(block, /icon === '\\u25BC \/ \\u25B2' \? '\\u25B6 \/ \\u25BC' : icon/);
+    assert.match(read('amd/src/blocks/icon_pair.js'), /icon === DROPPED_ARROWS \? TRIANGLES : icon/);
     ['en', 'pt_br'].forEach((lang) => {
         const strings = read(`lang/${lang}/tiny_studiolms.php`);
         assert.ok(!strings.includes("$string['icon_arrows']"), `${lang}: no string for the dropped option`);
@@ -123,9 +123,9 @@ test('the content opens and closes by its height, hidden from reader and keyboar
         const css = read(file);
         assert.match(
             css,
-            /\.studiolms-accordion-body \{\s*display: grid;\s*grid-template-rows: 1fr;\s*transition: grid-template-rows 0\.3s ease/
+            /\.studiolms-accordion-body,[^{]*\{\s*display: grid;\s*grid-template-rows: 1fr;\s*transition: grid-template-rows 0\.3s/
         );
-        const closed = /slms-closed > \.studiolms-accordion-body \{\s*grid-template-rows: 0fr;\s*visibility: hidden;\s*/;
+        const closed = /slms-closed > \.studiolms-accordion-body,[^{]*\{\s*grid-template-rows: 0fr;\s*visibility: hidden;\s*/;
         assert.match(css, closed);
         assert.match(css, /visibility 0s linear 0\.3s;/);
         // The movement stops for whoever asks the system for less of it.
@@ -160,7 +160,7 @@ test('the opening can be switched off per accordion, and is on unless a block sa
     ['styles.css', 'editor_styles.css'].forEach((file) => {
         const css = read(file);
         assert.match(css, /\.studiolms-accordion\.slms-static \.slms-acc-icon > span,/);
-        assert.match(css, /slms-static\.slms-closed > \.studiolms-accordion-body \{\s*transition: none;/);
+        assert.match(css, /slms-static\.slms-closed > \.studiolms-accordion-body,[^{]*\{\s*transition: none;/);
     });
 });
 
@@ -169,6 +169,8 @@ test('the icon opens and closes the accordion on the canvas and the state it sta
     const css = read('styles.css');
 
     assert.match(app, /closest\?\.\('\.slms-acc-icon'\)[\s\S]*classList\.toggle\('slms-closed'\)/);
+    // The resources list has the same icon, and opens and closes in the canvas the same way.
+    assert.match(app, /closest\('\.studiolms-accordion, \.studiolms-resources'\)\?\.classList\.toggle/);
     assert.match(css, /\.slms-canvas-block-preview \.slms-acc-icon \{\s*pointer-events: auto;\s*cursor: pointer;/);
     // The toggle is on the preview markup only: nothing in it writes the configuration.
     const toggle = app.slice(app.indexOf("closest?.('.slms-acc-icon')"), app.indexOf("closest?.('.slms-acc-icon')") + 200);

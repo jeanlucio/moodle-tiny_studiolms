@@ -162,4 +162,35 @@ final class card_template_test extends advanced_testcase {
         $this->assertStringContainsString('slms-static', $chosen);
         $this->assertMatchesRegularExpression('/studiolms-accordion-content"[^>]*style="color: #112233;"/', $chosen);
     }
+
+    /**
+     * The resources list draws the icon pair, has a body to animate and carries the switch, as the accordion does.
+     *
+     * Regression test: the list drew one icon and turned it a quarter when closed. Its content no longer takes its
+     * padding from the p-4 utility, which cannot be taken to nothing while the list closes.
+     */
+    public function test_resources_draws_the_pair_and_has_a_body_to_animate(): void {
+        global $PAGE;
+
+        $this->resetAfterTest();
+        $PAGE->set_url('/');
+        $renderer = $PAGE->get_renderer('core');
+
+        $pair = $renderer->render_from_template('tiny_studiolms/block_resources', [
+            'bg' => '#fff', 'headerBg' => '#eee', 'color' => '#000', 'animate' => true,
+            'iconFirst' => '📁', 'iconSecond' => '📂',
+        ]);
+        $this->assertStringContainsString('slms-acc-icon-closed">📁<', $pair);
+        $this->assertStringContainsString('slms-acc-icon-open">📂<', $pair);
+        $this->assertStringNotContainsString('slms-static', $pair);
+        $this->assertStringContainsString('studiolms-resources-body', $pair);
+        $this->assertStringNotContainsString('studiolms-resources-content p-4', $pair);
+
+        $turns = $renderer->render_from_template('tiny_studiolms/block_resources', [
+            'animate' => false, 'iconFirst' => '❯', 'iconSecond' => '❯', 'iconTurns' => true,
+        ]);
+        $this->assertStringContainsString('slms-acc-icon slms-acc-icon-turns', $turns);
+        $this->assertStringNotContainsString('slms-acc-icon-open', $turns);
+        $this->assertStringContainsString('slms-static', $turns);
+    }
 }

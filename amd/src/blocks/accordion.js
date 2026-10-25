@@ -26,18 +26,7 @@ import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {getContextId} from '../context';
-import {textGlyph} from './text_glyph';
-
-/**
- * The icon pair of a block, with the one that was dropped from the options taken to the one it looked like.
- *
- * The arrows pair (down, up) was shown as the triangles pair (right, down) in the pages, since the first icon was
- * turned a quarter when closed, so a block that has it keeps looking the way it did.
- *
- * @param {string} icon The pair as saved.
- * @returns {string} The pair to draw.
- */
-const iconPair = (icon) => (icon === '\u25BC / \u25B2' ? '\u25B6 / \u25BC' : icon);
+import {iconPair, iconView} from './icon_pair';
 
 export default {
     id: 'accordion',
@@ -188,12 +177,7 @@ export default {
         const templateData = Object.assign({}, data);
         templateData.isOpen = data.state === 'open';
         templateData.animate = data.animate !== false;
-        // The pair is the closed icon and the open one, each shown in its own state by the stylesheet. A pair of one
-        // icon twice is a single icon that turns a quarter when the accordion opens.
-        const [iconFirst, iconSecond] = iconPair(data.icon).split(' / ');
-        templateData.iconFirst = textGlyph(iconFirst);
-        templateData.iconSecond = textGlyph(iconSecond || iconFirst);
-        templateData.iconTurns = templateData.iconFirst === templateData.iconSecond;
+        Object.assign(templateData, iconView(data.icon));
 
         if (!templateData.title || templateData.title.trim() === '') {
             templateData.title = await getString('accordion_default_title', 'tiny_studiolms');

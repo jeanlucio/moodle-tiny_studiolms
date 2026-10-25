@@ -34,7 +34,7 @@ const fs = require('node:fs');
 let glyph;
 
 test.before(async() => {
-    glyph = await import(require.resolve('../../amd/src/blocks/text_glyph.js'));
+    glyph = await import(require.resolve('../../amd/src/blocks/icon_pair.js'));
 });
 
 test('the right-pointing triangle is asked to be text', () => {
@@ -53,9 +53,14 @@ test('a triangle that already says how it is drawn is not touched again', () => 
     assert.equal(glyph.textGlyph(glyph.textGlyph('▶')), '▶︎');
 });
 
-test('the accordion draws both icons of its pair through the helper', () => {
-    const block = fs.readFileSync(require.resolve('../../amd/src/blocks/accordion.js'), 'utf8');
+test('a pair is drawn through the helper, for the accordion and for the resources', () => {
+    const pair = fs.readFileSync(require.resolve('../../amd/src/blocks/icon_pair.js'), 'utf8');
+    assert.ok(!/^import /m.test(pair), 'no import, so that Node can load it as the loader of Moodle needs it written');
 
-    assert.match(block, /templateData\.iconFirst = textGlyph\(iconFirst\);/);
-    assert.match(block, /templateData\.iconSecond = textGlyph\(iconSecond \|\| iconFirst\);/);
+    assert.match(pair, /const iconFirst = textGlyph\(first\);/);
+    assert.match(pair, /const iconSecond = textGlyph\(second \|\| first\);/);
+    ['accordion', 'resources'].forEach((block) => {
+        const source = fs.readFileSync(require.resolve(`../../amd/src/blocks/${block}.js`), 'utf8');
+        assert.match(source, /iconView\(/);
+    });
 });

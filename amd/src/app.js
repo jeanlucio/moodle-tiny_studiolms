@@ -1018,9 +1018,10 @@ const wirePreviewEditing = (entry) => {
         if (event.target.closest?.('a')) {
             event.preventDefault();
         }
-        // The icon of an accordion shows it open or closed here, without touching the state it starts in.
+        // The icon of an accordion or a list of resources shows it open or closed here, without touching the state it
+        // starts in.
         if (event.target.closest?.('.slms-acc-icon')) {
-            event.target.closest('.studiolms-accordion')?.classList.toggle('slms-closed');
+            event.target.closest('.studiolms-accordion, .studiolms-resources')?.classList.toggle('slms-closed');
         }
     });
 };

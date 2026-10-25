@@ -26,6 +26,7 @@ import {call as ajaxCall} from 'core/ajax';
 import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {getContextId} from '../context';
+import {iconPair, iconView} from './icon_pair';
 
 export default {
     id: 'resources',
@@ -38,6 +39,9 @@ export default {
         headerBg: '#f8f9fa',
         color: '#0d47a1',
         isOpen: true,
+        icon: '❯ / ❯',
+        // Whether the list opens and closes with a movement.
+        animate: true,
         layout: 'list',
         hoverEffect: 'none',
         openSound: 'none',
@@ -76,6 +80,13 @@ export default {
                     tplData.isGrid = data.layout === 'grid';
                     tplData['hover_' + (data.hoverEffect || 'none')] = true;
                     tplData['sound_opt_' + (data.openSound || 'none')] = true;
+                    tplData.animate = data.animate !== false;
+                    tplData[{
+                        '❯ / ❯': 'icon_chevron',
+                        '➕ / ➖': 'icon_plus',
+                        '📁 / 📂': 'icon_folder',
+                        '▶ / ▼': 'icon_triangle'
+                    }[iconPair(data.icon)] || 'icon_chevron'] = true;
 
                     PopupManager.open(btnGeneral, 'tiny_studiolms/popup_resources_general', tplData, (popup) => {
                         const propMap = {
@@ -83,6 +94,7 @@ export default {
                             '#pop_res_title': 'title',
                             '#pop_res_desc': 'desc',
                             '#pop_res_bg': 'bg',
+                            '#pop_res_icon': 'icon',
                             '#pop_res_hover': 'hoverEffect',
                             '#pop_res_sound': 'openSound'
                         };
@@ -94,6 +106,12 @@ export default {
                                     onUpdate(data);
                                 });
                             }
+                        });
+
+                        const animateEl = popup.querySelector('#pop_res_animate');
+                        animateEl?.addEventListener('change', () => {
+                            data.animate = animateEl.checked;
+                            onUpdate(data);
                         });
 
                         const elOpen = popup.querySelector('#pop_res_open');
@@ -271,6 +289,8 @@ export default {
     renderHtml: async(data) => {
         const templateData = Object.assign({}, data);
         templateData.isGrid = data.layout === 'grid';
+        templateData.animate = data.animate !== false;
+        Object.assign(templateData, iconView(data.icon || '❯ / ❯'));
         templateData.listFlexDirection = data.layout === 'grid' ? 'row' : 'column';
         templateData.listFlexWrap = data.layout === 'grid' ? 'wrap' : 'nowrap';
 

@@ -39,6 +39,15 @@
     <label for="pop_res_bg" class="form-label m-0 small fw-bold">{{#str}} bg_color, tiny_studiolms {{/str}}</label>
     <input type="color" class="slms-color-picker" id="pop_res_bg" value="{{bg}}">
 </div>
+<div class="mb-3">
+    <label for="pop_res_icon" class="form-label small fw-bold">{{#str}} icon_pair, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_res_icon">
+        <option value="❯ / ❯" {{#icon_chevron}}selected{{/icon_chevron}}>{{#str}} icon_chevron, tiny_studiolms {{/str}}</option>
+        <option value="▶ / ▼" {{#icon_triangle}}selected{{/icon_triangle}}>{{#str}} icon_triangles, tiny_studiolms {{/str}}</option>
+        <option value="➕ / ➖" {{#icon_plus}}selected{{/icon_plus}}>{{#str}} icon_plus_minus, tiny_studiolms {{/str}}</option>
+        <option value="📁 / 📂" {{#icon_folder}}selected{{/icon_folder}}>{{#str}} icon_folders, tiny_studiolms {{/str}}</option>
+    </select>
+</div>
 <div class="d-flex justify-content-between align-items-center pb-3 border-bottom">
     <label for="pop_res_open" class="form-label m-0 small fw-bold">{{#str}} initial_state, tiny_studiolms {{/str}}</label>
     <select class="form-select form-select-sm slms-select-compact" id="pop_res_open">
@@ -46,6 +55,11 @@
         <option value="false" {{^isOpen}}selected{{/isOpen}}>{{#str}} state_closed, tiny_studiolms {{/str}}</option>
     </select>
 </div>
+<div class="form-check mt-3">
+    <input type="checkbox" class="form-check-input" id="pop_res_animate" {{#animate}}checked{{/animate}}>
+    <label for="pop_res_animate" class="form-check-label small fw-bold">{{#str}} animate_opening, tiny_studiolms {{/str}}</label>
+</div>
+
 <hr class="my-2"/>
 
 <div class="mb-3">

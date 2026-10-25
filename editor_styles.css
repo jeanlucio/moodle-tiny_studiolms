@@ -1288,8 +1288,9 @@
 }
 
 /*
- * The two icons of an accordion are drawn one over the other and cross-fade: the first while it is closed, the second
- * while it is open. A pair of one icon twice (the chevron) is a single icon that turns a quarter instead.
+ * The two icons of an accordion or a list of resources are drawn one over the other and cross-fade: the first while
+ * it is closed, the second while it is open. A pair of one icon twice (the chevron) is a single icon that turns a
+ * quarter instead.
  */
 .slms-acc-icon {
     display: inline-grid;
@@ -1306,11 +1307,13 @@
     opacity: 0;
 }
 
-.studiolms-accordion:not(.slms-closed) .slms-acc-icon-closed {
+.studiolms-accordion:not(.slms-closed) .slms-acc-icon-closed,
+.studiolms-resources:not(.slms-closed) .slms-acc-icon-closed {
     opacity: 0;
 }
 
-.studiolms-accordion:not(.slms-closed) .slms-acc-icon-open {
+.studiolms-accordion:not(.slms-closed) .slms-acc-icon-open,
+.studiolms-resources:not(.slms-closed) .slms-acc-icon-open {
     opacity: 1;
 }
 
@@ -1318,7 +1321,8 @@
     display: inline-block;
 }
 
-.studiolms-accordion:not(.slms-closed) .slms-acc-icon-turns > .slms-acc-icon-closed {
+.studiolms-accordion:not(.slms-closed) .slms-acc-icon-turns > .slms-acc-icon-closed,
+.studiolms-resources:not(.slms-closed) .slms-acc-icon-turns > .slms-acc-icon-closed {
     opacity: 1;
     transform: rotate(90deg);
 }
@@ -1457,42 +1461,52 @@ body.mce-content-body div.slms-grid-slot,
  * to nothing, which a plain height cannot do since the content's height is not known. A closed body is also hidden
  * from the reader and the keyboard, once the closing has run. Not in the editor, where the content is always shown.
  */
-.studiolms-accordion-body {
+.studiolms-accordion-body,
+.studiolms-resources-body {
     display: grid;
     grid-template-rows: 1fr;
     transition: grid-template-rows 0.3s ease, visibility 0s;
 }
 
-.studiolms-accordion-body > .studiolms-accordion-content {
+.studiolms-accordion-body > .studiolms-accordion-content,
+.studiolms-resources-body > .studiolms-resources-content {
     min-height: 0;
     overflow: hidden;
     transition: padding 0.3s ease, border-top-width 0.3s ease;
 }
 
-body:not(.mce-content-body) .studiolms-accordion.slms-closed > .studiolms-accordion-body {
+body:not(.mce-content-body) .studiolms-accordion.slms-closed > .studiolms-accordion-body,
+body:not(.mce-content-body) .studiolms-resources.slms-closed > .studiolms-resources-body {
     grid-template-rows: 0fr;
     visibility: hidden;
     transition: grid-template-rows 0.3s ease, visibility 0s linear 0.3s;
 }
 
-body:not(.mce-content-body) .studiolms-accordion.slms-closed > .studiolms-accordion-body > .studiolms-accordion-content {
+body:not(.mce-content-body) .studiolms-accordion.slms-closed > .studiolms-accordion-body > .studiolms-accordion-content,
+body:not(.mce-content-body) .studiolms-resources.slms-closed > .studiolms-resources-body > .studiolms-resources-content {
     padding-top: 0;
     padding-bottom: 0;
     border-top-width: 0;
 }
 
-/* An accordion set not to animate opens and closes at once. The selectors outweigh the rules they switch off. */
+/* An accordion or a list of resources set not to animate opens and closes at once; the selectors outweigh the rules off. */
 .studiolms-accordion.slms-static .slms-acc-icon > span,
 .studiolms-accordion.slms-static > .studiolms-accordion-body,
 .studiolms-accordion.slms-static > .studiolms-accordion-body > .studiolms-accordion-content,
-body:not(.mce-content-body) .studiolms-accordion.slms-static.slms-closed > .studiolms-accordion-body {
+body:not(.mce-content-body) .studiolms-accordion.slms-static.slms-closed > .studiolms-accordion-body,
+.studiolms-resources.slms-static .slms-acc-icon > span,
+.studiolms-resources.slms-static > .studiolms-resources-body,
+.studiolms-resources.slms-static > .studiolms-resources-body > .studiolms-resources-content,
+body:not(.mce-content-body) .studiolms-resources.slms-static.slms-closed > .studiolms-resources-body {
     transition: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
     .slms-acc-icon > span,
     .studiolms-accordion-body,
-    .studiolms-accordion-body > .studiolms-accordion-content {
+    .studiolms-accordion-body > .studiolms-accordion-content,
+    .studiolms-resources-body,
+    .studiolms-resources-body > .studiolms-resources-content {
         transition: none;
     }
 }
@@ -1826,6 +1840,10 @@ a.studiolms-btn:focus-visible {
 .studiolms-resources-summary:focus-visible {
     outline: 2px solid var(--bs-primary, #0d47a1);
     outline-offset: -2px;
+}
+
+.studiolms-resources-content {
+    padding: 1.5rem;
 }
 
 .studiolms-resources-list {
