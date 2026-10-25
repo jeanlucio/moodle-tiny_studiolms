@@ -1074,6 +1074,12 @@
     overflow: hidden;
 }
 
+/* The text fields of a block are typed in right on the canvas; the rest of the preview stays inert. */
+.tiny_studiolms .slms-canvas-block-preview [contenteditable="true"] {
+    pointer-events: auto;
+    cursor: text;
+}
+
 /* Empty canvas state */
 .tiny_studiolms .slms-canvas-empty {
     display: flex;

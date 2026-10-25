@@ -904,6 +904,7 @@ const addBlockToCanvas = async(blockDef, config = null, skipScroll = false) => {
 
     entry.element = blockEl;
     entry.previewEl = previewEl;
+    wirePreviewEditing(entry);
 
     // Re-check: the empty state may have been injected by showCanvasEmptyState during
     // the awaits above (getString calls yield the event loop, allowing the async
@@ -962,6 +963,65 @@ const addBlockToCanvas = async(blockDef, config = null, skipScroll = false) => {
 };
 
 /**
+ * Read the text typed in a block's preview back into the block's configuration.
+ *
+ * The preview is rendered from the configuration, and the insert and the template read it from there, so what
+ * is typed on the canvas must go back to it or it is lost: at the next redraw (a colour changed in the
+ * settings) and at the insert. The block already knows how to read its own text out of its markup, for
+ * re-editing a block that is in the editor, and that is used here. The markup goes through the same filter
+ * as a stored template first, since a paste can bring anything into an editable field.
+ *
+ * @param {object} entry Canvas block entry.
+ */
+const syncPreviewText = (entry) => {
+    const root = entry.previewEl.firstElementChild;
+    if (!root || !entry.blockDef.extractDOM) {
+        return;
+    }
+    const clean = new DOMParser().parseFromString(sanitizeUntrustedHtml(root.outerHTML), 'text/html')
+        .body.firstElementChild;
+    if (clean) {
+        entry.blockDef.extractDOM(clean, entry.config);
+    }
+};
+
+/**
+ * Let the text fields of a block's preview be typed in, and keep what is typed.
+ *
+ * The rest of the preview stays inert (styles.css). Listeners are on the preview element, which is kept when
+ * the block is redrawn, so one set serves for the life of the block.
+ *
+ * @param {object} entry Canvas block entry, with its preview element in place.
+ */
+const wirePreviewEditing = (entry) => {
+    const preview = entry.previewEl;
+    // A block that holds other blocks (grid columns) is not edited here: its extractDOM reads the whole block.
+    const editedField = (event) => {
+        const field = event.target.closest?.('[contenteditable="true"]');
+        return field && !field.closest('.slms-grid-slot') ? field : null;
+    };
+
+    preview.addEventListener('input', (event) => {
+        if (editedField(event)) {
+            syncPreviewText(entry);
+        }
+    });
+    // A one-line field (a title, a button's label) takes no line break: it would put a block inside an inline.
+    preview.addEventListener('keydown', (event) => {
+        const field = editedField(event);
+        if (event.key === 'Enter' && field && field.tagName === 'SPAN') {
+            event.preventDefault();
+        }
+    });
+    // A button's label sits inside its link, and a click in it must edit, not follow the link.
+    preview.addEventListener('click', (event) => {
+        if (event.target.closest?.('a')) {
+            event.preventDefault();
+        }
+    });
+};
+
+/**
  * Render the preview HTML of a canvas block entry.
  *
  * @param {object} entry Canvas block entry.
@@ -974,12 +1034,15 @@ const renderBlockPreview = async(entry) => {
     try {
         const html = await entry.blockDef.renderHtml(entry.config);
         entry.previewEl.innerHTML = html;
-        // The preview is display-only (pointer-events: none in styles.css), but that does not stop
-        // Tab + Enter from reaching a link or button inside it. tabindex="-1" closes that path while
+        // The preview is display-only except for its text fields (pointer-events: none in styles.css), but
+        // that does not stop Tab + Enter from reaching a link or button inside it. tabindex="-1" closes that path while
         // keeping the content readable by screen readers, which inert would hide.
         entry.previewEl.querySelectorAll('a[href], button, input, select, textarea, iframe, [tabindex]')
             .forEach((el) => el.setAttribute('tabindex', '-1'));
         if (entry.blockDef.id === 'gridcards') {
+            // What a column holds is a preview of another block: it can be neither clicked nor tabbed into.
+            entry.previewEl.querySelectorAll('.slms-grid-slot [contenteditable]')
+                .forEach((el) => el.setAttribute('contenteditable', 'false'));
             // After the tabindex pass above, which would otherwise take the columns out of the tab order.
             await decorateGridSlots(entry);
         }
