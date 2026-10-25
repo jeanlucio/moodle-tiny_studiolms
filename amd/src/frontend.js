@@ -311,6 +311,28 @@ const fixResourceDescriptions = (root) => {
     });
 };
 
+// The margin utilities that blocks inserted before their spacing moved to the stylesheet carry, by block.
+const LEGACY_SPACING = {
+    '.studiolms-btn-wrap': 'my-3',
+    '.studiolms-heading-wrap': 'my-4',
+    '.studiolms-resources-wrap': 'my-4',
+};
+
+/**
+ * Take the margin utility off the blocks that carry one, so the stylesheet sets their spacing.
+ *
+ * Bootstrap marks its margin utilities important, so no rule can take the top margin away from the block that opens a
+ * grid column, and the blocks of a row of columns sat at different heights. The stylesheet gives these blocks the same
+ * margins, so removing the class changes nothing else.
+ *
+ * @param {Element|Document} root The page, or a piece of content that has just entered it.
+ */
+const mendLegacySpacing = (root) => {
+    Object.entries(LEGACY_SPACING).forEach(([selector, utility]) => {
+        within(root, selector).forEach((block) => block.classList.remove(utility));
+    });
+};
+
 /**
  * Wire every StudioLMS block under a root.
  *
@@ -326,6 +348,7 @@ const initIn = (root) => {
     initButtonSounds(root);
     hideDecorativeEmoji(root);
     fixResourceDescriptions(root);
+    mendLegacySpacing(root);
 };
 
 /**

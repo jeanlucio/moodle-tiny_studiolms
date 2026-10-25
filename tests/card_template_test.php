@@ -213,4 +213,24 @@ final class card_template_test extends advanced_testcase {
         $this->assertStringContainsString('<span class="slms-resources-desc small" style="color: #ffffff;">About</span>', $html);
         $this->assertStringNotContainsString('text-secondary', $html);
     }
+
+    /**
+     * The blocks that opened a grid column with a Bootstrap margin utility no longer carry one.
+     *
+     * Regression test: the button, the heading and the list of resources took their spacing from my-3 and my-4,
+     * which are marked important, so no rule could take the top margin away and the blocks of a row of columns
+     * started at different heights. The stylesheet gives them the same spacing.
+     */
+    public function test_blocks_do_not_take_their_top_margin_from_an_important_utility(): void {
+        global $PAGE;
+
+        $this->resetAfterTest();
+        $PAGE->set_url('/');
+        $renderer = $PAGE->get_renderer('core');
+
+        foreach (['block_button' => [], 'block_heading' => ['icon' => 'x'], 'block_resources' => []] as $name => $context) {
+            $html = $renderer->render_from_template('tiny_studiolms/' . $name, $context);
+            $this->assertDoesNotMatchRegularExpression('/class="[^"]*\bmy-[0-5]\b/', $html, $name);
+        }
+    }
 }
