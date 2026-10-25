@@ -19,7 +19,7 @@
     @copyright 2026 Jean Lúcio
 
     Example context (json): {
-        "bg": "#ffffff", "text": "#212529", "border": "#0d47a1", "radius": 8
+        "bg": "#ffffff", "text": "#212529", "border": "#0d47a1", "radius": 8, "accent": true
     }
 }}
 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -30,7 +30,11 @@
     <label for="pop_card_text" class="form-label m-0 small fw-bold">{{#str}} text_color, tiny_studiolms {{/str}}</label>
     <input type="color" class="slms-color-picker" id="pop_card_text" value="{{text}}">
 </div>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="form-check mb-3">
+    <input type="checkbox" class="form-check-input" id="pop_card_accent" {{#accent}}checked{{/accent}}>
+    <label for="pop_card_accent" class="form-check-label small fw-bold">{{#str}} card_accent, tiny_studiolms {{/str}}</label>
+</div>
+<div id="pop_card_border_row" class="d-flex justify-content-between align-items-center mb-3{{^accent}} d-none{{/accent}}">
     <label for="pop_card_border" class="form-label m-0 small fw-bold">{{#str}} border_color, tiny_studiolms {{/str}}</label>
     <input type="color" class="slms-color-picker" id="pop_card_border" value="{{border}}">
 </div>

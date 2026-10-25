@@ -1541,6 +1541,31 @@ a.studiolms-btn:focus-visible {
     border-bottom: none;
 }
 
+/* Media after the text: below it in a vertical card, on the far side of it in a horizontal one. */
+.studiolms-card.slms-media-end {
+    flex-direction: column-reverse;
+}
+
+.studiolms-card.slms-media-end .studiolms-card-media {
+    border-top: 1px solid var(--bs-border-color, #e2e8f0);
+    border-bottom: none;
+}
+
+.studiolms-card.slms-horizontal.slms-media-end {
+    flex-direction: row-reverse;
+}
+
+.studiolms-card.slms-horizontal.slms-media-end .studiolms-card-media {
+    border-top: none;
+    border-inline-start: 1px solid var(--bs-border-color, #e2e8f0);
+    border-inline-end: none;
+}
+
+/* No coloured accent on the side: that side is a border like the other three. */
+.studiolms-card.slms-no-accent {
+    border-inline-start: 1px solid var(--bs-border-color, #e2e8f0);
+}
+
 /* Grid Container */
 .studiolms-grid-wrap {
     background: var(--slms-bg, transparent);
@@ -3086,14 +3111,25 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
         grid-template-columns: 1fr;
     }
 
-    .studiolms-card.slms-horizontal {
+    /* Not in the editor frame: there the card is shown as it is laid out, whatever the width of the column. */
+    body:not(.mce-content-body) .studiolms-card.slms-horizontal {
         flex-direction: column;
     }
 
-    .studiolms-card.slms-horizontal .studiolms-card-media {
+    body:not(.mce-content-body) .studiolms-card.slms-horizontal .studiolms-card-media {
         flex: 0 0 auto;
         border-inline-end: none;
         border-bottom: 1px solid var(--bs-border-color, #e2e8f0);
+    }
+
+    body:not(.mce-content-body) .studiolms-card.slms-horizontal.slms-media-end {
+        flex-direction: column-reverse;
+    }
+
+    body:not(.mce-content-body) .studiolms-card.slms-horizontal.slms-media-end .studiolms-card-media {
+        border-inline-start: none;
+        border-bottom: none;
+        border-top: 1px solid var(--bs-border-color, #e2e8f0);
     }
 
     .slms-features__grid--2,

@@ -59,4 +59,29 @@ final class card_template_test extends advanced_testcase {
         $source = file_get_contents($CFG->dirroot . '/lib/editor/tiny/plugins/studiolms/templates/block_card.mustache');
         $this->assertDoesNotMatchRegularExpression('/<iframe[^>]*\stitle="[A-Za-z]/', $source);
     }
+
+    /**
+     * Where the media goes and whether the side accent shows are classes, not inline styles.
+     *
+     * Regression test for the card layout options: the purifier keeps classes and strips what an inline style
+     * carries beyond the properties it knows, so the page must not depend on a variable set in a style.
+     */
+    public function test_media_position_and_accent_are_classes(): void {
+        global $PAGE;
+
+        $this->resetAfterTest();
+        $PAGE->set_url('/');
+        $renderer = $PAGE->get_renderer('core');
+
+        $plain = $renderer->render_from_template('tiny_studiolms/block_card', ['accent' => true, 'border' => '#0d47a1']);
+        $this->assertStringNotContainsString('slms-media-end', $plain);
+        $this->assertStringNotContainsString('slms-no-accent', $plain);
+        $this->assertStringContainsString('border-left-color: #0d47a1', $plain);
+
+        $end = $renderer->render_from_template('tiny_studiolms/block_card', [
+            'isHorizontal' => true, 'mediaEnd' => true, 'accent' => false, 'border' => '#0d47a1',
+        ]);
+        $this->assertStringContainsString('slms-horizontal slms-media-end slms-no-accent', $end);
+        $this->assertStringNotContainsString('border-left-color', $end);
+    }
 }

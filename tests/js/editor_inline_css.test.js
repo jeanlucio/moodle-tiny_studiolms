@@ -35,8 +35,10 @@ const fs = require('node:fs');
 
 const source = fs.readFileSync(require.resolve('../../amd/src/plugin.js'), 'utf8');
 
-test('a card set side by side is laid out in a row in the editor too', () => {
-    assert.match(source, /body\.mce-content-body \.studiolms-card\.slms-horizontal \{ flex-direction: row; \}/);
+test('the card is laid out by the class rules of the stylesheet, not by a rule of this inline sheet', () => {
+    // Every selector of this sheet starts with body.mce-content-body and so outweighs a class rule of the
+    // stylesheet: a card rule here would put the card back to the layout it had before its options.
+    assert.ok(!source.includes('.studiolms-card'), 'no card rule in the inline editor sheet');
 });
 
 test('the columns and the gap of a grid come from the classes, not from variables nothing sets', () => {

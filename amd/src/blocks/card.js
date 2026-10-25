@@ -41,6 +41,7 @@ export default {
         mediaType: 'none',
         mediaUrl: '',
         layout: 'vertical',
+        accent: true,
         btnText: '',
         btnUrl: '#',
         btnBg: '#0d47a1',
@@ -79,6 +80,8 @@ export default {
                     const tplData = Object.assign({}, data);
                     tplData[`shadow_${data.shadow}`] = true;
                     tplData['hover_' + (data.hoverEffect || 'none')] = true;
+                    // A card saved before the accent could be turned off has no such key, and has the accent.
+                    tplData.accent = data.accent !== false;
 
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_card_design', tplData, (popup) => {
                         // Explicit property mapping.
@@ -98,6 +101,14 @@ export default {
                                     onUpdate(data);
                                 });
                             }
+                        });
+
+                        // The accent colour is the only thing the border colour sets, so it goes with the accent.
+                        const accentEl = popup.querySelector('#pop_card_accent');
+                        accentEl?.addEventListener('change', () => {
+                            data.accent = accentEl.checked;
+                            popup.querySelector('#pop_card_border_row')?.classList.toggle('d-none', !accentEl.checked);
+                            onUpdate(data);
                         });
 
                         const aiBtnEl = popup.querySelector('#card-ai-btn');
@@ -245,7 +256,11 @@ export default {
             }
         }
 
-        templateData.isHorizontal = data.layout === 'horizontal';
+        // The layout names where the media goes: vertical (above), horizontal (beside), and the same with _end
+        // for after the text. Anything else is the plain vertical card.
+        templateData.isHorizontal = data.layout === 'horizontal' || data.layout === 'horizontal_end';
+        templateData.mediaEnd = data.layout === 'horizontal_end' || data.layout === 'vertical_end';
+        templateData.accent = data.accent !== false;
         templateData.hasButton = data.btnText.trim() !== '';
 
         if (!templateData.content || templateData.content.trim() === '') {
