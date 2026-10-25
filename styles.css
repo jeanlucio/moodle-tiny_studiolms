@@ -1080,6 +1080,12 @@
     cursor: text;
 }
 
+/* The icon of an accordion opens and closes it on the canvas, to see both states. */
+.tiny_studiolms .slms-canvas-block-preview .slms-acc-icon {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
 /* Empty canvas state */
 .tiny_studiolms .slms-canvas-empty {
     display: flex;
@@ -1279,6 +1285,24 @@
 .studiolms-accordion:not(.slms-closed) .studiolms-accordion-header .user-select-none,
 .studiolms-resources:not(.slms-closed) .studiolms-resources-summary .user-select-none {
     transform: rotate(0deg);
+}
+
+/* The two icons of an accordion: the first while it is closed, the second while it is open. */
+.slms-acc-icon {
+    display: inline-block;
+    user-select: none;
+}
+
+.slms-acc-icon-open {
+    display: none;
+}
+
+.studiolms-accordion:not(.slms-closed) .slms-acc-icon-closed {
+    display: none;
+}
+
+.studiolms-accordion:not(.slms-closed) .slms-acc-icon-open {
+    display: inline;
 }
 
 /* Hide content when accordion is closed — student view only (not in TinyMCE editor). */

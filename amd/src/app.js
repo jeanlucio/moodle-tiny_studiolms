@@ -1013,10 +1013,14 @@ const wirePreviewEditing = (entry) => {
             event.preventDefault();
         }
     });
-    // A button's label sits inside its link, and a click in it must edit, not follow the link.
     preview.addEventListener('click', (event) => {
+        // A button's label sits inside its link, and a click in it must edit, not follow the link.
         if (event.target.closest?.('a')) {
             event.preventDefault();
+        }
+        // The icon of an accordion shows it open or closed here, without touching the state it starts in.
+        if (event.target.closest?.('.slms-acc-icon')) {
+            event.target.closest('.studiolms-accordion')?.classList.toggle('slms-closed');
         }
     });
 };

@@ -84,4 +84,31 @@ final class card_template_test extends advanced_testcase {
         $this->assertStringContainsString('slms-horizontal slms-media-end slms-no-accent', $end);
         $this->assertStringNotContainsString('border-left-color', $end);
     }
+
+    /**
+     * An accordion draws both icons of its pair and a title bar background only when one is set.
+     *
+     * Regression test: one icon was drawn and turned a quarter when the accordion was closed, so a folder lay on
+     * its side and a plus sign was turned; the stylesheet now shows the first icon while closed and the second
+     * while open. A block saved before the title bar had a background of its own has none, and stays one colour.
+     */
+    public function test_accordion_draws_both_icons_and_a_header_background_only_when_set(): void {
+        global $PAGE;
+
+        $this->resetAfterTest();
+        $PAGE->set_url('/');
+        $renderer = $PAGE->get_renderer('core');
+
+        $html = $renderer->render_from_template('tiny_studiolms/block_accordion', [
+            'bg' => '#ffffff', 'color' => '#3b82f6', 'iconFirst' => '📁', 'iconSecond' => '📂',
+        ]);
+        $this->assertStringContainsString('slms-acc-icon-closed">📁<', $html);
+        $this->assertStringContainsString('slms-acc-icon-open">📂<', $html);
+        $this->assertStringNotContainsString('background-color: #', substr($html, strpos($html, 'studiolms-accordion-header')));
+
+        $coloured = $renderer->render_from_template('tiny_studiolms/block_accordion', [
+            'bg' => '#ffffff', 'color' => '#3b82f6', 'headerBg' => '#e3f2fd', 'iconFirst' => '▼', 'iconSecond' => '▲',
+        ]);
+        $this->assertStringContainsString('color: #3b82f6; background-color: #e3f2fd;', $coloured);
+    }
 }

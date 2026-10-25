@@ -35,6 +35,8 @@ export default {
         title: '',
         color: '#3b82f6',
         bg: '#ffffff',
+        // Background of the title bar. Empty (a block saved before it existed) is the colour of the content.
+        headerBg: '',
         icon: '▼ / ▲',
         state: 'closed',
         content: '',
@@ -72,7 +74,6 @@ export default {
 
                     PopupManager.open(btnContent, 'tiny_studiolms/popup_accordion_content', tplData, (popup) => {
                         const propMap = {
-                            '#pop_acc_title': 'title',
                             '#pop_acc_state': 'state'
                         };
                         Object.keys(propMap).forEach(selector => {
@@ -108,9 +109,7 @@ export default {
                                         args: {topic: prompt, contextid: getContextId()},
                                     }]);
                                     const result = await promise;
-                                    const titleEl = popup.querySelector('#pop_acc_title');
-                                    if (titleEl && result.title) {
-                                        titleEl.value = result.title;
+                                    if (result.title) {
                                         data.title = result.title;
                                     }
                                     data.content = result.content || '';
@@ -145,6 +144,7 @@ export default {
                     }[data.icon] || 'icon_arrow';
 
                     tplData[iconKey] = true;
+                    tplData.headerBgValue = data.headerBg || data.bg;
 
                     tplData['hover_' + (data.hoverEffect || 'none')] = true;
                     tplData['sound_opt_' + (data.openSound || 'none')] = true;
@@ -153,6 +153,7 @@ export default {
                         const propMap = {
                             '#pop_acc_color': 'color',
                             '#pop_acc_bg': 'bg',
+                            '#pop_acc_header_bg': 'headerBg',
                             '#pop_acc_icon': 'icon',
                             '#pop_acc_hover': 'hoverEffect',
                             '#pop_acc_sound': 'openSound'
@@ -182,8 +183,10 @@ export default {
     renderHtml: async(data) => {
         const templateData = Object.assign({}, data);
         templateData.isOpen = data.state === 'open';
-        // Gets only the first icon of the pair to display in the closed state.
-        templateData.iconFirst = data.icon.split(' / ')[0];
+        // The pair is the closed icon and the open one, each shown in its own state by the stylesheet.
+        const [iconFirst, iconSecond] = data.icon.split(' / ');
+        templateData.iconFirst = iconFirst;
+        templateData.iconSecond = iconSecond || iconFirst;
 
         if (!templateData.title || templateData.title.trim() === '') {
             templateData.title = await getString('accordion_default_title', 'tiny_studiolms');
