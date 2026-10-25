@@ -97,13 +97,16 @@ final class interaction_classes_test extends advanced_testcase {
      * Regression test: init() returned early unless the page had an accordion, resources, card or
      * callout, so on a page with only a heading and a button the editing attributes were never
      * removed and a student, or a teacher outside the editor, could type into the text of the blocks.
-     * Every block root carries data-slms-block-type, which is what the check has to look for.
+     * Every block root carries data-slms-block-type, which is what the check has to look for, and the root
+     * classes too, for the text that Moodle cleans, where HTMLPurifier removes the data attributes.
      */
     public function test_frontend_script_starts_for_any_block(): void {
         global $CFG;
 
         $source = file_get_contents($CFG->dirroot . '/lib/editor/tiny/plugins/studiolms/amd/src/frontend.js');
 
-        $this->assertMatchesRegularExpression("/ANY_BLOCK: '\\[data-slms-block-type\\]'/", $source);
+        $this->assertStringContainsString("'[data-slms-block-type]',", $source);
+        $this->assertStringContainsString("'.studiolms-accordion-wrap',", $source);
+        $this->assertStringContainsString("'.studiolms-resources-wrap',", $source);
     }
 }

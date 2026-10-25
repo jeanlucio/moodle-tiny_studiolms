@@ -46,9 +46,23 @@ test('the columns and the gap of a grid come from the classes, not from variable
     assert.ok(!source.includes('var(--slms-gap'), 'the gap is the slms-gap-N classes');
 });
 
-test('a list of resources set as a grid is laid out in a row in the editor too', () => {
-    assert.match(
-        source,
-        /\.studiolms-resources-list\.slms-dir-row \{\s*flex-direction: row;\s*flex-wrap: wrap; \}/
-    );
+test('a list of resources set as a grid is laid out in a row in the editor too, by the stylesheet', () => {
+    const css = fs.readFileSync(require.resolve('../../editor_styles.css'), 'utf8');
+
+    assert.match(css, /\.studiolms-resources-list\.slms-dir-row \{\s*flex-direction: row;\s*flex-wrap: wrap;/);
+});
+
+test('the inline sheet holds only what editor_styles.css cannot win, and repeats none of its rules', () => {
+    const start = source.indexOf('const editorCss = `');
+    const rules = [...source.slice(start, source.indexOf('`;', start)).matchAll(/(body\.mce-content-body[^{]*)\{/g)]
+        .map((match) => match[1].replace(/\s+/g, ' ').trim());
+
+    assert.deepEqual(rules, [
+        'body.mce-content-body .slms-noneditable-selected',
+        'body.mce-content-body a.studiolms-resources-item, body.mce-content-body a.studiolms-resources-item:hover, ' +
+            'body.mce-content-body a.studiolms-resources-item:focus',
+        'body.mce-content-body .studiolms-table th',
+    ]);
+    // Every rule that sat here before was also in styles.css; the ones that stayed are not, and say why.
+    assert.match(source, /where TinyMCE's own link colour and table border outweigh a class selector/);
 });
