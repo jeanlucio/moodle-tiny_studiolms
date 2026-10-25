@@ -31,6 +31,7 @@
 
 import {eventTypes as filterEventTypes} from 'core_filters/events';
 import {splitEmoji, hasTextBesidesEmoji} from './emoji_text';
+import {mutedTextOn} from './blocks/contrast';
 
 const SELECTORS = {
     ACCORDION_SUMMARY: '.studiolms-accordion-summary',
@@ -293,6 +294,24 @@ const hideDecorativeEmoji = (root) => {
 };
 
 /**
+ * Give the description of a list of resources a colour that can be read.
+ *
+ * A list inserted before its description was given a colour of its own carries Bootstrap's "text-secondary", which in
+ * Moodle's theme is a light grey that is 1.4 to 1 on the header it sits on, and which the framework marks as
+ * important, so it cannot be overridden from a stylesheet. The class is dropped and the colour picked from the
+ * header's background, as a list inserted now has it from the start.
+ *
+ * @param {Element|Document} root The page, or a piece of content that has just entered it.
+ */
+const fixResourceDescriptions = (root) => {
+    within(root, '.slms-resources-desc.text-secondary').forEach((description) => {
+        const header = description.closest('.studiolms-resources-summary');
+        description.classList.remove('text-secondary');
+        description.style.color = mutedTextOn(header ? window.getComputedStyle(header).backgroundColor : '');
+    });
+};
+
+/**
  * Wire every StudioLMS block under a root.
  *
  * @param {Element|Document} root The page, or a piece of content that has just entered it.
@@ -306,6 +325,7 @@ const initIn = (root) => {
     fixLegacyButtons(root);
     initButtonSounds(root);
     hideDecorativeEmoji(root);
+    fixResourceDescriptions(root);
 };
 
 /**

@@ -27,6 +27,7 @@ import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {getContextId} from '../context';
 import {iconPair, iconView} from './icon_pair';
+import {mutedTextOn} from './contrast';
 
 export default {
     id: 'resources',
@@ -291,6 +292,8 @@ export default {
         templateData.isGrid = data.layout === 'grid';
         templateData.animate = data.animate !== false;
         Object.assign(templateData, iconView(data.icon || '❯ / ❯'));
+        // The description is a muted line over the author's own header colour, so its grey is picked to be readable.
+        templateData.descColor = mutedTextOn(data.headerBg);
         templateData.listFlexDirection = data.layout === 'grid' ? 'row' : 'column';
         templateData.listFlexWrap = data.layout === 'grid' ? 'wrap' : 'nowrap';
 

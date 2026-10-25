@@ -193,4 +193,24 @@ final class card_template_test extends advanced_testcase {
         $this->assertStringNotContainsString('slms-acc-icon-open', $turns);
         $this->assertStringContainsString('slms-static', $turns);
     }
+
+    /**
+     * The description of a resources list has its colour from the block and not from the framework's grey.
+     *
+     * Regression test: the description was Bootstrap's "text-secondary", which in Moodle's theme is #ced4da, a
+     * contrast of 1.42 to 1 on the header, far below the 4.5 to 1 that WCAG 2.1 AA asks of text that size.
+     */
+    public function test_resources_description_is_coloured_by_the_block_not_the_framework_grey(): void {
+        global $PAGE;
+
+        $this->resetAfterTest();
+        $PAGE->set_url('/');
+
+        $html = $PAGE->get_renderer('core')->render_from_template('tiny_studiolms/block_resources', [
+            'bg' => '#fff', 'headerBg' => '#0d47a1', 'color' => '#fff', 'desc' => 'About', 'descColor' => '#ffffff',
+        ]);
+
+        $this->assertStringContainsString('<span class="slms-resources-desc small" style="color: #ffffff;">About</span>', $html);
+        $this->assertStringNotContainsString('text-secondary', $html);
+    }
 }
