@@ -479,6 +479,7 @@ export default Promise.all([
                 width: 100%;
                 max-width: 900px;
                 margin: 1.5rem 0; }
+            body.mce-content-body .studiolms-card.slms-horizontal { flex-direction: row; }
             body.mce-content-body .studiolms-card.slms-shadow-sm { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
             body.mce-content-body .studiolms-card.slms-shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
             body.mce-content-body .studiolms-card.slms-shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
@@ -501,9 +502,7 @@ export default Promise.all([
                 box-sizing: border-box;
                 margin-bottom: 1.5rem; }
             body.mce-content-body .studiolms-grid-content {
-                display: grid;
-                gap: var(--slms-gap, 20px);
-                grid-template-columns: var(--slms-cols, repeat(2, 1fr)); }
+                display: grid; }
             body.mce-content-body .studiolms-heading-h3 {
                 background-color: var(--slms-bg, transparent);
                 color: var(--slms-color, inherit);
@@ -550,6 +549,9 @@ export default Promise.all([
                 flex-direction: var(--slms-dir, column);
                 flex-wrap: var(--slms-wrap, nowrap);
                 gap: 0.75rem; }
+            body.mce-content-body .studiolms-resources-list.slms-dir-row {
+                flex-direction: row;
+                flex-wrap: wrap; }
             body.mce-content-body a.studiolms-resources-item,
             body.mce-content-body a.studiolms-resources-item:hover,
             body.mce-content-body a.studiolms-resources-item:focus {
