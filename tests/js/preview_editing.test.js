@@ -50,7 +50,8 @@ test('only the text fields sync, never the columns of a grid, and a one-line fie
 
     assert.match(wire, /closest\?\.\('\[contenteditable="true"\]'\)/);
     assert.match(wire, /!field\.closest\('\.slms-grid-slot'\)/);
-    assert.match(wire, /event\.key === 'Enter' && field && field\.tagName === 'SPAN'/);
+    assert.match(wire, /event\.key === 'Enter' && field && \(field\.tagName === 'SPAN' \|\|/);
+    assert.match(wire, /field\.classList\.contains\('slms-single-line'\)\)\) \{\s*event\.preventDefault\(\)/);
     assert.match(wire, /closest\?\.\('a'\)[\s\S]*preventDefault\(\)/);
 });
 

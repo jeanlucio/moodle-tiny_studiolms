@@ -1009,7 +1009,7 @@ const wirePreviewEditing = (entry) => {
     // A one-line field (a title, a button's label) takes no line break: it would put a block inside an inline.
     preview.addEventListener('keydown', (event) => {
         const field = editedField(event);
-        if (event.key === 'Enter' && field && field.tagName === 'SPAN') {
+        if (event.key === 'Enter' && field && (field.tagName === 'SPAN' || field.classList.contains('slms-single-line'))) {
             event.preventDefault();
         }
     });

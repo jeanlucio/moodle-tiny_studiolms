@@ -40,9 +40,9 @@
     {{^hasPhoto}}
     <div class="slms-pc-photo-placeholder" aria-hidden="true">👤</div>
     {{/hasPhoto}}
-    <p class="slms-pc-name">{{name}}</p>
-    {{#role}}<p class="slms-pc-role">{{role}}</p>{{/role}}
-    {{#bio}}<p class="slms-pc-bio">{{bio}}</p>{{/bio}}
+    <p class="slms-pc-name slms-single-line" contenteditable="true">{{name}}</p>
+    <p class="slms-pc-role slms-single-line" contenteditable="true">{{role}}</p>
+    <p class="slms-pc-bio slms-single-line" contenteditable="true">{{bio}}</p>
     {{#hasLinks}}
     <div class="slms-pc-links">
         {{#links}}

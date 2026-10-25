@@ -44,6 +44,17 @@ export default {
         accentColor: '#0f6cbf',
     },
 
+    // Reads the text typed on the card back from its markup, for the canvas and for a card that is in the editor.
+    // Each falls back to empty, never to what the state held, when the expected child is missing.
+    excludeFromState: ['name', 'role', 'bio'],
+
+    extractDOM: (node, state) => {
+        ['name', 'role', 'bio'].forEach((field) => {
+            const element = node.querySelector(`.slms-pc-${field}`);
+            state[field] = element ? element.textContent.trim() : '';
+        });
+    },
+
     buildToolbar: async(container, data, onUpdate, PopupManager) => {
         try {
             const {html, js} = await Templates.renderForPromise('tiny_studiolms/toolbar_profilecard', {});
@@ -57,9 +68,6 @@ export default {
                         Object.assign({}, data), (popup) => {
                         const textFields = {
                             '#pop_pc_photo':      'photoUrl',
-                            '#pop_pc_name':       'name',
-                            '#pop_pc_role':       'role',
-                            '#pop_pc_bio':        'bio',
                             '#pop_pc_link0label': 'link0label',
                             '#pop_pc_link0url':   'link0url',
                             '#pop_pc_link1label': 'link1label',

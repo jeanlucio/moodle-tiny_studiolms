@@ -2080,6 +2080,30 @@ a.studiolms-resources-item:focus-visible {
     margin: 0 0 1.25rem;
 }
 
+/*
+ * The role and the bio are always in the markup so that they can be typed on the canvas and in the editor; empty,
+ * they take no room on the course page, and are shown with a mark where they are edited.
+ */
+.studiolms-profilecard .slms-pc-role:empty,
+.studiolms-profilecard .slms-pc-bio:empty {
+    display: none;
+}
+
+.slms-canvas-block-preview .studiolms-profilecard .slms-pc-role:empty,
+.slms-canvas-block-preview .studiolms-profilecard .slms-pc-bio:empty,
+body.mce-content-body .studiolms-profilecard .slms-pc-role:empty,
+body.mce-content-body .studiolms-profilecard .slms-pc-bio:empty {
+    display: block;
+}
+
+.slms-canvas-block-preview .studiolms-profilecard .slms-pc-role:empty::before,
+.slms-canvas-block-preview .studiolms-profilecard .slms-pc-bio:empty::before,
+body.mce-content-body .studiolms-profilecard .slms-pc-role:empty::before,
+body.mce-content-body .studiolms-profilecard .slms-pc-bio:empty::before {
+    content: '\2026';
+    opacity: 0.5;
+}
+
 .studiolms-profilecard .slms-pc-links {
     display: flex;
     flex-wrap: wrap;

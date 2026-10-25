@@ -88,7 +88,7 @@ test('the resources list colours its description by its header, and an older lis
     const front = read('amd/src/frontend.js');
 
     assert.match(block, /templateData\.descColor = mutedTextOn\(data\.headerBg\);/);
-    assert.match(template, /<span class="slms-resources-desc small" style="color: \{\{descColor\}\};">/);
+    assert.match(template, /<span class="slms-resources-desc small" style="color: \{\{descColor\}\};" contenteditable="true">/);
     assert.ok(!template.includes('text-secondary'), 'the framework grey is gone from the template');
     assert.match(front, /within\(root, '\.slms-resources-desc\.text-secondary'\)/);
     assert.match(front, /description\.classList\.remove\('text-secondary'\);/);

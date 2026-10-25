@@ -93,8 +93,6 @@ export default {
                     PopupManager.open(btnGeneral, 'tiny_studiolms/popup_resources_general', tplData, (popup) => {
                         const propMap = {
                             '#pop_res_layout': 'layout',
-                            '#pop_res_title': 'title',
-                            '#pop_res_desc': 'desc',
                             '#pop_res_icon': 'icon',
                             '#pop_res_hover': 'hoverEffect',
                             '#pop_res_sound': 'openSound'
@@ -156,14 +154,10 @@ export default {
                                         args: {topic: prompt, contextid: getContextId()},
                                     }]);
                                     const result = await promise;
-                                    const titleEl = popup.querySelector('#pop_res_title');
-                                    const descEl = popup.querySelector('#pop_res_desc');
-                                    if (titleEl && result.title) {
-                                        titleEl.value = result.title;
+                                    if (result.title) {
                                         data.title = result.title;
                                     }
-                                    if (descEl && result.desc) {
-                                        descEl.value = result.desc;
+                                    if (result.desc) {
                                         data.desc = result.desc;
                                     }
                                     if (result.resources) {

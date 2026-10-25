@@ -27,14 +27,6 @@
         <option value="grid" {{#isGrid}}selected{{/isGrid}}>{{#str}} layout_grid, tiny_studiolms {{/str}}</option>
     </select>
 </div>
-<div class="mb-3">
-    <label for="pop_res_title" class="form-label small fw-bold">{{#str}} resources_title, tiny_studiolms {{/str}}</label>
-    <input type="text" class="form-control form-control-sm" id="pop_res_title" value="{{title}}">
-</div>
-<div class="mb-3">
-    <label for="pop_res_desc" class="form-label small fw-bold">{{#str}} resources_desc, tiny_studiolms {{/str}}</label>
-    <textarea class="form-control form-control-sm" id="pop_res_desc" rows="2">{{desc}}</textarea>
-</div>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <label for="pop_res_block_color" class="form-label m-0 small fw-bold">{{#str}} resources_block_color, tiny_studiolms {{/str}}</label>
     <input type="color" class="slms-color-picker" id="pop_res_block_color" value="{{blockColorValue}}">

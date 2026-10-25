@@ -210,7 +210,10 @@ final class card_template_test extends advanced_testcase {
             'bg' => '#fff', 'headerBg' => '#0d47a1', 'color' => '#fff', 'desc' => 'About', 'descColor' => '#ffffff',
         ]);
 
-        $this->assertStringContainsString('<span class="slms-resources-desc small" style="color: #ffffff;">About</span>', $html);
+        $this->assertStringContainsString(
+            '<span class="slms-resources-desc small" style="color: #ffffff;" contenteditable="true">About</span>',
+            $html
+        );
         $this->assertStringNotContainsString('text-secondary', $html);
     }
 

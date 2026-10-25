@@ -32,9 +32,9 @@
              style="background-color: {{headerBg}};">
             <span class="d-flex flex-column gap-1">
                 <span class="fw-bold fs-5" style="color: {{color}};">
-                    <span aria-hidden="true" class="me-2">📚</span><span class="slms-resources-title">{{title}}</span>
+                    <span aria-hidden="true" class="me-2">📚</span><span class="slms-resources-title" contenteditable="true">{{title}}</span>
                 </span>
-                <span class="slms-resources-desc small" style="color: {{descColor}};">{{desc}}</span>
+                <span class="slms-resources-desc small" style="color: {{descColor}};" contenteditable="true">{{desc}}</span>
             </span>
             <span contenteditable="false" aria-hidden="true" class="slms-acc-icon{{#iconTurns}} slms-acc-icon-turns{{/iconTurns}} ms-3 fs-5" style="color: {{color}};"><span class="slms-acc-icon-closed">{{iconFirst}}</span>{{^iconTurns}}<span class="slms-acc-icon-open">{{iconSecond}}</span>{{/iconTurns}}</span>
         </div>
