@@ -29,12 +29,13 @@
 // What WCAG 2.1 AA asks of text of this size.
 const MINIMUM_RATIO = 4.5;
 
-// A muted dark grey first, then a darker one, then white for a dark background.
-const MUTED_CANDIDATES = ['#495057', '#212529', '#ffffff'];
+// A muted dark grey first, then a darker one, then white for a dark background, and black for the tone in between
+// (a mid green or orange, where neither the greys nor white reach the ratio).
+const MUTED_CANDIDATES = ['#495057', '#212529', '#ffffff', '#000000'];
 
 // The blue of a title, tried first on a header, then what reads when that does not.
 const TITLE_COLOUR = '#0d47a1';
-const TITLE_FALLBACKS = ['#212529', '#ffffff'];
+const TITLE_FALLBACKS = ['#212529', '#ffffff', '#000000'];
 
 // How much of the block colour is left in the band behind the cards: little, so that it is a tone of it.
 const BAND_SHARE = 0.12;

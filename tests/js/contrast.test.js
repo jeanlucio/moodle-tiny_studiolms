@@ -69,7 +69,7 @@ test('every header a person can pick gets a text that reaches 4.5 to 1, or the b
     ['#ffffff', '#f8f9fa', '#e3f2fd', '#ffe0b2', '#0d47a1', '#000000', '#212529', '#6c757d', '#888888'].forEach((background) => {
         const colour = contrast.mutedTextOn(background);
         const ratio = contrast.contrastRatio(colour, background);
-        const best = Math.max(...['#495057', '#212529', '#ffffff'].map((c) => contrast.contrastRatio(c, background)));
+        const best = Math.max(...['#495057', '#212529', '#ffffff', '#000000'].map((c) => contrast.contrastRatio(c, background)));
 
         assert.ok(ratio >= 4.5 || ratio === best, `${background}: ${colour} is ${ratio.toFixed(2)}`);
     });
@@ -115,7 +115,7 @@ test('no colour that can be picked leaves a title that does not read on the head
         .forEach((colour) => {
             const palette = contrast.blockPalette(colour);
             const ratio = contrast.contrastRatio(palette.color, palette.headerBg);
-            const best = Math.max(...['#0d47a1', '#212529', '#ffffff'].map((c) => contrast.contrastRatio(c, colour)));
+            const best = Math.max(...['#0d47a1', '#212529', '#ffffff', '#000000'].map((c) => contrast.contrastRatio(c, colour)));
 
             assert.ok(ratio >= 4.5 || ratio === best, `${colour}: ${palette.color} is ${ratio.toFixed(2)}`);
         });
@@ -169,6 +169,28 @@ test('the accordion takes one block colour for the four and keeps the four to be
         ['accordion_block_color', 'accordion_colors_fine_tune'].forEach((key) => {
             assert.ok(read(`lang/${lang}/tiny_studiolms.php`).includes(`$string['${key}'] = `), `${lang} ${key}`);
         });
+    });
+});
+
+test('a mid tone, where the greys and white fall short, gets black', () => {
+    // A mid green: #212529 is 3.97 to 1 on it and white 3.86 to 1, so the text was left at 3.9 to 1.
+    assert.equal(contrast.mutedTextOn('#3a905c'), '#000000');
+    assert.ok(contrast.contrastRatio('#000000', '#3a905c') >= 4.5);
+    assert.equal(contrast.blockPalette('#3a905c').color, '#000000');
+    ['#3a905c', '#e67e22', '#2e9e8f', '#8e44ad', '#d35400'].forEach((background) => {
+        assert.ok(contrast.contrastRatio(contrast.mutedTextOn(background), background) >= 4.5, background);
+        assert.ok(contrast.contrastRatio(contrast.blockPalette(background).color, background) >= 4.5, background);
+    });
+});
+
+test('no text colour of the interface or of a block is the light grey of the theme', () => {
+    ['styles.css', 'editor_styles.css'].forEach((file) => {
+        const css = read(file);
+
+        assert.ok(!/color:\s*var\(--bs-secondary,/.test(css), 'the secondary colour is #ced4da in Moodle 5');
+        assert.match(css, /\.slms-comparison__no \{\s*color: var\(--bs-secondary-color, #5c636a\);/);
+        assert.match(css, /\.slms-toolbar-btn \{[^}]*color: var\(--bs-gray-700, #495057\);/s);
+        assert.match(css, /\.slms-section-title \{[^}]*color: var\(--slms-brand, #0d47a1\);/s);
     });
 });
 
