@@ -27,7 +27,7 @@ import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {getContextId} from '../context';
 import {iconPair, iconView} from './icon_pair';
-import {mutedTextOn} from './contrast';
+import {blockPalette, mutedTextOn} from './contrast';
 
 export default {
     id: 'resources',
@@ -82,6 +82,7 @@ export default {
                     tplData['hover_' + (data.hoverEffect || 'none')] = true;
                     tplData['sound_opt_' + (data.openSound || 'none')] = true;
                     tplData.animate = data.animate !== false;
+                    tplData.blockColorValue = data.headerBg;
                     tplData[{
                         '❯ / ❯': 'icon_chevron',
                         '➕ / ➖': 'icon_plus',
@@ -94,7 +95,6 @@ export default {
                             '#pop_res_layout': 'layout',
                             '#pop_res_title': 'title',
                             '#pop_res_desc': 'desc',
-                            '#pop_res_bg': 'bg',
                             '#pop_res_icon': 'icon',
                             '#pop_res_hover': 'hoverEffect',
                             '#pop_res_sound': 'openSound'
@@ -106,6 +106,16 @@ export default {
                                     data[propMap[selector]] = ev.target.value;
                                     onUpdate(data);
                                 });
+                            }
+                        });
+
+                        // One colour for the block: the header takes it, the title on it and the band behind the cards
+                        // follow, so that the author cannot pick a combination that does not read.
+                        popup.querySelector('#pop_res_block_color')?.addEventListener('input', (ev) => {
+                            const palette = blockPalette(ev.target.value);
+                            if (palette) {
+                                Object.assign(data, palette);
+                                onUpdate(data);
                             }
                         });
 

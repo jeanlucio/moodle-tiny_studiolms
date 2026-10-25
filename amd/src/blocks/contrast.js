@@ -32,6 +32,13 @@ const MINIMUM_RATIO = 4.5;
 // A muted dark grey first, then a darker one, then white for a dark background.
 const MUTED_CANDIDATES = ['#495057', '#212529', '#ffffff'];
 
+// The blue of a title, tried first on a header, then what reads when that does not.
+const TITLE_COLOUR = '#0d47a1';
+const TITLE_FALLBACKS = ['#212529', '#ffffff'];
+
+// How much of the block colour is left in the band behind the cards: little, so that it is a tone of it.
+const BAND_SHARE = 0.12;
+
 /**
  * Reads a colour written as #rgb, #rrggbb or rgb()/rgba() into its three channels.
  *
@@ -102,4 +109,56 @@ export const mutedTextOn = (background) => {
     }
     const enough = ratios.findIndex((ratio) => ratio >= MINIMUM_RATIO);
     return MUTED_CANDIDATES[enough === -1 ? ratios.indexOf(Math.max(...ratios)) : enough];
+};
+
+/**
+ * A colour as hexadecimal, from its three channels.
+ *
+ * @param {number[]} rgb Red, green and blue from 0 to 255.
+ * @returns {string}
+ */
+const toHex = (rgb) => `#${rgb.map((channel) => Math.round(channel).toString(16).padStart(2, '0')).join('')}`;
+
+/**
+ * A text colour that reads on a background, as near as it can to the one asked for.
+ *
+ * The preferred colour if it reaches the ratio WCAG 2.1 AA asks of text, else the first fallback that does, else the
+ * one of them with the most contrast. A background that cannot be read gets the preferred colour.
+ *
+ * @param {string} background The colour of the background.
+ * @param {string} preferred The colour wanted for the text.
+ * @param {string[]} fallbacks What to try, in order, when the preferred one does not read.
+ * @returns {string} A colour written as hexadecimal.
+ */
+const readableOn = (background, preferred, fallbacks) => {
+    const candidates = [preferred, ...fallbacks];
+    const ratios = candidates.map((candidate) => contrastRatio(candidate, background));
+    if (ratios.some((ratio) => ratio === null)) {
+        return preferred;
+    }
+    const enough = ratios.findIndex((ratio) => ratio >= MINIMUM_RATIO);
+    return candidates[enough === -1 ? ratios.indexOf(Math.max(...ratios)) : enough];
+};
+
+/**
+ * The colours of a list of resources from the one colour its author chose for the block.
+ *
+ * The header takes the colour itself, the title and the icon on it take the blue of a title or, on a dark colour, a
+ * colour that reads, and the band behind the cards takes a light tone of it, since the cards themselves are white. The
+ * author picks one colour and cannot pick a combination that does not read.
+ *
+ * @param {string} colour The colour chosen, as hexadecimal.
+ * @returns {{headerBg: string, bg: string, color: string}|null} The three colours, or null when it cannot be read.
+ */
+export const blockPalette = (colour) => {
+    const rgb = channels(colour);
+    if (!rgb) {
+        return null;
+    }
+    const band = rgb.map((channel) => channel * BAND_SHARE + 255 * (1 - BAND_SHARE));
+    return {
+        headerBg: toHex(rgb),
+        bg: toHex(band),
+        color: readableOn(toHex(rgb), TITLE_COLOUR, TITLE_FALLBACKS),
+    };
 };

@@ -95,3 +95,45 @@ test('the resources list colours its description by its header, and an older lis
     assert.match(front, /fixResourceDescriptions\(root\);/);
     assert.ok(!/^import /m.test(read('amd/src/blocks/contrast.js')), 'no import, so that Node can load it');
 });
+
+test('one colour gives the block its header, a title that reads on it and a light band behind the cards', () => {
+    const brown = contrast.blockPalette('#6b3b3b');
+
+    assert.equal(brown.headerBg, '#6b3b3b');
+    assert.equal(brown.color, '#ffffff');
+    assert.ok(contrast.contrastRatio(brown.bg, '#ffffff') < 1.3, 'the band is a light tone of the colour');
+    assert.ok(brown.bg > '#e', 'and not the colour itself');
+    // The colour the block has by default stays as it looks now: the blue title on the light header.
+    const light = contrast.blockPalette('#f8f9fa');
+    assert.equal(light.headerBg, '#f8f9fa');
+    assert.equal(light.color, '#0d47a1');
+    assert.equal(light.bg, '#fefefe');
+});
+
+test('no colour that can be picked leaves a title that does not read on the header', () => {
+    ['#ffffff', '#f8f9fa', '#e3f2fd', '#ffe0b2', '#ffeb3b', '#4caf50', '#0d47a1', '#6b3b3b', '#000000', '#888888', '#0000ff']
+        .forEach((colour) => {
+            const palette = contrast.blockPalette(colour);
+            const ratio = contrast.contrastRatio(palette.color, palette.headerBg);
+            const best = Math.max(...['#0d47a1', '#212529', '#ffffff'].map((c) => contrast.contrastRatio(c, colour)));
+
+            assert.ok(ratio >= 4.5 || ratio === best, `${colour}: ${palette.color} is ${ratio.toFixed(2)}`);
+        });
+});
+
+test('a colour that cannot be read gives no palette, and the block takes the colour from a single field', () => {
+    ['', 'red', 'transparent', null, undefined].forEach((colour) => assert.equal(contrast.blockPalette(colour), null));
+
+    const block = read('amd/src/blocks/resources.js');
+    const popup = read('templates/popup_resources_general.mustache');
+
+    assert.match(popup, /id="pop_res_block_color" value="\{\{blockColorValue\}\}"/);
+    assert.ok(!popup.includes('pop_res_bg'), 'no separate field for the band');
+    assert.match(block, /const palette = blockPalette\(ev\.target\.value\);/);
+    assert.match(block, /Object\.assign\(data, palette\);/);
+    assert.match(block, /tplData\.blockColorValue = data\.headerBg;/);
+    ['en', 'pt_br'].forEach((lang) => {
+        assert.ok(read(`lang/${lang}/tiny_studiolms.php`).includes("$string['resources_block_color'] = "), lang);
+    });
+});
+

@@ -448,6 +448,7 @@ $string['resources_ai_error'] = 'Failed to generate content. Please check your A
 $string['resources_ai_generate'] = 'Generate with AI';
 $string['resources_ai_prompt'] = 'Describe the resource collection (e.g. Python programming links, Algebra study materials)...';
 $string['resources_ai_section'] = 'Generate with AI';
+$string['resources_block_color'] = 'Block color';
 $string['resources_btn_access'] = 'Access';
 $string['resources_default_desc'] = 'Complementary study resources.';
 $string['resources_default_item_title'] = 'Study Guide';

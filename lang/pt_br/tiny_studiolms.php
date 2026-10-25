@@ -448,6 +448,7 @@ $string['resources_ai_error'] = 'Falha ao gerar conteúdo. Verifique a configura
 $string['resources_ai_generate'] = 'Gerar com IA';
 $string['resources_ai_prompt'] = 'Descreva a coleção de recursos (ex: Links sobre Python, Materiais de estudo de Álgebra)...';
 $string['resources_ai_section'] = 'Gerar com IA';
+$string['resources_block_color'] = 'Cor do bloco';
 $string['resources_btn_access'] = 'Acessar';
 $string['resources_default_desc'] = 'Recursos complementares de estudo.';
 $string['resources_default_item_title'] = 'Guia de estudo';
