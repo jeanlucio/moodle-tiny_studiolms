@@ -4,21 +4,21 @@
 
 * Duas capabilities: `tiny/studiolms:use` (o botão da barra e todo web service, checada no contexto
   real de curso ou atividade em que o editor está aberto) e `tiny/studiolms:manageglobaltemplates`
-  (Templates Oficiais, declarada com `RISK_XSS | RISK_CONFIG` e sempre checada no nível do sistema,
+  (Modelos do site, declarada com `RISK_XSS | RISK_CONFIG` e sempre checada no nível do sistema,
   então um gestor delegado só num curso ou categoria não consegue publicar, exportar nem apagar
-  templates institucionais).
-* Ownership e visibilidade são verificados no servidor em toda operação de template: um template
+  modelos institucionais).
+* Ownership e visibilidade são verificados no servidor em toda operação de modelo: um modelo
   privado só pode ser lido, favoritado, exportado ou apagado pelo dono, mesmo diante de uma linha de
   favorito forjada.
 * Toda chamada que altera estado é uma função externa do Moodle protegida por sesskey.
 
 ### Conteúdo não confiável
 
-Templates precisam manter os atributos próprios do plugin (`data-slms-*`), que o filtro de HTML do
+Modelos precisam manter os atributos próprios do plugin (`data-slms-*`), que o filtro de HTML do
 Moodle removeria, então o plugin os sanitiza por conta própria antes de qualquer coisa chegar à
 pré-visualização do editor:
 
-* **Templates salvos** são filtrados no navegador antes de carregar: atributos de manipulador de
+* **Modelos salvos** são filtrados no navegador antes de carregar: atributos de manipulador de
   evento, elementos capazes de script, elementos de texto bruto e de template (como `<noscript>`) e
   comentários HTML são removidos; atributos de URL mantêm só `http`, `https`, `mailto`, `tel` ou URL
   relativa; e o resultado é sanitizado de novo até parar de mudar.
@@ -40,7 +40,7 @@ pré-visualização do editor:
 
 ### Privacy API
 
-Implementação completa cobrindo as duas tabelas de armazenamento (templates e favoritos): descoberta
-de contexto, exportação e exclusão para solicitações individuais e em lote. Templates Oficiais são
+Implementação completa cobrindo as duas tabelas de armazenamento (modelos e favoritos): descoberta
+de contexto, exportação e exclusão para solicitações individuais e em lote. Modelos do site são
 conteúdo institucional do qual outros professores dependem, então numa solicitação de exclusão eles
 são mantidos, mas anonimizados (autor e último modificador são zerados) em vez de apagados.

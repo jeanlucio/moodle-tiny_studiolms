@@ -8,5 +8,5 @@
 4. Acesse **Administração do site > Notificações** para concluir a instalação.
 5. O botão **StudioLMS** aparece na barra do TinyMCE (e em **Ferramentas**) para quem tem
    `tiny/studiolms:use` no contexto da página — professores, professores sem edição e gestores por
-   padrão. Gerenciar **Templates Oficiais** exige `tiny/studiolms:manageglobaltemplates`, concedida
+   padrão. Gerenciar **Modelos do site** exige `tiny/studiolms:manageglobaltemplates`, concedida
    a gestores no nível do site por padrão.

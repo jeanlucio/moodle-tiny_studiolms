@@ -37,5 +37,5 @@ metadados da Privacy API e mantêm seus próprios registros de uso.
 O StudioLMS em si:
 
 * não armazena prompts, respostas da IA nem chaves de API;
-* armazena só o conteúdo que o professor escolhe inserir ou salvar como template;
+* armazena só o conteúdo que o professor escolhe inserir ou salvar como modelo;
 * não envia nada a lugar nenhum a menos que o professor use explicitamente um recurso de IA.

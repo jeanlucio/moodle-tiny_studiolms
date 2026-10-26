@@ -16,7 +16,7 @@ block's settings.
 * **Save as template** stores the current canvas in **My Templates**; each template can be starred
   to appear in **Favourites**.
 * **Export** and **Import** (in **My Templates**) move templates between sites as `.json` files.
-* **Official Templates** holds the institution's shared layouts. Teachers apply them; site managers
+* **Site Templates** holds the institution's shared layouts. Teachers apply them; site managers
   can also save and delete them.
 
 **Using AI (when available):**

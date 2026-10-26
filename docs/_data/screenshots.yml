@@ -8,8 +8,8 @@
   caption_en: "The canvas composer inside TinyMCE: the Components sidebar on the left, the page being assembled block by block on the right, then inserted into the editor in one click"
   caption_pt: "O compositor em canvas dentro do TinyMCE: a barra lateral de Componentes à esquerda e a página sendo montada bloco a bloco à direita, inserida no editor com um clique"
 - file: official-templates.png
-  caption_en: "Official Templates: institution-wide layouts maintained by site managers; one click loads a complete, editable layout onto the canvas"
-  caption_pt: "Templates oficiais: layouts da instituição mantidos pelos gestores do site; um clique carrega um layout completo e editável no canvas"
+  caption_en: "Site Templates: institution-wide layouts maintained by site managers; one click loads a complete, editable layout onto the canvas"
+  caption_pt: "Modelos do site: layouts da instituição mantidos pelos gestores do site; um clique carrega um layout completo e editável no canvas"
 - file: ai-layout.png
   caption_en: "AI Layout: describe the pedagogical context and the AI assembles a multi-block layout, previewed before anything reaches the canvas or the course"
   caption_pt: "Modelo IA: descreva o contexto pedagógico e a IA monta um layout com vários blocos, com pré-visualização antes de chegar ao canvas ou ao curso"

@@ -8,5 +8,5 @@
 4. Visit **Site administration > Notifications** to complete the installation.
 5. The **StudioLMS** button appears in the TinyMCE toolbar (and under **Tools**) for users who hold
    `tiny/studiolms:use` in the page's context — editing teachers, non-editing teachers and managers
-   by default. Managing **Official Templates** requires `tiny/studiolms:manageglobaltemplates`,
+   by default. Managing **Site Templates** requires `tiny/studiolms:manageglobaltemplates`,
    granted to managers at site level by default.

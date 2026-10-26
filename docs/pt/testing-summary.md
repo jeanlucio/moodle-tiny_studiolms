@@ -9,7 +9,7 @@ em todo push de CI na matriz completa (Moodle 4.5 → 5.x, PostgreSQL e MariaDB)
 |------|-------------------:|------:|
 | IA (`ai/` — cadeia de provedores, geradores, chat) | 3 | 19 |
 | Web services de IA (`external/generate_*`, `chat_message`) | 13 | 41 |
-| Web services de templates (salvar, buscar, apagar, favoritar, importar, exportar) | 6 | 48 |
+| Web services de modelos (salvar, buscar, apagar, favoritar, importar, exportar) | 6 | 48 |
 | Eventos | 2 | 6 |
 | Privacy API | 1 | 16 |
 | Integração com o editor (`plugininfo`, hook callbacks) | 2 | 12 |

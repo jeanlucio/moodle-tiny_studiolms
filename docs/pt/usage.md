@@ -13,17 +13,17 @@ com as configurações daquele bloco.
 
 **Reaproveitando layouts:**
 
-* **Salvar como template** guarda o canvas atual em **Meus Templates**; qualquer template pode ser
+* **Salvar como modelo** guarda o canvas atual em **Meus modelos**; qualquer modelo pode ser
   favoritado para aparecer em **Favoritos**.
-* **Exportar** e **Importar** (em **Meus Templates**) movem templates entre sites como arquivos
+* **Exportar** e **Importar** (em **Meus modelos**) movem modelos entre sites como arquivos
   `.json`.
-* **Templates Oficiais** reúne os layouts compartilhados da instituição. Professores os aplicam;
+* **Modelos do site** reúne os layouts compartilhados da instituição. Professores os aplicam;
   gestores do site também podem salvar e apagar.
 
 **Usando IA (quando disponível):**
 
 * **Bloco IA** — descreva um bloco em linguagem natural ("um card de aviso vermelho sobre a prova"),
-  revise a pré-visualização e insira, configure mais ou salve como template.
+  revise a pré-visualização e insira, configure mais ou salve como modelo.
 * **Modelo IA** — informe um nome, o contexto pedagógico, tipos de bloco opcionais e uma paleta de
   cores; a IA monta um layout com vários blocos para revisão.
 * **Chat IA** — cole uma ementa, plano de aula ou lista de atividades. O assistente propõe uma

@@ -22,7 +22,7 @@
 * 💾 **Round-trip editing:** each block keeps its configuration inside the content (`data-slms-state`), so any block already in a course can be reopened and edited later.
 * 📚 **Template Library** in four tabs:
   * **Components** — the base blocks above.
-  * **Official Templates** — institution-wide layouts, managed by site managers and read-only for teachers.
+  * **Site Templates** — institution-wide layouts, managed by site managers and read-only for teachers.
   * **My Templates** — each teacher's personal layouts, with save, export and import.
   * **Favourites** — starred templates from every tab in one place.
 * 📤 **Export / Import:** templates travel as `.json` files between Moodle sites.

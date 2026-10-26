@@ -4,7 +4,7 @@
 
 * Two capabilities: `tiny/studiolms:use` (the toolbar button and every web service, checked in the
   real course or activity context the editor is open in) and `tiny/studiolms:manageglobaltemplates`
-  (Official Templates, declared with `RISK_XSS | RISK_CONFIG` and always checked at site level, so a
+  (Site Templates, declared with `RISK_XSS | RISK_CONFIG` and always checked at site level, so a
   manager delegated only in one course or category cannot publish, export or delete institutional
   templates).
 * Ownership and visibility are verified server-side on every template operation: a private template
@@ -39,6 +39,6 @@ remove, so the plugin sanitises them itself before anything reaches the editor p
 ### Privacy API
 
 Full implementation covering both storage tables (templates and favourites): context discovery,
-export, and deletion for individual and bulk requests. Official Templates are institutional content
+export, and deletion for individual and bulk requests. Site Templates are institutional content
 other teachers rely on, so on a deletion request they are kept but anonymised (their author and
 last-modifier are cleared) instead of deleted.
