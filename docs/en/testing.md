@@ -1,6 +1,6 @@
 # 🧪 Automated Tests
 
-StudioLMS ships with **248 PHPUnit test cases** across **41 files**, **213 JavaScript tests** across **40 files**, plus a **76-scenario Behat suite** across **20 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
+StudioLMS ships with **248 PHPUnit test cases** across **41 files**, **218 JavaScript tests** across **41 files**, plus a **76-scenario Behat suite** across **20 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
 
 ### PHPUnit — Unit & Integration Tests
 
@@ -34,7 +34,7 @@ StudioLMS ships with **248 PHPUnit test cases** across **41 files**, **213 JavaS
 | `external/generate_endpoints_test.php` | 5 | What the AI web services return once a provider is reached: each returns its declared structure, an unexpected exception becomes a generic error, the chat returns an action only when there is one, drops history entries with other roles and sends only the latest history |
 | `generator_test.php` | 2 | The data generator: a personal template belongs to the given user and is listed for that user only |
 | `interaction_classes_test.php` | 4 | The hover effect and the click sound a teacher picks reach the page as CSS classes (button, card, callout), and the student-frontend script starts for any block |
-| `presets_test.php` | 3 | The ready-made layouts: every English layout mirrors the Portuguese one and holds no Portuguese text; a layout is made of blocks only (no hand-written heading, button, image or styled box, and the columns of a grid hold blocks) |
+| `presets_test.php` | 3 | The ready-made layouts: every English layout mirrors the Portuguese one and holds no Portuguese text; a layout is made of blocks only (no hand-written heading, button, image or styled box, the columns of a grid hold blocks, and the heading and description of a grid are plain text) |
 | `templates_header_test.php` | 1 | Every template opens with the licence comment and then declares its `@template` name |
 | `templates_text_test.php` | 2 | No title, aria-label, alt or placeholder in a template holds a literal word: they are lang strings, so every language gets them |
 
@@ -48,11 +48,11 @@ AI tests never reach a real provider: `local_aihub`'s client is replaced by a st
 
 | Area | Test files | Cases | What is covered |
 |------|-----------:|------:|----------------|
-| Blocks | 18 | 114 | What the blocks draw and how they behave: the chart, bar and gauge models, the width cap of the blocks that hold little, the accordion and resources options, the card layout and shadow, text typed on the canvas, colours and contrast (WCAG ratios), icon pairs, grid columns, the hover effect on every block, the hidden decorative emoji |
+| Blocks | 19 | 119 | What the blocks draw and how they behave: the chart, bar and gauge models, the width cap of the blocks that hold little, the accordion and resources options, the card layout and shadow, the heading and description of the grid, text typed on the canvas, colours and contrast (WCAG ratios), icon pairs, grid columns, the hover effect on every block, the hidden decorative emoji |
 | Safety and cleaning | 10 | 41 | Safety and the HTML cleaner: escaping, URL and AI-config sanitising, video URLs, blocks found by class where Moodle strips attributes, frontend events, no literal visible text in the AMD sources, no Bootstrap-5-only utilities, the editor's inline CSS |
 | Templates and library | 8 | 28 | Templates and the library: the template cache, importing a file, loading a template into the canvas in one step, the export button reading Export all or Export selected (n), the stacked link fields of the profile card, example texts in the site language, preset matching and its language notice |
 | Studio window | 4 | 30 | The Studio window: the sidebar split and its geometry, the active tab, the AI use policy gate |
-| **Total** | **40** | **213** | |
+| **Total** | **41** | **218** | |
 
 These run without a browser or Moodle: modules imported by the tests import nothing, and a test that needs `app.js` or a template reads the source file instead.
 

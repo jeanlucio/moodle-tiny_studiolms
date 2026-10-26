@@ -114,6 +114,14 @@ final class presets_test extends advanced_testcase {
             foreach ($this->presets($lang) as $file => $preset) {
                 foreach ($preset['blocks'] as $block) {
                     if ($block['type'] === 'gridcards') {
+                        // The heading and the line under it are plain text, each in its own field.
+                        foreach (['containerTitle', 'containerDesc'] as $field) {
+                            $this->assertSame(
+                                strip_tags($block['config'][$field] ?? ''),
+                                $block['config'][$field] ?? '',
+                                "$lang/$file: $field holds markup"
+                            );
+                        }
                         foreach ($block['config']['slots'] as $slot) {
                             $this->assertStringContainsString('data-slms-block-type="', $slot, "$lang/$file: a column");
                         }

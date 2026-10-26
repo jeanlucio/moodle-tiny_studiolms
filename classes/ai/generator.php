@@ -133,7 +133,9 @@ class generator {
         $s .= '   config keys:' . "\n";
         $s .= '   - columns: "2", "3", or "4"' . "\n";
         $s .= '   - gap: number (spacing between cards in px, e.g. 16)' . "\n";
-        $s .= '   - containerTitle: string (optional section heading; use "" if not needed)' . "\n";
+        $s .= '   - containerTitle: string (optional section heading, plain text without HTML; use "" if not needed)' . "\n";
+        $s .= '   - containerDesc: string (optional one-line description under the heading, plain text;' . "\n";
+        $s .= '     use "" if not needed)' . "\n";
         $s .= '   - titleColor: string (hex for container title text, e.g. "#333333")' . "\n";
         $s .= '   - background: string (hex or "transparent")' . "\n";
         $s .= '   - borderColor: string (hex for card borders)' . "\n";

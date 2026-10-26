@@ -7,7 +7,8 @@
       "config": {
         "columns": "3",
         "gap": 20,
-        "containerTitle": "<span aria-hidden=\"true\">🛡️</span> Mission Board<br><small style=\"font-size: 14px; font-weight: 400; color: #666;\">Complete the objectives below to earn experience and advance in this module.</small>",
+        "containerTitle": "🛡️ Mission Board",
+        "containerDesc": "Complete the objectives below to earn experience and advance in this module.",
         "containerTitleSize": "24px",
         "titleColor": "#333333",
         "background": "#fdfdfd",

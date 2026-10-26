@@ -20,17 +20,25 @@
 
     Example context (json): {
         "containerStyle": "background: #fff; border: none; border-radius: 0px; padding: 0px;",
-        "containerTitle": "Grid Title", "containerTitleSize": "24px", "titleColor": "#333",
+        "hasHead": true, "containerTitle": "Grid Title", "containerDesc": "A line under the title",
+        "containerTitleSize": "24px", "titleColor": "#333",
         "columns": "2", "gap": 20, "slotsHtml": "<div class=\"slms-grid-slot\"></div>"
     }
 }}
 <div class="studiolms-grid-wrap mceNonEditable{{#hoverEffect}} slms-hov-{{hoverEffect}}{{/hoverEffect}}" style="{{containerStyle}}">
-    {{#containerTitle}}
-        <h3 class="slms-grid-title mceEditable pb-2 mb-3 border-bottom"
-            style="font-size: {{containerTitleSize}}; color: {{titleColor}}; font-weight: 700;">
-            {{{containerTitle}}}
-        </h3>
-    {{/containerTitle}}
+    {{#hasHead}}
+        <div class="slms-grid-head pb-2 mb-3 border-bottom">
+            {{#containerTitle}}
+                <h3 class="slms-grid-title mceEditable"
+                    style="font-size: {{containerTitleSize}}; color: {{titleColor}}; font-weight: 700;">
+                    {{{containerTitle}}}
+                </h3>
+            {{/containerTitle}}
+            {{#containerDesc}}
+                <p class="slms-grid-desc mceEditable">{{containerDesc}}</p>
+            {{/containerDesc}}
+        </div>
+    {{/hasHead}}
     <div class="studiolms-grid-content slms-cols-{{columns}} slms-gap-{{gap}}">
         {{{slotsHtml}}}
     </div>

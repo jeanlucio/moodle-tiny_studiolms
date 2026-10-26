@@ -34,6 +34,7 @@ export default {
         columns: '2',
         gap: 20,
         containerTitle: '',
+        containerDesc: '',
         containerTitleSize: '24px',
         titleColor: '#333333',
         background: 'transparent',
@@ -45,11 +46,14 @@ export default {
         slots: []
     },
 
-    excludeFromState: ['containerTitle', 'slots'],
+    excludeFromState: ['containerTitle', 'containerDesc', 'slots'],
 
     extractDOM: (node, state) => {
         const titleNode = node.querySelector('.slms-grid-title');
         state.containerTitle = titleNode ? titleNode.innerHTML.trim() : '';
+        // The description is plain text, so what is read back is the text and never the markup.
+        const descNode = node.querySelector('.slms-grid-desc');
+        state.containerDesc = descNode ? descNode.textContent.trim() : '';
 
         const slotNodes = node.querySelectorAll('.slms-grid-slot');
         state.slots = Array.from(slotNodes).map(el => el.innerHTML);
@@ -95,6 +99,7 @@ export default {
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_gridcards_design', tplData, (popup) => {
                         const propMap = {
                             '#pop_grid_title': 'containerTitle',
+                            '#pop_grid_desc': 'containerDesc',
                             '#pop_grid_title_size': 'containerTitleSize',
                             '#pop_grid_title_color': 'titleColor',
                             '#pop_grid_bg': 'background',
@@ -129,6 +134,9 @@ export default {
         // The title is rendered unescaped (it is an editable heading), and the design popup feeds it
         // from a plain text input, so whatever is typed there must not reach the preview as live markup.
         tData.containerTitle = sanitizeUntrustedHtml(data.containerTitle);
+        // Plain text, escaped by the template: the description is a line under the heading, never part of it.
+        tData.containerDesc = typeof data.containerDesc === 'string' ? data.containerDesc.trim() : '';
+        tData.hasHead = tData.containerTitle !== '' || tData.containerDesc !== '';
         tData.gap = gridGap(data.gap);
 
         const pdMap = {'none': '0px', 'sm': '10px', 'md': '20px', 'lg': '40px'};

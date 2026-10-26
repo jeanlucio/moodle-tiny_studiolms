@@ -221,6 +221,7 @@ $string['grid_align_stretch'] = 'Iguais (Esticar)';
 $string['grid_block_added'] = 'Bloco adicionado à coluna {$a}.';
 $string['grid_cols_auto'] = 'Automático';
 $string['grid_columns'] = 'Colunas (Base)';
+$string['grid_container_desc'] = 'Descrição da seção';
 $string['grid_container_title'] = 'Título da Seção';
 $string['grid_empty'] = 'Grid Vazio. Use a engrenagem para colar cards aqui.';
 $string['grid_error_clipboard'] = 'A área de transferência não contém HTML válido.';

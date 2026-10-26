@@ -1410,8 +1410,21 @@ body.mce-content-body div.slms-grid-slot,
 .studiolms-editable-area,
 .slms-acc-title,
 .slms-heading-text,
-.slms-grid-title {
+.slms-grid-title,
+.slms-grid-desc {
     outline: none;
+}
+
+/* The heading of a grid and the line under it: the rule under both is the head's, not the heading's. */
+.slms-grid-head .slms-grid-title {
+    margin: 0;
+}
+
+.slms-grid-head .slms-grid-desc {
+    margin: 0.25rem 0 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--bs-secondary-color, #5c636a);
 }
 
 /* The page theme drops the margin under the last element of a text area; the preview and the editor did not. */

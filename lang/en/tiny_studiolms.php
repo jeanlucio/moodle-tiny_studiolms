@@ -221,6 +221,7 @@ $string['grid_align_stretch'] = 'Equal Height (Stretch)';
 $string['grid_block_added'] = 'Block added to column {$a}.';
 $string['grid_cols_auto'] = 'Automatic';
 $string['grid_columns'] = 'Columns (Base)';
+$string['grid_container_desc'] = 'Section description';
 $string['grid_container_title'] = 'Section Title';
 $string['grid_empty'] = 'Empty grid. Use the settings gear to paste cards here.';
 $string['grid_error_clipboard'] = 'The clipboard does not contain valid HTML.';

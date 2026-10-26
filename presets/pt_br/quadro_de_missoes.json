@@ -7,7 +7,8 @@
       "config": {
         "columns": "3",
         "gap": 20,
-        "containerTitle": "<span aria-hidden=\"true\">🛡️</span> Quadro de Missões<br><small style=\"font-size: 14px; font-weight: 400; color: #666;\">Complete os objetivos abaixo para ganhar experiência e avançar neste módulo.</small>",
+        "containerTitle": "🛡️ Quadro de Missões",
+        "containerDesc": "Complete os objetivos abaixo para ganhar experiência e avançar neste módulo.",
         "containerTitleSize": "24px",
         "titleColor": "#333333",
         "background": "#fdfdfd",

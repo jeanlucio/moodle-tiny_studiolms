@@ -6,7 +6,7 @@
   * **Advanced Card** — card with image or a YouTube or Vimeo video, a rich editable body and an internal button.
   * **Accordion** — expandable topic with 4 icon styles and an open/closed initial state.
   * **Resources** — resource library (PDF, video, audio, link) in list or grid layout.
-  * **Grid Cards** — multi-column container with editable slots.
+  * **Grid Cards** — multi-column container with editable slots, an optional heading and a one-line description under it (two plain text fields).
   * **Callout** — highlight box with a customisable icon and border colour.
   * **Table** — striped or plain table that works with TinyMCE's own table tools.
   * **Profile Card** — presenter card with photo, name, role, bio and up to 3 links.
