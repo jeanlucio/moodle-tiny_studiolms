@@ -1,18 +1,20 @@
 # 🧪 Automated Tests
 
-StudioLMS ships with **142 PHPUnit test cases** and a **22-scenario Behat suite**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
+StudioLMS ships with **239 PHPUnit test cases**, **191 JavaScript tests** and a **76-scenario Behat suite**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
 
 ### PHPUnit — Unit & Integration Tests
 
 | Area | Test files | Cases |
 |------|-----------:|------:|
-| AI (`ai/` — provider chain, generators, chat) | 3 | 19 |
-| AI web services (`external/generate_*`, `chat_message`) | 13 | 41 |
-| Template web services (save, get, delete, favourite, import, export) | 6 | 48 |
-| Events | 2 | 6 |
-| Privacy API | 1 | 16 |
-| Editor integration (`plugininfo`, hook callbacks) | 2 | 12 |
-| **Total** | **27** | **142** |
+| AI (`ai/`, notice of the AI tabs — provider chain, generators, payload parsing, chat) | 5 | 64 |
+| AI web services (`external/generate_*`, `generate_endpoints`, `chat_message`) | 13 | 42 |
+| Template web services (save, get, delete, favourite, import, export) | 6 | 56 |
+| Events | 3 | 10 |
+| Privacy API | 1 | 18 |
+| Editor integration (`plugininfo`, hook callbacks, editor stylesheet) | 3 | 19 |
+| Templates and presets (card, chart, hover classes, ready-made layouts, texts) | 6 | 22 |
+| Database definitions, upgrade step and data generator | 3 | 8 |
+| **Total** | **40** | **239** |
 
 ```bash
 vendor/bin/phpunit --testsuite tiny_studiolms_testsuite
@@ -21,16 +23,21 @@ vendor/bin/phpunit --testsuite tiny_studiolms_testsuite
 AI tests never reach a real provider: the AI Hub's client is replaced by a stub, and a site with no
 AI configured is used to exercise the "no AI" path.
 
+### JavaScript — Headless Tests
+
+**191 tests** in **38 files** run with `node --test tests/js/*.test.js`, without a browser or Moodle: the block models, contrast and colours, escaping and sanitising, the template library and the Studio window.
+
 ### Behat — Acceptance Tests
 
-| Feature file | Scenarios |
-|--------------|----------:|
-| `manage_templates.feature` | 4 |
-| `save_template.feature` | 4 |
-| `favourite_template.feature` | 4 |
-| `import_export.feature` | 4 |
-| Security regressions (6 files — see the full breakdown) | 6 |
-| **Total** | **22** |
+| Feature files | Scenarios |
+|---------------|----------:|
+| Template library (`manage_templates`, `save_template`, `favourite_template`, `import_export`) | 16 |
+| Template lifecycle (`template_lifecycle`) | 8 |
+| Every block inserted (`insert_blocks`) | 26 |
+| Student view and read-only blocks (`student_view`, `text_blocks_view`) | 4 |
+| Editing safeguards (`clear_canvas`, `icon_picker`, `button_link_guard`, `toolbar_capability`, `ai_tabs_unavailable`) | 14 |
+| Security regressions (7 files — see the full breakdown) | 8 |
+| **Total** | **76** |
 
 ```bash
 php admin/tool/behat/cli/init.php

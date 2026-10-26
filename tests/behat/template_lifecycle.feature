@@ -1,5 +1,5 @@
 @editor @editor_tiny @tiny @tiny_studiolms @tiny_studiolms_templates @javascript
-Feature: Manage personal and official layout templates in StudioLMS
+Feature: Manage personal and site layout templates in StudioLMS
   As a teacher
   I want to save, favourite, reuse and delete my layouts
   So that I can build lessons from layouts I already trust
@@ -35,12 +35,12 @@ Feature: Manage personal and official layout templates in StudioLMS
     And the StudioLMS library shows the template "Saved from canvas"
     And the StudioLMS feedback says "tpl_saved"
 
-  Scenario: A template saved as official from the canvas marks the Official tab as the selected one
+  Scenario: A template saved as a site template from the canvas marks the Site Templates tab as the selected one
     Given I log in as "admin"
     And I am on the "Test page" "page activity editing" page
     And I click on the "StudioLMS" button for the "Page content" TinyMCE editor
     And I add the StudioLMS "callout" block to the canvas
-    When I save the StudioLMS canvas as an official template named "Saved as official"
+    When I save the StudioLMS canvas as a site template named "Saved as official"
     Then only the StudioLMS "global" tab is marked as selected
     And the StudioLMS library shows the template "Saved as official"
 
@@ -53,7 +53,7 @@ Feature: Manage personal and official layout templates in StudioLMS
     And the StudioLMS library does not show the template "Other layout"
     And the StudioLMS library does not show the template "Official layout"
 
-  Scenario: Official templates are listed for a teacher who cannot delete them
+  Scenario: Site templates are listed for a teacher who cannot delete them
     Given I log in as "teacher1"
     And I am on the "Test page" "page activity editing" page
     And I click on the "StudioLMS" button for the "Page content" TinyMCE editor

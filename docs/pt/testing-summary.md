@@ -1,19 +1,21 @@
 # 🧪 Testes Automatizados
 
-O StudioLMS inclui **142 casos de teste PHPUnit** e uma suíte Behat com **22 cenários**, executados
+O StudioLMS inclui **239 casos de teste PHPUnit**, **191 testes de JavaScript** e uma suíte Behat com **76 cenários**, executados
 em todo push de CI na matriz completa (Moodle 4.5 → 5.x, PostgreSQL e MariaDB).
 
 ### PHPUnit — Testes Unitários e de Integração
 
 | Área | Arquivos de teste | Casos |
 |------|-------------------:|------:|
-| IA (`ai/` — cadeia de provedores, geradores, chat) | 3 | 19 |
-| Web services de IA (`external/generate_*`, `chat_message`) | 13 | 41 |
-| Web services de modelos (salvar, buscar, apagar, favoritar, importar, exportar) | 6 | 48 |
-| Eventos | 2 | 6 |
-| Privacy API | 1 | 16 |
-| Integração com o editor (`plugininfo`, hook callbacks) | 2 | 12 |
-| **Total** | **27** | **142** |
+| IA (`ai/`, aviso das abas de IA — cadeia de provedores, geradores, interpretação do payload, chat) | 5 | 64 |
+| Web services de IA (`external/generate_*`, `generate_endpoints`, `chat_message`) | 13 | 42 |
+| Web services de modelos (salvar, buscar, apagar, favoritar, importar, exportar) | 6 | 56 |
+| Eventos | 3 | 10 |
+| Privacy API | 1 | 18 |
+| Integração com o editor (`plugininfo`, hook callbacks, folha de estilo do editor) | 3 | 19 |
+| Modelos e presets (cartão, gráficos, classes de hover, layouts prontos, textos) | 6 | 22 |
+| Definições do banco, passo de upgrade e gerador de dados | 3 | 8 |
+| **Total** | **40** | **239** |
 
 ```bash
 vendor/bin/phpunit --testsuite tiny_studiolms_testsuite
@@ -22,16 +24,21 @@ vendor/bin/phpunit --testsuite tiny_studiolms_testsuite
 Os testes de IA nunca chegam a um provedor real: o cliente da Central de IA é substituído por um
 stub, e um site sem nenhuma IA configurada é usado para exercitar o caminho "sem IA".
 
+### JavaScript — Testes sem navegador
+
+**191 testes** em **38 arquivos** rodam com `node --test tests/js/*.test.js`, sem navegador nem Moodle: os modelos dos blocos, contraste e cores, escape e saneamento, a biblioteca de modelos e a janela do Studio.
+
 ### Behat — Testes de Aceitação
 
-| Arquivo de feature | Cenários |
-|---------------------|---------:|
-| `manage_templates.feature` | 4 |
-| `save_template.feature` | 4 |
-| `favourite_template.feature` | 4 |
-| `import_export.feature` | 4 |
-| Regressões de segurança (6 arquivos — ver detalhamento completo) | 6 |
-| **Total** | **22** |
+| Arquivos de feature | Cenários |
+|----------------------|---------:|
+| Biblioteca de modelos (`manage_templates`, `save_template`, `favourite_template`, `import_export`) | 16 |
+| Ciclo de vida dos modelos (`template_lifecycle`) | 8 |
+| Todos os blocos inseridos (`insert_blocks`) | 26 |
+| Visão do estudante e blocos somente leitura (`student_view`, `text_blocks_view`) | 4 |
+| Salvaguardas de edição (`clear_canvas`, `icon_picker`, `button_link_guard`, `toolbar_capability`, `ai_tabs_unavailable`) | 14 |
+| Regressões de segurança (7 arquivos — veja o detalhamento) | 8 |
+| **Total** | **76** |
 
 ```bash
 php admin/tool/behat/cli/init.php

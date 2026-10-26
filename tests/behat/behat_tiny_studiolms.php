@@ -443,7 +443,7 @@ class behat_tiny_studiolms extends behat_base {
      * @Then loading a hostile template of every StudioLMS block runs no script
      */
     public function loading_a_hostile_template_of_every_block_runs_no_script(): void {
-        // The block list only exists in the Components tab; the hostile templates are in the Official one.
+        // The block list only exists in the Components tab; the hostile templates are in the Site Templates one.
         $this->i_click_on_studiolms_tab('components');
         $blocktypes = $this->library_block_types();
         $this->i_click_on_studiolms_tab('global');
@@ -687,12 +687,12 @@ class behat_tiny_studiolms extends behat_base {
     }
 
     /**
-     * Saves the canvas as an official template through the footer form, ticking the official box.
+     * Saves the canvas as a site template through the footer form, ticking the share box.
      *
-     * @When I save the StudioLMS canvas as an official template named :name
+     * @When I save the StudioLMS canvas as a site template named :name
      * @param string $name The template name.
      */
-    public function i_save_the_studiolms_canvas_as_an_official_template(string $name): void {
+    public function i_save_the_studiolms_canvas_as_a_site_template(string $name): void {
         $this->execute('behat_general::i_click_on', ['#slms-btn-save-template', 'css_element']);
         $this->execute('behat_forms::i_set_the_field_to', [
             get_string('placeholder_tpl_name', 'tiny_studiolms'),
@@ -775,7 +775,7 @@ class behat_tiny_studiolms extends behat_base {
      * @param string $name The template name.
      */
     public function the_studiolms_library_shows_the_template(string $name): void {
-        // Looked for in the whole grid: the Official tab lists the ready-made layouts before the saved templates,
+        // Looked for in the whole grid: the Site Templates tab lists the ready-made layouts before the saved templates,
         // so the template asked for is not necessarily the first card.
         $this->execute('behat_general::assert_element_contains_text', [
             $name,
