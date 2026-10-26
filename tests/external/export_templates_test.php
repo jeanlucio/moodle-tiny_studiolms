@@ -143,6 +143,65 @@ final class export_templates_test extends advanced_testcase {
     }
 
     /**
+     * Insert a personal template for a user.
+     *
+     * @param \stdClass $user The owner.
+     * @param string $name Template name.
+     * @return int The template id.
+     */
+    private function create_personal_template(\stdClass $user, string $name): int {
+        global $DB;
+
+        $now = time();
+        return $DB->insert_record('tiny_studiolms_templates', (object) [
+            'name'         => $name,
+            'content'      => '<p>' . $name . '</p>',
+            'userid'       => $user->id,
+            'usermodified' => $user->id,
+            'isglobal'     => 0,
+            'timecreated'  => $now,
+            'timemodified' => $now,
+        ]);
+    }
+
+    /**
+     * Ticking templates exports only those; ticking none exports all of the user's own.
+     *
+     * Regression test for the export button: the checkboxes of My Templates choose what is exported, and with none
+     * ticked the export takes everything. With a single template the two looked the same, so a user could not tell
+     * that ticking did anything. The button now says which of the two it will do, and this is what each does.
+     */
+    public function test_ticked_templates_are_exported_and_none_ticked_exports_all(): void {
+        $this->setUser($this->teacher);
+        $second = $this->create_personal_template($this->teacher, 'Second Layout');
+        $contextid = \context_system::instance()->id;
+
+        $ticked = export_templates::execute($contextid, [$second]);
+        $this->assertSame(['Second Layout'], array_column($ticked, 'name'));
+
+        $all = export_templates::execute($contextid, []);
+        $this->assertEqualsCanonicalizing(['My Layout', 'Second Layout'], array_column($all, 'name'));
+    }
+
+    /**
+     * A site manager who ticks templates gets only those; the site templates come only with none ticked.
+     *
+     * The line under the button warns a manager that "nothing ticked" includes the site templates, so ticking must
+     * be the way to leave them out.
+     */
+    public function test_a_manager_who_ticks_templates_does_not_get_the_site_templates(): void {
+        $this->setUser($this->manager);
+        $own = $this->create_personal_template($this->manager, 'Manager Layout');
+        $contextid = \context_system::instance()->id;
+
+        $ticked = export_templates::execute($contextid, [$own]);
+        $this->assertSame(['Manager Layout'], array_column($ticked, 'name'));
+
+        $all = export_templates::execute($contextid, []);
+        $this->assertEqualsCanonicalizing(['Manager Layout', 'Global Layout'], array_column($all, 'name'));
+    }
+
+    /**
      * A teacher requesting a specific ID they do not own gets an empty result.
      */
     public function test_export_by_id_excludes_unowned(): void {

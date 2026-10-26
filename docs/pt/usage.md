@@ -16,7 +16,9 @@ com as configurações daquele bloco.
 * **Salvar como modelo** guarda o canvas atual em **Meus modelos**; qualquer modelo pode ser
   favoritado para aparecer em **Favoritos**.
 * **Exportar** e **Importar** (em **Meus modelos**) movem modelos entre sites como arquivos
-  `.json`.
+  `.json`. Marque os modelos a exportar: o botão passa a mostrar **Exportar selecionados (n)**. Sem nada
+  marcado ele mostra **Exportar tudo** e leva todos os seus modelos; para um gestor do site isso inclui
+  também os modelos do site, e a linha abaixo do botão avisa.
 * **Modelos do site** reúne os layouts compartilhados da instituição. Professores os aplicam;
   gestores do site também podem salvar e apagar.
 

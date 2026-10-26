@@ -23,6 +23,7 @@
 
 import {Blocks, localizeBlockDefaults} from './blocks/registry';
 import {INVALID_IMPORT_FILE} from './template_import';
+import {exportTexts} from './export_label';
 import {getString} from 'core/str';
 import Templates from 'core/templates';
 import Notification from 'core/notification';
@@ -257,7 +258,7 @@ export const initStudioApp = (
     setupTabs();
     setupSidebarToggle();
     setupSidebarSearch();
-    setupImportExportButtons();
+    setupImportExportButtons(canManageGlobal);
 
     setTimeout(async() => {
         // The blocks' example texts are translated strings: they must be in place before a block is
@@ -2197,10 +2198,38 @@ const setupSaveTemplateButton = (canManageGlobal = false) => {
 
 /**
  * Wire up the export and import buttons in the "mine" tab toolbar.
+ *
+ * The button names what it will export: the ticked templates, or everything when none is ticked (and, for a site
+ * manager, the site templates too). The label follows the ticks, and the grid being drawn again (a tab change, a
+ * delete, an import) resets them, so both are watched.
+ *
+ * @param {boolean} canManageGlobal Whether the user manages the site templates.
  */
-const setupImportExportButtons = () => {
+const setupImportExportButtons = (canManageGlobal = false) => {
     const btnExport = document.getElementById('slms-btn-export');
     const btnImport = document.getElementById('slms-btn-import');
+    const grid = document.getElementById('slms-library-grid');
+
+    const refreshExportLabel = async() => {
+        const label = document.getElementById('slms-btn-export-label');
+        const hint = document.getElementById('slms-export-hint');
+        if (!label || !hint) {
+            return;
+        }
+        const {button, hint: hintKey} = exportTexts(document.querySelectorAll('.slms-tpl-select:checked').length, canManageGlobal);
+        label.textContent = await getString(button.key, 'tiny_studiolms', button.param ?? undefined);
+        hint.textContent = hintKey ? await getString(hintKey, 'tiny_studiolms') : '';
+    };
+
+    if (grid) {
+        grid.addEventListener('change', (event) => {
+            if (event.target.closest?.('.slms-tpl-select')) {
+                refreshExportLabel();
+            }
+        });
+        new MutationObserver(refreshExportLabel).observe(grid, {childList: true});
+    }
+    refreshExportLabel();
 
     if (btnExport) {
         btnExport.addEventListener('click', async() => {
