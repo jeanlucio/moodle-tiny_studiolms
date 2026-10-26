@@ -21,7 +21,7 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {Blocks, localizeBlockDefaults} from './blocks/registry';
+import {Blocks, blockForType, localizeBlockDefaults} from './blocks/registry';
 import {INVALID_IMPORT_FILE} from './template_import';
 import {exportTexts} from './export_label';
 import {getString} from 'core/str';
@@ -267,7 +267,7 @@ export const initStudioApp = (
         showCanvasEmptyState();
 
         if (editData && editData.type && editData.state) {
-            const blockDef = Blocks[editData.type];
+            const blockDef = blockForType(editData.type);
             if (blockDef) {
                 const restoredState = StateManager.restore(editData.state, blockDef);
 
@@ -1279,7 +1279,7 @@ const showCanvasEmptyState = () => {
 const stageTemplateBlock = async(el, stage) => {
     const type = el.getAttribute('data-slms-block-type');
     const state = el.getAttribute('data-slms-state');
-    const blockDef = Blocks[type];
+    const blockDef = blockForType(type);
 
     if (!blockDef) {
         return;
@@ -1332,7 +1332,10 @@ export const loadTemplateToCanvas = async(htmlContent, tplName = '') => {
     // it never fetches images or fires event handlers, so reading attributes off it here cannot
     // execute a payload crafted into the template.
     const parsed = new DOMParser().parseFromString(htmlContent, 'text/html');
-    const blockElements = parsed.body.querySelectorAll('[data-slms-block-type]');
+    // Only the blocks at the top: the ones inside the columns of a grid belong to the grid, which holds them in its own
+    // settings, and adding them again would put each of them on the canvas a second time.
+    const blockElements = [...parsed.body.querySelectorAll('[data-slms-block-type]')]
+        .filter((el) => !el.parentElement?.closest('[data-slms-block-type]'));
 
     if (blockElements.length === 0) {
         showInlineFeedback(

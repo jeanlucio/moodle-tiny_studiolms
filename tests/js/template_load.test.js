@@ -46,6 +46,14 @@ test('a staged block is neither selected nor scrolled to, and leaves the empty p
     assert.match(add, /const raceEmptyState = stage \? null : /);
 });
 
+test('only the blocks at the top of a template are loaded, not the ones inside the columns of a grid', () => {
+    const from = app.indexOf('export const loadTemplateToCanvas = async(');
+    const load = app.slice(from, app.indexOf('const renderSingleBlockForInsert'));
+
+    assert.match(load, /\[\.\.\.parsed\.body\.querySelectorAll\('\[data-slms-block-type\]'\)\]/);
+    assert.match(load, /\.filter\(\(el\) => !el\.parentElement\?\.closest\('\[data-slms-block-type\]'\)\);/);
+});
+
 test('a template is built into one fragment, added once and one block is selected once', () => {
     const from = app.indexOf('export const loadTemplateToCanvas = async(');
     const load = app.slice(from, app.indexOf('const renderSingleBlockForInsert'));
@@ -56,4 +64,13 @@ test('a template is built into one fragment, added once and one block is selecte
     assert.equal(load.match(/selectCanvasBlock\(/g).length, 1);
     assert.doesNotMatch(load, /addBlockToCanvas\(/);
     assert.match(app, /await addBlockToCanvas\(blockDef, blockConfig, true, stage\);/);
+});
+
+test('a block saved under a name it had before the first release is still found', () => {
+    const registry = fs.readFileSync(require.resolve('../../amd/src/blocks/registry.js'), 'utf8');
+
+    assert.match(registry, /const BLOCK_ALIASES = \{webteca: 'resources'\};/);
+    assert.match(registry, /export const blockForType = \(type\) => \{/);
+    assert.equal((app.match(/blockForType\(/g) || []).length, 2);
+    assert.doesNotMatch(app, /Blocks\[(editData\.type|type)\]/);
 });

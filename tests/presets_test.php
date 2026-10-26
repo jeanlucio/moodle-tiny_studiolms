@@ -95,6 +95,47 @@ final class presets_test extends advanced_testcase {
     }
 
     /**
+     * A layout is made of the blocks of the plugin and nothing else.
+     *
+     * Regression test: two layouts were a single card whose text was hand-written HTML, with a styled heading, a
+     * round photo and buttons drawn as links with a background, and two grids held hand-made boxes in their
+     * columns. None of that could be changed with the settings of a block, and the photo was a broken image. Every
+     * block now comes from the library, and a column of a grid holds blocks, not styled boxes.
+     */
+    public function test_layouts_are_made_of_blocks_only(): void {
+        $hand = [
+            'a button drawn as a link' => '/<a\b[^>]*style="[^"]*background/i',
+            'a heading with a background' => '/<h[1-6]\b[^>]*style="[^"]*background/i',
+            'a flex layout' => '/display:\s*flex/i',
+            'an image' => '/<img\b/i',
+            'a styled box' => '/<div\b[^>]*style="[^"]*(border|background)/i',
+        ];
+        foreach (['pt_br', 'en'] as $lang) {
+            foreach ($this->presets($lang) as $file => $preset) {
+                foreach ($preset['blocks'] as $block) {
+                    if ($block['type'] === 'gridcards') {
+                        foreach ($block['config']['slots'] as $slot) {
+                            $this->assertStringContainsString('data-slms-block-type="', $slot, "$lang/$file: a column");
+                        }
+                        continue;
+                    }
+                    $fields = [];
+                    array_walk_recursive($block['config'], function ($value) use (&$fields) {
+                        if (is_string($value)) {
+                            $fields[] = $value;
+                        }
+                    });
+                    foreach ($fields as $value) {
+                        foreach ($hand as $what => $pattern) {
+                            $this->assertDoesNotMatchRegularExpression($pattern, $value, "$lang/$file: $what");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * No English layout still holds Portuguese text.
      *
      * Every accented letter of the Portuguese text is a sign of a sentence left untranslated.

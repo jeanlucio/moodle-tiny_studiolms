@@ -1,27 +1,73 @@
 {
   "name": "Live Sessions",
-  "description": "Card with the dates, recordings and slides of live sessions, with a button to enter the live room.",
+  "description": "Heading, welcome note, list of recordings and slides of the live sessions and a button to enter the live room.",
   "blocks": [
     {
-      "type": "advancedCard",
+      "type": "stylizedHeading",
       "config": {
-        "bg": "#f3e5f5",
-        "text": "#4a148c",
-        "border": "#ce93d8",
-        "radius": 12,
-        "shadow": "sm",
-        "mediaType": "none",
-        "mediaUrl": "",
-        "layout": "vertical",
-        "content": "<h3 style=\"background-color:#e1bee7;color:#6a1b9a;padding:10px;border-radius:8px;margin-top:0;\" aria-label=\"Live sessions of the course\"><span aria-hidden=\"true\">📅</span> <strong>Live Sessions</strong></h3><p style=\"text-align:justify;color:#4a148c;\">Hello <strong>[firstname]</strong>! Here you will find the dates of the live sessions, plus the recordings and slides of the presentations.</p><div style=\"background-color:#ede7f6;padding:14px;border-radius:10px;margin-bottom:15px;border:1px solid #d1c4e9;\"><p style=\"margin-top:0;margin-bottom:10px;color:#4a148c;\"><strong><span aria-hidden=\"true\">🟣</span> Session 1:</strong> <span style=\"color:#d81b60;\">[MM/DD/YYYY]</span></p><a style=\"display:inline-block;background-color:#7e57c2;color:white;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold;margin:5px 10px 5px 0;\" href=\"#\" target=\"_blank\" rel=\"noopener\"><span aria-hidden=\"true\">🎥</span> Watch Recording</a> <a style=\"display:inline-block;background-color:#5e35b1;color:white;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold;margin:5px 0;\" href=\"#\" target=\"_blank\" rel=\"noopener\"><span aria-hidden=\"true\">📥</span> Open Slides</a></div><div style=\"background-color:#ede7f6;padding:14px;border-radius:10px;margin-bottom:0;border:1px solid #d1c4e9;\"><p style=\"margin-top:0;margin-bottom:10px;color:#4a148c;\"><strong><span aria-hidden=\"true\">🟣</span> Session 2:</strong> <span style=\"color:#d81b60;\">[MM/DD/YYYY]</span></p><a style=\"display:inline-block;background-color:#7e57c2;color:white;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold;margin:5px 10px 5px 0;\" href=\"#\" target=\"_blank\" rel=\"noopener\"><span aria-hidden=\"true\">🎥</span> Watch Recording</a> <a style=\"display:inline-block;background-color:#5e35b1;color:white;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold;margin:5px 0;\" href=\"#\" target=\"_blank\" rel=\"noopener\"><span aria-hidden=\"true\">📥</span> Open Slides</a></div>",
+        "text": "Live Sessions",
+        "level": "h3",
+        "icon": "📅",
+        "bgColor": "#e1bee7",
+        "textColor": "#6a1b9a"
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "👋",
+        "backgroundColor": "#f3e5f5",
+        "textColor": "#4a148c",
+        "borderColor": "#ce93d8",
+        "borderLeftWidth": 4,
+        "borderRadius": 8,
+        "contentHtml": "<p class=\"m-0\">Hello <strong>[firstname]</strong>! Here you will find the dates of the live sessions, plus the recordings and slides of the presentations.</p>"
+      }
+    },
+    {
+      "type": "resources",
+      "config": {
+        "title": "Recordings and slides",
+        "desc": "Material from each live session.",
+        "bg": "#ede7f6",
+        "headerBg": "#e1bee7",
+        "color": "#4a148c",
+        "isOpen": true,
+        "layout": "list",
+        "resources": [
+          {
+            "type": "video",
+            "title": "Session 1 — [MM/DD/YYYY]: watch the recording",
+            "url": "#"
+          },
+          {
+            "type": "pdf",
+            "title": "Session 1 — presentation slides",
+            "url": "#"
+          },
+          {
+            "type": "video",
+            "title": "Session 2 — [MM/DD/YYYY]: watch the recording",
+            "url": "#"
+          },
+          {
+            "type": "pdf",
+            "title": "Session 2 — presentation slides",
+            "url": "#"
+          }
+        ]
+      }
+    },
+    {
+      "type": "actionButton",
+      "config": {
         "btnText": "▶️ Join the Live Session",
         "btnUrl": "#",
         "btnBg": "#8e24aa",
         "btnTextCol": "#ffffff",
-        "btnAlign": "center",
-        "hoverEffect": "none",
-        "btnHoverEffect": "lift",
-        "btnClickSound": "none"
+        "radius": 6,
+        "align": "center",
+        "hoverEffect": "lift"
       }
     }
   ]

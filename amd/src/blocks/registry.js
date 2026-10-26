@@ -71,6 +71,25 @@ Object.values(Blocks).forEach((block) => {
     }
 });
 
+/**
+ * Names that stored content gave to blocks that were renamed before the first release, and what they are now.
+ *
+ * A template or a page saved when the list of resources was still called "webteca" holds that name in
+ * data-slms-block-type; without this the Studio did not know the block and dropped it when loading.
+ */
+const BLOCK_ALIASES = {webteca: 'resources'};
+
+/**
+ * Find the definition of a block by the type stored in content, whatever name it had when it was saved.
+ *
+ * @param {string} type Value of data-slms-block-type.
+ * @returns {object|undefined} The block definition, or undefined for a type that does not exist.
+ */
+export const blockForType = (type) => {
+    const id = Object.hasOwn(BLOCK_ALIASES, type) ? BLOCK_ALIASES[type] : type;
+    return Object.hasOwn(Blocks, id) ? Blocks[id] : undefined;
+};
+
 /** @var {boolean} Whether applyDefaultTexts() has already run on the blocks. */
 let localized = false;
 
