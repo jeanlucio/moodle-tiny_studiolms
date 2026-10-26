@@ -97,15 +97,6 @@ $functions = [
         'loginrequired' => true,
         'capabilities'  => 'tiny/studiolms:use',
     ],
-    'tiny_studiolms_generate_mindmap' => [
-        'classname'   => 'tiny_studiolms\external\generate_mindmap',
-        'methodname'  => 'execute',
-        'description' => 'Generate a mind map node structure via a configured LLM provider.',
-        'type'        => 'write',
-        'ajax'        => true,
-        'loginrequired' => true,
-        'capabilities'  => 'tiny/studiolms:use',
-    ],
     'tiny_studiolms_generate_infographic' => [
         'classname'   => 'tiny_studiolms\external\generate_infographic',
         'methodname'  => 'execute',

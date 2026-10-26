@@ -58,7 +58,6 @@ test('a block that draws its own context hands the effect to its template', () =
         'infographic_comparison', 'profilecard'].forEach((block) => {
         assert.match(read(`amd/src/blocks/${block}.js`), /hoverEffect: data\.hoverEffect,?/, block);
     });
-    assert.match(read('amd/src/blocks/mindmap.js'), /\{svgContent, textAlt, hoverEffect: data\.hoverEffect\}/);
 });
 
 test('the registry gives a block with none of its own the default and the flag, and the Studio the tab', () => {

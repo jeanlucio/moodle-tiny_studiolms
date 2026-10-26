@@ -138,7 +138,7 @@ final class provider_chain_test extends advanced_testcase {
 
         $this->assertTrue(provider_chain::has_ai($context));
 
-        $result = provider_chain::send('system text', 'user text', true, 'Mind map', $context);
+        $result = provider_chain::send('system text', 'user text', true, 'Chart', $context);
 
         $this->assertTrue($result['success']);
         $this->assertTrue($result['attempted']);
@@ -148,7 +148,7 @@ final class provider_chain_test extends advanced_testcase {
 
         $logs = $DB->get_records('local_aihub_log', ['component' => 'tiny_studiolms']);
         $this->assertCount(1, $logs);
-        $this->assertSame('Mind map', reset($logs)->description);
+        $this->assertSame('Chart', reset($logs)->description);
     }
 
     /**

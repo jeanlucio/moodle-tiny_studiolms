@@ -41,7 +41,6 @@ Feature: Build content with every StudioLMS block
       | chart                 |
       | chartBar              |
       | gauge                 |
-      | mindmap               |
       | infographic           |
       | infographicFeatures   |
       | infographicSteps      |
@@ -67,7 +66,6 @@ Feature: Build content with every StudioLMS block
       | chart                 | In progress       |
       | chartBar              | In progress       |
       | gauge                 | Approval          |
-      | mindmap               | Concept A         |
       | infographic           | Modules completed |
       | infographicSteps      | Step 2            |
       | infographicTimeline   | Event 3           |

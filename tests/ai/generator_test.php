@@ -79,7 +79,6 @@ final class generator_test extends advanced_testcase {
         $calls = [
             fn() => generator::generate_block('A callout about photosynthesis', $context),
             fn() => generator::generate_preset('My Layout', 'Intro to photosynthesis', '', 'not-a-real-palette', $context),
-            fn() => generator::generate_mindmap('Photosynthesis', $context),
             fn() => generator::generate_infographic('Photosynthesis', $context),
             fn() => generator::generate_infographic_steps('Photosynthesis', $context),
             fn() => generator::generate_infographic_features('Photosynthesis', $context),
@@ -190,13 +189,13 @@ final class generator_test extends advanced_testcase {
         $messages = [
             ['role' => 'user', 'content' => 'Hi'],
             ['role' => 'assistant', 'content' => 'Hello!'],
-            ['role' => 'user', 'content' => 'Make a mind map'],
+            ['role' => 'user', 'content' => 'Make a chart'],
         ];
 
         $result = generator::call_chat('System', $messages, \context_system::instance());
 
         $this->assertSame(['data' => '{"reply":"Hello"}', 'provider' => 'Gemini'], $result);
-        $this->assertSame("User: Hi\nAssistant: Hello!\nUser: Make a mind map", $client->calls[0][1]);
+        $this->assertSame("User: Hi\nAssistant: Hello!\nUser: Make a chart", $client->calls[0][1]);
         $this->assertSame('System', $client->calls[0][0]);
     }
 
@@ -290,14 +289,13 @@ final class generator_test extends advanced_testcase {
 
         $dir = $CFG->dirroot . '/lib/editor/tiny/plugins/studiolms/amd/src/blocks/';
         $names = [];
-        foreach (['infographic_shared.js' => 'THEMES', 'mindmap.js' => 'COLORS'] as $file => $table) {
+        foreach (['infographic_shared.js' => 'THEMES'] as $file => $table) {
             $source = file_get_contents($dir . $file);
             $this->assertSame(1, preg_match('/const ' . $table . ' = \{(.*?)\n\};/s', $source, $body), $file);
             preg_match_all('/^    (\w+): \{/m', $body[1], $keys);
             $names[$file] = $keys[1];
         }
-        $this->assertSame($names['infographic_shared.js'], $names['mindmap.js']);
-        return $names['mindmap.js'];
+        return $names['infographic_shared.js'];
     }
 
     /**
@@ -305,7 +303,7 @@ final class generator_test extends advanced_testcase {
      *
      * Regression test: the prompt told the model to set "theme" to the palette name, but the blocks only
      * know blue, green, purple, orange, red and black, so a neutral layout drew its infographics and
-     * mind maps in blue next to grey text blocks.
+     * charts in blue next to grey text blocks.
      */
     public function test_each_palette_asks_for_a_theme_the_blocks_have(): void {
         $themes = $this->block_theme_names();

@@ -50,7 +50,6 @@ require_once($CFG->dirroot . '/lib/editor/tiny/plugins/studiolms/tests/fixtures/
  * @covers \tiny_studiolms\external\generate_infographic_features
  * @covers \tiny_studiolms\external\generate_infographic_steps
  * @covers \tiny_studiolms\external\generate_infographic_timeline
- * @covers \tiny_studiolms\external\generate_mindmap
  * @covers \tiny_studiolms\external\generate_preset
  * @covers \tiny_studiolms\external\generate_resources
  */
@@ -129,11 +128,6 @@ final class generate_endpoints_test extends advanced_testcase {
                 '{"items":[{"title":"a"}]}',
                 fn(int $id) => generate_infographic_timeline::execute($id, $topic),
                 'infographic_timeline_ai_error',
-            ],
-            generate_mindmap::class => [
-                '{"branches":[{"label":"a"}]}',
-                fn(int $id) => generate_mindmap::execute($id, $topic),
-                'mindmap_ai_error',
             ],
             generate_preset::class => [
                 '{"name":"Layout","blocks":[{"type":"callout"}]}',

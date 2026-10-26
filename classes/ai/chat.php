@@ -130,8 +130,7 @@ class chat {
         $prompt .= '    gauge (speedometer, 1–3 side-by-side)' . "\n";
         $prompt .= '  Infographics: infographic (stats/metrics), infographicSteps (numbered flow),' . "\n";
         $prompt .= '    infographicFeatures (icon+title+text grid), infographicTimeline (vertical),' . "\n";
-        $prompt .= '    infographicComparison (side-by-side columns with checkmarks)' . "\n";
-        $prompt .= '  Conceptual: mindmap (radial SVG diagram)' . "\n\n";
+        $prompt .= '    infographicComparison (side-by-side columns with checkmarks)' . "\n\n";
 
         $prompt .= 'Available colour palettes: blue, green, purple, orange, neutral' . "\n\n";
 

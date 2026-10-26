@@ -37,8 +37,6 @@ const WANTED = [
     ['default_label_inprogress', []],
     ['default_label_failed', []],
     ['default_gauge_label', []],
-    ['default_mindmap_topic', []],
-    ['default_mindmap_branch', ['A', 'B', 'C', 'D']],
     ['default_stat_approval', []],
     ['default_stat_modules', []],
     ['default_stat_participants', []],

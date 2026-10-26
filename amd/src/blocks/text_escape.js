@@ -14,14 +14,14 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Shared HTML-escaping helper for the chart, gauge, infographic and mind map blocks.
+ * Shared HTML-escaping helper for the chart, gauge and infographic blocks.
  *
  * These blocks build their SVG/HTML markup by string concatenation rather than through a
  * Mustache template — moving that markup into .mustache files, where escaping is automatic,
  * was judged not worth the risk of regressing already-published blocks. Every value they
  * interpolate — label, value, description, title — must go through this function first; it
  * used to be five separate, independently copy-pasted definitions (chart.js, chart_bar.js,
- * gauge.js, mindmap.js as `svgEsc`, and infographic_shared.js). Nothing catches a future
+ * gauge.js, the mind map block as `svgEsc`, and infographic_shared.js). Nothing catches a future
  * block, or a copy edited in one place, that forgets to call it — so there is only one copy now.
  *
  * Plain, dependency-free ES module (no `core/*` import) on purpose, so it doubles as the subject

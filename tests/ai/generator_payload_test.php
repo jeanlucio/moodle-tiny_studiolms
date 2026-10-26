@@ -96,37 +96,6 @@ final class generator_payload_test extends advanced_testcase {
     }
 
     /**
-     * A fenced mind map is unwrapped, its text cleaned and its unusable branches dropped.
-     */
-    public function test_mindmap_parses_fenced_json_and_drops_bad_branches(): void {
-        $result = $this->generate('generate_mindmap', $this->fenced([
-            'topic' => '<b>Photosynthesis</b>',
-            'branches' => [
-                ['label' => '<i>Light</i>', 'children' => ['Sun', '<u>Water</u>', 5]],
-                'not-a-branch',
-                ['label' => '', 'children' => ['orphan']],
-                ['label' => 'Soil'],
-            ],
-        ]));
-
-        $this->assertSame('Photosynthesis', $result['topic']);
-        $this->assertSame('Gemini', $result['provider']);
-        $this->assertSame([
-            ['label' => 'Light', 'children' => ['Sun', 'Water', '5']],
-            ['label' => 'Soil', 'children' => []],
-        ], json_decode($result['branches'], true));
-    }
-
-    /**
-     * Without a topic of its own, the mind map keeps the teacher's.
-     */
-    public function test_mindmap_falls_back_to_the_requested_topic(): void {
-        $result = $this->generate('generate_mindmap', json_encode(['branches' => [['label' => 'Light']]]));
-
-        $this->assertSame('Photosynthesis', $result['topic']);
-    }
-
-    /**
      * Stats infographic: an item may carry only a value or only a label, never neither.
      */
     public function test_infographic_keeps_partial_items_and_drops_empty_ones(): void {
@@ -355,7 +324,6 @@ final class generator_payload_test extends advanced_testcase {
      */
     public function test_generators_reject_unusable_responses(): void {
         $listed = [
-            ['generate_mindmap', 'mindmap_ai_error', 'branches', ['label' => '']],
             ['generate_infographic', 'infographic_ai_error', 'items', ['icon' => 'fa-users']],
             ['generate_infographic_steps', 'infographic_steps_ai_error', 'items', ['title' => '']],
             ['generate_infographic_features', 'infographic_features_ai_error', 'items', ['title' => '']],
@@ -391,10 +359,10 @@ final class generator_payload_test extends advanced_testcase {
         $client = $this->install_hub_stub(true, $payload);
         $context = \context_system::instance();
 
-        generator::generate_preset('Layout', 'Intro', 'callout, mindmap', 'green', $context);
+        generator::generate_preset('Layout', 'Intro', 'callout, gauge', 'green', $context);
         generator::generate_preset('Layout', 'Intro', '   ', 'green', $context);
 
-        $this->assertStringContainsString('Preferred block types (use if appropriate): callout, mindmap', $client->calls[0][1]);
+        $this->assertStringContainsString('Preferred block types (use if appropriate): callout, gauge', $client->calls[0][1]);
         $this->assertStringNotContainsString('Preferred block types', $client->calls[1][1]);
     }
 
@@ -430,14 +398,14 @@ final class generator_payload_test extends advanced_testcase {
     public function test_preset_keeps_block_with_non_array_config(): void {
         $this->install_hub_stub(true, $this->fenced([
             'name' => '<b>Layout</b>',
-            'blocks' => [['type' => 'callout', 'config' => 'oops'], ['type' => 'mindmap']],
+            'blocks' => [['type' => 'callout', 'config' => 'oops'], ['type' => 'gauge']],
         ]));
 
         $preset = generator::generate_preset('Layout', 'Intro', '', 'blue', \context_system::instance());
 
         $this->assertSame('Layout', $preset['name']);
         $this->assertSame(
-            [['type' => 'callout', 'config' => []], ['type' => 'mindmap', 'config' => []]],
+            [['type' => 'callout', 'config' => []], ['type' => 'gauge', 'config' => []]],
             json_decode($preset['blocks'], true)
         );
     }
@@ -489,7 +457,6 @@ final class generator_payload_test extends advanced_testcase {
     public function test_wrong_typed_text_fields_do_not_break_a_generator(): void {
         $wrong = ['text' => 'object'];
         $cases = [
-            'generate_mindmap' => ['topic' => $wrong, 'branches' => [['label' => 'Light']]],
             'generate_infographic' => ['title' => $wrong, 'items' => [['value' => '1']]],
             'generate_infographic_steps' => ['title' => $wrong, 'items' => [['title' => 'a']]],
             'generate_infographic_features' => ['title' => ['x'], 'items' => [['title' => 'a']]],
@@ -518,7 +485,6 @@ final class generator_payload_test extends advanced_testcase {
      * A list item whose fields are the wrong type is dropped, and a response left with none is rejected.
      */
     public function test_wrong_typed_item_fields_drop_the_item(): void {
-        $this->assert_rejected('generate_mindmap', 'mindmap_ai_error', json_encode(['branches' => [['label' => ['x']]]]));
         $this->assert_rejected(
             'generate_infographic_steps',
             'infographic_steps_ai_error',
@@ -544,22 +510,6 @@ final class generator_payload_test extends advanced_testcase {
                 $this->assertSame('ai_preset_error', $e->errorcode);
             }
         }
-    }
-
-    /**
-     * A mind map child that is not text is skipped, not written as the word "Array".
-     */
-    public function test_mindmap_skips_children_that_are_not_text(): void {
-        $result = $this->generate('generate_mindmap', json_encode([
-            'topic' => 'Water',
-            'branches' => [['label' => 'Cycle', 'children' => [['Evaporation'], 'Rain', 5, null, '']]],
-        ]));
-
-        $this->assertSame(
-            [['label' => 'Cycle', 'children' => ['Rain', '5']]],
-            json_decode($result['branches'], true)
-        );
-        $this->assertStringNotContainsString('Array', $result['branches']);
     }
 
     /**

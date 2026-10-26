@@ -29,9 +29,6 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/** @var {string[]} Letters used to name the example mind map concepts. */
-const CONCEPT_LETTERS = ['A', 'B', 'C', 'D'];
-
 /**
  * Replaces the example labels in the blocks' defaultData with translated ones, in place.
  *
@@ -61,13 +58,6 @@ export const applyDefaultTexts = (blocks, text) => {
     }
     if (blocks.gauge) {
         blocks.gauge.defaultData.gauges[0].label = text('default_gauge_label');
-    }
-    if (blocks.mindmap) {
-        const data = blocks.mindmap.defaultData;
-        data.topic = text('default_mindmap_topic');
-        data.branches.forEach((branch, index) => {
-            branch.label = text('default_mindmap_branch', CONCEPT_LETTERS[index]);
-        });
     }
     if (blocks.infographic) {
         ['default_stat_approval', 'default_stat_modules', 'default_stat_participants'].forEach((name, index) => {

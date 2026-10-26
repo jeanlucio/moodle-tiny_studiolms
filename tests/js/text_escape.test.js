@@ -20,7 +20,7 @@
  * the source file (unlike amd/src/htmlsanitizer.js's DOMParser-based functions, which do need a
  * browser).
  *
- * chart/gauge/infographic/mind map build their markup by hand instead of through a Mustache
+ * chart/gauge/infographic build their markup by hand instead of through a Mustache
  * template (moving it into templates was rejected as too large/risky for an already-published
  * block shape), so the one escaping function every one of those blocks now shares carries all
  * the weight of keeping that markup safe. This test suite exists so a future edit that weakens

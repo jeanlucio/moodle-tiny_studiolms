@@ -186,14 +186,7 @@ class generator {
         $s .= '    - gauges: array of {value: number (0–100), label: string}' . "\n";
         $s .= '    Generate 1–3 gauge objects (shown side by side).' . "\n\n";
 
-        $s .= '13. mindmap — Radial SVG mind map.' . "\n";
-        $s .= '    config keys:' . "\n";
-        $s .= '    - topic: string (central node, max 20 chars)' . "\n";
-        $s .= '    - theme: "blue", "green", "purple", "orange", "red", or "black"' . "\n";
-        $s .= '    - branches: array of {label: string, children: [string, ...]}' . "\n";
-        $s .= '    Generate 4–6 branches, each with 2–4 children (1–4 word strings).' . "\n\n";
-
-        $s .= '14. infographic — Stats/metrics cards.' . "\n";
+        $s .= '13. infographic — Stats/metrics cards.' . "\n";
         $s .= '    config keys:' . "\n";
         $s .= '    - layout: always "stats"' . "\n";
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
@@ -212,7 +205,7 @@ class generator {
         $s .= '      "fa-solid fa-flask", "fa-solid fa-code", "fa-solid fa-database",' . "\n";
         $s .= '      "fa-solid fa-user".' . "\n\n";
 
-        $s .= '15. infographicSteps — Numbered process flow.' . "\n";
+        $s .= '14. infographicSteps — Numbered process flow.' . "\n";
         $s .= '    config keys:' . "\n";
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
         $s .= '    - theme: "blue", "green", "purple", "orange", "red", or "black"' . "\n";
@@ -221,7 +214,7 @@ class generator {
         $s .= '        title: string, description: string}' . "\n";
         $s .= '    Generate 3–6 steps.' . "\n\n";
 
-        $s .= '16. infographicFeatures — Feature/benefit card grid.' . "\n";
+        $s .= '15. infographicFeatures — Feature/benefit card grid.' . "\n";
         $s .= '    config keys:' . "\n";
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
         $s .= '    - theme: "blue", "green", "purple", "orange", "red", or "black"' . "\n";
@@ -230,7 +223,7 @@ class generator {
         $s .= '        title: string, description: string}' . "\n";
         $s .= '    Generate 3–6 items.' . "\n\n";
 
-        $s .= '17. infographicTimeline — Vertical chronological timeline.' . "\n";
+        $s .= '16. infographicTimeline — Vertical chronological timeline.' . "\n";
         $s .= '    config keys:' . "\n";
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
         $s .= '    - theme: "blue", "green", "purple", "orange", "red", or "black"' . "\n";
@@ -238,7 +231,7 @@ class generator {
         $s .= '        description: string}' . "\n";
         $s .= '    Generate 3–6 items in chronological order.' . "\n\n";
 
-        $s .= '18. infographicComparison — Side-by-side comparison table with checkmarks.' . "\n";
+        $s .= '17. infographicComparison — Side-by-side comparison table with checkmarks.' . "\n";
         $s .= '    config keys:' . "\n";
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
         $s .= '    - col1: string (first option name, max 20 chars)' . "\n";
@@ -349,7 +342,7 @@ class generator {
         $prompt .= 'Rules:' . "\n";
         $prompt .= '- Order blocks logically: heading → content blocks → actions.' . "\n";
         $prompt .= '- For text-based blocks (1–9): use ONLY the hex values from the palette above.' . "\n";
-        $prompt .= '- For visual blocks (10–18: chart, chartBar, gauge, mindmap, infographic*):'
+        $prompt .= '- For visual blocks (10–17: chart, chartBar, gauge, infographic*):'
             . ' set their "theme" field to "' . $theme . '".' . "\n";
         $prompt .= self::language_instruction() . "\n";
         $prompt .= '- Generate rich, placeholder-quality HTML content in contentHtml/content fields.' . "\n";
@@ -493,83 +486,6 @@ class generator {
         return $preset;
     }
 
-    /**
-     * Returns the system prompt for mind map generation.
-     *
-     * @return string
-     */
-    private static function mindmap_system_prompt(): string {
-        $p = 'You are a mind map generator for educational content.' . "\n";
-        $p .= 'Given a topic, generate a structured mind map.' . "\n\n";
-        $p .= 'Respond ONLY with a valid JSON object — no markdown, no code fences, no explanation.' . "\n\n";
-        $p .= 'Schema: {"topic": "string", "branches": [{"label": "string", "children": ["string", ...]}, ...]}' . "\n\n";
-        $p .= 'Rules:' . "\n";
-        $p .= '- Generate 4 to 6 main branches' . "\n";
-        $p .= '- Each branch must have 2 to 4 children' . "\n";
-        $p .= '- Keep all labels concise (1–4 words each)' . "\n";
-        $p .= self::language_instruction() . "\n";
-        $p .= '- Respond ONLY with JSON.' . "\n";
-        return $p;
-    }
-
-    /**
-     * Generates a mind map node structure from a topic description.
-     *
-     * @param string $topic Topic description from the teacher.
-     * @param \context $context Context the request is made in.
-     * @return array With keys 'topic' (string), 'branches' (JSON string), 'provider' (string).
-     * @throws \moodle_exception If no provider is configured, all calls fail, or the response is invalid.
-     */
-    public static function generate_mindmap(string $topic, \context $context): array {
-        $result = self::call_providers(
-            $topic,
-            self::mindmap_system_prompt(),
-            'mindmap_ai_error',
-            get_string('block_mindmap_title', 'tiny_studiolms'),
-            $context
-        );
-
-        $raw = trim($result['data']);
-        $raw = preg_replace('/^\x60{3}(?:json)?\s*/i', '', $raw);
-        $raw = preg_replace('/\s*\x60{3}$/i', '', $raw);
-
-        $data = json_decode(trim($raw), true);
-
-        if (!is_array($data) || empty($data['branches']) || !is_array($data['branches'])) {
-            throw new \moodle_exception('mindmap_ai_error', 'tiny_studiolms');
-        }
-
-        $safetopic = self::text($data['topic'] ?? null, $topic);
-        $safebranches = [];
-        foreach ($data['branches'] as $branch) {
-            $label = is_array($branch) ? self::text($branch['label'] ?? null) : '';
-            if ($label === '') {
-                continue;
-            }
-            $safechildren = [];
-            $children = is_array($branch['children'] ?? null) ? $branch['children'] : [];
-            foreach ($children as $child) {
-                $safechild = self::text($child);
-                if ($safechild !== '') {
-                    $safechildren[] = $safechild;
-                }
-            }
-            $safebranches[] = [
-                'label'    => $label,
-                'children' => $safechildren,
-            ];
-        }
-
-        if (empty($safebranches)) {
-            throw new \moodle_exception('mindmap_ai_error', 'tiny_studiolms');
-        }
-
-        return [
-            'topic'    => $safetopic,
-            'branches' => json_encode($safebranches),
-            'provider' => $result['provider'],
-        ];
-    }
 
     /** @var string[] Curated FA6 icons offered to the AI; must stay in sync with ICON_UNICODE in infographic_shared.js. */
     private const ALLOWED_ICONS = [
@@ -1312,7 +1228,7 @@ class generator {
             'chart', 'chartBar', 'gauge',
             'gridcards', 'infographic', 'infographicComparison',
             'infographicFeatures', 'infographicSteps', 'infographicTimeline',
-            'mindmap', 'profileCard', 'stylizedHeading', 'table', 'resources',
+            'profileCard', 'stylizedHeading', 'table', 'resources',
         ];
 
         if (
@@ -1350,7 +1266,7 @@ class generator {
             'chart', 'chartBar', 'gauge',
             'gridcards', 'infographic', 'infographicComparison',
             'infographicFeatures', 'infographicSteps', 'infographicTimeline',
-            'mindmap', 'profileCard', 'stylizedHeading', 'table', 'resources',
+            'profileCard', 'stylizedHeading', 'table', 'resources',
         ];
 
         $name = is_array($preset) ? self::text($preset['name'] ?? null) : '';

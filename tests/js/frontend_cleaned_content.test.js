@@ -48,7 +48,7 @@ test('the block selector names the root class of every block template', () => {
     const selector = front.slice(front.indexOf('ANY_BLOCK: ['), front.indexOf("].join(', ')"));
 
     const templates = fs.readdirSync(templatesDir).filter((name) => /^block_[a-z_]+\.mustache$/.test(name));
-    assert.ok(templates.length >= 18, 'the block templates were found');
+    assert.ok(templates.length >= 17, 'the block templates were found');
     templates.forEach((template) => {
         const roots = rootClasses(template);
         assert.ok(roots.length > 0, `${template} has a root class the page can be found by`);

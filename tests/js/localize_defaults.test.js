@@ -38,8 +38,6 @@ const makeBlocks = () => ({
     chart: {defaultData: {slices: [{label: '', value: 75}, {label: '', value: 15}, {label: '', value: 10}]}},
     chartBar: {defaultData: {items: [{label: '', value: 75}, {label: '', value: 15}, {label: '', value: 10}]}},
     gauge: {defaultData: {gauges: [{value: 75, label: ''}]}},
-    mindmap: {defaultData: {topic: '', branches: [{label: '', children: []}, {label: '', children: []},
-        {label: '', children: []}, {label: '', children: []}]}},
     infographic: {defaultData: {items: [{label: ''}, {label: ''}, {label: ''}]}},
     infographicSteps: {defaultData: {items: [{title: ''}, {title: ''}, {title: ''}]}},
     infographicTimeline: {defaultData: {items: [{date: '2020', title: ''}, {date: '2021', title: ''}, {date: '2022', title: ''}]}},
@@ -58,9 +56,6 @@ test('every example label of every block is filled from a string', async() => {
     assert.deepEqual(blocks.chartBar.defaultData.items.map((s) => s.label),
         ['default_label_approved', 'default_label_inprogress', 'default_label_failed']);
     assert.equal(blocks.gauge.defaultData.gauges[0].label, 'default_gauge_label');
-    assert.equal(blocks.mindmap.defaultData.topic, 'default_mindmap_topic');
-    assert.deepEqual(blocks.mindmap.defaultData.branches.map((b) => b.label),
-        ['default_mindmap_branch:A', 'default_mindmap_branch:B', 'default_mindmap_branch:C', 'default_mindmap_branch:D']);
     assert.deepEqual(blocks.infographic.defaultData.items.map((i) => i.label),
         ['default_stat_approval', 'default_stat_modules', 'default_stat_participants']);
     assert.deepEqual(blocks.infographicSteps.defaultData.items.map((i) => i.title),
@@ -83,13 +78,12 @@ test('what is not a label is left alone', async() => {
 
     assert.deepEqual(blocks.chart.defaultData.slices.map((s) => s.value), [75, 15, 10]);
     assert.deepEqual(blocks.infographicTimeline.defaultData.items.map((i) => i.date), ['2020', '2021', '2022']);
-    assert.deepEqual(blocks.mindmap.defaultData.branches.map((b) => b.children), [[], [], [], []]);
 });
 
 test('a block the registry does not have is skipped', async() => {
     const {applyDefaultTexts} = await load();
     const blocks = makeBlocks();
-    delete blocks.mindmap;
+    delete blocks.chartBar;
 
     assert.doesNotThrow(() => applyDefaultTexts(blocks, text));
     assert.equal(blocks.gauge.defaultData.gauges[0].label, 'default_gauge_label');
