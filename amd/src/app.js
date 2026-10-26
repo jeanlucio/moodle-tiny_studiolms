@@ -821,12 +821,18 @@ const setupGridTargeting = () => {
 /**
  * Add a block to the canvas, auto-select it and render its preview.
  *
+ * With a stage the block is built into that detached fragment and neither selected nor scrolled to: the caller
+ * adds the fragment to the canvas once, and selects once. A template of twelve blocks that was added one at a
+ * time made the canvas grow in twelve steps and rebuilt the toolbar and the settings panel twenty-four times,
+ * which showed as a rapid flicker.
+ *
  * @param {object} blockDef Block definition from the Blocks registry.
  * @param {object|null} config Initial configuration, or null for defaults.
  * @param {boolean} skipScroll Skip scrollIntoView after adding the block.
+ * @param {DocumentFragment|null} stage Detached fragment to build the block into, or null for the canvas.
  * @returns {Promise<void>}
  */
-const addBlockToCanvas = async(blockDef, config = null, skipScroll = false) => {
+const addBlockToCanvas = async(blockDef, config = null, skipScroll = false, stage = null) => {
     const blockId = ++canvasBlockCounter;
     // Every canvas entry passes here (template, re-edit, preset, AI insert), so URL and target
     // fields are validated once for all of them; see sanitizeUrlFields() for why HTML
@@ -841,7 +847,8 @@ const addBlockToCanvas = async(blockDef, config = null, skipScroll = false) => {
 
     const blocksList = document.getElementById('slms-canvas-blocks');
 
-    const emptyState = blocksList.querySelector('.slms-canvas-empty');
+    // A staged block leaves the placeholder where it is until the whole fragment is added.
+    const emptyState = stage ? null : blocksList.querySelector('.slms-canvas-empty');
     if (emptyState) {
         emptyState.remove();
     }
@@ -909,12 +916,12 @@ const addBlockToCanvas = async(blockDef, config = null, skipScroll = false) => {
     // Re-check: the empty state may have been injected by showCanvasEmptyState during
     // the awaits above (getString calls yield the event loop, allowing the async
     // Promise in showCanvasEmptyState to resolve and append the placeholder).
-    const raceEmptyState = blocksList.querySelector('.slms-canvas-empty');
+    const raceEmptyState = stage ? null : blocksList.querySelector('.slms-canvas-empty');
     if (raceEmptyState) {
         raceEmptyState.remove();
     }
 
-    blocksList.appendChild(blockEl);
+    (stage || blocksList).appendChild(blockEl);
 
     await renderBlockPreview(entry);
 
@@ -954,6 +961,10 @@ const addBlockToCanvas = async(blockDef, config = null, skipScroll = false) => {
         e.stopPropagation();
         moveCanvasBlock(blockId, 1);
     });
+
+    if (stage) {
+        return;
+    }
 
     selectCanvasBlock(blockId);
 
@@ -1258,6 +1269,55 @@ const showCanvasEmptyState = () => {
 };
 
 /**
+ * Build one block of a stored template into the staging fragment.
+ *
+ * @param {Element} el The block element, from the parsed (inert) template.
+ * @param {DocumentFragment} stage Detached fragment the block is built into.
+ * @returns {Promise<void>}
+ */
+const stageTemplateBlock = async(el, stage) => {
+    const type = el.getAttribute('data-slms-block-type');
+    const state = el.getAttribute('data-slms-state');
+    const blockDef = Blocks[type];
+
+    if (!blockDef) {
+        return;
+    }
+
+    const blockConfig = JSON.parse(JSON.stringify(blockDef.defaultData));
+
+    if (state) {
+        const savedState = StateManager.restore(state, blockDef);
+        if (savedState) {
+            Object.assign(blockConfig, savedState);
+        }
+    }
+
+    if (blockDef.extractDOM) {
+        // The extractDOM implementations render what they read into the preview, so the node
+        // must be filtered first. el comes from parsing raw stored template HTML, which can
+        // reach storage via a direct save_template/import_templates call that never went
+        // through the editor at all, so a payload in it has not run anywhere yet. (The re-edit
+        // path in initStudioApp differs on purpose; see the comment there.)
+        // sanitizeUntrustedHtml() strips script-executing constructs (on* attributes,
+        // <script>/<iframe>/etc., non-web URL schemes) while keeping this plugin's own
+        // data-slms-* attributes and ordinary formatting intact. TinyMCE's own
+        // serializer.serialize() is deliberately not used here: Moodle initializes the editor
+        // with xss_sanitization:false and a p[*]/i[*] wildcard schema, so the serializer keeps
+        // event handler attributes on those two tags rather than stripping them (see
+        // htmlsanitizer.js for the full explanation).
+        const sanitizedHtml = sanitizeUntrustedHtml(el.outerHTML);
+        const sanitizedEl = new DOMParser().parseFromString(sanitizedHtml, 'text/html')
+            .body.firstElementChild;
+        if (sanitizedEl) {
+            blockDef.extractDOM(sanitizedEl, blockConfig);
+        }
+    }
+
+    await addBlockToCanvas(blockDef, blockConfig, true, stage);
+};
+
+/**
  * Parse template HTML and load each SLMS block into the canvas.
  *
  * @param {string} htmlContent Raw HTML with data-slms-block-type elements.
@@ -1282,50 +1342,22 @@ export const loadTemplateToCanvas = async(htmlContent, tplName = '') => {
     }
 
     const firstNewIdx = canvasBlocks.length;
+    const stage = document.createDocumentFragment();
 
-    for (const el of blockElements) {
-        const type = el.getAttribute('data-slms-block-type');
-        const state = el.getAttribute('data-slms-state');
-        const blockDef = Blocks[type];
-
-        if (!blockDef) {
-            continue;
+    try {
+        for (const el of blockElements) {
+            await stageTemplateBlock(el, stage);
         }
-
-        const blockConfig = JSON.parse(JSON.stringify(blockDef.defaultData));
-
-        if (state) {
-            const savedState = StateManager.restore(state, blockDef);
-            if (savedState) {
-                Object.assign(blockConfig, savedState);
-            }
-        }
-
-        if (blockDef.extractDOM) {
-            // The extractDOM implementations render what they read into the preview, so the node
-            // must be filtered first. el comes from parsing raw stored template HTML, which can
-            // reach storage via a direct save_template/import_templates call that never went
-            // through the editor at all, so a payload in it has not run anywhere yet. (The re-edit
-            // path in initStudioApp differs on purpose; see the comment there.)
-            // sanitizeUntrustedHtml() strips script-executing constructs (on* attributes,
-            // <script>/<iframe>/etc., non-web URL schemes) while keeping this plugin's own
-            // data-slms-* attributes and ordinary formatting intact. TinyMCE's own
-            // serializer.serialize() is deliberately not used here: Moodle initializes the editor
-            // with xss_sanitization:false and a p[*]/i[*] wildcard schema, so the serializer keeps
-            // event handler attributes on those two tags rather than stripping them (see
-            // htmlsanitizer.js for the full explanation).
-            const sanitizedHtml = sanitizeUntrustedHtml(el.outerHTML);
-            const sanitizedEl = new DOMParser().parseFromString(sanitizedHtml, 'text/html')
-                .body.firstElementChild;
-            if (sanitizedEl) {
-                blockDef.extractDOM(sanitizedEl, blockConfig);
-            }
-        }
-
-        await addBlockToCanvas(blockDef, blockConfig, true);
+    } finally {
+        // One insertion and one selection, whatever happened above: the blocks already built are in the
+        // list of canvas blocks, so they must be in the canvas too.
+        const blocksList = document.getElementById('slms-canvas-blocks');
+        blocksList.querySelector('.slms-canvas-empty')?.remove();
+        blocksList.appendChild(stage);
     }
 
     if (canvasBlocks[firstNewIdx]) {
+        await selectCanvasBlock(canvasBlocks[firstNewIdx].id);
         canvasBlocks[firstNewIdx].element.scrollIntoView({behavior: 'smooth', block: 'nearest'});
     }
 
