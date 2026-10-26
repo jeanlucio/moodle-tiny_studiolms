@@ -3794,6 +3794,44 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
    RESPONSIVE — RENDERED BLOCKS (STUDENT VIEW) — max 575px
    ========================================================================== */
 
+/*
+ * Where a block that is narrower than the page sits in its row, chosen in the block's design popup. Each selector
+ * carries the block's own class as well, so it outranks the block's default margin whatever the order of the rules.
+ * The card is the one inside its wrap, which is as wide as the page.
+ */
+.studiolms-profilecard.slms-align-left,
+.slms-chart-block.slms-align-left,
+.slms-chart-bar-block.slms-align-left,
+.slms-infographic-steps--vertical.slms-align-left,
+.slms-infographic-timeline-block.slms-align-left,
+.slms-infographic-comparison-block.slms-align-left,
+.studiolms-resources-wrap.slms-align-left,
+.studiolms-card-wrap.slms-align-left > .studiolms-card {
+    margin-inline: 0 auto;
+}
+
+.studiolms-profilecard.slms-align-center,
+.slms-chart-block.slms-align-center,
+.slms-chart-bar-block.slms-align-center,
+.slms-infographic-steps--vertical.slms-align-center,
+.slms-infographic-timeline-block.slms-align-center,
+.slms-infographic-comparison-block.slms-align-center,
+.studiolms-resources-wrap.slms-align-center,
+.studiolms-card-wrap.slms-align-center > .studiolms-card {
+    margin-inline: auto;
+}
+
+.studiolms-profilecard.slms-align-right,
+.slms-chart-block.slms-align-right,
+.slms-chart-bar-block.slms-align-right,
+.slms-infographic-steps--vertical.slms-align-right,
+.slms-infographic-timeline-block.slms-align-right,
+.slms-infographic-comparison-block.slms-align-right,
+.studiolms-resources-wrap.slms-align-right,
+.studiolms-card-wrap.slms-align-right > .studiolms-card {
+    margin-inline: auto 0;
+}
+
 @media (max-width: 575.98px) {
 
     .studiolms-grid-content.slms-cols-2,

@@ -1,6 +1,6 @@
 # 🧪 Automated Tests
 
-StudioLMS ships with **240 PHPUnit test cases** across **40 files**, **199 JavaScript tests** across **39 files**, plus a **76-scenario Behat suite** across **20 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
+StudioLMS ships with **248 PHPUnit test cases** across **41 files**, **213 JavaScript tests** across **40 files**, plus a **76-scenario Behat suite** across **20 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
 
 ### PHPUnit — Unit & Integration Tests
 
@@ -24,6 +24,7 @@ StudioLMS ships with **240 PHPUnit test cases** across **40 files**, **199 JavaS
 | `privacy/provider_test.php` | 18 | Context discovery for templates, favourites and an empty case; export includes owned templates; deletion removes personal data while preserving global templates, anonymising authorship on both single-user and bulk deletion and for every user in a context; the reverse per-context user listing; metadata declares only this plugin's own two tables (templates and favourites — no AI key or log declaration remains); both a non-system context and an empty-data case are a no-op everywhere they are checked |
 | `ai/generator_payload_test.php` | 24 | The model is untrusted: every generator parses what it returns wrapped in code fences, half-filled or hostile — empty items dropped, HTML purified, flags and defaults normalised, wrong-typed fields (an array where text is expected, the string "false" as a boolean) read safely; the prompt schema offers only what the blocks accept |
 | `ai_notice_test.php` | 1 | Each of the three AI tabs carries the notice that the text goes to the site's AI provider |
+| `alignment_test.php` | 8 | The alignment class a teacher picks (left, centre, right) is on each of the eight blocks that take one and survives Moodle's HTML cleaner |
 | `card_template_test.php` | 8 | The card template: the video frame is named by a lang string (no literal word a screen reader would announce in every language); media position and the side accent are classes, not inline styles the HTML cleaner would drop |
 | `chart_templates_test.php` | 5 | The chart, bar chart and gauge templates draw no SVG and survive Moodle's HTML cleaner (`clean_text()`) with every class and width or height intact; a label is escaped once |
 | `db_definitions_test.php` | 3 | The web service, cache and capability definition files load and declare what the code uses |
@@ -47,11 +48,11 @@ AI tests never reach a real provider: `local_aihub`'s client is replaced by a st
 
 | Area | Test files | Cases | What is covered |
 |------|-----------:|------:|----------------|
-| Blocks | 17 | 100 | What the blocks draw and how they behave: the chart, bar and gauge models, the width cap of the blocks that hold little, the accordion and resources options, the card layout and shadow, text typed on the canvas, colours and contrast (WCAG ratios), icon pairs, grid columns, the hover effect on every block, the hidden decorative emoji |
+| Blocks | 18 | 114 | What the blocks draw and how they behave: the chart, bar and gauge models, the width cap of the blocks that hold little, the accordion and resources options, the card layout and shadow, text typed on the canvas, colours and contrast (WCAG ratios), icon pairs, grid columns, the hover effect on every block, the hidden decorative emoji |
 | Safety and cleaning | 10 | 41 | Safety and the HTML cleaner: escaping, URL and AI-config sanitising, video URLs, blocks found by class where Moodle strips attributes, frontend events, no literal visible text in the AMD sources, no Bootstrap-5-only utilities, the editor's inline CSS |
 | Templates and library | 8 | 28 | Templates and the library: the template cache, importing a file, loading a template into the canvas in one step, the export button reading Export all or Export selected (n), the stacked link fields of the profile card, example texts in the site language, preset matching and its language notice |
 | Studio window | 4 | 30 | The Studio window: the sidebar split and its geometry, the active tab, the AI use policy gate |
-| **Total** | **39** | **199** | |
+| **Total** | **40** | **213** | |
 
 These run without a browser or Moodle: modules imported by the tests import nothing, and a test that needs `app.js` or a template reads the source file instead.
 

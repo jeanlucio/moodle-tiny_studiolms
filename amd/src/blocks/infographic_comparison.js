@@ -27,6 +27,7 @@ import Notification from 'core/notification';
 import {THEMES, esc, closePicker} from './infographic_shared';
 import {getContextId} from '../context';
 import {defaultText} from './default_texts';
+import {alignVars, bindAlign, normalizeAlign} from './block_align';
 
 /**
  * Builds the inner HTML for the comparison table.
@@ -176,6 +177,7 @@ export default {
     icon: '⚖️',
 
     defaultData: {
+        align: 'center',
         title: '',
         col1: '',
         col2: '',
@@ -203,12 +205,14 @@ export default {
                 closePicker();
 
                 const tplData = dataToPopupVars(data);
+                Object.assign(tplData, alignVars(data.align, 'center'));
 
                 PopupManager.open(
                     btnEdit,
                     'tiny_studiolms/popup_infographic_comparison_edit',
                     tplData,
                     (popup) => {
+                        bindAlign(popup, data, onUpdate);
                         const titleEl = popup.querySelector('#cmp_title');
                         const col1El = popup.querySelector('#cmp_col1');
                         const col2El = popup.querySelector('#cmp_col2');
@@ -315,6 +319,7 @@ export default {
 
         return Templates.render('tiny_studiolms/block_infographic_comparison', {
             hoverEffect: data.hoverEffect,
+            align: normalizeAlign(data.align, 'center'),
             theme,
             content,
         });

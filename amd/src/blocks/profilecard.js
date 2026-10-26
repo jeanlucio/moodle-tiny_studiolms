@@ -25,12 +25,14 @@ import Templates from 'core/templates';
 import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {profilePalette} from './contrast';
+import {alignVars, bindAlign, normalizeAlign} from './block_align';
 
 export default {
     id: 'profileCard',
     titleString: 'block_profilecard_title',
     icon: '👤',
     defaultData: {
+        align: 'center',
         photoUrl:   '',
         name:       '',
         role:       '',
@@ -65,8 +67,11 @@ export default {
 
             if (btnContent) {
                 btnContent.addEventListener('click', () => {
-                    PopupManager.open(btnContent, 'tiny_studiolms/popup_profilecard_content',
-                        Object.assign({}, data, {blockColorValue: data.accentColor}), (popup) => {
+                    const tplData = Object.assign({}, data, {blockColorValue: data.accentColor},
+                        alignVars(data.align, 'center'));
+
+                    PopupManager.open(btnContent, 'tiny_studiolms/popup_profilecard_content', tplData, (popup) => {
+                        bindAlign(popup, data, onUpdate);
                         // One colour for the block fills the two below, which stay there to be fine tuned.
                         popup.querySelector('#pop_pc_block_color')?.addEventListener('input', (ev) => {
                             const palette = profilePalette(ev.target.value);
@@ -143,6 +148,7 @@ export default {
             bgColor:    data.bgColor || '#ffffff',
             accentColor: data.accentColor || '#0f6cbf',
             hoverEffect: data.hoverEffect,
+            align: normalizeAlign(data.align, 'center'),
         };
 
         return Templates.render('tiny_studiolms/block_profilecard', tData);

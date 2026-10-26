@@ -24,6 +24,7 @@
 import Templates from 'core/templates';
 import Notification from 'core/notification';
 import {PALETTE, sliceModel} from './chart_data';
+import {alignVars, bindAlign, normalizeAlign} from './block_align';
 
 const MAX_SLICES = 6;
 
@@ -79,6 +80,7 @@ export default {
     icon: '🥧',
 
     defaultData: {
+        align: 'center',
         title: '',
         slices: [
             {label: '', value: 75},
@@ -99,8 +101,10 @@ export default {
 
             btnEdit.addEventListener('click', () => {
                 const tplData = dataToPopupVars(data);
+                Object.assign(tplData, alignVars(data.align, 'center'));
 
                 PopupManager.open(btnEdit, 'tiny_studiolms/popup_chart_edit', tplData, (popup) => {
+                    bindAlign(popup, data, onUpdate);
                     const titleEl = popup.querySelector('#ch_title');
 
                     const applyChanges = () => {
@@ -133,6 +137,7 @@ export default {
 
         return Templates.render('tiny_studiolms/block_chart', {
             hoverEffect: data.hoverEffect,
+            align: normalizeAlign(data.align, 'center'),
             title: data.title || '',
             slices: sliceModel(slices),
         });

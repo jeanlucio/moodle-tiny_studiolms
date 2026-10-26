@@ -28,12 +28,14 @@ import Notification from 'core/notification';
 import {getContextId} from '../context';
 import {iconPair, iconView} from './icon_pair';
 import {blockPalette, mutedTextOn} from './contrast';
+import {alignVars, bindAlign, normalizeAlign} from './block_align';
 
 export default {
     id: 'resources',
     titleString: 'block_resources_title',
     icon: '📚',
     defaultData: {
+        align: 'left',
         title: '',
         desc: '',
         bg: '#ffffff',
@@ -83,6 +85,7 @@ export default {
                     tplData['sound_opt_' + (data.openSound || 'none')] = true;
                     tplData.animate = data.animate !== false;
                     tplData.blockColorValue = data.headerBg;
+                    Object.assign(tplData, alignVars(data.align, 'left'));
                     tplData[{
                         '❯ / ❯': 'icon_chevron',
                         '➕ / ➖': 'icon_plus',
@@ -91,6 +94,7 @@ export default {
                     }[iconPair(data.icon)] || 'icon_chevron'] = true;
 
                     PopupManager.open(btnGeneral, 'tiny_studiolms/popup_resources_general', tplData, (popup) => {
+                        bindAlign(popup, data, onUpdate);
                         const propMap = {
                             '#pop_res_layout': 'layout',
                             '#pop_res_icon': 'icon',
@@ -295,6 +299,7 @@ export default {
         const templateData = Object.assign({}, data);
         templateData.isGrid = data.layout === 'grid';
         templateData.animate = data.animate !== false;
+        templateData.align = normalizeAlign(data.align, 'left');
         Object.assign(templateData, iconView(data.icon || '❯ / ❯'));
         // The description is a muted line over the author's own header colour, so its grey is picked to be readable.
         templateData.descColor = mutedTextOn(data.headerBg);

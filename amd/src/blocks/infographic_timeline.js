@@ -27,6 +27,7 @@ import Notification from 'core/notification';
 import {THEMES, esc, closePicker} from './infographic_shared';
 import {getContextId} from '../context';
 import {defaultText} from './default_texts';
+import {alignVars, bindAlign, normalizeAlign} from './block_align';
 
 /**
  * Builds the inner HTML for the timeline.
@@ -134,6 +135,7 @@ export default {
     icon: '📅',
 
     defaultData: {
+        align: 'center',
         title: '',
         theme: 'blue',
         items: [
@@ -159,12 +161,14 @@ export default {
                 closePicker();
 
                 const tplData = dataToPopupVars(data);
+                Object.assign(tplData, alignVars(data.align, 'center'));
 
                 PopupManager.open(
                     btnEdit,
                     'tiny_studiolms/popup_infographic_timeline_edit',
                     tplData,
                     (popup) => {
+                        bindAlign(popup, data, onUpdate);
                         const titleEl = popup.querySelector('#tl_title');
                         const themeButtons = popup.querySelectorAll('.slms-ig-theme-btn');
                         const aiBtnEl = popup.querySelector('#tl-ai-btn');
@@ -271,6 +275,7 @@ export default {
 
         return Templates.render('tiny_studiolms/block_infographic_timeline', {
             hoverEffect: data.hoverEffect,
+            align: normalizeAlign(data.align, 'center'),
             theme,
             content,
         });
