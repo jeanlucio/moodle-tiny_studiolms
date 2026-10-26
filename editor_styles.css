@@ -1618,6 +1618,14 @@ a.studiolms-btn:focus-visible {
     max-width: 100%;
 }
 
+/*
+ * A card laid out in a column shows its picture across the whole width, so a tall picture would make the card
+ * taller than the screen. It is cropped (the image is object-fit: cover) instead of stretching the card.
+ */
+.studiolms-card:not(.slms-horizontal) .studiolms-card-media img {
+    max-height: 260px;
+}
+
 /* Stand-in for a card image whose address the author has not filled in yet. */
 .slms-card-media-placeholder {
     display: flex;
@@ -2044,7 +2052,8 @@ a.studiolms-resources-item:focus-visible {
     border-radius: 0.75rem;
     padding: 2rem 1.5rem 1.5rem;
     text-align: center;
-    margin: 1rem 0;
+    max-width: 440px;
+    margin: 1rem auto;
 }
 
 .studiolms-profilecard .slms-pc-photo {
@@ -2417,6 +2426,12 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
     font-family: system-ui, -apple-system, sans-serif;
 }
 
+/* The vertical list is a column of short lines; the horizontal one needs the width for its steps. */
+.slms-infographic-steps--vertical {
+    max-width: 720px;
+    margin-inline: auto;
+}
+
 .slms-infographic-steps-block:focus-visible {
     outline: 2px solid var(--bs-primary, #0d47a1);
     outline-offset: 4px;
@@ -2710,6 +2725,8 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
 
 .slms-infographic-timeline-block {
     font-family: inherit;
+    max-width: 720px;
+    margin-inline: auto;
     padding: 1rem 1.25rem;
     border-radius: 0.75rem;
     background: var(--card-bg, #fff);
@@ -2826,6 +2843,8 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
 
 .slms-infographic-comparison-block {
     font-family: inherit;
+    max-width: 720px;
+    margin-inline: auto;
     line-height: 1.5;
 }
 
@@ -2852,7 +2871,7 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
 }
 
 .slms-comparison__header-col {
-    width: 80px;
+    width: 7rem;
     flex-shrink: 0;
     text-align: center;
     padding: 10px 8px;
@@ -2879,7 +2898,7 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
 }
 
 .slms-comparison__row-cell {
-    width: 80px;
+    width: 7rem;
     flex-shrink: 0;
     text-align: center;
     padding: 8px 4px;
@@ -2974,6 +2993,8 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
 .slms-chart-block {
     display: flex;
     flex-direction: column;
+    max-width: 720px;
+    margin-inline: auto;
     padding: 1rem;
     border-radius: 0.5rem;
     background: var(--card-bg, #fff);
@@ -3078,6 +3099,8 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
 .slms-chart-bar-block {
     display: flex;
     flex-direction: column;
+    max-width: 720px;
+    margin-inline: auto;
     padding: 1rem;
     border-radius: 0.5rem;
     background: var(--card-bg, #fff);
@@ -3788,6 +3811,10 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
         flex: 0 0 auto;
         border-inline-end: none;
         border-bottom: 1px solid var(--bs-border-color, #e2e8f0);
+    }
+
+    body:not(.mce-content-body) .studiolms-card.slms-horizontal .studiolms-card-media img {
+        max-height: 260px;
     }
 
     body:not(.mce-content-body) .studiolms-card.slms-horizontal.slms-media-end {
