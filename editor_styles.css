@@ -1989,10 +1989,20 @@ a.studiolms-resources-item:focus-visible {
     max-width: 150px;
 }
 
-/* Short label input in side-by-side pairs (e.g. profilecard links) */
-.tiny_studiolms .slms-input-label {
-    max-width: 90px;
-    flex-shrink: 0;
+/* A label field above its address field: the sidebar is too narrow for the two side by side. */
+.tiny_studiolms .slms-link-pair {
+    margin-block-end: 0.75rem;
+}
+
+.tiny_studiolms .slms-link-pair:last-child {
+    margin-block-end: 0;
+}
+
+.tiny_studiolms .slms-link-pair-title {
+    margin-block-end: 0.2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--bs-body-color, #1e293b);
 }
 
 /* =========================================
