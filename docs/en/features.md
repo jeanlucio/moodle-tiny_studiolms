@@ -10,9 +10,9 @@
   * **Callout** — highlight box with a customisable icon and border colour.
   * **Table** — striped or plain table that works with TinyMCE's own table tools.
   * **Profile Card** — presenter card with photo, name, role, bio and up to 3 links.
-  * **Pie / Donut Chart** — pure SVG, up to 6 slices, custom labels, 4 colour themes.
-  * **Bar Chart** — pure SVG, horizontal or vertical, up to 8 bars.
-  * **Gauge** — pure SVG semi-circle gauge with traffic-light colours (green ≥ 67 %, amber ≥ 34 %, red below); 1–3 gauges side by side.
+  * **Chart** — the share of each part in the whole as one stacked bar with a legend, up to 6 slices, custom labels.
+  * **Bar Chart** — horizontal or vertical, up to 6 bars.
+  * **Gauge** — semi-circle gauge with traffic-light colours (green ≥ 67 %, amber ≥ 34 %, red below); 1–3 gauges side by side.
   * **Infographic — Stats** — up to 4 items combining an icon (from a 40-icon picker), a value and a label.
   * **Infographic — Steps** — numbered flow with icon and description, for methods, tutorials and workflows.
   * **Infographic — Features** — icon + title + description grid, for competencies and course highlights.
@@ -30,6 +30,6 @@
 * 🎓 **Student-side behaviour:** a small script, loaded only on course and activity pages (never inside the editor), makes accordions expand and plays the optional hover and click effects.
 * ♿ **Screen-reader friendly output:** the editing attributes are removed from what students see, accordions announce their state, and every emoji in a block is hidden from screen readers, since an emoji here is an illustration and would otherwise be read out by name ("file folder", "calendar") before the words. An element made only of an emoji keeps it, so it keeps a name. This is automatic and has no setting; Moodle's HTML filter strips `aria-hidden` from stored content, so the script sets it when the page is shown.
 * 🖱️ **Same behaviour in every block:** every block has the hover effect (none, scale up, glow or lift; the zoom and the lift are switched off for whoever asks the system for less movement), the sound is where there is something to click (the button, the accordion and the list of resources), the text of the heading, card, callout, accordion, list of resources, profile card and button is typed right on the canvas, and the accordion, the list of resources, the callout, the table and the profile card take one *Block color* that fills the colours they keep, always at a contrast that reads.
-* ⚠️ **Where Moodle cleans the text:** a page, a label, a section summary, a book chapter or a lesson show the blocks in full. Where Moodle runs the text through HTMLPurifier (a forum post, a glossary entry, a question text) the accordion and the list of resources still open, but the **chart, bar chart and gauge blocks, which are drawn as SVG, disappear**, because HTMLPurifier removes `<svg>`, and the accessibility names (`aria-label`, `role`) that the blocks carry are removed too. Use those three blocks in a page, a label, a book or a lesson.
+* ✅ **Works where Moodle cleans the text:** every block is plain HTML styled by classes, so it shows in full in a page, a label, a section summary, a book or a lesson, and also where Moodle runs the text through HTMLPurifier (a forum post, a glossary entry, a question text, an assignment). What the cleaner does remove is the accessibility names the blocks carry (`aria-label`, `role`), so each block keeps its meaning in visible text (labels and percentages). The chart, bar chart and gauge blocks are drawn with HTML and CSS, not SVG, for this reason.
 * 📊 **Event logging:** template creation and deletion are recorded in Moodle's standard log store.
 * 🔒 **Privacy API:** templates and favourites are covered by export and deletion requests.

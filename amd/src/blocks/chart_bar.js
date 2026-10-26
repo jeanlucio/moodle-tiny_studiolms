@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Bar chart block — renders a pure-SVG horizontal or vertical bar chart.
+ * Bar chart block — renders a horizontal or vertical bar chart in plain HTML.
  *
  * @module     tiny_studiolms/blocks/chart_bar
  * @copyright  2026 Jean Lúcio
@@ -23,137 +23,9 @@
 
 import Templates from 'core/templates';
 import Notification from 'core/notification';
-import {escapeHtml as esc} from './text_escape';
+import {PALETTE, barModel} from './chart_data';
 
 const MAX_ITEMS = 6;
-const BAR_COLORS = [
-    '#3b82f6',
-    '#10b981',
-    '#f59e0b',
-    '#ef4444',
-    '#8b5cf6',
-    '#f97316',
-];
-
-// Horizontal bar chart constants.
-const H_SVG_W = 340;
-const H_ROW_H = 34;
-const H_LABEL_W = 108;
-const H_BAR_X = 114;
-const H_MAX_BAR_W = 196;
-
-// Vertical bar chart constants.
-const V_BAR_W = 54;
-const V_COL_W = 80;
-const V_CHART_BOTTOM = 130;
-const V_CHART_H = 100;
-const V_SVG_H = 172;
-const V_LABEL_CHARS = 9;
-
-/**
- * Escape HTML special characters.
- * @param {string} str Raw string.
- * @returns {string} Safe string.
- */
-/**
- * Wrap a label into at most two lines, breaking at a word boundary.
- * @param {string} str Input string.
- * @param {number} max Characters per line.
- * @returns {string[]} One or two-element array of lines.
- */
-const wrapText = (str, max) => {
-    if (str.length <= max) {
-        return [str];
-    }
-    const space = str.lastIndexOf(' ', max);
-    if (space > 0) {
-        const rest = str.slice(space + 1);
-        return [str.slice(0, space), rest.length > max ? rest.slice(0, max - 1) + '…' : rest];
-    }
-    return [str.slice(0, max - 1) + '…'];
-};
-
-/**
- * Build SVG for horizontal bar chart.
- * @param {Array<{label: string, value: number}>} items Filtered items.
- * @returns {string} SVG markup.
- */
-const buildHorizontalSvg = (items) => {
-    const maxVal = Math.max(...items.map(it => it.value));
-    const svgH = items.length * H_ROW_H + 12;
-    const parts = [
-        `<svg viewBox="0 0 ${H_SVG_W} ${svgH}"`,
-        `role="img" xmlns="http://www.w3.org/2000/svg"`,
-        `class="slms-chart-bar__svg">`,
-    ];
-
-    items.forEach((item, i) => {
-        const color = BAR_COLORS[i % BAR_COLORS.length];
-        const barW = Math.round((item.value / maxVal) * H_MAX_BAR_W);
-        const pct = Math.round((item.value / items.reduce((s, it) => s + it.value, 0)) * 100);
-        const rowY = 6 + i * H_ROW_H;
-        const midY = rowY + Math.floor(H_ROW_H / 2);
-        const textY = midY + 5;
-        const barY = rowY + 9;
-        const barH = H_ROW_H - 18;
-
-        parts.push(
-            `<text x="${H_LABEL_W}" y="${textY}" text-anchor="end"`,
-            ` font-size="13" fill="#1e293b">${esc(item.label)}</text>`,
-            `<rect x="${H_BAR_X}" y="${barY}" width="${H_MAX_BAR_W}" height="${barH}"`,
-            ` rx="4" fill="#f1f5f9"/>`,
-            `<rect x="${H_BAR_X}" y="${barY}" width="${barW}" height="${barH}"`,
-            ` rx="4" fill="${color}" aria-label="${esc(item.label)}: ${pct}%"/>`,
-            `<text x="${H_BAR_X + barW + 6}" y="${textY}"`,
-            ` font-size="12" font-weight="600" fill="${color}">${pct}%</text>`
-        );
-    });
-
-    parts.push('</svg>');
-    return parts.join(' ');
-};
-
-/**
- * Build SVG for vertical bar chart.
- * @param {Array<{label: string, value: number}>} items Filtered items.
- * @returns {string} SVG markup.
- */
-const buildVerticalSvg = (items) => {
-    const maxVal = Math.max(...items.map(it => it.value));
-    const total = items.reduce((s, it) => s + it.value, 0);
-    const svgW = items.length * V_COL_W + 20;
-    const parts = [
-        `<svg viewBox="0 0 ${svgW} ${V_SVG_H}"`,
-        `role="img" xmlns="http://www.w3.org/2000/svg"`,
-        `class="slms-chart-bar__svg">`,
-    ];
-
-    items.forEach((item, i) => {
-        const color = BAR_COLORS[i % BAR_COLORS.length];
-        const barH = Math.round((item.value / maxVal) * V_CHART_H);
-        const barX = 10 + i * V_COL_W;
-        const barY = V_CHART_BOTTOM - barH;
-        const midX = barX + Math.floor(V_BAR_W / 2);
-        const pct = Math.round((item.value / total) * 100);
-        const lines = wrapText(item.label, V_LABEL_CHARS);
-
-        parts.push(
-            `<rect x="${barX}" y="${barY}" width="${V_BAR_W}" height="${barH}"`,
-            ` rx="4" fill="${color}" aria-label="${esc(item.label)}: ${pct}%"/>`,
-            `<text x="${midX}" y="${barY - 4}" text-anchor="middle"`,
-            ` font-size="11" font-weight="600" fill="${color}">${pct}%</text>`,
-            `<text x="${midX}" text-anchor="middle" font-size="11" fill="#64748b">`,
-            `<tspan x="${midX}" y="${V_CHART_BOTTOM + 14}">${esc(lines[0])}</tspan>`,
-            ...(lines[1] !== undefined
-                ? [`<tspan x="${midX}" dy="13">${esc(lines[1])}</tspan>`]
-                : []),
-            `</text>`
-        );
-    });
-
-    parts.push('</svg>');
-    return parts.join(' ');
-};
 
 // ---------------------------------------------------------------------------
 // Popup helpers.
@@ -191,7 +63,7 @@ const dataToPopupVars = (data) => {
     };
     for (let i = 0; i < MAX_ITEMS; i++) {
         const it = items[i] || {};
-        out[`cb_color${i + 1}`] = BAR_COLORS[i % BAR_COLORS.length];
+        out[`cb_color${i + 1}`] = PALETTE[i % PALETTE.length];
         out[`cb_label${i + 1}`] = it.label ?? '';
         out[`cb_value${i + 1}`] = String(it.value ?? '');
     }
@@ -267,19 +139,16 @@ export default {
     },
 
     renderHtml: async(data) => {
-        const type = data.type || 'horizontal';
+        const type = data.type === 'vertical' ? 'vertical' : 'horizontal';
         const items = (Array.isArray(data.items) ? data.items : [])
             .filter(it => it.value > 0);
-
-        const svg = type === 'vertical'
-            ? buildVerticalSvg(items)
-            : buildHorizontalSvg(items);
 
         return Templates.render('tiny_studiolms/block_chart_bar', {
             hoverEffect: data.hoverEffect,
             type,
+            horizontal: type === 'horizontal',
             title: data.title || '',
-            svg,
+            items: barModel(items),
         });
     },
 };

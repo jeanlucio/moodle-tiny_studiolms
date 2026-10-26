@@ -32,7 +32,7 @@ Horn categorised information into structural types (procedure, process, concept,
 | Procedure | Infographic — Steps |
 | Chronological process | Infographic — Timeline |
 | Concept comparison | Infographic — Comparison |
-| Quantitative facts | Infographic — Stats, Bar/Pie Chart, Gauge |
+| Quantitative facts | Infographic — Stats, Bar/Composition Chart, Gauge |
 | Hierarchical structure | Accordion, Infographic Steps |
 | Related item set | Grid Cards |
 | Critical information | Callout |

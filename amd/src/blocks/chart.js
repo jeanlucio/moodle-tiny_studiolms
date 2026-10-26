@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Chart block — renders a pure-SVG pie or donut chart, no external libraries.
+ * Chart block — renders the share of each slice as a stacked bar with a legend, in plain HTML.
  *
  * @module     tiny_studiolms/blocks/chart
  * @copyright  2026 Jean Lúcio
@@ -23,96 +23,9 @@
 
 import Templates from 'core/templates';
 import Notification from 'core/notification';
-import {escapeHtml as esc} from './text_escape';
-import {SVG_SIZE, slicePathData} from './chart_geometry';
+import {PALETTE, sliceModel} from './chart_data';
 
 const MAX_SLICES = 6;
-
-const SLICE_COLORS = [
-    '#3b82f6',
-    '#10b981',
-    '#f59e0b',
-    '#ef4444',
-    '#8b5cf6',
-    '#f97316',
-];
-
-/**
- * Build a single SVG path for one chart slice.
- * @param {number} startAngle Start angle in radians.
- * @param {number} endAngle End angle in radians.
- * @param {string} color Fill colour.
- * @param {string} label Accessible label string.
- * @param {string} type 'pie' or 'donut'.
- * @returns {string} SVG <path> element string.
- */
-const buildSlicePath = (startAngle, endAngle, color, label, type) =>
-    `<path d="${slicePathData(startAngle, endAngle, type)}" fill="${color}" aria-label="${esc(label)}"/>`;
-
-/**
- * Build the complete SVG string for the chart.
- * @param {Array<{label: string, value: number}>} slices Valid slices (value > 0).
- * @param {string} type 'pie' or 'donut'.
- * @returns {string} Full inline SVG markup.
- */
-const buildSvg = (slices, type) => {
-    const total = slices.reduce((sum, s) => sum + s.value, 0);
-    if (total <= 0) {
-        return '';
-    }
-
-    let angle = 0;
-    const paths = slices.map((slice, i) => {
-        const sweep = (slice.value / total) * 2 * Math.PI;
-        const endAngle = angle + sweep;
-        const pct = Math.round((slice.value / total) * 100);
-        const path = buildSlicePath(
-            angle,
-            endAngle,
-            SLICE_COLORS[i % SLICE_COLORS.length],
-            `${slice.label}: ${pct}%`,
-            type
-        );
-        angle = endAngle;
-        return path;
-    });
-
-    return [
-        `<svg viewBox="0 0 ${SVG_SIZE} ${SVG_SIZE}"`,
-        `role="img"`,
-        `xmlns="http://www.w3.org/2000/svg"`,
-        `class="slms-chart__svg">`,
-        ...paths,
-        `</svg>`,
-    ].join(' ');
-};
-
-/**
- * Build the legend HTML for the chart slices.
- * @param {Array<{label: string, value: number}>} slices Valid slices (value > 0).
- * @returns {string} HTML string for the legend.
- */
-const buildLegend = (slices) => {
-    const total = slices.reduce((sum, s) => sum + s.value, 0);
-    if (total <= 0) {
-        return '';
-    }
-
-    const items = slices.map((slice, i) => {
-        const color = SLICE_COLORS[i % SLICE_COLORS.length];
-        const pct = Math.round((slice.value / total) * 100);
-        return [
-            `<div class="slms-chart__legend-item" style="display:flex;align-items:center;gap:0.4rem;font-size:0.8125rem;">`,
-            `<span class="slms-chart__legend-dot"`,
-            ` style="color:${color};font-size:14px;line-height:1;" aria-hidden="true">&#9679;</span>`,
-            `<span class="slms-chart__legend-label">${esc(slice.label)}</span>`,
-            `<span class="slms-chart__legend-pct" style="font-weight:600;">${pct}%</span>`,
-            `</div>`,
-        ].join('');
-    });
-
-    return `<div class="slms-chart__legend" style="display:flex;flex-direction:column;gap:0.4rem;">${items.join('')}</div>`;
-};
 
 // ---------------------------------------------------------------------------
 // Popup helpers.
@@ -146,14 +59,12 @@ const dataToPopupVars = (data) => {
     const slices = Array.isArray(data.slices) ? data.slices : [];
     const out = {
         title: data.title || '',
-        typePie: (data.type || 'donut') === 'pie',
-        typeDonut: (data.type || 'donut') === 'donut',
     };
     for (let i = 0; i < MAX_SLICES; i++) {
         const s = slices[i] || {};
         out[`ch_label${i + 1}`] = s.label ?? '';
         out[`ch_value${i + 1}`] = String(s.value ?? '');
-        out[`ch_color${i + 1}`] = SLICE_COLORS[i % SLICE_COLORS.length];
+        out[`ch_color${i + 1}`] = PALETTE[i % PALETTE.length];
     }
     return out;
 };
@@ -168,7 +79,6 @@ export default {
     icon: '🥧',
 
     defaultData: {
-        type: 'donut',
         title: '',
         slices: [
             {label: '', value: 75},
@@ -191,7 +101,6 @@ export default {
                 const tplData = dataToPopupVars(data);
 
                 PopupManager.open(btnEdit, 'tiny_studiolms/popup_chart_edit', tplData, (popup) => {
-                    const typeBtns = popup.querySelectorAll('.slms-ch-type-btn');
                     const titleEl = popup.querySelector('#ch_title');
 
                     const applyChanges = () => {
@@ -207,16 +116,6 @@ export default {
                         popup.querySelector(`#ch_label${i}`)?.addEventListener('input', applyChanges);
                         popup.querySelector(`#ch_value${i}`)?.addEventListener('input', applyChanges);
                     }
-
-                    // Type toggle.
-                    typeBtns.forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            typeBtns.forEach(b => b.classList.remove('selected'));
-                            btn.classList.add('selected');
-                            data.type = btn.getAttribute('data-type') || 'donut';
-                            onUpdate(data);
-                        });
-                    });
                 });
             });
         } catch (error) {
@@ -229,19 +128,13 @@ export default {
     },
 
     renderHtml: async(data) => {
-        const type = data.type || 'donut';
         const slices = (Array.isArray(data.slices) ? data.slices : [])
             .filter(s => s.value > 0);
 
-        const svg = buildSvg(slices, type);
-        const legend = buildLegend(slices);
-
         return Templates.render('tiny_studiolms/block_chart', {
             hoverEffect: data.hoverEffect,
-            type,
             title: data.title || '',
-            svg,
-            legend,
+            slices: sliceModel(slices),
         });
     },
 };

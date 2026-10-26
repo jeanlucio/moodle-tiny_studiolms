@@ -32,7 +32,7 @@ Horn categorizou a informação em tipos estruturais (procedimento, processo, co
 | Procedimento | Infográfico — Passos |
 | Processo cronológico | Infográfico — Linha do Tempo |
 | Comparação de conceitos | Infográfico — Comparação |
-| Fatos quantitativos | Infográfico — Stats, Gráfico de Barras/Pizza, Gauge |
+| Fatos quantitativos | Infográfico — Stats, Gráfico de Barras/Composição, Gauge |
 | Estrutura hierárquica | Accordion, Infográfico de Passos |
 | Conjunto de itens relacionados | Grid de Cards |
 | Informação crítica | Callout |

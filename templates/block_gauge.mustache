@@ -17,15 +17,17 @@
 {{!
     @template tiny_studiolms/block_gauge
 
-    Gauge block — 1 to 3 SVG semi-circle gauges rendered side by side.
+    Gauge block — 1 to 3 semi-circle gauges side by side. The arc is drawn by the stylesheet: the class
+    `slms-gp-<value>` turns the fill by the value and `slms-gauge--<zone>` gives it the colour, so no SVG, inline
+    style or custom property is needed and the block survives the HTML cleaner of the forum, the glossary, the
+    questions and the assignments.
 
     Example context (json):
     {
         "title": "Desempenho da turma",
         "gauges": [
-            {"svg": "<svg></svg>"},
-            {"svg": "<svg></svg>"},
-            {"svg": "<svg></svg>"}
+            {"value": 75, "label": "Aprovação", "zone": "ok"},
+            {"value": 40, "label": "", "zone": "warn"}
         ]
     }
 }}
@@ -33,8 +35,15 @@
     {{#title}}<div class="slms-gauge__title">{{title}}</div>{{/title}}
     <div class="slms-gauge__row">
         {{#gauges}}
-        <div class="slms-gauge__wrap">
-            {{{svg}}}
+        <div class="slms-gauge__wrap slms-gauge--{{zone}} slms-gp-{{value}}">
+            <div class="slms-gauge__arc">
+                <div class="slms-gauge__track"></div>
+                <div class="slms-gauge__fill"></div>
+            </div>
+            <div class="slms-gauge__reading">
+                <div class="slms-gauge__value">{{value}}%</div>
+                {{#label}}<div class="slms-gauge__label">{{label}}</div>{{/label}}
+            </div>
         </div>
         {{/gauges}}
     </div>

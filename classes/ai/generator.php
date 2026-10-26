@@ -166,9 +166,8 @@ class generator {
         $s .= '   - cellData: array of arrays (rows × cols of HTML strings;' . "\n";
         $s .= '     cellData[0] = header row, cellData[1..n] = data rows)' . "\n\n";
 
-        $s .= '10. chart — Pie or donut chart.' . "\n";
+        $s .= '10. chart — Share of each part in the whole (one stacked bar with a legend).' . "\n";
         $s .= '    config keys:' . "\n";
-        $s .= '    - type: "donut" or "pie"' . "\n";
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
         $s .= '    - slices: array of {label: string, value: number (1–100)}' . "\n";
         $s .= '    Generate 2–6 slices. Values do not need to sum to 100.' . "\n\n";
@@ -180,7 +179,7 @@ class generator {
         $s .= '    - items: array of {label: string, value: number (1–100)}' . "\n";
         $s .= '    Generate 2–6 items. "vertical" for time-series; "horizontal" for rankings.' . "\n\n";
 
-        $s .= '12. gauge — Semi-circle speedometer chart.' . "\n";
+        $s .= '12. gauge — Semi-circle gauge.' . "\n";
         $s .= '    config keys:' . "\n";
         $s .= '    - title: string (optional heading; use "" if not needed)' . "\n";
         $s .= '    - gauges: array of {value: number (0–100), label: string}' . "\n";

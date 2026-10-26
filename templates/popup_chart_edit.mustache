@@ -24,8 +24,6 @@
     Example context (json):
     {
         "title": "",
-        "typePie": false,
-        "typeDonut": true,
         "ch_color1": "#3b82f6",
         "ch_label1": "Aprovados",
         "ch_value1": "75",
@@ -58,29 +56,6 @@
                class="form-control form-control-sm"
                value="{{title}}"
                maxlength="80"/>
-    </div>
-
-    {{! Chart type toggle }}
-    <div class="mb-3">
-        <span class="form-label small fw-semibold d-block mb-1">
-            {{#str}}chart_type, tiny_studiolms{{/str}}
-        </span>
-        <div class="d-flex slms-gap-1">
-            <button type="button"
-                    class="slms-ch-type-btn{{^typePie}} selected{{/typePie}}"
-                    data-type="donut"
-                    aria-pressed="{{^typePie}}true{{/typePie}}{{#typePie}}false{{/typePie}}">
-                <i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i>
-                {{#str}}chart_donut, tiny_studiolms{{/str}}
-            </button>
-            <button type="button"
-                    class="slms-ch-type-btn{{#typePie}} selected{{/typePie}}"
-                    data-type="pie"
-                    aria-pressed="{{#typePie}}true{{/typePie}}{{^typePie}}false{{/typePie}}">
-                <i class="fa-solid fa-chart-pie" aria-hidden="true"></i>
-                {{#str}}chart_pie, tiny_studiolms{{/str}}
-            </button>
-        </div>
     </div>
 
     {{! Slice rows }}

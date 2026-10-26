@@ -2932,6 +2932,31 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
     flex-shrink: 0;
 }
 
+/* ── Chart and bar chart colours (a class each: the HTML cleaner keeps classes, not SVG or custom properties) ── */
+.slms-bar-c1 {
+    background-color: #3b82f6;
+}
+
+.slms-bar-c2 {
+    background-color: #10b981;
+}
+
+.slms-bar-c3 {
+    background-color: #f59e0b;
+}
+
+.slms-bar-c4 {
+    background-color: #ef4444;
+}
+
+.slms-bar-c5 {
+    background-color: #8b5cf6;
+}
+
+.slms-bar-c6 {
+    background-color: #f97316;
+}
+
 /* ── Chart block (rendered in content area) ────────────────────────────── */
 .slms-chart-block {
     display: flex;
@@ -2955,28 +2980,26 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
     text-align: center;
 }
 
-.slms-chart__body {
+.slms-chart__stack {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1.25rem;
-}
-
-.slms-chart__wrap {
-    flex-shrink: 0;
-    width: 180px;
-}
-
-.slms-chart__svg {
     width: 100%;
-    height: auto;
-    display: block;
+    height: 2.25rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background-color: var(--border-color, #e2e8f0);
+}
+
+.slms-chart__segment {
+    height: 100%;
+    min-width: 2px;
 }
 
 .slms-chart__legend {
     display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.45rem 1.25rem;
+    margin-block-start: 0.75rem;
 }
 
 .slms-chart__legend-item {
@@ -3005,26 +3028,6 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
 /* ── Chart popup ────────────────────────────────────────────────────────── */
 .tiny_studiolms .slms-popup-chart-edit {
     min-width: 240px;
-}
-
-.tiny_studiolms .slms-ch-type-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.3rem 0.75rem;
-    border: 1px solid var(--border-color, #cbd5e1);
-    border-radius: 0.375rem;
-    background: transparent;
-    font-size: 0.8125rem;
-    cursor: pointer;
-    color: var(--body-color, #1e293b);
-    transition: background 0.15s, border-color 0.15s;
-}
-
-.tiny_studiolms .slms-ch-type-btn.selected {
-    background: var(--primary, #1d4ed8);
-    border-color: var(--primary, #1d4ed8);
-    color: var(--bs-white, #fff);
 }
 
 .tiny_studiolms .slms-ch-row {
@@ -3081,21 +3084,91 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
     text-align: center;
 }
 
-.slms-chart-bar__wrap {
-    width: 100%;
+.slms-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-block-end: 0.5rem;
 }
 
-.slms-chart-bar--vertical .slms-chart-bar__wrap {
+.slms-bar-row:last-child {
+    margin-block-end: 0;
+}
+
+.slms-bar-row__label {
+    flex: 0 0 30%;
+    font-size: 0.8125rem;
+    text-align: end;
+    color: var(--body-color, #1e293b);
+}
+
+.slms-bar-row__track {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 1rem;
+    border-radius: 0.25rem;
+    overflow: hidden;
+    background-color: var(--border-color, #e2e8f0);
+}
+
+.slms-bar-row__fill {
+    height: 100%;
+    border-radius: 0.25rem;
+}
+
+.slms-bar-row__pct {
+    flex: 0 0 2.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--body-color, #1e293b);
+}
+
+.slms-bar-cols {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.5rem;
     max-width: 380px;
     margin-inline: auto;
+    width: 100%;
 }
 
-.slms-chart-bar__svg {
+.slms-bar-col {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.slms-bar-col__pct {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--body-color, #1e293b);
+    margin-block-end: 0.15rem;
+}
+
+.slms-bar-col__plot {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     width: 100%;
-    height: auto;
-    display: block;
-    /* The percentage after the longest bar runs a few units past the viewBox, and the block's padding has room. */
-    overflow: visible;
+    max-width: 54px;
+    height: 100px;
+}
+
+.slms-bar-col__fill {
+    width: 100%;
+    border-radius: 0.25rem 0.25rem 0 0;
+}
+
+.slms-bar-col__label {
+    margin-block-start: 0.35rem;
+    font-size: 0.6875rem;
+    line-height: 1.2;
+    text-align: center;
+    overflow-wrap: anywhere;
+    color: var(--body-color, #1e293b);
 }
 
 /* ── Bar chart popup ────────────────────────────────────────────────────── */
@@ -3183,10 +3256,469 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
     max-width: 220px;
 }
 
-.slms-gauge__svg {
+/* The arc is the top half of two circles: the track, and the fill turned by a class per whole percent. */
+.slms-gauge__arc {
+    position: relative;
     width: 100%;
-    height: auto;
-    display: block;
+    aspect-ratio: 2 / 1;
+    overflow: hidden;
+}
+
+.slms-gauge__track,
+.slms-gauge__fill {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    width: 100%;
+    height: 200%;
+    box-sizing: border-box;
+    border: 14px solid transparent;
+    border-radius: 50%;
+}
+
+.slms-gauge__track {
+    border-color: var(--border-color, #e2e8f0);
+}
+
+.slms-gauge__fill {
+    transform: rotate(45deg);
+}
+
+.slms-gauge--ok .slms-gauge__fill {
+    border-block-end-color: #10b981;
+    border-inline-end-color: #10b981;
+}
+
+.slms-gauge--warn .slms-gauge__fill {
+    border-block-end-color: #f59e0b;
+    border-inline-end-color: #f59e0b;
+}
+
+.slms-gauge--low .slms-gauge__fill {
+    border-block-end-color: #ef4444;
+    border-inline-end-color: #ef4444;
+}
+
+.slms-gauge__reading {
+    margin-block-start: -2.25rem;
+    text-align: center;
+    position: relative;
+}
+
+.slms-gauge__value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--bs-body-color, #1e293b);
+}
+
+.slms-gauge__label {
+    font-size: 0.75rem;
+    color: var(--bs-body-color, #1e293b);
+}
+
+.slms-gp-0 .slms-gauge__fill {
+    transform: rotate(45deg);
+}
+
+.slms-gp-1 .slms-gauge__fill {
+    transform: rotate(46.8deg);
+}
+
+.slms-gp-2 .slms-gauge__fill {
+    transform: rotate(48.6deg);
+}
+
+.slms-gp-3 .slms-gauge__fill {
+    transform: rotate(50.4deg);
+}
+
+.slms-gp-4 .slms-gauge__fill {
+    transform: rotate(52.2deg);
+}
+
+.slms-gp-5 .slms-gauge__fill {
+    transform: rotate(54deg);
+}
+
+.slms-gp-6 .slms-gauge__fill {
+    transform: rotate(55.8deg);
+}
+
+.slms-gp-7 .slms-gauge__fill {
+    transform: rotate(57.6deg);
+}
+
+.slms-gp-8 .slms-gauge__fill {
+    transform: rotate(59.4deg);
+}
+
+.slms-gp-9 .slms-gauge__fill {
+    transform: rotate(61.2deg);
+}
+
+.slms-gp-10 .slms-gauge__fill {
+    transform: rotate(63deg);
+}
+
+.slms-gp-11 .slms-gauge__fill {
+    transform: rotate(64.8deg);
+}
+
+.slms-gp-12 .slms-gauge__fill {
+    transform: rotate(66.6deg);
+}
+
+.slms-gp-13 .slms-gauge__fill {
+    transform: rotate(68.4deg);
+}
+
+.slms-gp-14 .slms-gauge__fill {
+    transform: rotate(70.2deg);
+}
+
+.slms-gp-15 .slms-gauge__fill {
+    transform: rotate(72deg);
+}
+
+.slms-gp-16 .slms-gauge__fill {
+    transform: rotate(73.8deg);
+}
+
+.slms-gp-17 .slms-gauge__fill {
+    transform: rotate(75.6deg);
+}
+
+.slms-gp-18 .slms-gauge__fill {
+    transform: rotate(77.4deg);
+}
+
+.slms-gp-19 .slms-gauge__fill {
+    transform: rotate(79.2deg);
+}
+
+.slms-gp-20 .slms-gauge__fill {
+    transform: rotate(81deg);
+}
+
+.slms-gp-21 .slms-gauge__fill {
+    transform: rotate(82.8deg);
+}
+
+.slms-gp-22 .slms-gauge__fill {
+    transform: rotate(84.6deg);
+}
+
+.slms-gp-23 .slms-gauge__fill {
+    transform: rotate(86.4deg);
+}
+
+.slms-gp-24 .slms-gauge__fill {
+    transform: rotate(88.2deg);
+}
+
+.slms-gp-25 .slms-gauge__fill {
+    transform: rotate(90deg);
+}
+
+.slms-gp-26 .slms-gauge__fill {
+    transform: rotate(91.8deg);
+}
+
+.slms-gp-27 .slms-gauge__fill {
+    transform: rotate(93.6deg);
+}
+
+.slms-gp-28 .slms-gauge__fill {
+    transform: rotate(95.4deg);
+}
+
+.slms-gp-29 .slms-gauge__fill {
+    transform: rotate(97.2deg);
+}
+
+.slms-gp-30 .slms-gauge__fill {
+    transform: rotate(99deg);
+}
+
+.slms-gp-31 .slms-gauge__fill {
+    transform: rotate(100.8deg);
+}
+
+.slms-gp-32 .slms-gauge__fill {
+    transform: rotate(102.6deg);
+}
+
+.slms-gp-33 .slms-gauge__fill {
+    transform: rotate(104.4deg);
+}
+
+.slms-gp-34 .slms-gauge__fill {
+    transform: rotate(106.2deg);
+}
+
+.slms-gp-35 .slms-gauge__fill {
+    transform: rotate(108deg);
+}
+
+.slms-gp-36 .slms-gauge__fill {
+    transform: rotate(109.8deg);
+}
+
+.slms-gp-37 .slms-gauge__fill {
+    transform: rotate(111.6deg);
+}
+
+.slms-gp-38 .slms-gauge__fill {
+    transform: rotate(113.4deg);
+}
+
+.slms-gp-39 .slms-gauge__fill {
+    transform: rotate(115.2deg);
+}
+
+.slms-gp-40 .slms-gauge__fill {
+    transform: rotate(117deg);
+}
+
+.slms-gp-41 .slms-gauge__fill {
+    transform: rotate(118.8deg);
+}
+
+.slms-gp-42 .slms-gauge__fill {
+    transform: rotate(120.6deg);
+}
+
+.slms-gp-43 .slms-gauge__fill {
+    transform: rotate(122.4deg);
+}
+
+.slms-gp-44 .slms-gauge__fill {
+    transform: rotate(124.2deg);
+}
+
+.slms-gp-45 .slms-gauge__fill {
+    transform: rotate(126deg);
+}
+
+.slms-gp-46 .slms-gauge__fill {
+    transform: rotate(127.8deg);
+}
+
+.slms-gp-47 .slms-gauge__fill {
+    transform: rotate(129.6deg);
+}
+
+.slms-gp-48 .slms-gauge__fill {
+    transform: rotate(131.4deg);
+}
+
+.slms-gp-49 .slms-gauge__fill {
+    transform: rotate(133.2deg);
+}
+
+.slms-gp-50 .slms-gauge__fill {
+    transform: rotate(135deg);
+}
+
+.slms-gp-51 .slms-gauge__fill {
+    transform: rotate(136.8deg);
+}
+
+.slms-gp-52 .slms-gauge__fill {
+    transform: rotate(138.6deg);
+}
+
+.slms-gp-53 .slms-gauge__fill {
+    transform: rotate(140.4deg);
+}
+
+.slms-gp-54 .slms-gauge__fill {
+    transform: rotate(142.2deg);
+}
+
+.slms-gp-55 .slms-gauge__fill {
+    transform: rotate(144deg);
+}
+
+.slms-gp-56 .slms-gauge__fill {
+    transform: rotate(145.8deg);
+}
+
+.slms-gp-57 .slms-gauge__fill {
+    transform: rotate(147.6deg);
+}
+
+.slms-gp-58 .slms-gauge__fill {
+    transform: rotate(149.4deg);
+}
+
+.slms-gp-59 .slms-gauge__fill {
+    transform: rotate(151.2deg);
+}
+
+.slms-gp-60 .slms-gauge__fill {
+    transform: rotate(153deg);
+}
+
+.slms-gp-61 .slms-gauge__fill {
+    transform: rotate(154.8deg);
+}
+
+.slms-gp-62 .slms-gauge__fill {
+    transform: rotate(156.6deg);
+}
+
+.slms-gp-63 .slms-gauge__fill {
+    transform: rotate(158.4deg);
+}
+
+.slms-gp-64 .slms-gauge__fill {
+    transform: rotate(160.2deg);
+}
+
+.slms-gp-65 .slms-gauge__fill {
+    transform: rotate(162deg);
+}
+
+.slms-gp-66 .slms-gauge__fill {
+    transform: rotate(163.8deg);
+}
+
+.slms-gp-67 .slms-gauge__fill {
+    transform: rotate(165.6deg);
+}
+
+.slms-gp-68 .slms-gauge__fill {
+    transform: rotate(167.4deg);
+}
+
+.slms-gp-69 .slms-gauge__fill {
+    transform: rotate(169.2deg);
+}
+
+.slms-gp-70 .slms-gauge__fill {
+    transform: rotate(171deg);
+}
+
+.slms-gp-71 .slms-gauge__fill {
+    transform: rotate(172.8deg);
+}
+
+.slms-gp-72 .slms-gauge__fill {
+    transform: rotate(174.6deg);
+}
+
+.slms-gp-73 .slms-gauge__fill {
+    transform: rotate(176.4deg);
+}
+
+.slms-gp-74 .slms-gauge__fill {
+    transform: rotate(178.2deg);
+}
+
+.slms-gp-75 .slms-gauge__fill {
+    transform: rotate(180deg);
+}
+
+.slms-gp-76 .slms-gauge__fill {
+    transform: rotate(181.8deg);
+}
+
+.slms-gp-77 .slms-gauge__fill {
+    transform: rotate(183.6deg);
+}
+
+.slms-gp-78 .slms-gauge__fill {
+    transform: rotate(185.4deg);
+}
+
+.slms-gp-79 .slms-gauge__fill {
+    transform: rotate(187.2deg);
+}
+
+.slms-gp-80 .slms-gauge__fill {
+    transform: rotate(189deg);
+}
+
+.slms-gp-81 .slms-gauge__fill {
+    transform: rotate(190.8deg);
+}
+
+.slms-gp-82 .slms-gauge__fill {
+    transform: rotate(192.6deg);
+}
+
+.slms-gp-83 .slms-gauge__fill {
+    transform: rotate(194.4deg);
+}
+
+.slms-gp-84 .slms-gauge__fill {
+    transform: rotate(196.2deg);
+}
+
+.slms-gp-85 .slms-gauge__fill {
+    transform: rotate(198deg);
+}
+
+.slms-gp-86 .slms-gauge__fill {
+    transform: rotate(199.8deg);
+}
+
+.slms-gp-87 .slms-gauge__fill {
+    transform: rotate(201.6deg);
+}
+
+.slms-gp-88 .slms-gauge__fill {
+    transform: rotate(203.4deg);
+}
+
+.slms-gp-89 .slms-gauge__fill {
+    transform: rotate(205.2deg);
+}
+
+.slms-gp-90 .slms-gauge__fill {
+    transform: rotate(207deg);
+}
+
+.slms-gp-91 .slms-gauge__fill {
+    transform: rotate(208.8deg);
+}
+
+.slms-gp-92 .slms-gauge__fill {
+    transform: rotate(210.6deg);
+}
+
+.slms-gp-93 .slms-gauge__fill {
+    transform: rotate(212.4deg);
+}
+
+.slms-gp-94 .slms-gauge__fill {
+    transform: rotate(214.2deg);
+}
+
+.slms-gp-95 .slms-gauge__fill {
+    transform: rotate(216deg);
+}
+
+.slms-gp-96 .slms-gauge__fill {
+    transform: rotate(217.8deg);
+}
+
+.slms-gp-97 .slms-gauge__fill {
+    transform: rotate(219.6deg);
+}
+
+.slms-gp-98 .slms-gauge__fill {
+    transform: rotate(221.4deg);
+}
+
+.slms-gp-99 .slms-gauge__fill {
+    transform: rotate(223.2deg);
+}
+
+.slms-gp-100 .slms-gauge__fill {
+    transform: rotate(225deg);
 }
 
 /* ── Gauge popup ──────────────────────────────────────────────────────────── */

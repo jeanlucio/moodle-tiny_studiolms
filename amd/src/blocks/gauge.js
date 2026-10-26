@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Gauge block — renders 1–3 pure-SVG semi-circle gauge charts side by side.
+ * Gauge block — renders 1–3 semi-circle gauges side by side, in plain HTML and CSS.
  *
  * @module     tiny_studiolms/blocks/gauge
  * @copyright  2026 Jean Lúcio
@@ -23,103 +23,12 @@
 
 import Templates from 'core/templates';
 import Notification from 'core/notification';
-import {escapeHtml as esc} from './text_escape';
+import {gaugeModel} from './chart_data';
 
 const MAX_GAUGES = 3;
 
 // Visual slot-indicator colours used only inside the popup.
 const SLOT_COLORS = ['#3b82f6', '#10b981', '#8b5cf6'];
-
-// SVG geometry constants.
-const G_SVG_W = 240;
-const G_SVG_H = 136;
-const G_CX = 120;
-const G_CY = 112;
-const G_R = 88;
-const G_TRACK_W = 16;
-
-/**
- * Escape HTML special characters.
- * @param {string} str Raw string.
- * @returns {string} Safe string.
- */
-/**
- * Return the arc fill colour using traffic-light zones.
- * @param {number} v Value 0–100.
- * @returns {string} Hex colour.
- */
-const gaugeColor = (v) => {
-    if (v >= 67) {
-        return '#10b981';
-    }
-    if (v >= 34) {
-        return '#f59e0b';
-    }
-    return '#ef4444';
-};
-
-/**
- * Compute an SVG point on a circle using math-angle convention (Y-flipped for SVG).
- * @param {number} cx Center X.
- * @param {number} cy Center Y.
- * @param {number} r  Radius.
- * @param {number} deg Angle in degrees (0°=right, 90°=top, 180°=left).
- * @returns {{x: string, y: string}} Rounded coordinate pair.
- */
-const ptOnArc = (cx, cy, r, deg) => ({
-    x: (cx + r * Math.cos((deg * Math.PI) / 180)).toFixed(2),
-    y: (cy - r * Math.sin((deg * Math.PI) / 180)).toFixed(2),
-});
-
-/**
- * Build an SVG arc path string (clockwise, sweep-flag=1, large-arc=0).
- * @param {number} cx       Center X.
- * @param {number} cy       Center Y.
- * @param {number} r        Radius.
- * @param {number} startDeg Start angle (math degrees).
- * @param {number} endDeg   End angle (math degrees).
- * @returns {string} SVG path d attribute value.
- */
-const describeArc = (cx, cy, r, startDeg, endDeg) => {
-    const s = ptOnArc(cx, cy, r, startDeg);
-    const e = ptOnArc(cx, cy, r, endDeg);
-    return `M ${s.x} ${s.y} A ${r} ${r} 0 0 1 ${e.x} ${e.y}`;
-};
-
-/**
- * Build SVG markup for a single gauge.
- * @param {number} value  0–100.
- * @param {string} label  Optional label beneath the value.
- * @returns {string} SVG markup string.
- */
-const buildGaugeSvg = (value, label) => {
-    const safeVal = Math.min(99.8, Math.max(0.2, value));
-    const endDeg = 180 - (safeVal / 100) * 179.6;
-    const color = gaugeColor(value);
-    const bgPath = describeArc(G_CX, G_CY, G_R, 180, 0.2);
-    const fgPath = describeArc(G_CX, G_CY, G_R, 180, endDeg);
-
-    const parts = [
-        `<svg viewBox="0 0 ${G_SVG_W} ${G_SVG_H}" role="img"`,
-        ` xmlns="http://www.w3.org/2000/svg" class="slms-gauge__svg">`,
-        `<path d="${bgPath}" fill="none" stroke="#e2e8f0"`,
-        ` stroke-width="${G_TRACK_W}" stroke-linecap="round"/>`,
-        `<path d="${fgPath}" fill="none" stroke="${color}"`,
-        ` stroke-width="${G_TRACK_W}" stroke-linecap="round"/>`,
-        `<text x="${G_CX}" y="${G_CY - 8}" text-anchor="middle"`,
-        ` font-size="30" font-weight="700" fill="${color}">${value}%</text>`,
-    ];
-
-    if (label) {
-        parts.push(
-            `<text x="${G_CX}" y="${G_CY + 16}" text-anchor="middle"`,
-            ` font-size="12" fill="#64748b">${esc(label)}</text>`
-        );
-    }
-
-    parts.push('</svg>');
-    return parts.join('');
-};
 
 // ---------------------------------------------------------------------------
 // Popup helpers.
@@ -233,10 +142,8 @@ export default {
 
     renderHtml: async(data) => {
         const gauges = normaliseGauges(data).filter(g => g.value > 0 || g.label);
-        const items = (gauges.length ? gauges : [{value: 0, label: ''}]).map(g => {
-            const value = Math.min(100, Math.max(0, parseInt(g.value, 10) || 0));
-            return {svg: buildGaugeSvg(value, g.label || '')};
-        });
+        const items = (gauges.length ? gauges : [{value: 0, label: ''}])
+            .map(g => gaugeModel(g.value, g.label));
 
         return Templates.render('tiny_studiolms/block_gauge', {
             hoverEffect: data.hoverEffect,
