@@ -1209,6 +1209,118 @@ class behat_tiny_studiolms extends behat_base {
         });
     }
 
+    /**
+     * Moves the selected block of the canvas one place with the arrow buttons of its header.
+     *
+     * Only the selected block shows its header, so that is the one the buttons belong to.
+     *
+     * @When I move the selected StudioLMS canvas block :direction
+     * @param string $direction Either up or down.
+     */
+    public function i_move_the_selected_studiolms_canvas_block(string $direction): void {
+        if (!in_array($direction, ['up', 'down'], true)) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                "The direction of a StudioLMS block move is up or down, '{$direction}' given.",
+                $this->getSession()
+            );
+        }
+        $this->execute('behat_general::i_click_on', [
+            '#slms-canvas-blocks .slms-canvas-block.slms-active-block .slms-btn-block-' . $direction,
+            'css_element',
+        ]);
+    }
+
+    /**
+     * Asserts the order of the blocks on the canvas, waiting for it because a move redraws the list.
+     *
+     * A block of the canvas is told apart by the class of the element its preview starts with, since the preview
+     * carries no block type.
+     *
+     * @Then the StudioLMS canvas lists the blocks :wrappers in this order
+     * @param string $wrappers The classes separated by commas, for example studiolms-callout-wrap,studiolms-btn-wrap.
+     */
+    public function the_studiolms_canvas_lists_the_blocks_in_this_order(string $wrappers): void {
+        $expected = array_map('trim', explode(',', $wrappers));
+        $this->spin(function () use ($expected) {
+            $actual = $this->evaluate_script(
+                'return Array.prototype.map.call(document.querySelectorAll("#slms-canvas-blocks .slms-canvas-block"), ' .
+                'function (block) {' .
+                'var node = block.querySelector(".slms-canvas-block-preview").firstElementChild;' .
+                'return node ? node.className.split(" ")[0] : "";' .
+                '});'
+            );
+            if ($actual !== $expected) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    'The StudioLMS canvas lists [' . implode(', ', (array) $actual) . '], expected ['
+                        . implode(', ', $expected) . '].',
+                    $this->getSession()
+                );
+            }
+            return true;
+        });
+    }
+
+    /**
+     * Loads every ready-made layout onto the canvas, one after the other, and asserts that none of them ran script
+     * or left an unsafe attribute in the preview.
+     *
+     * The cards are counted against the files in presets/en, so a layout that is shipped but never shown (or a card
+     * that does nothing when clicked) fails here instead of being found by a teacher.
+     *
+     * @Then loading every ready-made StudioLMS layout runs no script
+     */
+    public function loading_every_ready_made_layout_runs_no_script(): void {
+        $this->i_click_on_studiolms_tab('presets');
+        $shipped = count(glob(__DIR__ . '/../../presets/en/*.json'));
+        $names = [];
+        // The cards are drawn after the layouts are fetched, so wait for the whole list instead of reading it at once.
+        $this->spin(function () use (&$names, $shipped) {
+            $names = (array) $this->evaluate_script(
+                'return Array.prototype.map.call(document.querySelectorAll("#slms-library-grid .slms-tpl-name"), ' .
+                'function (el) { return el.textContent.trim(); });'
+            );
+            if (count($names) !== $shipped) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    'The ready-made layouts tab shows ' . count($names) . " cards, {$shipped} layouts are shipped.",
+                    $this->getSession()
+                );
+            }
+            return true;
+        });
+
+        foreach ($names as $name) {
+            $this->execute_script('window.__slmsXssFired = false;');
+            $this->execute('behat_general::i_click_on', [
+                $this->template_card_xpath($name) . '//div[contains(@class, "slms-tpl-thumb")]',
+                'xpath_element',
+            ]);
+            $this->wait_for_canvas_preview();
+
+            $this->getSession()->wait(1000);
+            $this->assert_canvas_ran_no_script("loading the ready-made layout '{$name}'", true);
+            $this->remove_every_canvas_block();
+        }
+    }
+
+    /**
+     * Removes every block of the canvas and waits until it is empty again.
+     */
+    private function remove_every_canvas_block(): void {
+        $this->execute_script(
+            'Array.prototype.forEach.call(document.querySelectorAll("#slms-canvas-blocks .slms-btn-block-remove"), ' .
+            'function (button) { button.click(); });'
+        );
+        $this->spin(function () {
+            if ($this->getSession()->getPage()->find('css', '#slms-canvas-blocks .slms-canvas-block')) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    'The StudioLMS canvas was not emptied.',
+                    $this->getSession()
+                );
+            }
+            return true;
+        });
+    }
+
     /** @var bool|null Whether the last click on a StudioLMS button in the editor had its default action cancelled. */
     private ?bool $buttonclickprevented = null;
 
