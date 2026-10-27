@@ -34,6 +34,7 @@
         "color": "#14401a",
         "isOpen": true,
         "layout": "list",
+        "stripe": "block",
         "resources": [
           {
             "type": "video",

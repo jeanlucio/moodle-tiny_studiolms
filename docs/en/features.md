@@ -5,7 +5,7 @@
   * **Action Button** — call-to-action button with configurable URL, target, colours, border radius and alignment.
   * **Advanced Card** — card with image or a YouTube or Vimeo video, a rich editable body and an internal button.
   * **Accordion** — expandable topic with 4 icon styles and an open/closed initial state.
-  * **Resources** — resource library (PDF, video, audio, link) in list or grid layout.
+  * **Resources** — resource library (PDF, video, audio, link) in list or grid layout, with the stripe of each item coloured by media type or by the colour of the block.
   * **Grid Cards** — multi-column container with editable slots, an optional heading and a one-line description under it (two plain text fields).
   * **Callout** — highlight box with a customisable icon and border colour.
   * **Table** — striped or plain table that works with TinyMCE's own table tools.

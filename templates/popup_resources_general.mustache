@@ -18,7 +18,7 @@
     @template tiny_studiolms/popup_resources_general
     @copyright 2026 Jean Lúcio
 
-    Example context (json): {"blockColorValue": "#f8f9fa", "animate": true}
+    Example context (json): {"blockColorValue": "#f8f9fa", "animate": true, "stripeType": true, "stripeBlock": false}
 }}
 <div class="mb-3 pb-3 border-bottom">
     <label for="pop_res_layout" class="form-label small fw-bold">{{#str}} layout, tiny_studiolms {{/str}}</label>
@@ -30,6 +30,13 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <label for="pop_res_block_color" class="form-label m-0 small fw-bold">{{#str}} resources_block_color, tiny_studiolms {{/str}}</label>
     <input type="color" class="slms-color-picker" id="pop_res_block_color" value="{{blockColorValue}}">
+</div>
+<div class="mb-3">
+    <label for="pop_res_stripe" class="form-label small fw-bold">{{#str}} resources_stripe, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_res_stripe">
+        <option value="type" {{#stripeType}}selected{{/stripeType}}>{{#str}} resources_stripe_type, tiny_studiolms {{/str}}</option>
+        <option value="block" {{#stripeBlock}}selected{{/stripeBlock}}>{{#str}} resources_stripe_block, tiny_studiolms {{/str}}</option>
+    </select>
 </div>
 <div class="mb-3">
     <label for="pop_res_icon" class="form-label small fw-bold">{{#str}} icon_pair, tiny_studiolms {{/str}}</label>

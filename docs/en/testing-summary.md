@@ -1,6 +1,6 @@
 # 🧪 Automated Tests
 
-StudioLMS ships with **251 PHPUnit test cases**, **232 JavaScript tests** and a **76-scenario Behat suite**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
+StudioLMS ships with **251 PHPUnit test cases**, **241 JavaScript tests** and a **76-scenario Behat suite**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
 
 ### PHPUnit — Unit & Integration Tests
 
@@ -25,7 +25,7 @@ AI configured is used to exercise the "no AI" path.
 
 ### JavaScript — Headless Tests
 
-**232 tests** in **42 files** run with `node --test tests/js/*.test.js`, without a browser or Moodle: the block models, contrast and colours, escaping and sanitising, the template library and the Studio window.
+**241 tests** in **43 files** run with `node --test tests/js/*.test.js`, without a browser or Moodle: the block models, contrast and colours, escaping and sanitising, the template library and the Studio window.
 
 ### Behat — Acceptance Tests
 

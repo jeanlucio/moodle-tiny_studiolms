@@ -5,7 +5,7 @@
   * **Botão de Ação** — botão de chamada para ação com URL, destino, cores, raio de borda e alinhamento configuráveis.
   * **Cartão Avançado** — cartão com imagem ou vídeo do YouTube ou do Vimeo, corpo rico editável e botão interno.
   * **Accordion** — tópico expansível com 4 estilos de ícone e estado inicial aberto/fechado.
-  * **Webteca** — biblioteca de recursos (PDF, vídeo, áudio, link) em lista ou grade.
+  * **Webteca** — biblioteca de recursos (PDF, vídeo, áudio, link) em lista ou grade, com a faixa de cada item colorida pelo tipo de mídia ou pela cor do bloco.
   * **Grid de Cards** — container multi-coluna com slots editáveis, título opcional e uma linha de descrição embaixo dele (dois campos de texto puro).
   * **Caixa de Destaque** — destaque com ícone e cor de borda personalizáveis.
   * **Tabela** — tabela listrada ou simples, compatível com as ferramentas de tabela do próprio TinyMCE.

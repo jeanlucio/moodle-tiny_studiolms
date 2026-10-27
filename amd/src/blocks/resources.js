@@ -46,6 +46,8 @@ export default {
         // Whether the list opens and closes with a movement.
         animate: true,
         layout: 'list',
+        // What colours the stripe on the left of each item: its media type ('type') or the colour of the block ('block').
+        stripe: 'type',
         hoverEffect: 'none',
         openSound: 'none',
         resources: [
@@ -84,6 +86,8 @@ export default {
                     tplData['hover_' + (data.hoverEffect || 'none')] = true;
                     tplData['sound_opt_' + (data.openSound || 'none')] = true;
                     tplData.animate = data.animate !== false;
+                    tplData.stripeBlock = data.stripe === 'block';
+                    tplData.stripeType = data.stripe !== 'block';
                     tplData.blockColorValue = data.headerBg;
                     Object.assign(tplData, alignVars(data.align, 'left'));
                     tplData[{
@@ -97,6 +101,7 @@ export default {
                         bindAlign(popup, data, onUpdate);
                         const propMap = {
                             '#pop_res_layout': 'layout',
+                            '#pop_res_stripe': 'stripe',
                             '#pop_res_icon': 'icon',
                             '#pop_res_hover': 'hoverEffect',
                             '#pop_res_sound': 'openSound'
@@ -315,28 +320,30 @@ export default {
 
         const defaultItemTitle = await getString('resources_default_item_title', 'tiny_studiolms');
         templateData.mappedResources = data.resources.map(r => {
-            let icon = '🔗';
+            let iconClass = 'fa-link';
             let typeColor = '#6c757d';
 
             if (r.type === 'pdf') {
-                icon = '📄';
+                iconClass = 'fa-file-pdf';
                 typeColor = '#dc3545';
             }
             if (r.type === 'video') {
-                icon = '▶️';
+                iconClass = 'fa-circle-play';
                 typeColor = '#fd7e14';
             }
             if (r.type === 'audio') {
-                icon = '🎧';
+                iconClass = 'fa-headphones';
                 typeColor = '#6f42c1';
             }
             if (r.type === 'link') {
-                icon = '🔗';
+                iconClass = 'fa-link';
                 typeColor = '#0d6efd';
             }
 
             const title = (r.title && r.title.trim()) ? r.title : defaultItemTitle;
-            return {...r, title: title, icon: icon, typeColor: typeColor};
+            // The block's own colour is a field of the author, so it goes into the markup as a value to escape.
+            const stripeColor = data.stripe === 'block' ? data.color : typeColor;
+            return {...r, title: title, iconClass: iconClass, typeColor: typeColor, stripeColor: stripeColor};
         });
 
         return Templates.render('tiny_studiolms/block_resources', templateData);
