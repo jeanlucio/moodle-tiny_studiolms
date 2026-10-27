@@ -216,7 +216,7 @@ export default {
                             listContainer.innerHTML = '';
                             data.resources.forEach((res, index) => {
                                 const row = document.createElement('div');
-                                row.className = 'd-flex gap-2 mb-2 align-items-center p-2 border rounded bg-light';
+                                row.className = 'mb-2 p-1 border rounded bg-light';
 
                                 // The title/url values come from attacker-controllable state (see
                                 // StateManager.restore) and must never be interpolated into an
@@ -225,30 +225,31 @@ export default {
                                 // come from core/str, not user input, so interpolating them here
                                 // is safe.
                                 row.innerHTML = `
-                                <div class="flex-grow-1">
-                                    <div class="input-group input-group-sm mb-1">
-                                        <select class="form-select res-type slms-resources-select" aria-label="${typeAria}">
-                                            <option value="link" ${res.type === 'link' ? 'selected' : ''}>
-                                                ${typeLinkLabel}
-                                            </option>
-                                            <option value="pdf" ${res.type === 'pdf' ? 'selected' : ''}>
-                                                ${typePdfLabel}
-                                            </option>
-                                            <option value="video" ${res.type === 'video' ? 'selected' : ''}>
-                                                ${typeVideoLabel}
-                                            </option>
-                                            <option value="audio" ${res.type === 'audio' ? 'selected' : ''}>
-                                                ${typeAudioLabel}
-                                            </option>
-                                        </select>
-                                        <input type="text" class="form-control res-title"
-                                            placeholder="${titlePlaceholder}" aria-label="${titleAria}">
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm res-url"
-                                        placeholder="${urlPlaceholder}" aria-label="${urlAria}">
+                                <div class="d-flex gap-1 align-items-center mb-1">
+                                    <select class="form-select form-select-sm res-type slms-resources-select"
+                                        aria-label="${typeAria}">
+                                        <option value="link" ${res.type === 'link' ? 'selected' : ''}>
+                                            ${typeLinkLabel}
+                                        </option>
+                                        <option value="pdf" ${res.type === 'pdf' ? 'selected' : ''}>
+                                            ${typePdfLabel}
+                                        </option>
+                                        <option value="video" ${res.type === 'video' ? 'selected' : ''}>
+                                            ${typeVideoLabel}
+                                        </option>
+                                        <option value="audio" ${res.type === 'audio' ? 'selected' : ''}>
+                                            ${typeAudioLabel}
+                                        </option>
+                                    </select>
+                                    <input type="text" class="form-control form-control-sm res-title flex-grow-1"
+                                        placeholder="${titlePlaceholder}" aria-label="${titleAria}">
+                                    <button type="button" class="btn btn-sm btn-link text-danger res-del p-1"
+                                        aria-label="${removeAria}">
+                                        <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                                    </button>
                                 </div>
-                                <button type="button" class="btn btn-sm btn-outline-danger res-del slms-btn-fit"
-                                    aria-label="${removeAria}">🗑️</button>
+                                <input type="text" class="form-control form-control-sm res-url"
+                                    placeholder="${urlPlaceholder}" aria-label="${urlAria}">
                                 `;
                                 row.querySelector('.res-title').value = res.title;
                                 row.querySelector('.res-url').value = res.url;

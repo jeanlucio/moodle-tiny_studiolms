@@ -1376,10 +1376,12 @@ body:not(.mce-content-body) .studiolms-resources.slms-closed > .studiolms-resour
 
 /* Resources popup utility classes. */
 .tiny_studiolms .slms-resources-select {
+    flex: 0 0 auto;
+    width: auto;
     max-width: 130px;
 }
-.tiny_studiolms .slms-btn-fit {
-    height: fit-content;
+.tiny_studiolms .slms-resources-list .res-title {
+    min-width: 0;
 }
 /*
  * Dashed grid slot borders are editor-only; hidden on the rendered page.
