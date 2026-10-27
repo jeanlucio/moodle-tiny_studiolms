@@ -1,6 +1,6 @@
 # 🧪 Testes Automatizados
 
-O StudioLMS inclui **258 casos de teste PHPUnit** em **43 arquivos**, **295 testes de JavaScript** em **49 arquivos**, mais uma suíte Behat com
+O StudioLMS inclui **259 casos de teste PHPUnit** em **43 arquivos**, **298 testes de JavaScript** em **50 arquivos**, mais uma suíte Behat com
 **83 cenários** em **20 arquivos de feature**, executados em todo push de CI na matriz completa
 (Moodle 4.5 → 5.x, PostgreSQL e MariaDB).
 
@@ -23,7 +23,7 @@ O StudioLMS inclui **258 casos de teste PHPUnit** em **43 arquivos**, **295 test
 | `external/toggle_favourite_test.php` | 9 | Ativar cria um favorito, desativar remove, sem duplicatas; favoritar um modelo inexistente lança exceção; convidados são rejeitados; um modelo privado de outro usuário não pode ser favoritado, mas um global pode; um professor matriculado no curso pode usar o contexto real do curso e é rejeitado num contexto de sistema fixo |
 | `hook_callbacks_test.php` | 2 | O módulo AMD do frontend do estudante é solicitado só em páginas de contexto de curso/módulo, e ignorado em qualquer outra |
 | `plugininfo_test.php` | 17 | `is_enabled()` reflete a capability; a configuração devolvida repassa o ID de contexto real; `canmanageglobaltemplates` ignora uma concessão dessa capability só no curso; `hasai` segue a cadeia de provedores de ponta a ponta; o link "Minhas chaves de IA" da Central de IA só aparece quando as chaves pessoais estão habilitadas e o professor tem a capability; presets carregam para um idioma com arquivos reais, voltam vazios quando não existe nenhum, e caem para inglês quando o próprio diretório do idioma não existe; os botões e itens de menu disponíveis são declarados |
-| `privacy/provider_test.php` | 18 | Descoberta de contexto para modelos, favoritos e um caso vazio; a exportação inclui modelos próprios; a exclusão remove dados pessoais preservando modelos globais, anonimizando a autoria tanto na exclusão de um usuário quanto em lote e para todos os usuários de um contexto; a listagem reversa de usuários por contexto; os metadados declaram só as duas tabelas próprias deste plugin (modelos e favoritos — nenhuma declaração de chave ou log de IA restou); tanto um contexto que não é de sistema quanto um caso sem dados não fazem nada em todo lugar onde são checados |
+| `privacy/provider_test.php` | 19 | Descoberta de contexto para modelos, favoritos e um caso vazio; a exportação inclui modelos próprios; a exclusão remove dados pessoais preservando modelos globais, anonimizando a autoria tanto na exclusão de um usuário quanto em lote e para todos os usuários de um contexto; a listagem reversa de usuários por contexto; os metadados declaram só as duas tabelas próprias deste plugin (modelos e favoritos — nenhuma declaração de chave ou log de IA restou); tanto um contexto que não é de sistema quanto um caso sem dados não fazem nada em todo lugar onde são checados |
 | `ai/generator_payload_test.php` | 24 | O modelo não é confiável: cada gerador interpreta o que ele devolve embrulhado em cercas de código, pela metade ou hostil — itens vazios descartados, HTML purificado, flags e padrões normalizados, campos de tipo errado (uma lista onde se espera texto, a string "false" como booleano) lidos com segurança; o schema do prompt oferece só o que os blocos aceitam |
 | `ai_notice_test.php` | 1 | Cada uma das três abas de IA traz o aviso de que o texto vai para o provedor de IA do site |
 | `alignment_test.php` | 11 | A classe de alinhamento que o professor escolhe (esquerda, centro, direita) está em cada um dos onze blocos que a aceitam e sobrevive ao limpador de HTML do Moodle |
@@ -55,10 +55,10 @@ IA e sem provedor `core_ai`, é usado para exercitar o caminho "sem IA disponív
 | Área | Arquivos | Casos | O que é coberto |
 |------|---------:|------:|------------------|
 | Blocos | 26 | 191 | O que os blocos desenham e como se comportam: os modelos de gráfico, barras e velocímetro, o limite de largura dos blocos que mostram pouco, as opções do acordeão e da webteca, o layout e a sombra do cartão, o título e a descrição do grid, os blocos dentro de uma coluna do grid, o texto digitado no canvas, cores e contraste (razões WCAG), pares de ícones, colunas do grid, o efeito de hover em todos os blocos, o emoji decorativo escondido |
-| Segurança e limpeza | 10 | 41 | Segurança e limpeza de HTML: escape, saneamento de URLs e de configuração de IA, URLs de vídeo, blocos encontrados por classe onde o Moodle remove atributos, eventos do frontend, nenhum texto visível literal nas fontes AMD, nenhum utilitário exclusivo do Bootstrap 5, o CSS inline do editor |
+| Segurança e limpeza | 11 | 44 | Segurança e limpeza de HTML: escape, saneamento de URLs e de configuração de IA, URLs de vídeo, blocos encontrados por classe onde o Moodle remove atributos, eventos do frontend, nenhum texto visível literal nas fontes AMD, nenhum utilitário exclusivo do Bootstrap 5, o CSS inline do editor |
 | Modelos e biblioteca | 9 | 33 | Modelos e biblioteca: o cache de modelos, a importação de arquivo, o carregamento de um modelo no canvas em uma só etapa, o botão de exportar mostrando Exportar tudo ou Exportar selecionados (n), os campos de link empilhados do cartão de perfil, os textos de exemplo no idioma do site, a correspondência de presets e o aviso de idioma |
 | Janela do Studio | 4 | 30 | A janela do Studio: a divisão da barra lateral e sua geometria, a aba ativa, o portão da política de uso de IA |
-| **Total** | **49** | **295** | |
+| **Total** | **50** | **298** | |
 
 Estes rodam sem navegador nem Moodle: os módulos importados pelos testes não importam nada, e um teste que precisa do `app.js` ou de um template lê o arquivo-fonte.
 

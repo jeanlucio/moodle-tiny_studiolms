@@ -190,11 +190,15 @@ export const importTemplatesFromFile = () => {
  *
  * @param {HTMLElement} container
  * @param {Array} templates
- * @param {object} editor - TinyMCE editor instance
- * @param {object} modal - Moodle modal instance
- * @param {object} options - Optional callbacks e.g. {onLoadToCanvas}
+ * @param {object} options
+ * @param {Function} options.onLoadToCanvas Called with the content and the name of the template the teacher picks.
+ *     Required: a template is only ever loaded through the canvas, which filters its markup (see stageTemplateBlock).
+ * @param {Function} [options.onInvalidateCache] Called when a change makes a cached tab out of date.
  */
-export const renderTemplateGrid = async(container, templates, editor, modal, options = {}) => {
+export const renderTemplateGrid = async(container, templates, options = {}) => {
+    if (typeof options.onLoadToCanvas !== 'function') {
+        throw new Error('renderTemplateGrid needs onLoadToCanvas: a template must not be put into the editor unfiltered.');
+    }
     container.innerHTML = '';
 
     if (!templates || templates.length === 0) {
@@ -224,11 +228,7 @@ export const renderTemplateGrid = async(container, templates, editor, modal, opt
 
             if (insertTrigger) {
                 const handleClick = () => {
-                    if (options.onLoadToCanvas) {
-                        options.onLoadToCanvas(tpl.content || '', tpl.name || '');
-                    } else {
-                        handleInsertTemplate(tpl, editor, modal);
-                    }
+                    options.onLoadToCanvas(tpl.content || '', tpl.name || '');
                 };
 
                 insertTrigger.addEventListener('click', handleClick);
@@ -276,36 +276,6 @@ export const renderTemplateGrid = async(container, templates, editor, modal, opt
         } catch (error) {
             window.console.error('StudioLMS: Error rendering template card', error);
         }
-    }
-};
-
-/**
- * Insert a template's content into the editor and close the modal.
- *
- * @param {object} tpl - Template object with content property
- * @param {object} editor
- * @param {object} modal
- */
-const handleInsertTemplate = (tpl, editor, modal) => {
-    if (tpl.content) {
-        const tplName = (tpl.name || '').trim();
-        let contentToInsert = tpl.content;
-
-        if (tplName) {
-            // Tpl.content is arbitrary stored template HTML — parsed via DOMParser into a
-            // separate, inert document (see loadTemplateToCanvas in app.js) rather than a live
-            // div's innerHTML, so tagging the elements here cannot execute a crafted payload.
-            const parsed = new DOMParser().parseFromString(tpl.content, 'text/html');
-            parsed.body.querySelectorAll('[data-slms-block-type]').forEach((el) => {
-                el.setAttribute('data-slms-tpl-name', tplName);
-            });
-            contentToInsert = parsed.body.innerHTML;
-        }
-
-        editor.insertContent(contentToInsert);
-    }
-    if (modal) {
-        modal.hide();
     }
 };
 

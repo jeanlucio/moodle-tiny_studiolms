@@ -1219,8 +1219,9 @@ const setupGridTargeting = () => {
 const addBlockToCanvas = async(blockDef, config = null, skipScroll = false, stage = null) => {
     const blockId = ++canvasBlockCounter;
     // Every canvas entry passes here (template, re-edit, preset, AI insert), so URL and target
-    // fields are validated once for all of them; see sanitizeUrlFields() for why HTML
-    // sanitization alone does not cover them.
+    // fields of what comes in are validated once for all of them; see sanitizeUrlFields() for why HTML
+    // sanitization alone does not cover them. What the teacher types into a popup afterwards is validated again
+    // when the block is rendered for the editor (renderSingleBlockForInsert).
     const blockConfig = sanitizeUrlFields(config
         ? JSON.parse(JSON.stringify(config))
         : JSON.parse(JSON.stringify(blockDef.defaultData)));
@@ -1811,10 +1812,13 @@ export const loadTemplateToCanvas = async(htmlContent, tplName = '') => {
  * Render a single block into a fully attributed HTML string.
  *
  * @param {object} blockDef
- * @param {object} config
+ * @param {object} rawConfig The configuration of the block, as it is now.
  * @returns {Promise<string>}
  */
-const renderSingleBlockForInsert = async(blockDef, config) => {
+const renderSingleBlockForInsert = async(blockDef, rawConfig) => {
+    // What the teacher typed into a popup after the block was added has not been through addBlockToCanvas(), so the
+    // address and target fields are validated here too, at the one place every insert and every saved template passes.
+    const config = sanitizeUrlFields(rawConfig);
     const rawHtml = await blockDef.renderHtml(config);
     const excludeKeys = blockDef.excludeFromState || [];
     const base64State = StateManager.encode(config, excludeKeys);
@@ -2354,7 +2358,7 @@ const switchTab = async(tabName) => {
             }
         }
         const templates = tabDataCache.get(tabName) ?? [];
-        await renderTemplateGrid(grid, templates, tinyEditorInstance, moodleModalInstance, {
+        await renderTemplateGrid(grid, templates, {
             onLoadToCanvas: loadTemplateToCanvas,
             onInvalidateCache: invalidateTabCache,
         });

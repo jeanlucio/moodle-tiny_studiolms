@@ -1,6 +1,6 @@
 # 🧪 Automated Tests
 
-StudioLMS ships with **258 PHPUnit test cases** across **43 files**, **295 JavaScript tests** across **49 files**, plus a **83-scenario Behat suite** across **20 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
+StudioLMS ships with **259 PHPUnit test cases** across **43 files**, **298 JavaScript tests** across **50 files**, plus a **83-scenario Behat suite** across **20 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
 
 ### PHPUnit — Unit & Integration Tests
 
@@ -21,7 +21,7 @@ StudioLMS ships with **258 PHPUnit test cases** across **43 files**, **295 JavaS
 | `external/toggle_favourite_test.php` | 9 | Toggling on creates a favourite, toggling off removes it, with no duplicates; toggling a non-existent template throws; guests are rejected; a private template owned by someone else cannot be favourited, but a global one can; a course-enrolled teacher can use the real course context and is rejected at a hardcoded system context |
 | `hook_callbacks_test.php` | 2 | The student-frontend AMD module is requested only on course/module context pages, and skipped everywhere else |
 | `plugininfo_test.php` | 17 | `is_enabled()` reflects the capability; the returned configuration threads back the real context ID; `canmanageglobaltemplates` ignores a course-scoped grant of that capability; `hasai` follows the provider chain end to end; the AI Hub "My AI keys" link only appears when personal keys are enabled and the teacher holds the capability; presets load for a language with real files, come back empty when none exist, and fall back to English when the language directory itself is missing; the available buttons and menu items are declared |
-| `privacy/provider_test.php` | 18 | Context discovery for templates, favourites and an empty case; export includes owned templates; deletion removes personal data while preserving global templates, anonymising authorship on both single-user and bulk deletion and for every user in a context; the reverse per-context user listing; metadata declares only this plugin's own two tables (templates and favourites — no AI key or log declaration remains); both a non-system context and an empty-data case are a no-op everywhere they are checked |
+| `privacy/provider_test.php` | 19 | Context discovery for templates, favourites and an empty case; export includes owned templates; deletion removes personal data while preserving global templates, anonymising authorship on both single-user and bulk deletion and for every user in a context; the reverse per-context user listing; metadata declares only this plugin's own two tables (templates and favourites — no AI key or log declaration remains); both a non-system context and an empty-data case are a no-op everywhere they are checked |
 | `ai/generator_payload_test.php` | 24 | The model is untrusted: every generator parses what it returns wrapped in code fences, half-filled or hostile — empty items dropped, HTML purified, flags and defaults normalised, wrong-typed fields (an array where text is expected, the string "false" as a boolean) read safely; the prompt schema offers only what the blocks accept |
 | `ai_notice_test.php` | 1 | Each of the three AI tabs carries the notice that the text goes to the site's AI provider |
 | `alignment_test.php` | 11 | The alignment class a teacher picks (left, centre, right) is on each of the eleven blocks that take one and survives Moodle's HTML cleaner |
@@ -51,10 +51,10 @@ AI tests never reach a real provider: `local_aihub`'s client is replaced by a st
 | Area | Test files | Cases | What is covered |
 |------|-----------:|------:|----------------|
 | Blocks | 26 | 191 | What the blocks draw and how they behave: the chart, bar and gauge models, the width cap of the blocks that hold little, the accordion and resources options, the card layout and shadow, the heading and description of the grid, blocks inside a grid column, text typed on the canvas, colours and contrast (WCAG ratios), icon pairs, grid columns, the hover effect on every block, the hidden decorative emoji |
-| Safety and cleaning | 10 | 41 | Safety and the HTML cleaner: escaping, URL and AI-config sanitising, video URLs, blocks found by class where Moodle strips attributes, frontend events, no literal visible text in the AMD sources, no Bootstrap-5-only utilities, the editor's inline CSS |
+| Safety and cleaning | 11 | 44 | Safety and the HTML cleaner: escaping, URL and AI-config sanitising, video URLs, blocks found by class where Moodle strips attributes, frontend events, no literal visible text in the AMD sources, no Bootstrap-5-only utilities, the editor's inline CSS |
 | Templates and library | 9 | 33 | Templates and the library: the template cache, importing a file, loading a template into the canvas in one step, the export button reading Export all or Export selected (n), the stacked link fields of the profile card, example texts in the site language, preset matching and its language notice |
 | Studio window | 4 | 30 | The Studio window: the sidebar split and its geometry, the active tab, the AI use policy gate |
-| **Total** | **49** | **295** | |
+| **Total** | **50** | **298** | |
 
 These run without a browser or Moodle: modules imported by the tests import nothing, and a test that needs `app.js` or a template reads the source file instead.
 
