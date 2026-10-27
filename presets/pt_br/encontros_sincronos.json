@@ -1,5 +1,5 @@
 {
-  "name": "Encontros Síncronos",
+  "name": "Encontros Síncronos (Petróleo)",
   "description": "Título, boas-vindas, lista de gravações e slides dos encontros síncronos e botão de acesso à sala ao vivo.",
   "blocks": [
     {
@@ -8,17 +8,17 @@
         "text": "Encontros Síncronos",
         "level": "h3",
         "icon": "📅",
-        "bgColor": "#e1bee7",
-        "textColor": "#6a1b9a"
+        "bgColor": "#d3e9ea",
+        "textColor": "#0b5d63"
       }
     },
     {
       "type": "callout",
       "config": {
         "icon": "👋",
-        "backgroundColor": "#f3e5f5",
-        "textColor": "#4a148c",
-        "borderColor": "#ce93d8",
+        "backgroundColor": "#f0f8f8",
+        "textColor": "#083f44",
+        "borderColor": "#7fb8bb",
         "borderLeftWidth": 4,
         "borderRadius": 8,
         "contentHtml": "<p class=\"m-0\">Olá <strong>[firstname]</strong>! Aqui você encontra as datas dos encontros síncronos, além das gravações e slides das apresentações.</p>"
@@ -29,9 +29,9 @@
       "config": {
         "title": "Gravações e slides",
         "desc": "Material de cada encontro síncrono.",
-        "bg": "#ede7f6",
-        "headerBg": "#e1bee7",
-        "color": "#4a148c",
+        "bg": "#e6f2f2",
+        "headerBg": "#d3e9ea",
+        "color": "#083f44",
         "isOpen": true,
         "layout": "list",
         "resources": [
@@ -63,7 +63,7 @@
       "config": {
         "btnText": "▶️ Entrar no Encontro ao Vivo",
         "btnUrl": "#",
-        "btnBg": "#8e24aa",
+        "btnBg": "#0b5d63",
         "btnTextCol": "#ffffff",
         "radius": 6,
         "align": "center",

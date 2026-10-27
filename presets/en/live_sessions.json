@@ -1,5 +1,5 @@
 {
-  "name": "Live Sessions",
+  "name": "Live Sessions (Teal)",
   "description": "Heading, welcome note, list of recordings and slides of the live sessions and a button to enter the live room.",
   "blocks": [
     {
@@ -8,17 +8,17 @@
         "text": "Live Sessions",
         "level": "h3",
         "icon": "📅",
-        "bgColor": "#e1bee7",
-        "textColor": "#6a1b9a"
+        "bgColor": "#d3e9ea",
+        "textColor": "#0b5d63"
       }
     },
     {
       "type": "callout",
       "config": {
         "icon": "👋",
-        "backgroundColor": "#f3e5f5",
-        "textColor": "#4a148c",
-        "borderColor": "#ce93d8",
+        "backgroundColor": "#f0f8f8",
+        "textColor": "#083f44",
+        "borderColor": "#7fb8bb",
         "borderLeftWidth": 4,
         "borderRadius": 8,
         "contentHtml": "<p class=\"m-0\">Hello <strong>[firstname]</strong>! Here you will find the dates of the live sessions, plus the recordings and slides of the presentations.</p>"
@@ -29,9 +29,9 @@
       "config": {
         "title": "Recordings and slides",
         "desc": "Material from each live session.",
-        "bg": "#ede7f6",
-        "headerBg": "#e1bee7",
-        "color": "#4a148c",
+        "bg": "#e6f2f2",
+        "headerBg": "#d3e9ea",
+        "color": "#083f44",
         "isOpen": true,
         "layout": "list",
         "resources": [
@@ -63,7 +63,7 @@
       "config": {
         "btnText": "▶️ Join the Live Session",
         "btnUrl": "#",
-        "btnBg": "#8e24aa",
+        "btnBg": "#0b5d63",
         "btnTextCol": "#ffffff",
         "radius": 6,
         "align": "center",

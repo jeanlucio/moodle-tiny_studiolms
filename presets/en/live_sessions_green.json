@@ -1,0 +1,74 @@
+{
+  "name": "Live Sessions (Green)",
+  "description": "Heading, welcome note, list of recordings and slides of the live sessions and a button to enter the live room.",
+  "blocks": [
+    {
+      "type": "stylizedHeading",
+      "config": {
+        "text": "Live Sessions",
+        "level": "h3",
+        "icon": "📅",
+        "bgColor": "#d7ebd8",
+        "textColor": "#1b5e20"
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "👋",
+        "backgroundColor": "#f4faf4",
+        "textColor": "#14401a",
+        "borderColor": "#8fbf92",
+        "borderLeftWidth": 4,
+        "borderRadius": 8,
+        "contentHtml": "<p class=\"m-0\">Hello <strong>[firstname]</strong>! Here you will find the dates of the live sessions, plus the recordings and slides of the presentations.</p>"
+      }
+    },
+    {
+      "type": "resources",
+      "config": {
+        "title": "Recordings and slides",
+        "desc": "Material from each live session.",
+        "bg": "#edf6ed",
+        "headerBg": "#d7ebd8",
+        "color": "#14401a",
+        "isOpen": true,
+        "layout": "list",
+        "resources": [
+          {
+            "type": "video",
+            "title": "Session 1 — [MM/DD/YYYY]: watch the recording",
+            "url": "#"
+          },
+          {
+            "type": "pdf",
+            "title": "Session 1 — presentation slides",
+            "url": "#"
+          },
+          {
+            "type": "video",
+            "title": "Session 2 — [MM/DD/YYYY]: watch the recording",
+            "url": "#"
+          },
+          {
+            "type": "pdf",
+            "title": "Session 2 — presentation slides",
+            "url": "#"
+          }
+        ]
+      }
+    },
+    {
+      "type": "actionButton",
+      "config": {
+        "btnText": "▶️ Join the Live Session",
+        "btnUrl": "#",
+        "btnBg": "#1b5e20",
+        "btnTextCol": "#ffffff",
+        "radius": 6,
+        "align": "center",
+        "hoverEffect": "lift"
+      }
+    }
+  ]
+}

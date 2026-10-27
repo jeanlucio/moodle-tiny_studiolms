@@ -68,6 +68,7 @@ final class presets_test extends advanced_testcase {
             'dica_de_estudo.json' => 'study_tip.json',
             'encarte_playerhud.json' => 'playerhud_flyer.json',
             'encontros_sincronos.json' => 'live_sessions.json',
+            'encontros_sincronos_verde.json' => 'live_sessions_green.json',
             'fechamento_de_modulo.json' => 'module_wrap_up.json',
             'forum_avaliativo_com_rubrica.json' => 'graded_forum_with_rubric.json',
             'informacao_importante.json' => 'important_information.json',

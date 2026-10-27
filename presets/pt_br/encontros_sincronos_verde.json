@@ -1,0 +1,74 @@
+{
+  "name": "Encontros Síncronos (Verde)",
+  "description": "Título, boas-vindas, lista de gravações e slides dos encontros síncronos e botão de acesso à sala ao vivo.",
+  "blocks": [
+    {
+      "type": "stylizedHeading",
+      "config": {
+        "text": "Encontros Síncronos",
+        "level": "h3",
+        "icon": "📅",
+        "bgColor": "#d7ebd8",
+        "textColor": "#1b5e20"
+      }
+    },
+    {
+      "type": "callout",
+      "config": {
+        "icon": "👋",
+        "backgroundColor": "#f4faf4",
+        "textColor": "#14401a",
+        "borderColor": "#8fbf92",
+        "borderLeftWidth": 4,
+        "borderRadius": 8,
+        "contentHtml": "<p class=\"m-0\">Olá <strong>[firstname]</strong>! Aqui você encontra as datas dos encontros síncronos, além das gravações e slides das apresentações.</p>"
+      }
+    },
+    {
+      "type": "resources",
+      "config": {
+        "title": "Gravações e slides",
+        "desc": "Material de cada encontro síncrono.",
+        "bg": "#edf6ed",
+        "headerBg": "#d7ebd8",
+        "color": "#14401a",
+        "isOpen": true,
+        "layout": "list",
+        "resources": [
+          {
+            "type": "video",
+            "title": "Encontro 1 — [DD/MM/AAAA]: assistir à gravação",
+            "url": "#"
+          },
+          {
+            "type": "pdf",
+            "title": "Encontro 1 — slides da apresentação",
+            "url": "#"
+          },
+          {
+            "type": "video",
+            "title": "Encontro 2 — [DD/MM/AAAA]: assistir à gravação",
+            "url": "#"
+          },
+          {
+            "type": "pdf",
+            "title": "Encontro 2 — slides da apresentação",
+            "url": "#"
+          }
+        ]
+      }
+    },
+    {
+      "type": "actionButton",
+      "config": {
+        "btnText": "▶️ Entrar no Encontro ao Vivo",
+        "btnUrl": "#",
+        "btnBg": "#1b5e20",
+        "btnTextCol": "#ffffff",
+        "radius": 6,
+        "align": "center",
+        "hoverEffect": "lift"
+      }
+    }
+  ]
+}
