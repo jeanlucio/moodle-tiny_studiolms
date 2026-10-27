@@ -19,7 +19,7 @@
     @copyright 2026 Jean Lúcio
 
     Example context (json): {
-        "mediaUrl": ""
+        "mediaUrl": "", "shapeRect": true, "shapeCircle": false
     }
 }}
 <div class="mb-3">
@@ -35,6 +35,13 @@
     <input type="text" class="form-control form-control-sm" id="pop_card_mediaUrl" value="{{mediaUrl}}" placeholder="https://..."
            aria-describedby="pop_card_mediaUrl_hint">
     <div id="pop_card_mediaUrl_hint" class="form-text text-danger d-none" role="status">{{#str}} media_video_unrecognised, tiny_studiolms {{/str}}</div>
+</div>
+<div class="mb-3">
+    <label for="pop_card_mediaShape" class="form-label small fw-bold">{{#str}} media_shape, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_card_mediaShape">
+        <option value="rect" {{#shapeRect}}selected{{/shapeRect}}>{{#str}} media_shape_rect, tiny_studiolms {{/str}}</option>
+        <option value="circle" {{#shapeCircle}}selected{{/shapeCircle}}>{{#str}} media_shape_circle, tiny_studiolms {{/str}}</option>
+    </select>
 </div>
 <div class="mb-1">
     <label for="pop_card_layout" class="form-label small fw-bold">{{#str}} layout, tiny_studiolms {{/str}}</label>

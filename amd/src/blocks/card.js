@@ -45,6 +45,8 @@ export default {
         shadow: 'md',
         mediaType: 'none',
         mediaUrl: '',
+        // 'rect' fills the media area; 'circle' draws an image as a round picture, as the profile card does.
+        mediaShape: 'rect',
         layout: 'vertical',
         accent: true,
         btnText: '',
@@ -170,11 +172,14 @@ export default {
                     const tplData = Object.assign({}, data);
                     tplData[`media_${data.mediaType}`] = true;
                     tplData[`layout_${data.layout}`] = true;
+                    tplData.shapeCircle = data.mediaShape === 'circle';
+                    tplData.shapeRect = data.mediaShape !== 'circle';
 
                     PopupManager.open(btnMedia, 'tiny_studiolms/popup_card_media', tplData, (popup) => {
                         const propMap = {
                             '#pop_card_mediaType': 'mediaType',
                             '#pop_card_mediaUrl': 'mediaUrl',
+                            '#pop_card_mediaShape': 'mediaShape',
                             '#pop_card_layout': 'layout'
                         };
                         // A video link the block cannot embed would make the media vanish without a word, so say so.
@@ -255,6 +260,8 @@ export default {
         const hasImageAddress = /^(?:https?:)?\/\//i.test(data.mediaUrl.trim()) || data.mediaUrl.trim().startsWith('/');
         templateData.isImage = data.mediaType === 'image' && hasImageAddress;
         templateData.isImagePlaceholder = data.mediaType === 'image' && !hasImageAddress;
+        // Only a picture can be round: a video keeps its frame. Anything but 'circle' is the rectangle.
+        templateData.mediaCircle = data.mediaShape === 'circle' && data.mediaType === 'image';
 
         if (data.mediaType === 'video' && data.mediaUrl) {
             const video = parseVideoUrl(data.mediaUrl);

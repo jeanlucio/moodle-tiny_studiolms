@@ -86,6 +86,35 @@ final class card_template_test extends advanced_testcase {
     }
 
     /**
+     * A round picture is a class on the card, and its image does not carry the Bootstrap sizing utilities.
+     *
+     * Regression test for the shape of the card image: w-100 and h-100 are important in Bootstrap, so a picture
+     * that kept them could never be shrunk to a circle by the stylesheet. The class survives the cleaner of a
+     * forum or a question; the picture is square only by the rule of that class.
+     */
+    public function test_a_round_picture_is_a_class_and_has_no_important_sizes(): void {
+        global $PAGE;
+
+        $this->resetAfterTest();
+        $PAGE->set_url('/');
+        $renderer = $PAGE->get_renderer('core');
+        $base = ['hasMedia' => true, 'isImage' => true, 'mediaUrl' => 'https://example.com/a.jpg', 'accent' => true];
+
+        $rect = $renderer->render_from_template('tiny_studiolms/block_card', $base);
+        $this->assertStringNotContainsString('slms-media-circle', $rect);
+        $this->assertStringContainsString('class="w-100 h-100 object-fit-cover d-block"', $rect);
+
+        $round = $renderer->render_from_template('tiny_studiolms/block_card', $base + ['mediaCircle' => true]);
+        $this->assertStringContainsString('slms-media-circle', $round);
+        $this->assertStringContainsString('class="object-fit-cover d-block"', $round);
+        $this->assertStringNotContainsString('w-100', $round);
+
+        $cleaned = clean_text($round, FORMAT_HTML);
+        $this->assertStringContainsString('slms-media-circle', $cleaned);
+        $this->assertStringContainsString('<img src="https://example.com/a.jpg"', $cleaned);
+    }
+
+    /**
      * An accordion draws both icons of its pair and a title bar background only when one is set.
      *
      * Regression test: one icon was drawn and turned a quarter when the accordion was closed, so a folder lay on

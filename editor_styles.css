@@ -1757,6 +1757,44 @@ a.studiolms-btn:focus-visible {
     border-inline-end: none;
 }
 
+/*
+ * A round picture: the media area shrinks to the picture and sits above the text, or beside it in a horizontal card.
+ * Only the card with an image gets the class, so a video keeps its frame.
+ */
+.studiolms-card.slms-media-circle .studiolms-card-media {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    padding: 1.5rem 1.5rem 0;
+    border: none;
+}
+
+.studiolms-card.slms-media-circle.slms-media-end .studiolms-card-media {
+    padding: 0 1.5rem 1.5rem;
+}
+
+.studiolms-card.slms-media-circle.slms-horizontal .studiolms-card-media {
+    padding: 1.5rem 0 1.5rem 1.5rem;
+}
+
+.studiolms-card.slms-media-circle.slms-horizontal.slms-media-end .studiolms-card-media {
+    padding: 1.5rem 1.5rem 1.5rem 0;
+    border: none;
+}
+
+.studiolms-card.slms-media-circle .studiolms-card-media img,
+.studiolms-card.slms-media-circle .slms-card-media-placeholder {
+    width: 120px;
+    height: 120px;
+    min-height: 0;
+    max-height: none;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--bs-border-color, #e2e8f0);
+}
+
 /* No coloured accent on the side: that side is a border like the other three. */
 .studiolms-card.slms-no-accent {
     border-inline-start: 1px solid var(--bs-border-color, #e2e8f0);
@@ -3993,6 +4031,17 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
 
     .slms-infographic-steps-block .slms-steps__item--h {
         flex-direction: row;
+    /* A round picture in a card that stacks keeps the room it had above the text, or below it. */
+    body:not(.mce-content-body) .studiolms-card.slms-media-circle.slms-horizontal .studiolms-card-media {
+        padding: 1.5rem 1.5rem 0;
+        border: none;
+    }
+
+    body:not(.mce-content-body) .studiolms-card.slms-media-circle.slms-horizontal.slms-media-end .studiolms-card-media {
+        padding: 0 1.5rem 1.5rem;
+        border: none;
+    }
+
         text-align: start;
         min-width: 0;
     }

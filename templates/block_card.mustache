@@ -21,17 +21,17 @@
     Example context (json): {
         "bg": "#ffffff", "text": "#333333", "border": "#0d47a1", "radius": "8", "shadowClass": "slms-shadow-md",
         "hasMedia": true, "isImage": true, "isImagePlaceholder": false, "mediaUrl": "https://picsum.photos/600/300",
-        "isHorizontal": false, "mediaEnd": false, "accent": true, "hasButton": true, "btnText": "Click", "btnUrl": "#",
+        "isHorizontal": false, "mediaCircle": false, "mediaEnd": false, "accent": true, "hasButton": true, "btnText": "Click", "btnUrl": "#",
         "btnBg": "#0d47a1", "btnTextCol": "#fff", "isAlignCenter": true, "btnDisplayMode": "inline-flex"
     }
 }}
 <div class="studiolms-card-wrap slms-align-{{align}}" contenteditable="false">
-    <div class="studiolms-card slms-hov-{{hoverEffect}}{{#shadowClass}} {{shadowClass}}{{/shadowClass}} {{#isHorizontal}}slms-horizontal{{/isHorizontal}}{{#mediaEnd}} slms-media-end{{/mediaEnd}}{{^accent}} slms-no-accent{{/accent}}"
+    <div class="studiolms-card slms-hov-{{hoverEffect}}{{#shadowClass}} {{shadowClass}}{{/shadowClass}} {{#isHorizontal}}slms-horizontal{{/isHorizontal}}{{#mediaEnd}} slms-media-end{{/mediaEnd}}{{^accent}} slms-no-accent{{/accent}}{{#mediaCircle}} slms-media-circle{{/mediaCircle}}"
          style="background-color: {{bg}}; color: {{text}};{{#accent}} border-left-color: {{border}};{{/accent}} border-radius: {{radius}}px;">
         {{#hasMedia}}
         <div class="studiolms-card-media">
             {{#isImage}}
-                <img src="{{mediaUrl}}" alt="" class="w-100 h-100 object-fit-cover d-block">
+                <img src="{{mediaUrl}}" alt="" class="{{^mediaCircle}}w-100 h-100 {{/mediaCircle}}object-fit-cover d-block">
             {{/isImage}}
             {{#isImagePlaceholder}}
                 <div class="slms-card-media-placeholder" aria-hidden="true">&#128247;</div>
