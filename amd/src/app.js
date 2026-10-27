@@ -1879,14 +1879,15 @@ const insertCanvasToEditor = async() => {
         const finalHtml = `${parts.join('')}<p><br></p>`;
 
         tinyEditorInstance.undoManager.transact(() => {
-            if (targetEditNode && canvasBlocks.length === 1) {
-                const temp = document.createElement('div');
-                temp.innerHTML = parts[0];
-                const newNode = temp.firstElementChild;
-                if (newNode) {
-                    targetEditNode.replaceWith(newNode);
-                }
-            } else {
+            // Editing a block in place: every block now on the canvas takes the old block's place. Inserting
+            // at the caret would put them inside the old block (its text is the editable part, so that is
+            // where the caret is) and leave the old block behind.
+            const temp = document.createElement('div');
+            temp.innerHTML = parts.join('');
+            const newNodes = [...temp.children];
+            if (targetEditNode && newNodes.length > 0) {
+                targetEditNode.replaceWith(...newNodes);
+            } else if (!targetEditNode) {
                 tinyEditorInstance.insertContent(finalHtml);
             }
         });
