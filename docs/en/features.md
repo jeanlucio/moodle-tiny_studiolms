@@ -9,7 +9,7 @@
   * **Grid Cards** — multi-column container with editable slots, an optional heading and a one-line description under it (two plain text fields).
   * **Callout** — highlight box with a customisable icon and border colour.
   * **Table** — striped or plain table that works with TinyMCE's own table tools.
-  * **Profile Card** — presenter card with photo, name, role, bio and up to 3 links.
+  * **Profile Card** — presenter card with photo, name, role, bio and up to 6 contact links (e-mail, WhatsApp, Telegram, Lattes…).
   * **Chart** — the share of each part in the whole as one stacked bar with a legend, up to 6 slices, custom labels.
   * **Bar Chart** — horizontal or vertical, up to 6 bars.
   * **Gauge** — semi-circle gauge with traffic-light colours (green ≥ 67 %, amber ≥ 34 %, red below); 1–3 gauges side by side.

@@ -1,16 +1,28 @@
 {
-    "name": "Contatos do Professor",
-    "description": "Cartão de perfil com foto, nome, contatos (e-mail, telefone, Lattes e ORCID) ao lado dos botões de WhatsApp e Telegram.",
+    "name": "Contatos do Professor (Petróleo)",
+    "description": "Cartão de perfil com foto, nome, cargo e seis links de contato (e-mail, WhatsApp, Telegram, Lattes, ORCID e LinkedIn), em tons de petróleo.",
     "blocks": [
         {
-            "type": "gridcards",
+            "type": "profileCard",
             "config": {
-                "columns": "2",
-                "gap": 20,
-                "slots": [
-                    "<div class=\"studiolms-profilecard slms-hov-none mceNonEditable\" style=\"background-color: #f4e7e9; --slms-pc-accent: #7e2634;\" data-slms-block-type=\"profileCard\" data-slms-state=\"JTdCJTIycGhvdG9VcmwlMjIlM0ElMjIlMjIlMkMlMjJsaW5rMGxhYmVsJTIyJTNBJTIyTGF0dGVzJTIyJTJDJTIybGluazB1cmwlMjIlM0ElMjIlMjMlMjIlMkMlMjJsaW5rMWxhYmVsJTIyJTNBJTIyT1JDSUQlMjIlMkMlMjJsaW5rMXVybCUyMiUzQSUyMiUyMyUyMiUyQyUyMmxpbmsybGFiZWwlMjIlM0ElMjIlMjIlMkMlMjJsaW5rMnVybCUyMiUzQSUyMiUyMiUyQyUyMmJnQ29sb3IlMjIlM0ElMjIlMjNmNGU3ZTklMjIlMkMlMjJhY2NlbnRDb2xvciUyMiUzQSUyMiUyMzdlMjYzNCUyMiUyQyUyMmhvdmVyRWZmZWN0JTIyJTNBJTIybm9uZSUyMiU3RA==\">\n    <div class=\"slms-pc-photo-placeholder\" aria-hidden=\"true\">👤</div>\n    <p class=\"slms-pc-name slms-single-line\" contenteditable=\"true\">[Nome do Professor]</p>\n    <p class=\"slms-pc-role slms-single-line\" contenteditable=\"true\">Professor(a) da disciplina</p>\n    <p class=\"slms-pc-bio slms-single-line\" contenteditable=\"true\">E-mail: prof@instituicao.edu.br · Telefone: (XX) XXXXX-XXXX</p>\n    <div class=\"slms-pc-links\">\n        <a href=\"#\" class=\"slms-pc-link\" target=\"_blank\" rel=\"noopener noreferrer\">Lattes</a>\n        <a href=\"#\" class=\"slms-pc-link\" target=\"_blank\" rel=\"noopener noreferrer\">ORCID</a>\n    </div>\n</div>",
-                    "<div class=\"studiolms-btn-wrap text-center mceNonEditable\" contenteditable=\"false\" data-slms-block-type=\"actionButton\" data-slms-state=\"JTdCJTIyYnRuVXJsJTIyJTNBJTIyJTIzJTIyJTJDJTIyYnRuQmclMjIlM0ElMjIlMjMwZjc2NmUlMjIlMkMlMjJidG5UZXh0Q29sJTIyJTNBJTIyJTIzZmZmZmZmJTIyJTJDJTIycmFkaXVzJTIyJTNBNiUyQyUyMnRhcmdldCUyMiUzQSUyMl9ibGFuayUyMiUyQyUyMmFsaWduJTIyJTNBJTIyY2VudGVyJTIyJTJDJTIyaG92ZXJFZmZlY3QlMjIlM0ElMjJub25lJTIyJTJDJTIyY2xpY2tTb3VuZCUyMiUzQSUyMm5vbmUlMjIlN0Q=\">\n    <a href=\"#\" class=\"studiolms-btn slms-hov-none slms-snd-none\" contenteditable=\"false\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"width: auto; border-radius: 6px; background-color: #0f766e; color: #ffffff;\">\n        <span contenteditable=\"true\">🟢 WhatsApp</span>\n    </a>\n</div><div class=\"studiolms-btn-wrap text-center mceNonEditable\" contenteditable=\"false\" data-slms-block-type=\"actionButton\" data-slms-state=\"JTdCJTIyYnRuVXJsJTIyJTNBJTIyJTIzJTIyJTJDJTIyYnRuQmclMjIlM0ElMjIlMjMwMzY5YTElMjIlMkMlMjJidG5UZXh0Q29sJTIyJTNBJTIyJTIzZmZmZmZmJTIyJTJDJTIycmFkaXVzJTIyJTNBNiUyQyUyMnRhcmdldCUyMiUzQSUyMl9ibGFuayUyMiUyQyUyMmFsaWduJTIyJTNBJTIyY2VudGVyJTIyJTJDJTIyaG92ZXJFZmZlY3QlMjIlM0ElMjJub25lJTIyJTJDJTIyY2xpY2tTb3VuZCUyMiUzQSUyMm5vbmUlMjIlN0Q=\">\n    <a href=\"#\" class=\"studiolms-btn slms-hov-none slms-snd-none\" contenteditable=\"false\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"width: auto; border-radius: 6px; background-color: #0369a1; color: #ffffff;\">\n        <span contenteditable=\"true\">✈️ Telegram</span>\n    </a>\n</div>"
-                ]
+                "photoUrl": "",
+                "name": "[Nome do Professor]",
+                "role": "Professor(a) da disciplina",
+                "bio": "Atendimento: [dias e horários]",
+                "link0label": "E-mail",
+                "link0url": "mailto:prof@instituicao.edu.br",
+                "link1label": "WhatsApp",
+                "link1url": "#",
+                "link2label": "Telegram",
+                "link2url": "#",
+                "link3label": "Lattes",
+                "link3url": "#",
+                "link4label": "ORCID",
+                "link4url": "#",
+                "link5label": "LinkedIn",
+                "link5url": "#",
+                "bgColor": "#e6f2f2",
+                "accentColor": "#0b5d63"
             }
         }
     ]

@@ -9,7 +9,7 @@
   * **Grid de Cards** — container multi-coluna com slots editáveis, título opcional e uma linha de descrição embaixo dele (dois campos de texto puro).
   * **Caixa de Destaque** — destaque com ícone e cor de borda personalizáveis.
   * **Tabela** — tabela listrada ou simples, compatível com as ferramentas de tabela do próprio TinyMCE.
-  * **Cartão de Perfil** — cartão de apresentação com foto, nome, cargo, bio e até 3 links.
+  * **Cartão de Perfil** — cartão de apresentação com foto, nome, cargo, bio e até 6 links de contato (e-mail, WhatsApp, Telegram, Lattes…).
   * **Gráfico de Composição** — a parte de cada fatia no todo, numa barra empilhada com legenda, até 6 fatias, rótulos personalizados.
   * **Gráfico de Barras** — horizontal ou vertical, até 6 barras.
   * **Velocímetro** — gauge semicircular com cores de semáforo (verde ≥ 67%, âmbar ≥ 34%, vermelho abaixo); 1–3 velocímetros lado a lado.

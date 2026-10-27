@@ -39,9 +39,9 @@ const read = (file) => fs.readFileSync(require.resolve(`../../${file}`), 'utf8')
 test('each link of the profile card is a stacked pair of fields with a name each', () => {
     const popup = read('templates/popup_profilecard_content.mustache').replace(/\{\{!.*?\}\}/gs, '');
 
-    assert.equal(popup.match(/class="slms-link-pair"/g).length, 3);
+    assert.equal(popup.match(/class="slms-link-pair"/g).length, 6);
     assert.doesNotMatch(popup, /slms-input-label/);
-    for (let n = 0; n < 3; n++) {
+    for (let n = 0; n < 6; n++) {
         const number = n + 1;
         assert.match(popup, new RegExp(`id="pop_pc_link${n}label"[^>]*\\s+aria-label="\\{\\{#str\\}\\} profilecard_link_label_n, `
             + `tiny_studiolms, ${number} \\{\\{/str\\}\\}"`, 's'), `label ${number}`);
@@ -64,4 +64,17 @@ test('the strings of the link fields exist in both languages and the stylesheet 
         assert.match(css, /\.tiny_studiolms \.slms-link-pair \{/, file);
         assert.doesNotMatch(css, /\.slms-input-label/, file);
     });
+});
+
+test('the card has six contact links, in its defaults, its settings and its markup', () => {
+    const block = read('amd/src/blocks/profilecard.js');
+
+    for (let n = 0; n < 6; n++) {
+        assert.match(block, new RegExp(`link${n}label: '',\\n\\s+link${n}url:\\s+'',`), `default ${n}`);
+    }
+    // The slots are listed once: the settings and the markup read the same six.
+    assert.match(block, /const LINK_SLOTS = \[0, 1, 2, 3, 4, 5\];/);
+    assert.match(block, /textFields\[`#pop_pc_link\$\{i\}label`\] = `link\$\{i\}label`;/);
+    assert.match(block, /const links = LINK_SLOTS\n\s+\.filter\(/);
+    assert.match(read('classes/ai/generator.php'), /link3label \/ link3url, link4label \/ link4url, link5label \/ link5url/);
 });

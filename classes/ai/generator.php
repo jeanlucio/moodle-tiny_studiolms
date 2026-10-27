@@ -155,6 +155,8 @@ class generator {
         $s .= '   - link0label / link0url: string (optional contact link 1)' . "\n";
         $s .= '   - link1label / link1url: string (optional contact link 2)' . "\n";
         $s .= '   - link2label / link2url: string (optional contact link 3)' . "\n";
+        $s .= '   - link3label / link3url, link4label / link4url, link5label / link5url: string (optional' . "\n";
+        $s .= '     contact links 4 to 6, for example e-mail, WhatsApp, Telegram, Lattes, ORCID, LinkedIn)' . "\n";
         $s .= '   - bgColor: string (hex background)' . "\n";
         $s .= '   - accentColor: string (hex accent for name and links)' . "\n\n";
 

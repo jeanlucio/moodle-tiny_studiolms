@@ -64,6 +64,7 @@ final class presets_test extends advanced_testcase {
             'card_acesso_plano.json' => 'course_plan_access_card.json',
             'card_de_conceito.json' => 'concept_card.json',
             'contatos_professor.json' => 'teacher_contacts.json',
+            'contatos_professor_azul.json' => 'teacher_contacts_blue.json',
             'dica_de_estudo.json' => 'study_tip.json',
             'encarte_playerhud.json' => 'playerhud_flyer.json',
             'encontros_sincronos.json' => 'live_sessions.json',

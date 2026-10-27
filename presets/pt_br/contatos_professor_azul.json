@@ -1,0 +1,29 @@
+{
+    "name": "Contatos do Professor (Azul)",
+    "description": "Cartão de perfil com foto, nome, cargo e seis links de contato (e-mail, WhatsApp, Telegram, Lattes, ORCID e LinkedIn), em tons de azul institucional.",
+    "blocks": [
+        {
+            "type": "profileCard",
+            "config": {
+                "photoUrl": "",
+                "name": "[Nome do Professor]",
+                "role": "Professor(a) da disciplina",
+                "bio": "Atendimento: [dias e horários]",
+                "link0label": "E-mail",
+                "link0url": "mailto:prof@instituicao.edu.br",
+                "link1label": "WhatsApp",
+                "link1url": "#",
+                "link2label": "Telegram",
+                "link2url": "#",
+                "link3label": "Lattes",
+                "link3url": "#",
+                "link4label": "ORCID",
+                "link4url": "#",
+                "link5label": "LinkedIn",
+                "link5url": "#",
+                "bgColor": "#e8eff9",
+                "accentColor": "#1d4f91"
+            }
+        }
+    ]
+}

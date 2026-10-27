@@ -1,0 +1,29 @@
+{
+    "name": "Teacher Contacts (Blue)",
+    "description": "Profile card with photo, name, role and six contact links (e-mail, WhatsApp, Telegram, Lattes, ORCID and LinkedIn), in institutional blue tones.",
+    "blocks": [
+        {
+            "type": "profileCard",
+            "config": {
+                "photoUrl": "",
+                "name": "[Teacher Name]",
+                "role": "Course teacher",
+                "bio": "Office hours: [days and times]",
+                "link0label": "E-mail",
+                "link0url": "mailto:prof@institution.edu",
+                "link1label": "WhatsApp",
+                "link1url": "#",
+                "link2label": "Telegram",
+                "link2url": "#",
+                "link3label": "Lattes",
+                "link3url": "#",
+                "link4label": "ORCID",
+                "link4url": "#",
+                "link5label": "LinkedIn",
+                "link5url": "#",
+                "bgColor": "#e8eff9",
+                "accentColor": "#1d4f91"
+            }
+        }
+    ]
+}

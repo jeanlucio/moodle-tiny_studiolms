@@ -21,7 +21,8 @@
     Example context (json): {
         "photoUrl": "", "name": "", "role": "", "bio": "",
         "link0label": "", "link0url": "", "link1label": "", "link1url": "",
-        "link2label": "", "link2url": "", "bgColor": "#ffffff", "accentColor": "#0f6cbf", "blockColorValue": "#0f6cbf"
+        "link2label": "", "link2url": "", "link3label": "", "link3url": "", "link4label": "", "link4url": "",
+        "link5label": "", "link5url": "", "bgColor": "#ffffff", "accentColor": "#0f6cbf", "blockColorValue": "#0f6cbf"
     }
 }}
 <div class="mb-3">
@@ -63,6 +64,36 @@
         <input type="url" class="form-control form-control-sm" id="pop_pc_link2url"
                value="{{link2url}}" placeholder="https://..."
                aria-label="{{#str}} profilecard_link_url_n, tiny_studiolms, 3 {{/str}}">
+    </div>
+
+    <div class="slms-link-pair">
+        <div class="slms-link-pair-title">{{#str}} profilecard_link_n, tiny_studiolms, 4 {{/str}}</div>
+        <input type="text" class="form-control form-control-sm mb-1" id="pop_pc_link3label"
+               value="{{link3label}}" placeholder="{{#str}} profilecard_link_label, tiny_studiolms {{/str}}"
+               aria-label="{{#str}} profilecard_link_label_n, tiny_studiolms, 4 {{/str}}">
+        <input type="url" class="form-control form-control-sm" id="pop_pc_link3url"
+               value="{{link3url}}" placeholder="https://..."
+               aria-label="{{#str}} profilecard_link_url_n, tiny_studiolms, 4 {{/str}}">
+    </div>
+
+    <div class="slms-link-pair">
+        <div class="slms-link-pair-title">{{#str}} profilecard_link_n, tiny_studiolms, 5 {{/str}}</div>
+        <input type="text" class="form-control form-control-sm mb-1" id="pop_pc_link4label"
+               value="{{link4label}}" placeholder="{{#str}} profilecard_link_label, tiny_studiolms {{/str}}"
+               aria-label="{{#str}} profilecard_link_label_n, tiny_studiolms, 5 {{/str}}">
+        <input type="url" class="form-control form-control-sm" id="pop_pc_link4url"
+               value="{{link4url}}" placeholder="https://..."
+               aria-label="{{#str}} profilecard_link_url_n, tiny_studiolms, 5 {{/str}}">
+    </div>
+
+    <div class="slms-link-pair">
+        <div class="slms-link-pair-title">{{#str}} profilecard_link_n, tiny_studiolms, 6 {{/str}}</div>
+        <input type="text" class="form-control form-control-sm mb-1" id="pop_pc_link5label"
+               value="{{link5label}}" placeholder="{{#str}} profilecard_link_label, tiny_studiolms {{/str}}"
+               aria-label="{{#str}} profilecard_link_label_n, tiny_studiolms, 6 {{/str}}">
+        <input type="url" class="form-control form-control-sm" id="pop_pc_link5url"
+               value="{{link5url}}" placeholder="https://..."
+               aria-label="{{#str}} profilecard_link_url_n, tiny_studiolms, 6 {{/str}}">
     </div>
 </div>
 

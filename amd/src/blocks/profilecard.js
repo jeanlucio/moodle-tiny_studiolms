@@ -27,6 +27,9 @@ import Notification from 'core/notification';
 import {profilePalette} from './contrast';
 import {alignVars, bindAlign, normalizeAlign} from './block_align';
 
+// The contact links of the card, each a label and an address: e-mail, messaging apps, academic profiles.
+const LINK_SLOTS = [0, 1, 2, 3, 4, 5];
+
 export default {
     id: 'profileCard',
     titleString: 'block_profilecard_title',
@@ -43,6 +46,12 @@ export default {
         link1url:   '',
         link2label: '',
         link2url:   '',
+        link3label: '',
+        link3url:   '',
+        link4label: '',
+        link4url:   '',
+        link5label: '',
+        link5url:   '',
         bgColor:    '#ffffff',
         accentColor: '#0f6cbf',
     },
@@ -84,15 +93,11 @@ export default {
                             onUpdate(data);
                         });
 
-                        const textFields = {
-                            '#pop_pc_photo':      'photoUrl',
-                            '#pop_pc_link0label': 'link0label',
-                            '#pop_pc_link0url':   'link0url',
-                            '#pop_pc_link1label': 'link1label',
-                            '#pop_pc_link1url':   'link1url',
-                            '#pop_pc_link2label': 'link2label',
-                            '#pop_pc_link2url':   'link2url',
-                        };
+                        const textFields = {'#pop_pc_photo': 'photoUrl'};
+                        LINK_SLOTS.forEach((i) => {
+                            textFields[`#pop_pc_link${i}label`] = `link${i}label`;
+                            textFields[`#pop_pc_link${i}url`] = `link${i}url`;
+                        });
 
                         Object.keys(textFields).forEach(selector => {
                             const el = popup.querySelector(selector);
@@ -129,12 +134,11 @@ export default {
     renderHtml: async(data) => {
         const nameDefault = await getString('default_profilecard_name', 'tiny_studiolms');
 
-        const links = [0, 1, 2]
-            .filter(i => (data['link' + i + 'url'] || '').trim()
-                      && (data['link' + i + 'label'] || '').trim())
-            .map(i => ({
-                label: data['link' + i + 'label'],
-                url:   data['link' + i + 'url'],
+        const links = LINK_SLOTS
+            .filter((i) => (data[`link${i}url`] || '').trim() && (data[`link${i}label`] || '').trim())
+            .map((i) => ({
+                label: data[`link${i}label`],
+                url: data[`link${i}url`],
             }));
 
         const tData = {
