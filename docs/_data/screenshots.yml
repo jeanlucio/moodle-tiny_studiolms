@@ -2,14 +2,14 @@
 # English and a Portuguese caption. The screenshots.md pages (en/pt) loop over
 # this list, so adding a new screenshot never touches the gallery markup.
 - file: page-view.png
-  caption_en: "What students see: a course page built entirely with StudioLMS blocks — heading, callouts, a numbered steps infographic and a stats infographic — rendered by the standard Moodle page, no HTML written by hand"
-  caption_pt: "O que o estudante vê: uma página do curso montada só com blocos do StudioLMS — título, destaques, infográfico de passos e infográfico de estatísticas — exibida pela página padrão do Moodle, sem nenhuma linha de HTML escrita à mão"
+  caption_en: "What students see: a course page built entirely with StudioLMS blocks — heading, callout, steps with the current step marked, tabs and a stats infographic — rendered by the standard Moodle page, no HTML written by hand"
+  caption_pt: "O que o estudante vê: uma página do curso montada só com blocos do StudioLMS — título, destaque, passos com a etapa atual marcada, abas e infográfico de estatísticas — exibida pela página padrão do Moodle, sem nenhuma linha de HTML escrita à mão"
 - file: composer.png
-  caption_en: "The canvas composer inside TinyMCE: the Components sidebar on the left, the page being assembled block by block on the right, then inserted into the editor in one click"
-  caption_pt: "O compositor em canvas dentro do TinyMCE: a barra lateral de Componentes à esquerda e a página sendo montada bloco a bloco à direita, inserida no editor com um clique"
-- file: official-templates.png
-  caption_en: "Site Templates: institution-wide layouts maintained by site managers; one click loads a complete, editable layout onto the canvas"
-  caption_pt: "Modelos do site: layouts da instituição mantidos pelos gestores do site; um clique carrega um layout completo e editável no canvas"
+  caption_en: "The canvas composer inside TinyMCE: the properties panel of the selected block, the list of components and the page being assembled block by block, then inserted into the editor in one click"
+  caption_pt: "O compositor em canvas dentro do TinyMCE: o painel de propriedades do bloco selecionado, a lista de componentes e a página sendo montada bloco a bloco, inserida no editor com um clique"
+- file: ready-made-layouts.png
+  caption_en: "Ready-made Layouts: 26 complete layouts built from the blocks; one click loads one onto the canvas, where every block stays editable before inserting"
+  caption_pt: "Modelos prontos: 26 layouts completos montados com os blocos; um clique carrega um no canvas, onde todos os blocos continuam editáveis antes de inserir"
 - file: ai-layout.png
   caption_en: "AI Layout: describe the pedagogical context and the AI assembles a multi-block layout, previewed before anything reaches the canvas or the course"
   caption_pt: "Modelo IA: descreva o contexto pedagógico e a IA monta um layout com vários blocos, com pré-visualização antes de chegar ao canvas ou ao curso"
