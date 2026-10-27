@@ -2624,6 +2624,24 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
     opacity: 0.9;
 }
 
+/* Steps — where the class is: the ones before are done, the current one is ringed, the next ones are dimmed. */
+.slms-infographic-steps-block .slms-steps-state-next {
+    opacity: 0.55;
+}
+
+.slms-infographic-steps-block .slms-steps-state-current .slms-steps__badge {
+    outline: 3px solid currentColor;
+    outline-offset: 2px;
+}
+
+.slms-infographic-steps-block .slms-steps__state {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    margin-top: 0.15rem;
+}
+
 /* Steps — horizontal layout */
 .slms-infographic-steps-block .slms-steps__list--h {
     display: flex;
@@ -4013,6 +4031,17 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
         flex-direction: column-reverse;
     }
 
+    /* A round picture in a card that stacks keeps the room it had above the text, or below it. */
+    body:not(.mce-content-body) .studiolms-card.slms-media-circle.slms-horizontal .studiolms-card-media {
+        padding: 1.5rem 1.5rem 0;
+        border: none;
+    }
+
+    body:not(.mce-content-body) .studiolms-card.slms-media-circle.slms-horizontal.slms-media-end .studiolms-card-media {
+        padding: 0 1.5rem 1.5rem;
+        border: none;
+    }
+
     body:not(.mce-content-body) .studiolms-card.slms-horizontal.slms-media-end .studiolms-card-media {
         border-inline-start: none;
         border-bottom: none;
@@ -4031,17 +4060,6 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
 
     .slms-infographic-steps-block .slms-steps__item--h {
         flex-direction: row;
-    /* A round picture in a card that stacks keeps the room it had above the text, or below it. */
-    body:not(.mce-content-body) .studiolms-card.slms-media-circle.slms-horizontal .studiolms-card-media {
-        padding: 1.5rem 1.5rem 0;
-        border: none;
-    }
-
-    body:not(.mce-content-body) .studiolms-card.slms-media-circle.slms-horizontal.slms-media-end .studiolms-card-media {
-        padding: 0 1.5rem 1.5rem;
-        border: none;
-    }
-
         text-align: start;
         min-width: 0;
     }

@@ -3,7 +3,7 @@
 * 🧱 **18 Blocos Instrucionais,** inseridos pela barra de ferramentas do editor e configurados por formulários — sem precisar de HTML:
   * **Título Estilizado** — título `h3`/`h4` com ícone e cor de fundo.
   * **Botão de Ação** — botão de chamada para ação com URL, destino, cores, raio de borda e alinhamento configuráveis.
-  * **Cartão Avançado** — cartão com imagem ou vídeo do YouTube ou do Vimeo, corpo rico editável e botão interno.
+  * **Cartão Avançado** — cartão com imagem ou vídeo do YouTube ou do Vimeo, corpo rico editável e botão interno; a imagem pode ser um retângulo ou um círculo.
   * **Accordion** — tópico expansível com 4 estilos de ícone e estado inicial aberto/fechado.
   * **Webteca** — biblioteca de recursos (PDF, vídeo, áudio, link) em lista ou grade, com a faixa de cada item colorida pelo tipo de mídia ou pela cor do bloco.
   * **Grid de Cards** — container multi-coluna com slots editáveis, título opcional e uma linha de descrição embaixo dele (dois campos de texto puro).
@@ -15,7 +15,7 @@
   * **Gráfico de Barras** — horizontal ou vertical, até 6 barras.
   * **Velocímetro** — gauge semicircular com cores de semáforo (verde ≥ 67%, âmbar ≥ 34%, vermelho abaixo); 1–3 velocímetros lado a lado.
   * **Infográfico — Estatísticas** — até 4 itens combinando ícone (de um seletor com 40 opções), valor e rótulo.
-  * **Infográfico — Passos** — fluxo numerado com ícone e descrição, para metodologias, tutoriais e fluxos de trabalho.
+  * **Infográfico — Passos** — fluxo numerado com ícone e descrição, vertical ou horizontal, para metodologias, tutoriais e fluxos de trabalho; dá para marcar a **Etapa atual** (as anteriores aparecem como concluídas e as seguintes esmaecidas).
   * **Infográfico — Funcionalidades** — grade de ícone + título + descrição, para competências e destaques do curso.
   * **Infográfico — Linha do Tempo** — linha do tempo vertical com data/período, ícone e descrição.
   * **Infográfico — Comparativo** — 2–3 colunas com cabeçalhos coloridos e listas de itens ✓/✗.

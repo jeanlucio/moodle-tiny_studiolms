@@ -1,6 +1,6 @@
 # 🧪 Testes Automatizados
 
-O StudioLMS inclui **255 casos de teste PHPUnit** em **42 arquivos**, **265 testes de JavaScript** em **46 arquivos**, mais uma suíte Behat com
+O StudioLMS inclui **256 casos de teste PHPUnit** em **42 arquivos**, **282 testes de JavaScript** em **48 arquivos**, mais uma suíte Behat com
 **80 cenários** em **20 arquivos de feature**, executados em todo push de CI na matriz completa
 (Moodle 4.5 → 5.x, PostgreSQL e MariaDB).
 
@@ -27,7 +27,7 @@ O StudioLMS inclui **255 casos de teste PHPUnit** em **42 arquivos**, **265 test
 | `ai/generator_payload_test.php` | 24 | O modelo não é confiável: cada gerador interpreta o que ele devolve embrulhado em cercas de código, pela metade ou hostil — itens vazios descartados, HTML purificado, flags e padrões normalizados, campos de tipo errado (uma lista onde se espera texto, a string "false" como booleano) lidos com segurança; o schema do prompt oferece só o que os blocos aceitam |
 | `ai_notice_test.php` | 1 | Cada uma das três abas de IA traz o aviso de que o texto vai para o provedor de IA do site |
 | `alignment_test.php` | 11 | A classe de alinhamento que o professor escolhe (esquerda, centro, direita) está em cada um dos onze blocos que a aceitam e sobrevive ao limpador de HTML do Moodle |
-| `card_template_test.php` | 8 | O template do cartão: o quadro de vídeo é nomeado por uma string de idioma (sem palavra fixa que o leitor de tela anunciaria em qualquer idioma); a posição da mídia e o detalhe lateral são classes, e não estilos inline que o limpador de HTML descartaria |
+| `card_template_test.php` | 9 | O template do cartão: o quadro de vídeo é nomeado por uma string de idioma (sem palavra fixa que o leitor de tela anunciaria em qualquer idioma); a posição da mídia e o detalhe lateral são classes, e não estilos inline que o limpador de HTML descartaria |
 | `chart_templates_test.php` | 5 | Os templates de gráfico, de barras e de velocímetro não desenham SVG e sobrevivem ao limpador de HTML do Moodle (`clean_text()`) com todas as classes e larguras ou alturas; um rótulo é escapado uma vez |
 | `db_definitions_test.php` | 3 | Os arquivos de definição de serviços web, cache e capabilities carregam e declaram o que o código usa |
 | `db_upgrade_test.php` | 3 | O passo de upgrade que remove um índice que repete uma chave: dois índices iguais viram um, uma coluna sem nenhum recebe o índice da chave, um único índice é mantido |
@@ -53,11 +53,11 @@ IA e sem provedor `core_ai`, é usado para exercitar o caminho "sem IA disponív
 
 | Área | Arquivos | Casos | O que é coberto |
 |------|---------:|------:|------------------|
-| Blocos | 23 | 161 | O que os blocos desenham e como se comportam: os modelos de gráfico, barras e velocímetro, o limite de largura dos blocos que mostram pouco, as opções do acordeão e da webteca, o layout e a sombra do cartão, o título e a descrição do grid, os blocos dentro de uma coluna do grid, o texto digitado no canvas, cores e contraste (razões WCAG), pares de ícones, colunas do grid, o efeito de hover em todos os blocos, o emoji decorativo escondido |
+| Blocos | 25 | 178 | O que os blocos desenham e como se comportam: os modelos de gráfico, barras e velocímetro, o limite de largura dos blocos que mostram pouco, as opções do acordeão e da webteca, o layout e a sombra do cartão, o título e a descrição do grid, os blocos dentro de uma coluna do grid, o texto digitado no canvas, cores e contraste (razões WCAG), pares de ícones, colunas do grid, o efeito de hover em todos os blocos, o emoji decorativo escondido |
 | Segurança e limpeza | 10 | 41 | Segurança e limpeza de HTML: escape, saneamento de URLs e de configuração de IA, URLs de vídeo, blocos encontrados por classe onde o Moodle remove atributos, eventos do frontend, nenhum texto visível literal nas fontes AMD, nenhum utilitário exclusivo do Bootstrap 5, o CSS inline do editor |
 | Modelos e biblioteca | 9 | 33 | Modelos e biblioteca: o cache de modelos, a importação de arquivo, o carregamento de um modelo no canvas em uma só etapa, o botão de exportar mostrando Exportar tudo ou Exportar selecionados (n), os campos de link empilhados do cartão de perfil, os textos de exemplo no idioma do site, a correspondência de presets e o aviso de idioma |
 | Janela do Studio | 4 | 30 | A janela do Studio: a divisão da barra lateral e sua geometria, a aba ativa, o portão da política de uso de IA |
-| **Total** | **46** | **265** | |
+| **Total** | **48** | **282** | |
 
 Estes rodam sem navegador nem Moodle: os módulos importados pelos testes não importam nada, e um teste que precisa do `app.js` ou de um template lê o arquivo-fonte.
 

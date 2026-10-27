@@ -28,6 +28,7 @@ import {THEMES, ICONS, esc, normaliseIcon, iconToSpan, openPicker, closePicker} 
 import {getContextId} from '../context';
 import {defaultText} from './default_texts';
 import {alignVars, bindAlign, normalizeAlign} from './block_align';
+import {MAX_STEPS, normalizeCurrent, stepState} from './step_state';
 
 // HTML renderers — vertical (default) and horizontal.
 // ---------------------------------------------------------------------------
@@ -36,16 +37,34 @@ import {alignVars, bindAlign, normalizeAlign} from './block_align';
  * @param {object} item Step item.
  * @param {number} stepNum 1-based step number.
  * @param {object} c Theme palette.
+ * @param {string} state The state of the step: 'done', 'current', 'next' or ''.
  * @returns {string}
  */
-const badgeHtml = (item, stepNum, c) => {
+const badgeHtml = (item, stepNum, c, state = '') => {
     const iconClass = item.icon ? normaliseIcon(item.icon) : '';
-    const content = iconClass
+    let content = iconClass
         ? iconToSpan(iconClass)
         : `<span aria-hidden="true">${stepNum}</span>`;
+    // A step that is over shows a tick where its number or icon was.
+    if (state === 'done') {
+        content = '<span aria-hidden="true">&#10003;</span>';
+    }
     return `<div class="slms-steps__badge" style="background:${c.iconBg};color:${c.iconColor};">`
         + content
         + `</div>`;
+};
+
+/**
+ * The words that say a step is over or is the current one: the stylesheet shows it too, but the cleaner of a forum or
+ * a question removes the names an assistive technology would read, so the state is also in visible text.
+ *
+ * @param {string} state The state of the step.
+ * @param {object} c Theme palette.
+ * @returns {string}
+ */
+const stateHtml = (state, c) => {
+    const text = {done: defaultText('steps_state_done'), current: defaultText('steps_state_current')}[state];
+    return text ? `<div class="slms-steps__state" style="color:${c.valuColor};">${esc(text)}</div>` : '';
 };
 
 /**
@@ -63,13 +82,15 @@ const buildVerticalHtml = (data, c) => {
     if (data.title && data.title.trim()) {
         parts.push(`<div class="slms-steps__title" style="color:${c.titleColor};">${esc(data.title.trim())}</div>`);
     }
+    const current = normalizeCurrent(data.current, items.length);
     parts.push(`<div class="slms-steps__list">`);
     items.forEach((item, idx) => {
         const isLast = idx === items.length - 1;
+        const state = stepState(idx + 1, current);
         parts.push(
-            `<div class="slms-steps__item">`
+            `<div class="slms-steps__item${state ? ` slms-steps-state-${state}` : ''}">`
             + `<div class="slms-steps__left">`
-            + badgeHtml(item, idx + 1, c)
+            + badgeHtml(item, idx + 1, c, state)
             + (!isLast ? `<div class="slms-steps__connector" style="background:${c.borderColor};"></div>` : '')
             + `</div>`
             + `<div class="slms-steps__content" style="padding-bottom:${isLast ? '0' : '1.25rem'};">`
@@ -77,7 +98,7 @@ const buildVerticalHtml = (data, c) => {
             + (item.description
                 ? `<div class="slms-steps__step-desc" style="color:${c.labelColor};">${esc(item.description)}</div>`
                 : '')
-            + `</div>`
+            + `${stateHtml(state, c)}</div>`
             + `</div>`
         );
     });
@@ -100,17 +121,19 @@ const buildHorizontalHtml = (data, c) => {
     if (data.title && data.title.trim()) {
         parts.push(`<div class="slms-steps__title" style="color:${c.titleColor};">${esc(data.title.trim())}</div>`);
     }
+    const current = normalizeCurrent(data.current, items.length);
     parts.push(`<div class="slms-steps__list--h">`);
     items.forEach((item, idx) => {
         const isLast = idx === items.length - 1;
+        const state = stepState(idx + 1, current);
         parts.push(
-            `<div class="slms-steps__item--h">`
-            + badgeHtml(item, idx + 1, c)
+            `<div class="slms-steps__item--h${state ? ` slms-steps-state-${state}` : ''}">`
+            + badgeHtml(item, idx + 1, c, state)
             + `<div class="slms-steps__step-title--h" style="color:${c.valuColor};">${esc(item.title)}</div>`
             + (item.description
                 ? `<div class="slms-steps__step-desc" style="color:${c.labelColor};">${esc(item.description)}</div>`
                 : '')
-            + `</div>`
+            + `${stateHtml(state, c)}</div>`
         );
         if (!isLast) {
             parts.push(`<div class="slms-steps__hconnector" style="background:${c.borderColor};"></div>`);
@@ -141,6 +164,11 @@ const dataToPopupVars = (data) => {
         layoutVertical: (data.layout || 'vertical') === 'vertical',
         layoutHorizontal: data.layout === 'horizontal',
     };
+    // Which option of the current step is selected; a value that does not fit the steps marks none.
+    const current = normalizeCurrent(data.current, MAX_STEPS);
+    for (let i = 0; i <= MAX_STEPS; i++) {
+        out[`current${i}`] = current === i;
+    }
     for (let i = 0; i < 6; i++) {
         const item = items[i] || {};
         out[`item${i + 1}_icon`] = item.icon || '';
@@ -183,6 +211,8 @@ export default {
         title: '',
         theme: 'blue',
         layout: 'vertical',
+        // Number of the step the class is at (1 to 6), or 0 for none: the steps before it show as done.
+        current: 0,
         items: [
             {icon: '', title: '', description: ''},
             {icon: '', title: '', description: ''},
@@ -258,6 +288,12 @@ export default {
                             data.theme = btn.getAttribute('data-theme') || 'blue';
                             onUpdate(data);
                         });
+                    });
+
+                    // Current step.
+                    popup.querySelector('#st_current')?.addEventListener('input', (ev) => {
+                        data.current = normalizeCurrent(ev.target.value, MAX_STEPS);
+                        onUpdate(data);
                     });
 
                     // Layout picker.

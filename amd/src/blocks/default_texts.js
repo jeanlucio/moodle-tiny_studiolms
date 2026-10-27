@@ -44,6 +44,8 @@ const WANTED = [
     ['default_event_title', [1, 2, 3]],
     ['default_feature_title', [1, 2, 3]],
     ['default_option_label', ['A', 'B']],
+    ['steps_state_current', []],
+    ['steps_state_done', []],
 ];
 
 /** @var {Object<string, string>} Loaded texts, keyed "string key" or "string key:number". */

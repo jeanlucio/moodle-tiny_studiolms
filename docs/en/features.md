@@ -3,7 +3,7 @@
 * 🧱 **18 Instructional Blocks,** inserted from the editor toolbar and configured through forms — no HTML required:
   * **Stylised Heading** — `h3`/`h4` heading with icon and background colour.
   * **Action Button** — call-to-action button with configurable URL, target, colours, border radius and alignment.
-  * **Advanced Card** — card with image or a YouTube or Vimeo video, a rich editable body and an internal button.
+  * **Advanced Card** — card with image or a YouTube or Vimeo video, a rich editable body and an internal button; the image can be a rectangle or a circle.
   * **Accordion** — expandable topic with 4 icon styles and an open/closed initial state.
   * **Resources** — resource library (PDF, video, audio, link) in list or grid layout, with the stripe of each item coloured by media type or by the colour of the block.
   * **Grid Cards** — multi-column container with editable slots, an optional heading and a one-line description under it (two plain text fields).
@@ -15,7 +15,7 @@
   * **Bar Chart** — horizontal or vertical, up to 6 bars.
   * **Gauge** — semi-circle gauge with traffic-light colours (green ≥ 67 %, amber ≥ 34 %, red below); 1–3 gauges side by side.
   * **Infographic — Stats** — up to 4 items combining an icon (from a 40-icon picker), a value and a label.
-  * **Infographic — Steps** — numbered flow with icon and description, for methods, tutorials and workflows.
+  * **Infographic — Steps** — numbered flow with icon and description, vertical or horizontal, for methods, tutorials and workflows; a **Current step** can be marked (the ones before it show as done, the ones after it are dimmed).
   * **Infographic — Features** — icon + title + description grid, for competencies and course highlights.
   * **Infographic — Timeline** — vertical timeline with date/period, icon and description.
   * **Infographic — Comparison** — 2–3 columns with coloured headers and ✓/✗ item lists.

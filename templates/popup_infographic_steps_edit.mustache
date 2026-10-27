@@ -288,6 +288,23 @@
         </div>
     </div>
 
+    {{! Current step }}
+    <div class="mb-2">
+        <label for="st_current" class="form-label small fw-semibold d-block mb-1">
+            {{#str}}infographic_steps_current, tiny_studiolms{{/str}}
+        </label>
+        <select id="st_current" class="form-select form-select-sm">
+            <option value="0" {{#current0}}selected{{/current0}}>{{#str}}infographic_steps_current_none, tiny_studiolms{{/str}}</option>
+            <option value="1" {{#current1}}selected{{/current1}}>1</option>
+            <option value="2" {{#current2}}selected{{/current2}}>2</option>
+            <option value="3" {{#current3}}selected{{/current3}}>3</option>
+            <option value="4" {{#current4}}selected{{/current4}}>4</option>
+            <option value="5" {{#current5}}selected{{/current5}}>5</option>
+            <option value="6" {{#current6}}selected{{/current6}}>6</option>
+        </select>
+        <div class="form-text small">{{#str}}infographic_steps_current_hint, tiny_studiolms{{/str}}</div>
+    </div>
+
     {{! Layout picker }}
     <div class="mb-2">
         <span class="form-label small fw-semibold d-block mb-1">
