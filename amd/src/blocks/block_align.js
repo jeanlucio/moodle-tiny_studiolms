@@ -38,6 +38,17 @@ export const ALIGNS = ['left', 'center', 'right'];
 export const normalizeAlign = (value, fallback) => (ALIGNS.includes(value) ? value : fallback);
 
 /**
+ * Reads the alignment the TinyMCE buttons write as an inline text-align on a heading.
+ *
+ * @param {string} value The text-align of the element, as the style attribute holds it.
+ * @returns {string|null} One of ALIGNS, or null for anything else (justify, start, no value).
+ */
+export const alignFromTextAlign = (value) => {
+    const align = String(value ?? '').trim().toLowerCase();
+    return ALIGNS.includes(align) ? align : null;
+};
+
+/**
  * Builds the flags the alignment field of a popup reads to select its option.
  *
  * @param {*} value The align field of the block data.

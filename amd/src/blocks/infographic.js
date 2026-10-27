@@ -30,6 +30,7 @@ import {call as ajaxCall} from 'core/ajax';
 import Notification from 'core/notification';
 import {THEMES, ICONS, esc, normaliseIcon, iconToSpan, openPicker, closePicker} from './infographic_shared';
 import {getContextId} from '../context';
+import {alignVars, bindAlign, normalizeAlign} from './block_align';
 
 const DEFAULT_ICON = 'fa-solid fa-circle-info';
 
@@ -142,6 +143,7 @@ export default {
     icon: '📊',
 
     defaultData: {
+        align: 'center',
         layout: 'stats',
         title: '',
         theme: 'blue',
@@ -167,8 +169,10 @@ export default {
                 closePicker();
 
                 const tplData = dataToPopupVars(data);
+                Object.assign(tplData, alignVars(data.align, 'center'));
 
                 PopupManager.open(btnEdit, 'tiny_studiolms/popup_infographic_edit', tplData, (popup) => {
+                    bindAlign(popup, data, onUpdate);
                     const titleEl = popup.querySelector('#ig_title');
                     const themeButtons = popup.querySelectorAll('.slms-ig-theme-btn');
                     const aiBtnEl = popup.querySelector('#ig-ai-btn');
@@ -310,6 +314,7 @@ export default {
 
         return Templates.render('tiny_studiolms/block_infographic', {
             hoverEffect: data.hoverEffect,
+            align: normalizeAlign(data.align, 'center'),
             layout,
             theme,
             content,

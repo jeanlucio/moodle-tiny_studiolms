@@ -19,7 +19,7 @@
   * **Infographic — Timeline** — vertical timeline with date/period, icon and description.
   * **Infographic — Comparison** — 2–3 columns with coloured headers and ✓/✗ item lists.
 * 🎨 **Canvas Composer:** a full-screen modal where a page is assembled block by block, reordered, previewed and inserted into the editor in one step.
-* 📐 **Block alignment:** the blocks that stop short of the page width (Profile Card, Chart, Bar Chart, Steps, Timeline, Comparison, Advanced Card and Resources) have an **Alignment** field (left, centre or right) in their design popup. TinyMCE's own alignment buttons do not move a block, because a block is not editable text; the Action Button keeps its own alignment field.
+* 📐 **Block alignment:** the blocks that stop short of the page width (Profile Card, Chart, Bar Chart, Steps, Timeline, Comparison, Advanced Card, Resources, Gauge and the Infographic of stat cards) and the Stylized Heading (icon and text together) have an **Alignment** field (left, centre or right) in their design popup. TinyMCE's own alignment buttons do not move a block, because a block is not editable text; the Action Button keeps its own alignment field.
 * 💾 **Round-trip editing:** each block keeps its configuration inside the content (`data-slms-state`), so any block already in a course can be reopened and edited later.
 * 📚 **Template Library** in four tabs:
   * **Components** — the base blocks above.

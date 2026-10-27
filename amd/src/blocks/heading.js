@@ -24,12 +24,14 @@
 import Templates from 'core/templates';
 import {getString} from 'core/str';
 import Notification from 'core/notification';
+import {alignFromTextAlign, alignVars, bindAlign, normalizeAlign} from './block_align';
 
 export default {
     id: 'stylizedHeading',
     titleString: 'block_heading_title',
     icon: '🔠',
     defaultData: {
+        align: 'left',
         text: '',
         level: 'h3',
         icon: '🎯',
@@ -45,6 +47,12 @@ export default {
     extractDOM: (node, state) => {
         const textNode = node.querySelector('.slms-heading-text');
         state.text = textNode ? textNode.innerHTML : '';
+        // The editor's own alignment buttons write a text-align on the heading; keep it as the field,
+        // or the next redraw of the block would drop it.
+        const align = alignFromTextAlign(node.querySelector('h3, h4')?.style.textAlign);
+        if (align) {
+            state.align = align;
+        }
     },
 
     buildToolbar: async(container, data, onUpdate, PopupManager) => {
@@ -59,8 +67,10 @@ export default {
                     const tplData = Object.assign({}, data);
                     tplData.isH3 = data.level === 'h3';
                     tplData.isH4 = data.level === 'h4';
+                    Object.assign(tplData, alignVars(data.align, 'left'));
 
                     PopupManager.open(btnConfig, 'tiny_studiolms/popup_heading', tplData, (popup) => {
+                        bindAlign(popup, data, onUpdate);
                         const propMap = {
                             '#pop_head_level': 'level',
                             '#pop_head_icon': 'icon',
@@ -92,6 +102,8 @@ export default {
         const templateData = Object.assign({}, data);
         templateData.isH3 = data.level === 'h3';
         templateData.isH4 = data.level === 'h4';
+        templateData.align = normalizeAlign(data.align, 'left');
+        Object.assign(templateData, alignVars(data.align, 'left'));
 
         if (!templateData.text || templateData.text.trim() === '') {
             const defaultText = await getString('default_heading_text', 'tiny_studiolms');

@@ -41,6 +41,7 @@ final class alignment_test extends advanced_testcase {
         return array_map(fn($name) => [$name], [
             'block_profilecard', 'block_chart', 'block_chart_bar', 'block_infographic_steps',
             'block_infographic_timeline', 'block_infographic_comparison', 'block_card', 'block_resources',
+            'block_heading', 'block_gauge', 'block_infographic',
         ]);
     }
 

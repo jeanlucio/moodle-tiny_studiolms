@@ -24,6 +24,7 @@
 import Templates from 'core/templates';
 import Notification from 'core/notification';
 import {gaugeModel} from './chart_data';
+import {alignVars, bindAlign, normalizeAlign} from './block_align';
 
 const MAX_GAUGES = 3;
 
@@ -92,6 +93,7 @@ export default {
     icon: '🎯',
 
     defaultData: {
+        align: 'center',
         title: '',
         gauges: [
             {value: 75, label: ''},
@@ -112,8 +114,9 @@ export default {
                 PopupManager.open(
                     btnEdit,
                     'tiny_studiolms/popup_gauge_edit',
-                    dataToPopupVars(data),
+                    Object.assign(dataToPopupVars(data), alignVars(data.align, 'center')),
                     (popup) => {
+                        bindAlign(popup, data, onUpdate);
                         const titleEl = popup.querySelector('#gf_title');
 
                         const applyChanges = () => {
@@ -147,6 +150,7 @@ export default {
 
         return Templates.render('tiny_studiolms/block_gauge', {
             hoverEffect: data.hoverEffect,
+            align: normalizeAlign(data.align, 'center'),
             title: data.title || '',
             gauges: items,
         });

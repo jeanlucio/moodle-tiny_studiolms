@@ -45,6 +45,8 @@ const BLOCKS = [
     ['infographic_comparison', 'block_infographic_comparison', 'popup_infographic_comparison_edit', 'center'],
     ['card', 'block_card', 'popup_card_design', 'left'],
     ['resources', 'block_resources', 'popup_resources_general', 'left'],
+    ['gauge', 'block_gauge', 'popup_gauge_edit', 'center'],
+    ['infographic', 'block_infographic', 'popup_infographic_edit', 'center'],
 ];
 
 let align;
@@ -85,6 +87,12 @@ test('the popup field changes the data and redraws the block', () => {
     assert.equal(data.align, 'right');
 });
 
+test('the text-align the editor buttons write on a heading is read back as a known alignment', () => {
+    ['left', 'center', 'right'].forEach((value) => assert.equal(align.alignFromTextAlign(value), value));
+    assert.equal(align.alignFromTextAlign(' Center '), 'center');
+    ['justify', 'start', '', undefined, null].forEach((value) => assert.equal(align.alignFromTextAlign(value), null));
+});
+
 test('a popup without the field is left alone', () => {
     assert.doesNotThrow(() => align.bindAlign({querySelector: () => null}, {}, () => null));
 });
@@ -120,6 +128,34 @@ BLOCKS.forEach(([file, template, popup, fallback]) => {
             // The card is inside its wrap, which is as wide as the page.
             assert.ok(rule.includes(`.studiolms-card-wrap.slms-align-${value} > .studiolms-card`), `card ${value}`);
             assert.ok(rule.includes(`margin-inline: ${margin};`), `${value} margin`);
+        });
+    });
+});
+
+test('heading: the field moves icon and text together and keeps what the editor buttons wrote', () => {
+    const source = read('amd/src/blocks/heading.js');
+    const template = read('templates/block_heading.mustache');
+
+    assert.match(source, /defaultData: \{\n\s+align: 'left',/);
+    assert.match(source, /alignFromTextAlign\(node\.querySelector\('h3, h4'\)\?\.style\.textAlign\)/);
+    assert.match(source, /bindAlign\(popup, data, onUpdate\);/);
+    assert.match(template, /class="studiolms-heading-wrap w-100 slms-align-\{\{align\}\}/);
+    // Bootstrap's flex-grow-1 is !important, so the text only grows on the left, where it always did.
+    assert.equal(template.match(/slms-heading-text\{\{#alignLeft\}\} flex-grow-1\{\{\/alignLeft\}\}/g).length, 2);
+    assert.match(read('templates/popup_heading.mustache'), /\{\{> tiny_studiolms\/popup_block_align\}\}/);
+});
+
+['styles.css', 'editor_styles.css'].forEach((file) => {
+    test(`${file}: heading, gauge and stat cards have a rule for the ends of the row`, () => {
+        const css = read(file);
+
+        assert.ok(css.includes('.studiolms-heading-wrap.slms-align-center .studiolms-heading-h3,'));
+        assert.ok(css.includes('.studiolms-heading-wrap.slms-align-right .studiolms-heading-h4 {'));
+        ['left', 'right'].forEach((value) => {
+            const start = css.indexOf(`.slms-gauge-block.slms-align-${value} .slms-gauge__row,`);
+            assert.ok(start >= 0, `gauge ${value}`);
+            const rule = css.slice(start, css.indexOf('}', start));
+            assert.ok(rule.includes(`.slms-infographic--stats.slms-align-${value} .slms-infographic__grid`), `stats ${value}`);
         });
     });
 });

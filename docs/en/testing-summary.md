@@ -1,6 +1,6 @@
 # 🧪 Automated Tests
 
-StudioLMS ships with **248 PHPUnit test cases**, **226 JavaScript tests** and a **76-scenario Behat suite**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
+StudioLMS ships with **251 PHPUnit test cases**, **232 JavaScript tests** and a **76-scenario Behat suite**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
 
 ### PHPUnit — Unit & Integration Tests
 
@@ -12,9 +12,9 @@ StudioLMS ships with **248 PHPUnit test cases**, **226 JavaScript tests** and a 
 | Events | 3 | 10 |
 | Privacy API | 1 | 18 |
 | Editor integration (`plugininfo`, hook callbacks, editor stylesheet) | 3 | 19 |
-| Templates and presets (card, chart, hover classes, block alignment, ready-made layouts, texts) | 7 | 31 |
+| Templates and presets (card, chart, hover classes, block alignment, ready-made layouts, texts) | 7 | 34 |
 | Database definitions, upgrade step and data generator | 3 | 8 |
-| **Total** | **41** | **248** |
+| **Total** | **41** | **251** |
 
 ```bash
 vendor/bin/phpunit --testsuite tiny_studiolms_testsuite
@@ -25,7 +25,7 @@ AI configured is used to exercise the "no AI" path.
 
 ### JavaScript — Headless Tests
 
-**226 tests** in **42 files** run with `node --test tests/js/*.test.js`, without a browser or Moodle: the block models, contrast and colours, escaping and sanitising, the template library and the Studio window.
+**232 tests** in **42 files** run with `node --test tests/js/*.test.js`, without a browser or Moodle: the block models, contrast and colours, escaping and sanitising, the template library and the Studio window.
 
 ### Behat — Acceptance Tests
 
