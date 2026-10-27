@@ -91,3 +91,7 @@ test('the three blocks no longer build SVG', () => {
         assert.doesNotMatch(read(`amd/src/blocks/${block}.js`), /<svg|xmlns/, block);
     });
 });
+
+test('bars with nothing to compare give no bars at all, instead of a share of zero', () => {
+    assert.deepEqual(data.barModel([{label: 'A', value: 0}, {label: 'B', value: 0}]), []);
+});

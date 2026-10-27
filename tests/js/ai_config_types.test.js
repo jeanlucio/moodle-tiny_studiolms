@@ -96,3 +96,26 @@ test('the defaults are not changed and a __proto__ key does not reach the result
     assert.equal(Object.getPrototypeOf(merged), Object.prototype);
     assert.equal(merged.polluted, undefined);
 });
+
+test('a flag keeps a real boolean, reads a number as true or false, and a word as the word it is', async() => {
+    const {mergeAiConfig} = await load();
+
+    assert.equal(mergeAiConfig({open: true}, {open: false}).open, false);
+    assert.equal(mergeAiConfig({open: false}, {open: true}).open, true);
+    assert.equal(mergeAiConfig({open: false}, {open: 1}).open, true);
+    assert.equal(mergeAiConfig({open: true}, {open: 0}).open, false);
+    assert.equal(mergeAiConfig({open: false}, {open: ' YES '}).open, true);
+    assert.equal(mergeAiConfig({open: true}, {open: 'no'}).open, false);
+    // Anything else is not an answer: the default stays.
+    assert.equal(mergeAiConfig({open: true}, {open: 'maybe'}).open, true);
+    assert.equal(mergeAiConfig({open: false}, {open: {}}).open, false);
+});
+
+test('an object field is brought to the types of its sample, and a field with no sample type is taken as it comes', async() => {
+    const {mergeAiConfig} = await load();
+
+    const merged = mergeAiConfig({box: {size: 1, label: ''}, extra: null}, {box: {size: '5 px', label: 7}, extra: 'free text'});
+
+    assert.deepEqual(merged.box, {size: 5, label: '7'});
+    assert.equal(merged.extra, 'free text');
+});

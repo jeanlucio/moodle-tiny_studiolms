@@ -176,6 +176,26 @@ final class chat_test extends advanced_testcase {
     }
 
     /**
+     * An apply_preset action whose name is not text at all is dropped, and the reply is kept.
+     *
+     * The model answers in JSON and a name can come back as a number, a list or nothing, none of which is a layout.
+     */
+    public function test_apply_preset_with_a_name_that_is_not_text_is_dropped(): void {
+        $offered = json_encode(['Module Start', 'Mission Board']);
+
+        foreach ([123, null, ['Module Start'], true] as $name) {
+            $this->install_hub_stub(true, json_encode([
+                'reply' => 'Applying it',
+                'action' => ['type' => 'apply_preset', 'preset_name' => $name],
+            ]));
+            $result = chat::send([['role' => 'user', 'content' => 'Use it']], $offered, \context_system::instance());
+
+            $this->assertSame('Applying it', $result['reply']);
+            $this->assertNull($result['action'], var_export($name, true));
+        }
+    }
+
+    /**
      * A layout named with another case or spacing is applied under the name the editor knows it by.
      */
     public function test_apply_preset_forgives_case_and_spacing(): void {

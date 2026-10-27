@@ -163,6 +163,33 @@ final class provider_test extends provider_testcase {
     }
 
     /**
+     * export_user_data also exports the user's favourites, in their own folder, and only the user's own.
+     *
+     * Regression test: only the export of templates was exercised, so a favourites export that wrote nothing, or wrote
+     * another user's rows, would have gone unnoticed.
+     */
+    public function test_export_user_data_includes_favourites(): void {
+        $own = $this->create_template($this->user2, 'Shared layout', 1);
+        $other = $this->create_template($this->user2, 'Private layout');
+        $this->create_favourite($this->user1, $own);
+        $this->create_favourite($this->user2, $other);
+
+        $contextlist = provider::get_contexts_for_userid($this->user1->id);
+        provider::export_user_data(new approved_contextlist($this->user1, 'tiny_studiolms', $contextlist->get_contextids()));
+
+        $writer = writer::with_context(\context_system::instance());
+        $data = $writer->get_data([get_string('pluginname', 'tiny_studiolms'), get_string('tab_favourites', 'tiny_studiolms')]);
+
+        $this->assertCount(1, $data->favourites);
+        $this->assertEquals($own, reset($data->favourites)->templateid);
+        $this->assertEquals($this->user1->id, reset($data->favourites)->userid);
+        $this->assertEmpty((array) $writer->get_data([
+            get_string('pluginname', 'tiny_studiolms'),
+            get_string('tab_mine', 'tiny_studiolms'),
+        ]));
+    }
+
+    /**
      * delete_data_for_user removes the user's templates and favourites.
      */
     public function test_delete_data_for_user_removes_personal_data(): void {
@@ -390,6 +417,19 @@ final class provider_test extends provider_testcase {
         writer::reset();
         provider::export_user_preferences($this->user2->id);
         $this->assertEmpty((array) writer::with_context(\context_system::instance())->get_user_preferences('tiny_studiolms'));
+    }
+
+    /**
+     * delete_data_for_users with an empty list of users removes nothing.
+     */
+    public function test_delete_data_for_users_with_no_users_does_nothing(): void {
+        global $DB;
+
+        $this->create_template($this->user1, 'Kept');
+
+        provider::delete_data_for_users(new approved_userlist(\context_system::instance(), 'tiny_studiolms', []));
+
+        $this->assertEquals(1, $DB->count_records('tiny_studiolms_templates', ['userid' => $this->user1->id]));
     }
 
     /**
