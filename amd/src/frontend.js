@@ -50,6 +50,7 @@ const SELECTORS = {
         '.studiolms-resources-wrap',
         '.studiolms-grid-wrap',
         '.studiolms-callout-wrap',
+        '.studiolms-textbox-wrap',
         '.studiolms-table-wrap',
         '.studiolms-profilecard',
         '.slms-block',

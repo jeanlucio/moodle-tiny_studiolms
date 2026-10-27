@@ -1,0 +1,31 @@
+{{!
+	This file is part of Moodle - http://moodle.org/
+
+	Moodle is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Moodle is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_studiolms/popup_textbox_design
+    @copyright 2026 Jean Lúcio
+
+    Example context (json): {"alignLeft": true, "alignCenter": false, "alignRight": false, "alignJustify": false}
+}}
+<div class="mb-3">
+    <label for="pop_textbox_align" class="form-label small fw-bold">{{#str}} alignment, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_textbox_align">
+        <option value="left" {{#alignLeft}}selected{{/alignLeft}}>{{#str}} align_left, tiny_studiolms {{/str}}</option>
+        <option value="center" {{#alignCenter}}selected{{/alignCenter}}>{{#str}} align_center, tiny_studiolms {{/str}}</option>
+        <option value="right" {{#alignRight}}selected{{/alignRight}}>{{#str}} align_right, tiny_studiolms {{/str}}</option>
+        <option value="justify" {{#alignJustify}}selected{{/alignJustify}}>{{#str}} align_justify, tiny_studiolms {{/str}}</option>
+    </select>
+</div>

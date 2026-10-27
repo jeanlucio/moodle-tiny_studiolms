@@ -8,6 +8,7 @@
   * **Resources** — resource library (PDF, video, audio, link) in list or grid layout, with the stripe of each item coloured by media type or by the colour of the block.
   * **Grid Cards** — multi-column container with editable slots, an optional heading and a one-line description under it (two plain text fields).
   * **Callout** — highlight box with a customisable icon and border colour.
+  * **Text Box** — plain text between the other blocks, with no frame, so a layout saved as a template keeps its paragraphs; the lines can be left, centred, right or justified.
   * **Table** — striped or plain table that works with TinyMCE's own table tools.
   * **Profile Card** — presenter card with photo, name, role, bio and up to 6 contact links (e-mail, WhatsApp, Telegram, Lattes…).
   * **Chart** — the share of each part in the whole as one stacked bar with a legend, up to 6 slices, custom labels.

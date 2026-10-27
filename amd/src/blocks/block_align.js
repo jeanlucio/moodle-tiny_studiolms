@@ -25,6 +25,20 @@
 
 export const ALIGNS = ['left', 'center', 'right'];
 
+/** The alignments of the lines of a text, which may also be justified. */
+export const TEXT_ALIGNS = [...ALIGNS, 'justify'];
+
+/**
+ * Returns the alignment of the text to draw: the stored one when it is a known value, left otherwise.
+ *
+ * The stored value comes from the markup of the page, which anyone can edit, so it is checked before it becomes
+ * part of a class name.
+ *
+ * @param {*} value The textAlign field of the block data.
+ * @returns {string} One of TEXT_ALIGNS.
+ */
+export const normalizeTextAlign = (value) => (TEXT_ALIGNS.includes(value) ? value : 'left');
+
 /**
  * Returns the alignment to draw: the stored one when it is a known value, the block's own default otherwise.
  *

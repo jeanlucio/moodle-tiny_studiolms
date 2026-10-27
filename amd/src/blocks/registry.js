@@ -28,6 +28,7 @@ import accordion from './accordion';
 import resources from './resources';
 import gridcards from './gridcards';
 import callout from './callout';
+import textBox from './textbox';
 import table from './table';
 import profileCard from './profilecard';
 import chart from './chart';
@@ -49,6 +50,7 @@ export const Blocks = {
     resources,
     gridcards,
     callout,
+    textBox,
     table,
     profileCard,
     chart,

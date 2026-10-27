@@ -36,6 +36,7 @@ Feature: Build content with every StudioLMS block
       | resources             |
       | gridcards             |
       | callout               |
+      | textBox               |
       | table                 |
       | profileCard           |
       | chart                 |
@@ -62,12 +63,13 @@ Feature: Build content with every StudioLMS block
     Then I should see "<text>" in the ".slms-canvas-block-preview" "css_element"
 
     Examples:
-      | block                 | text              |
-      | chart                 | In progress       |
-      | chartBar              | In progress       |
-      | gauge                 | Approval          |
-      | infographic           | Modules completed |
-      | infographicSteps      | Step 2            |
-      | infographicTimeline   | Event 3           |
-      | infographicFeatures   | Feature 2         |
-      | infographicComparison | Option B          |
+      | block                 | text                 |
+      | chart                 | In progress          |
+      | chartBar              | In progress          |
+      | gauge                 | Approval             |
+      | infographic           | Modules completed    |
+      | infographicSteps      | Step 2               |
+      | infographicTimeline   | Event 3              |
+      | infographicFeatures   | Feature 2            |
+      | infographicComparison | Option B             |
+      | textBox               | Type your text here. |

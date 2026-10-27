@@ -1,6 +1,6 @@
 # 🧪 Automated Tests
 
-StudioLMS ships with **253 PHPUnit test cases**, **257 JavaScript tests** and a **78-scenario Behat suite**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
+StudioLMS ships with **255 PHPUnit test cases**, **265 JavaScript tests** and a **80-scenario Behat suite**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
 
 ### PHPUnit — Unit & Integration Tests
 
@@ -12,9 +12,9 @@ StudioLMS ships with **253 PHPUnit test cases**, **257 JavaScript tests** and a 
 | Events | 3 | 10 |
 | Privacy API | 1 | 18 |
 | Editor integration (`plugininfo`, hook callbacks, editor stylesheet) | 3 | 21 |
-| Templates and presets (card, chart, hover classes, block alignment, ready-made layouts, texts) | 7 | 34 |
+| Templates and presets (card, chart, hover classes, block alignment, ready-made layouts, texts) | 8 | 36 |
 | Database definitions, upgrade step and data generator | 3 | 8 |
-| **Total** | **41** | **253** |
+| **Total** | **42** | **255** |
 
 ```bash
 vendor/bin/phpunit --testsuite tiny_studiolms_testsuite
@@ -25,7 +25,7 @@ AI configured is used to exercise the "no AI" path.
 
 ### JavaScript — Headless Tests
 
-**257 tests** in **45 files** run with `node --test tests/js/*.test.js`, without a browser or Moodle: the block models, contrast and colours, escaping and sanitising, the template library and the Studio window.
+**265 tests** in **46 files** run with `node --test tests/js/*.test.js`, without a browser or Moodle: the block models, contrast and colours, escaping and sanitising, the template library and the Studio window.
 
 ### Behat — Acceptance Tests
 
@@ -33,11 +33,11 @@ AI configured is used to exercise the "no AI" path.
 |---------------|----------:|
 | Template library (`manage_templates`, `save_template`, `favourite_template`, `import_export`) | 16 |
 | Template lifecycle (`template_lifecycle`) | 10 |
-| Every block inserted (`insert_blocks`) | 26 |
+| Every block inserted (`insert_blocks`) | 28 |
 | Student view and read-only blocks (`student_view`, `text_blocks_view`) | 4 |
 | Editing safeguards (`clear_canvas`, `icon_picker`, `button_link_guard`, `toolbar_capability`, `ai_tabs_unavailable`) | 14 |
 | Security regressions (7 files — see the full breakdown) | 8 |
-| **Total** | **78** |
+| **Total** | **80** |
 
 ```bash
 php admin/tool/behat/cli/init.php

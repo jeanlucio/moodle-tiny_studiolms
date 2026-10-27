@@ -1599,6 +1599,37 @@ a.studiolms-btn:focus-visible {
     opacity: 1;
 }
 
+/* Text box: the text alone, with no frame, as a paragraph typed in the page; the alignment is a class on it. */
+.studiolms-textbox-wrap {
+    margin-bottom: 1rem;
+}
+
+.slms-textbox-content {
+    outline: none;
+    min-width: 0;
+    min-height: 1.5em;
+}
+
+.slms-textbox-content > :last-child {
+    margin-bottom: 0;
+}
+
+.slms-textalign-left {
+    text-align: start;
+}
+
+.slms-textalign-center {
+    text-align: center;
+}
+
+.slms-textalign-right {
+    text-align: end;
+}
+
+.slms-textalign-justify {
+    text-align: justify;
+}
+
 /* Callout */
 .studiolms-callout-wrap {
     background-color: var(--slms-bg, #fef9c3);
