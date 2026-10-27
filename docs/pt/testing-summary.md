@@ -1,6 +1,6 @@
 # 🧪 Testes Automatizados
 
-O StudioLMS inclui **251 casos de teste PHPUnit**, **257 testes de JavaScript** e uma suíte Behat com **77 cenários**, executados
+O StudioLMS inclui **253 casos de teste PHPUnit**, **257 testes de JavaScript** e uma suíte Behat com **78 cenários**, executados
 em todo push de CI na matriz completa (Moodle 4.5 → 5.x, PostgreSQL e MariaDB).
 
 ### PHPUnit — Testes Unitários e de Integração
@@ -12,10 +12,10 @@ em todo push de CI na matriz completa (Moodle 4.5 → 5.x, PostgreSQL e MariaDB)
 | Web services de modelos (salvar, buscar, apagar, favoritar, importar, exportar) | 6 | 56 |
 | Eventos | 3 | 10 |
 | Privacy API | 1 | 18 |
-| Integração com o editor (`plugininfo`, hook callbacks, folha de estilo do editor) | 3 | 19 |
+| Integração com o editor (`plugininfo`, hook callbacks, folha de estilo do editor) | 3 | 21 |
 | Modelos e presets (cartão, gráficos, classes de hover, alinhamento dos blocos, layouts prontos, textos) | 7 | 34 |
 | Definições do banco, passo de upgrade e gerador de dados | 3 | 8 |
-| **Total** | **41** | **251** |
+| **Total** | **41** | **253** |
 
 ```bash
 vendor/bin/phpunit --testsuite tiny_studiolms_testsuite
@@ -33,12 +33,12 @@ stub, e um site sem nenhuma IA configurada é usado para exercitar o caminho "se
 | Arquivos de feature | Cenários |
 |----------------------|---------:|
 | Biblioteca de modelos (`manage_templates`, `save_template`, `favourite_template`, `import_export`) | 16 |
-| Ciclo de vida dos modelos (`template_lifecycle`) | 9 |
+| Ciclo de vida dos modelos (`template_lifecycle`) | 10 |
 | Todos os blocos inseridos (`insert_blocks`) | 26 |
 | Visão do estudante e blocos somente leitura (`student_view`, `text_blocks_view`) | 4 |
 | Salvaguardas de edição (`clear_canvas`, `icon_picker`, `button_link_guard`, `toolbar_capability`, `ai_tabs_unavailable`) | 14 |
 | Regressões de segurança (7 arquivos — veja o detalhamento) | 8 |
-| **Total** | **77** |
+| **Total** | **78** |
 
 ```bash
 php admin/tool/behat/cli/init.php

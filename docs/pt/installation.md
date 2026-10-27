@@ -10,3 +10,6 @@
    `tiny/studiolms:use` no contexto da página — professores, professores sem edição e gestores por
    padrão. Gerenciar **Modelos do site** exige `tiny/studiolms:manageglobaltemplates`, concedida
    a gestores no nível do site por padrão.
+6. Opcional: em **Administração do site > Plugins > Editores de texto > Editor TinyMCE > StudioLMS** o
+   administrador pode desligar **Mostrar os modelos prontos**. A aba **Modelos prontos** some do diálogo;
+   os modelos do site e os modelos de cada professor não são afetados. Vem ligada por padrão.

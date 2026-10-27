@@ -72,6 +72,15 @@ Feature: Manage personal and site layout templates in StudioLMS
     And the StudioLMS library shows the template "Official layout"
     And the StudioLMS library does not show the template "Module Start"
 
+  Scenario: The administrator can switch the ready-made layouts off
+    Given the following config values are set as admin:
+      | showpresets | 0 | tiny_studiolms |
+    And I log in as "teacher1"
+    And I am on the "Test page" "page activity editing" page
+    And I click on the "StudioLMS" button for the "Page content" TinyMCE editor
+    Then the StudioLMS dialog does not contain the "#slms-tab-presets" element
+    And the StudioLMS dialog contains the "#slms-tab-official" element
+
   Scenario: Marking a template as a favourite lists it under Favourites
     Given I log in as "teacher1"
     And I am on the "Test page" "page activity editing" page

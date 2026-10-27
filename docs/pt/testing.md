@@ -1,7 +1,7 @@
 # 🧪 Testes Automatizados
 
-O StudioLMS inclui **251 casos de teste PHPUnit** em **41 arquivos**, **257 testes de JavaScript** em **45 arquivos**, mais uma suíte Behat com
-**77 cenários** em **20 arquivos de feature**, executados em todo push de CI na matriz completa
+O StudioLMS inclui **253 casos de teste PHPUnit** em **41 arquivos**, **257 testes de JavaScript** em **45 arquivos**, mais uma suíte Behat com
+**78 cenários** em **20 arquivos de feature**, executados em todo push de CI na matriz completa
 (Moodle 4.5 → 5.x, PostgreSQL e MariaDB).
 
 ### PHPUnit — Testes Unitários e de Integração
@@ -22,11 +22,11 @@ O StudioLMS inclui **251 casos de teste PHPUnit** em **41 arquivos**, **257 test
 | `external/save_template_test.php` | 8 | Um professor salva um modelo pessoal mas não consegue salvar um global; um gestor pode salvar um modelo global; salvar dispara `template_created`; convidados são rejeitados; um gestor com papel só no curso não consegue salvar um modelo global |
 | `external/toggle_favourite_test.php` | 9 | Ativar cria um favorito, desativar remove, sem duplicatas; favoritar um modelo inexistente lança exceção; convidados são rejeitados; um modelo privado de outro usuário não pode ser favoritado, mas um global pode; um professor matriculado no curso pode usar o contexto real do curso e é rejeitado num contexto de sistema fixo |
 | `hook_callbacks_test.php` | 2 | O módulo AMD do frontend do estudante é solicitado só em páginas de contexto de curso/módulo, e ignorado em qualquer outra |
-| `plugininfo_test.php` | 15 | `is_enabled()` reflete a capability; a configuração devolvida repassa o ID de contexto real; `canmanageglobaltemplates` ignora uma concessão dessa capability só no curso; `hasai` segue a cadeia de provedores de ponta a ponta; o link "Minhas chaves de IA" da Central de IA só aparece quando as chaves pessoais estão habilitadas e o professor tem a capability; presets carregam para um idioma com arquivos reais, voltam vazios quando não existe nenhum, e caem para inglês quando o próprio diretório do idioma não existe; os botões e itens de menu disponíveis são declarados |
+| `plugininfo_test.php` | 17 | `is_enabled()` reflete a capability; a configuração devolvida repassa o ID de contexto real; `canmanageglobaltemplates` ignora uma concessão dessa capability só no curso; `hasai` segue a cadeia de provedores de ponta a ponta; o link "Minhas chaves de IA" da Central de IA só aparece quando as chaves pessoais estão habilitadas e o professor tem a capability; presets carregam para um idioma com arquivos reais, voltam vazios quando não existe nenhum, e caem para inglês quando o próprio diretório do idioma não existe; os botões e itens de menu disponíveis são declarados |
 | `privacy/provider_test.php` | 18 | Descoberta de contexto para modelos, favoritos e um caso vazio; a exportação inclui modelos próprios; a exclusão remove dados pessoais preservando modelos globais, anonimizando a autoria tanto na exclusão de um usuário quanto em lote e para todos os usuários de um contexto; a listagem reversa de usuários por contexto; os metadados declaram só as duas tabelas próprias deste plugin (modelos e favoritos — nenhuma declaração de chave ou log de IA restou); tanto um contexto que não é de sistema quanto um caso sem dados não fazem nada em todo lugar onde são checados |
 | `ai/generator_payload_test.php` | 24 | O modelo não é confiável: cada gerador interpreta o que ele devolve embrulhado em cercas de código, pela metade ou hostil — itens vazios descartados, HTML purificado, flags e padrões normalizados, campos de tipo errado (uma lista onde se espera texto, a string "false" como booleano) lidos com segurança; o schema do prompt oferece só o que os blocos aceitam |
 | `ai_notice_test.php` | 1 | Cada uma das três abas de IA traz o aviso de que o texto vai para o provedor de IA do site |
-| `alignment_test.php` | 8 | A classe de alinhamento que o professor escolhe (esquerda, centro, direita) está em cada um dos oito blocos que a aceitam e sobrevive ao limpador de HTML do Moodle |
+| `alignment_test.php` | 11 | A classe de alinhamento que o professor escolhe (esquerda, centro, direita) está em cada um dos onze blocos que a aceitam e sobrevive ao limpador de HTML do Moodle |
 | `card_template_test.php` | 8 | O template do cartão: o quadro de vídeo é nomeado por uma string de idioma (sem palavra fixa que o leitor de tela anunciaria em qualquer idioma); a posição da mídia e o detalhe lateral são classes, e não estilos inline que o limpador de HTML descartaria |
 | `chart_templates_test.php` | 5 | Os templates de gráfico, de barras e de velocímetro não desenham SVG e sobrevivem ao limpador de HTML do Moodle (`clean_text()`) com todas as classes e larguras ou alturas; um rótulo é escapado uma vez |
 | `db_definitions_test.php` | 3 | Os arquivos de definição de serviços web, cache e capabilities carregam e declaram o que o código usa |
@@ -85,7 +85,7 @@ node --test tests/js/*.test.js
 | `icon_picker.feature` | 1 | Escape fecha o seletor de ícones, mas mantém o compositor e seus blocos |
 | `insert_blocks.feature` | 26 | Cada um dos 17 blocos pode ser adicionado ao canvas, inserido na página e lido de volta; todo bloco abre painéis de configurações com campos editáveis; um bloco novo mostra os textos de exemplo no idioma do site |
 | `student_view.feature` | 3 | Os blocos salvos pelo professor chegam ao estudante sem atributos de edição; o estudante pode abrir e fechar um acordeão e recolher e reabrir a lista de materiais |
-| `template_lifecycle.feature` | 9 | Salvar um modelo e vê-lo em Meus modelos; salvá-lo como modelo do site; Meus modelos lista só os do professor; os layouts prontos têm uma aba própria; os modelos do site aparecem para um professor que não pode apagá-los; favoritar e desfavoritar; apagar após confirmação; carregar no canvas e inserir |
+| `template_lifecycle.feature` | 10 | Salvar um modelo e vê-lo em Meus modelos; salvá-lo como modelo do site; Meus modelos lista só os do professor; os layouts prontos têm uma aba própria, que o administrador pode desligar; os modelos do site aparecem para um professor que não pode apagá-los; favoritar e desfavoritar; apagar após confirmação; carregar no canvas e inserir |
 | `text_blocks_view.feature` | 1 | Uma página com só um título e um botão não carrega atributos de edição |
 | `toolbar_capability.feature` | 4 | O botão do StudioLMS segue `tiny/studiolms:use` no curso: presente com a capability, ausente para estudante, perdido onde negada, e não escondido em outro curso |
 

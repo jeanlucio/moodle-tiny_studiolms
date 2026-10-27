@@ -87,9 +87,9 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
                 'tiny/studiolms:manageglobaltemplates',
                 \context_system::instance()
             ),
-            'presets'                  => self::load_presets(current_language()),
+            'presets'                  => self::presets_enabled() ? self::load_presets(current_language()) : [],
             'hasai'                    => ai\provider_chain::has_ai($context),
-            'presetnotice'             => self::preset_notice_due(current_language()),
+            'presetnotice'             => self::presets_enabled() && self::preset_notice_due(current_language()),
             'policyagreed'             => self::ai_policy_agreed(),
             'aihubkeysurl'             => self::aihub_keys_url($context),
             // Threaded back to every web service call so require_capability() there checks the
@@ -142,6 +142,19 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
             return '';
         }
         return (new \moodle_url('/local/aihub/mykeys.php'))->out(false);
+    }
+
+    /**
+     * Tells whether the ready-made layouts are to be offered to the teachers.
+     *
+     * An administrator can switch them off in the plugin settings. A site that never saved the setting has the
+     * default, which is on.
+     *
+     * @return bool
+     */
+    private static function presets_enabled(): bool {
+        $value = get_config('tiny_studiolms', 'showpresets');
+        return $value === false || (bool) $value;
     }
 
     /**

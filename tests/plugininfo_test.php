@@ -330,6 +330,59 @@ final class plugininfo_test extends advanced_testcase {
     }
 
     /**
+     * The administrator can switch the ready-made layouts off, and a site that never saved the setting has them.
+     *
+     * The editor is sent no layouts and no notice about them, in any language, so its tab for them is not drawn.
+     */
+    public function test_the_presets_can_be_switched_off_in_the_settings(): void {
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = \context_course::instance($course->id);
+        $teacher = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
+        $this->setUser($teacher);
+
+        foreach (['en', 'fr'] as $lang) {
+            $this->force_language_for_test($lang);
+
+            // Never saved: on.
+            $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+            $this->assertNotEmpty($config['presets'], "$lang, never saved");
+
+            set_config('showpresets', 0, 'tiny_studiolms');
+            $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+            $this->assertSame([], $config['presets'], "$lang, off");
+            $this->assertFalse($config['presetnotice'], "$lang, off, notice");
+
+            set_config('showpresets', 1, 'tiny_studiolms');
+            $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+            $this->assertNotEmpty($config['presets'], "$lang, on");
+
+            unset_config('showpresets', 'tiny_studiolms');
+        }
+    }
+
+    /**
+     * The setting is on the admin tree, a checkbox that is on by default.
+     *
+     * Regression test: a settings.php that the plugin type does not load would leave the administrator with
+     * nothing to switch.
+     */
+    public function test_the_setting_is_offered_to_the_administrator(): void {
+        global $CFG;
+        require_once($CFG->libdir . '/adminlib.php');
+        $this->setAdminUser();
+
+        $page = admin_get_root(true, true)->locate('tiny_studiolms_settings');
+
+        $this->assertInstanceOf(\admin_settingpage::class, $page);
+        $this->assertObjectHasProperty('tiny_studiolmsshowpresets', $page->settings);
+        $setting = $page->settings->tiny_studiolmsshowpresets;
+        $this->assertInstanceOf(\admin_setting_configcheckbox::class, $setting);
+        $this->assertSame('tiny_studiolms', $setting->plugin);
+        $this->assertSame('showpresets', $setting->name);
+        $this->assertSame('1', (string) $setting->get_defaultsetting());
+    }
+
+    /**
      * The preference is declared, so the core lets the browser save it, and only for the user it belongs to.
      *
      * Regression test for the declaration: without the lib.php callback the core refuses to save a preference
