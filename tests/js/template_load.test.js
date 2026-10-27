@@ -71,6 +71,7 @@ test('a block saved under a name it had before the first release is still found'
 
     assert.match(registry, /const BLOCK_ALIASES = \{webteca: 'resources'\};/);
     assert.match(registry, /export const blockForType = \(type\) => \{/);
-    assert.equal((app.match(/blockForType\(/g) || []).length, 2);
+    // The block of a template, the block opened from the editor, and the two places a block in a grid column is read.
+    assert.equal((app.match(/blockForType\(/g) || []).length, 4);
     assert.doesNotMatch(app, /Blocks\[(editData\.type|type)\]/);
 });

@@ -232,6 +232,7 @@ $string['grid_manage_cards'] = 'Manage Cards';
 $string['grid_mode'] = 'Distribution Mode';
 $string['grid_mode_flex'] = 'Flexible (Stretch remaining space)';
 $string['grid_mode_grid'] = 'Fixed Grid (Rigid)';
+$string['grid_nested_back'] = 'Grid settings';
 $string['grid_nested_unsupported'] = 'A grid cannot be placed inside another grid.';
 $string['grid_paste_card'] = 'Paste Copied Block';
 $string['grid_slot_aria'] = 'Column {$a}: use it as the place for the next blocks';

@@ -232,6 +232,7 @@ $string['grid_manage_cards'] = 'Gerenciar Cards';
 $string['grid_mode'] = 'Modo de Distribuição';
 $string['grid_mode_flex'] = 'Flexível (Esticar sobras)';
 $string['grid_mode_grid'] = 'Grade Rígida (Fixo)';
+$string['grid_nested_back'] = 'Configurações do grid';
 $string['grid_nested_unsupported'] = 'Um grid não pode ficar dentro de outro grid.';
 $string['grid_paste_card'] = 'Colar Bloco Copiado';
 $string['grid_slot_aria'] = 'Coluna {$a}: usar como destino dos próximos blocos';

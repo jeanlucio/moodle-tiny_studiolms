@@ -66,9 +66,9 @@ test('the registry gives a block with none of its own the default and the flag, 
 
     assert.match(registry, /if \(!\('hoverEffect' in block\.defaultData\)\) \{/);
     assert.match(registry, /block\.defaultData\.hoverEffect = 'none';\s*block\.sharedHover = true;/);
-    assert.match(app, /if \(entry\.blockDef\.sharedHover\) \{\s*await addInteractivityTab\(toolbarContainer, entry\);/);
+    assert.match(app, /sharedHover\) \{\s*await addInteractivityTab\(toolbarContainer, \(\) => entry\.config, /);
     assert.match(app, /'tiny_studiolms\/popup_interactivity'/);
-    assert.match(app, /entry\.config\.hoverEffect = event\.target\.value;/);
+    assert.match(app, /getData\(\)\.hoverEffect = event\.target\.value;/);
     assert.match(read('templates/popup_interactivity.mustache'), /id="pop_hover"/);
     ['en', 'pt_br'].forEach((lang) => {
         assert.ok(read(`lang/${lang}/tiny_studiolms.php`).includes("$string['toolbar_interactivity'] = "), lang);

@@ -8,6 +8,13 @@
    para editar suas propriedades no painel lateral; use as setas para reordenar e o × para remover.
 4. Clique em **Inserir** para colocar tudo no editor, depois salve a página normalmente.
 
+**Blocos dentro de um grid:** clique numa coluna de um bloco Grid de Cards para torná-la o destino dos próximos
+blocos e escolha blocos na biblioteca; cada um é adicionado a essa coluna e fica selecionado. Clique num bloco da
+coluna para editá-lo como qualquer outro: as configurações dele substituem as do grid na barra de ferramentas, o
+texto é digitado direto no canvas, e as setas e o × sobre o bloco o movem para cima ou para baixo na coluna e o
+removem. **Configurações do grid** (no começo da barra) ou um clique no próprio grid trazem de volta as
+configurações do grid.
+
 Para alterar um bloco depois, clique nele dentro do editor e abra o StudioLMS de novo — ele reabre
 com as configurações daquele bloco.
 

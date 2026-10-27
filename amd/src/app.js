@@ -717,11 +717,373 @@ const decorateGridSlots = async(entry) => {
     await markGridTarget();
 };
 
+// -----------------------------------------
+// BLOCKS INSIDE GRID COLUMNS
+// -----------------------------------------
+
+/**
+ * The block picked inside a grid column, or null.
+ *
+ * A column holds its blocks as HTML in the slots of the grid, so a block in it has no canvas entry of its own: it is
+ * found by its place (the column and its position in it), and its data is read from its markup, as for a block that
+ * is opened from the editor. The data object lives here while the block is selected, so what is typed on the canvas
+ * and what is changed in the settings go to the same place.
+ *
+ * @type {{blockId: number, slot: number, index: number, blockDef: object, data: object}|null}
+ */
+let nestedSelection = null;
+
+/**
+ * Writes to the slots of a grid, one after the other. What is typed in a nested block is written on every keystroke,
+ * and the insert, the template and a move wait for the last of them.
+ *
+ * @type {Promise<void>}
+ */
+let nestedWrites = Promise.resolve();
+
+/**
+ * Queue a change to the slots of a grid behind the ones already waiting.
+ *
+ * @param {Function} task Async function that changes the slots.
+ * @returns {Promise<void>}
+ */
+const queueNestedWrite = (task) => {
+    const previous = nestedWrites;
+    nestedWrites = (async() => {
+        await previous;
+        try {
+            await task();
+        } catch (error) {
+            Notification.exception(error);
+        }
+    })();
+    return nestedWrites;
+};
+
+/**
+ * Parse the markup of a column.
+ *
+ * @param {*} html The slot as stored; anything that is not a string is an empty column.
+ * @returns {HTMLElement} A detached body holding the column's markup.
+ */
+const parseSlot = (html) => new DOMParser()
+    .parseFromString(`<body>${typeof html === 'string' ? html : ''}</body>`, 'text/html').body;
+
+/**
+ * The blocks of a column: its direct children that are blocks. Text or anything else the column holds is not one.
+ *
+ * @param {Element} container A column of the preview, or a parsed one.
+ * @returns {Element[]}
+ */
+const blocksOfSlot = (container) => Array.from(container.children).filter((el) => el.hasAttribute('data-slms-block-type'));
+
+/**
+ * Change the blocks of one column and store the result in the slots of the grid.
+ *
+ * @param {object} entry Canvas entry of the gridcards block.
+ * @param {number} slotIndex Zero-based column.
+ * @param {Function} change Gets the parsed column and its blocks, changes them in place.
+ */
+const changeSlot = (entry, slotIndex, change) => {
+    const slots = Array.from(Array.isArray(entry.config.slots) ? entry.config.slots : [],
+        (slot) => (typeof slot === 'string' ? slot : ''));
+    const body = parseSlot(slots[slotIndex]);
+    change(body, blocksOfSlot(body));
+    slots[slotIndex] = body.innerHTML;
+    entry.config.slots = slots;
+};
+
+/**
+ * Read the data of a block from its markup, the way a block opened from the editor is read.
+ *
+ * @param {Element} el The block, in the markup of a column.
+ * @param {object} blockDef Definition of the block.
+ * @returns {object}
+ */
+const nestedDataOf = (el, blockDef) => {
+    const restored = StateManager.restore(el.getAttribute('data-slms-state') || '', blockDef);
+    const data = Object.assign(JSON.parse(JSON.stringify(blockDef.defaultData)), restored || {});
+    if (blockDef.extractDOM) {
+        blockDef.extractDOM(el, data);
+    }
+    return sanitizeUrlFields(data);
+};
+
+/**
+ * Draw the selected block again from its data and put it in its place in the column.
+ *
+ * @param {object} entry Canvas entry of the gridcards block.
+ * @param {object} selection The nestedSelection to write.
+ * @returns {Promise<void>}
+ */
+const writeNestedBlock = async(entry, selection) => {
+    const html = await renderSingleBlockForInsert(selection.blockDef, selection.data);
+    const fresh = parseSlot(html).firstElementChild;
+    if (!fresh) {
+        return;
+    }
+    changeSlot(entry, selection.slot, (body, blocks) => {
+        blocks[selection.index]?.replaceWith(fresh);
+    });
+};
+
+/**
+ * The settings of the selected nested block changed: store it, and draw the grid again.
+ *
+ * @param {object} entry Canvas entry of the gridcards block.
+ * @returns {Promise<void>}
+ */
+const onNestedUpdate = async(entry) => {
+    const selection = nestedSelection;
+    if (!selection || selection.blockId !== entry.id) {
+        return;
+    }
+    await queueNestedWrite(() => writeNestedBlock(entry, selection));
+    await renderBlockPreview(entry);
+};
+
+/**
+ * Read the text typed in the selected nested block back into its data, and store it.
+ *
+ * Like syncPreviewText() for a block of the canvas, with the same filter on the markup. The grid is not drawn again:
+ * that would take the caret out of the field being typed in.
+ *
+ * @param {object} entry Canvas entry of the gridcards block.
+ */
+const syncNestedText = (entry) => {
+    const selection = nestedSelection;
+    if (!selection || selection.blockId !== entry.id || !selection.blockDef.extractDOM) {
+        return;
+    }
+    const el = blocksOfSlot(getGridSlots(entry)[selection.slot])[selection.index];
+    if (!el) {
+        return;
+    }
+    const clean = new DOMParser().parseFromString(sanitizeUntrustedHtml(el.outerHTML), 'text/html').body.firstElementChild;
+    if (!clean) {
+        return;
+    }
+    selection.blockDef.extractDOM(clean, selection.data);
+    queueNestedWrite(() => writeNestedBlock(entry, selection));
+};
+
+/**
+ * Take the selection mark and the action buttons off the nested blocks of a grid preview, and make the text of
+ * every nested block inert again.
+ *
+ * @param {object} entry Canvas entry of the gridcards block.
+ */
+const clearNestedDecoration = (entry) => {
+    entry.previewEl?.querySelectorAll('.slms-nested-actions').forEach((bar) => bar.remove());
+    entry.previewEl?.querySelectorAll('.slms-nested-selected').forEach((el) => el.classList.remove('slms-nested-selected'));
+    entry.previewEl?.querySelectorAll('.slms-grid-slot [data-slms-editable]')
+        .forEach((el) => el.setAttribute('contenteditable', 'false'));
+};
+
+/**
+ * Move the selected nested block inside its column, or take it out.
+ *
+ * @param {object} entry Canvas entry of the gridcards block.
+ * @param {number} direction -1 up, +1 down, 0 to remove it.
+ * @returns {Promise<void>}
+ */
+const moveOrRemoveNested = async(entry, direction) => {
+    const selection = nestedSelection;
+    if (!selection || selection.blockId !== entry.id) {
+        return;
+    }
+    await nestedWrites;
+    let remaining = 0;
+    changeSlot(entry, selection.slot, (body, blocks) => {
+        const el = blocks[selection.index];
+        if (!el) {
+            return;
+        }
+        if (direction === 0) {
+            el.remove();
+        } else if (direction < 0 && blocks[selection.index - 1]) {
+            blocks[selection.index - 1].before(el);
+            selection.index -= 1;
+        } else if (direction > 0 && blocks[selection.index + 1]) {
+            blocks[selection.index + 1].after(el);
+            selection.index += 1;
+        }
+        remaining = blocksOfSlot(body).length;
+    });
+    if (direction !== 0) {
+        // The block moved is still the selected one, in its new place.
+        await renderBlockPreview(entry);
+        return;
+    }
+    nestedSelection = null;
+    await renderBlockPreview(entry);
+    if (remaining === 0) {
+        await selectCanvasBlock(entry.id);
+        return;
+    }
+    await selectNestedBlock(entry, selection.slot, Math.min(selection.index, remaining - 1));
+};
+
+/**
+ * Mark the nested blocks of a grid preview as selectable, and show the selected one: its outline, its action
+ * buttons and its text, which can be typed in. Run after every draw of the grid, which rebuilds its columns.
+ *
+ * @param {object} entry Canvas entry of the gridcards block.
+ * @returns {Promise<void>}
+ */
+const decorateNestedBlocks = async(entry) => {
+    if (!entry.previewEl) {
+        return;
+    }
+    clearNestedDecoration(entry);
+    const slots = getGridSlots(entry);
+    await Promise.all(slots.map(async(slotEl, slotIndex) => {
+        await Promise.all(blocksOfSlot(slotEl).map(async(el, index) => {
+            const blockDef = blockForType(el.getAttribute('data-slms-block-type'));
+            if (!blockDef) {
+                return;
+            }
+            el.classList.add('slms-nested-block');
+            el.setAttribute('tabindex', '0');
+            el.setAttribute('role', 'group');
+            el.setAttribute('aria-label', await getString(blockDef.titleString, 'tiny_studiolms'));
+            el.dataset.slmsSlot = String(slotIndex);
+            el.dataset.slmsIndex = String(index);
+        }));
+    }));
+
+    const selection = nestedSelection;
+    if (!selection || selection.blockId !== entry.id) {
+        return;
+    }
+    const slotEl = slots[selection.slot];
+    const blocks = slotEl ? blocksOfSlot(slotEl) : [];
+    const selected = blocks[selection.index];
+    if (!selected) {
+        return;
+    }
+    selected.classList.add('slms-nested-selected');
+    selected.querySelectorAll('[data-slms-editable]').forEach((el) => el.setAttribute('contenteditable', 'true'));
+
+    const [strUp, strDown, strRemove] = await Promise.all([
+        getString('block_move_up', 'tiny_studiolms'),
+        getString('block_move_down', 'tiny_studiolms'),
+        getString('block_remove', 'tiny_studiolms'),
+    ]);
+    const bar = document.createElement('div');
+    bar.className = 'slms-nested-actions';
+    bar.setAttribute('role', 'group');
+    bar.setAttribute('aria-label', selected.getAttribute('aria-label') || '');
+    bar.style.setProperty('--slms-nested-top', `${selected.offsetTop}px`);
+    [
+        ['fa-arrow-up', strUp, -1, selection.index === 0],
+        ['fa-arrow-down', strDown, 1, selection.index === blocks.length - 1],
+        ['fa-xmark', strRemove, 0, false],
+    ].forEach(([icon, label, direction, disabled]) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `slms-canvas-block-action-btn${direction === 0 ? ' slms-btn-block-remove' : ''}`;
+        button.setAttribute('aria-label', label);
+        button.title = label;
+        button.disabled = disabled;
+        button.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i>`;
+        button.addEventListener('click', (event) => {
+            event.stopPropagation();
+            moveOrRemoveNested(entry, direction);
+        });
+        bar.appendChild(button);
+    });
+    slotEl.appendChild(bar);
+};
+
+/**
+ * Select a block inside a grid column: its own settings take the place of the grid's in the toolbar.
+ *
+ * @param {object} entry Canvas entry of the gridcards block.
+ * @param {number} slotIndex Zero-based column.
+ * @param {number} index Position of the block in the column.
+ * @returns {Promise<void>}
+ */
+const selectNestedBlock = async(entry, slotIndex, index) => {
+    await nestedWrites;
+    const slots = Array.isArray(entry.config.slots) ? entry.config.slots : [];
+    const el = blocksOfSlot(parseSlot(slots[slotIndex]))[index];
+    const blockDef = el ? blockForType(el.getAttribute('data-slms-block-type')) : null;
+    if (!blockDef || !blockDef.buildToolbar) {
+        return;
+    }
+
+    document.querySelectorAll('.slms-canvas-block').forEach((block) => block.classList.remove('slms-active-block'));
+    entry.element?.classList.add('slms-active-block');
+    PopupManager.closeAll();
+
+    const selection = {blockId: entry.id, slot: slotIndex, index, blockDef, data: nestedDataOf(el, blockDef)};
+    nestedSelection = selection;
+
+    const toolbarContainer = document.getElementById('slms-top-toolbar');
+    if (!toolbarContainer) {
+        return;
+    }
+    toolbarContainer.innerHTML = '';
+    const onUpdate = () => onNestedUpdate(entry);
+    await blockDef.buildToolbar(toolbarContainer, selection.data, onUpdate, PopupManager);
+    const firstBtn = toolbarContainer.querySelector('.slms-toolbar-btn');
+    if (blockDef.sharedHover) {
+        await addInteractivityTab(toolbarContainer, () => selection.data, onUpdate);
+    }
+    await addNestedBackButton(toolbarContainer, entry);
+    await decorateNestedBlocks(entry);
+    if (nestedSelection === selection) {
+        firstBtn?.click();
+    }
+};
+
+/**
+ * Put the way back to the grid's own settings at the start of the toolbar of a nested block.
+ *
+ * @param {HTMLElement} toolbarContainer The toolbar row, already built by the block.
+ * @param {object} entry Canvas entry of the gridcards block.
+ * @returns {Promise<void>}
+ */
+const addNestedBackButton = async(toolbarContainer, entry) => {
+    const label = await getString('grid_nested_back', 'tiny_studiolms');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'slms-toolbar-btn slms-nested-back';
+    button.id = 'tb-nested-back';
+    button.innerHTML = `<i class="fa-solid fa-arrow-left" aria-hidden="true"></i> ${label}`;
+    (toolbarContainer.querySelector('.slms-toolbar-seg') ?? toolbarContainer).prepend(button);
+    button.addEventListener('click', () => selectCanvasBlock(entry.id));
+};
+
+/**
+ * The block of a grid column under a click, if there is one.
+ *
+ * What a column holds is inert (so a link in it cannot be followed), so the click lands on the column itself and the
+ * block is found by where the pointer is.
+ *
+ * @param {object} entry Canvas entry of the gridcards block.
+ * @param {MouseEvent} event The click.
+ * @returns {{slot: number, index: number}|null}
+ */
+const nestedBlockAt = (entry, event) => {
+    const slotEl = event.target.closest ? event.target.closest('.slms-grid-slot') : null;
+    const slotIndex = slotEl ? getGridSlots(entry).indexOf(slotEl) : -1;
+    if (slotIndex < 0 || event.target.closest('.slms-nested-actions')) {
+        return null;
+    }
+    const index = blocksOfSlot(slotEl).findIndex((el) => {
+        const box = el.getBoundingClientRect();
+        return event.clientX >= box.left && event.clientX <= box.right && event.clientY >= box.top && event.clientY <= box.bottom;
+    });
+    return index < 0 ? null : {slot: slotIndex, index};
+};
+
 /**
  * Put a new block, with its default settings, at the end of a grid column.
  *
- * The block lands in the grid's slot HTML, so inside the modal it is static: to change it later,
- * select it in the editor and open StudioLMS.
+ * The block lands in the grid's slot HTML and is selected, so it can be set up, moved and removed on the canvas
+ * like the blocks that are not in a grid.
  *
  * @param {object} gridEntry Canvas entry of the gridcards block.
  * @param {number} slotIndex Zero-based column.
@@ -742,6 +1104,8 @@ const addBlockIntoGridSlot = async(gridEntry, slotIndex, blockDef) => {
     slots[slotIndex] = current + html;
     gridEntry.config.slots = slots;
     await renderBlockPreview(gridEntry);
+    // The block just added is the one to set up next, so it is the selected one.
+    await selectNestedBlock(gridEntry, slotIndex, blocksOfSlot(parseSlot(slots[slotIndex])).length - 1);
     showInlineFeedback(await getString('grid_block_added', 'tiny_studiolms', slotIndex + 1), 'success');
 };
 
@@ -794,7 +1158,11 @@ const setupGridTargeting = () => {
 
     canvasArea.addEventListener('click', (event) => {
         const hit = ownSlot(event.target);
-        if (hit) {
+        if (hit && nestedBlockAt(hit.entry, event)) {
+            // Picking a block in a column sets that column as the place for the next blocks, and keeps it there.
+            gridInsertTarget = {blockId: hit.entry.id, slot: hit.index};
+            markGridTarget();
+        } else if (hit) {
             choose(hit);
         } else {
             clearGridTarget();
@@ -803,6 +1171,16 @@ const setupGridTargeting = () => {
 
     canvasArea.addEventListener('keydown', (event) => {
         if (event.key !== 'Enter' && event.key !== ' ') {
+            return;
+        }
+        if (event.target.classList && event.target.classList.contains('slms-nested-block')
+            && event.target.dataset.slmsSlot !== undefined) {
+            const preview = event.target.closest('.slms-canvas-block-preview');
+            const owner = preview ? canvasBlocks.find((b) => b.previewEl === preview) : null;
+            if (owner) {
+                event.preventDefault();
+                selectNestedBlock(owner, Number(event.target.dataset.slmsSlot), Number(event.target.dataset.slmsIndex));
+            }
             return;
         }
         const hit = event.target.classList && event.target.classList.contains('slms-grid-slot')
@@ -930,6 +1308,21 @@ const addBlockToCanvas = async(blockDef, config = null, skipScroll = false, stag
         if (e.target.closest('.slms-canvas-block-actions')) {
             return;
         }
+        const panel = document.getElementById('slms-properties-panel');
+        // A block inside a grid column is a block of its own: its settings replace the grid's.
+        const nested = blockDef.id === 'gridcards' ? nestedBlockAt(entry, e) : null;
+        if (nested) {
+            if (sidebarSplit === SPLIT_LIST) {
+                setSidebarSplit(SPLIT_BOTH);
+            }
+            const current = nestedSelection;
+            const alreadySelected = current && current.blockId === blockId
+                && current.slot === nested.slot && current.index === nested.index;
+            if (!alreadySelected || (panel && panel.classList.contains('d-none'))) {
+                selectNestedBlock(entry, nested.slot, nested.index);
+            }
+            return;
+        }
         // Clicking a block means "edit this": bring the properties back if they were hidden. A click on a
         // grid column only picks where the next blocks go, so it leaves the split alone.
         if (sidebarSplit === SPLIT_LIST && !e.target.closest('.slms-grid-slot')) {
@@ -940,9 +1333,11 @@ const addBlockToCanvas = async(blockDef, config = null, skipScroll = false, stag
         // block made the properties panel flicker and jump back to the first tab. The panel being open is
         // part of the condition: switching to a template tab closes it while the block stays active,
         // and a click on the block must then bring it back.
-        const propertiesPanel = document.getElementById('slms-properties-panel');
-        const propertiesOpen = propertiesPanel && !propertiesPanel.classList.contains('d-none');
-        if (blockEl.classList.contains('slms-active-block') && propertiesOpen) {
+        const propertiesOpen = panel && !panel.classList.contains('d-none');
+        // With one of its nested blocks selected the grid is the active block too, and a click on the grid itself
+        // must bring its own settings back.
+        const nestedOfThis = nestedSelection && nestedSelection.blockId === blockId;
+        if (blockEl.classList.contains('slms-active-block') && propertiesOpen && !nestedOfThis) {
             return;
         }
         selectCanvasBlock(blockId);
@@ -975,7 +1370,8 @@ const addBlockToCanvas = async(blockDef, config = null, skipScroll = false, stag
 };
 
 /**
- * Read the text typed in a block's preview back into the block's configuration.
+ * Read the text typed in a block's preview back into the block's configuration. The columns of a grid are kept as they
+ * were: they hold other blocks, which are stored apart (syncNestedText) and are not what the preview now shows.
  *
  * The preview is rendered from the configuration, and the insert and the template read it from there, so what
  * is typed on the canvas must go back to it or it is lost: at the next redraw (a colour changed in the
@@ -993,7 +1389,11 @@ const syncPreviewText = (entry) => {
     const clean = new DOMParser().parseFromString(sanitizeUntrustedHtml(root.outerHTML), 'text/html')
         .body.firstElementChild;
     if (clean) {
+        const slots = entry.config.slots;
         entry.blockDef.extractDOM(clean, entry.config);
+        if (entry.blockDef.id === 'gridcards') {
+            entry.config.slots = slots;
+        }
     }
 };
 
@@ -1008,13 +1408,23 @@ const syncPreviewText = (entry) => {
 const wirePreviewEditing = (entry) => {
     const preview = entry.previewEl;
     // A block that holds other blocks (grid columns) is not edited here: its extractDOM reads the whole block.
+    // The text of a nested block can be typed in only while that block is the selected one.
     const editedField = (event) => {
         const field = event.target.closest?.('[contenteditable="true"]');
-        return field && !field.closest('.slms-grid-slot') ? field : null;
+        if (!field) {
+            return null;
+        }
+        return !field.closest('.slms-grid-slot') || field.closest('.slms-nested-selected') ? field : null;
     };
 
     preview.addEventListener('input', (event) => {
-        if (editedField(event)) {
+        const field = editedField(event);
+        if (!field) {
+            return;
+        }
+        if (field.closest('.slms-grid-slot')) {
+            syncNestedText(entry);
+        } else {
             syncPreviewText(entry);
         }
     });
@@ -1058,10 +1468,16 @@ const renderBlockPreview = async(entry) => {
             .forEach((el) => el.setAttribute('tabindex', '-1'));
         if (entry.blockDef.id === 'gridcards') {
             // What a column holds is a preview of another block: it can be neither clicked nor tabbed into.
-            entry.previewEl.querySelectorAll('.slms-grid-slot [contenteditable]')
-                .forEach((el) => el.setAttribute('contenteditable', 'false'));
+            // The fields of the selected nested block are given back their editing after this (decorateNestedBlocks).
+            entry.previewEl.querySelectorAll('.slms-grid-slot [contenteditable]').forEach((el) => {
+                if (el.getAttribute('contenteditable') === 'true') {
+                    el.dataset.slmsEditable = '1';
+                }
+                el.setAttribute('contenteditable', 'false');
+            });
             // After the tabindex pass above, which would otherwise take the columns out of the tab order.
             await decorateGridSlots(entry);
+            await decorateNestedBlocks(entry);
         }
     } catch (error) {
         entry.previewEl.innerHTML = '';
@@ -1078,6 +1494,14 @@ const renderBlockPreview = async(entry) => {
 const selectCanvasBlock = async(blockId) => {
     if (gridInsertTarget && gridInsertTarget.blockId !== blockId) {
         clearGridTarget();
+    }
+    const previousNested = nestedSelection;
+    nestedSelection = null;
+    if (previousNested) {
+        const gridEntry = canvasBlocks.find((b) => b.id === previousNested.blockId);
+        if (gridEntry) {
+            clearNestedDecoration(gridEntry);
+        }
     }
 
     document.querySelectorAll('.slms-canvas-block').forEach((el) => {
@@ -1117,7 +1541,7 @@ const selectCanvasBlock = async(blockId) => {
         );
         const firstBtn = toolbarContainer.querySelector('.slms-toolbar-btn');
         if (entry.blockDef.sharedHover) {
-            await addInteractivityTab(toolbarContainer, entry);
+            await addInteractivityTab(toolbarContainer, () => entry.config, () => renderBlockPreview(entry));
         }
         if (firstBtn) {
             firstBtn.click();
@@ -1134,10 +1558,11 @@ const selectCanvasBlock = async(blockId) => {
  * the settings of each. The block's own tabs are built by the block; this one is appended to the same row.
  *
  * @param {HTMLElement} toolbarContainer The toolbar row, already built by the block.
- * @param {object} entry Canvas block entry.
+ * @param {Function} getData Returns the data of the block the toolbar is for.
+ * @param {Function} onChange Draws the block again after the effect changed.
  * @returns {Promise<void>}
  */
-const addInteractivityTab = async(toolbarContainer, entry) => {
+const addInteractivityTab = async(toolbarContainer, getData, onChange) => {
     const label = await getString('toolbar_interactivity', 'tiny_studiolms');
     const row = toolbarContainer.querySelector('.slms-toolbar-seg') ?? toolbarContainer;
     const button = document.createElement('button');
@@ -1148,11 +1573,11 @@ const addInteractivityTab = async(toolbarContainer, entry) => {
     row.appendChild(button);
 
     button.addEventListener('click', () => {
-        const current = entry.config.hoverEffect || 'none';
+        const current = getData().hoverEffect || 'none';
         PopupManager.open(button, 'tiny_studiolms/popup_interactivity', {[`hover_${current}`]: true}, (popup) => {
             popup.querySelector('#pop_hover')?.addEventListener('input', async(event) => {
-                entry.config.hoverEffect = event.target.value;
-                await renderBlockPreview(entry);
+                getData().hoverEffect = event.target.value;
+                await onChange();
             });
         });
     });
@@ -1196,6 +1621,9 @@ const removeCanvasBlock = (blockId) => {
     }
 
     const entry = canvasBlocks[idx];
+    if (nestedSelection && nestedSelection.blockId === blockId) {
+        nestedSelection = null;
+    }
     if (entry.element) {
         entry.element.remove();
     }
@@ -1439,6 +1867,7 @@ const insertCanvasToEditor = async() => {
     }
 
     try {
+        await nestedWrites;
         const parts = [];
         for (const entry of canvasBlocks) {
             parts.push(await renderSingleBlockForInsert(entry.blockDef, entry.config));
@@ -2070,6 +2499,7 @@ const setupClearCanvasButton = () => {
         Notification.confirm(title, message, yes, no, () => {
             canvasBlocks.forEach((entry) => entry.element?.remove());
             canvasBlocks = [];
+            nestedSelection = null;
             clearGridTarget();
             updateClearCanvasButton();
             showCanvasEmptyState();
@@ -2173,6 +2603,7 @@ const setupSaveTemplateButton = (canManageGlobal = false) => {
                 const isglobal = chkGlobal && chkGlobal.checked ? 1 : 0;
                 form.remove();
                 try {
+                    await nestedWrites;
                     const parts = [];
                     for (const entry of canvasBlocks) {
                         parts.push(await renderSingleBlockForInsert(entry.blockDef, entry.config));

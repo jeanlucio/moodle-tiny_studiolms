@@ -473,6 +473,41 @@
     pointer-events: none;
 }
 
+/* A block inside a column is picked by a click on it (found by where the pointer is, since it is inert), and the
+   action buttons sit in the column at the top of the picked block. */
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot {
+    position: relative;
+}
+
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot .slms-nested-selected {
+    outline: 2px solid var(--slms-brand, #0d47a1);
+    outline-offset: 2px;
+}
+
+/* Only the picked block takes typing; the others in the column stay inert until picked. */
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot .slms-nested-selected [contenteditable="true"] {
+    pointer-events: auto;
+    cursor: text;
+}
+
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot .slms-nested-actions {
+    position: absolute;
+    top: var(--slms-nested-top, 0);
+    inset-inline-end: 0.75rem;
+    z-index: 2;
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.125rem;
+    border-radius: 0.375rem;
+    background: var(--bs-white, #fff);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot .slms-nested-actions,
+.tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot .slms-nested-actions * {
+    pointer-events: auto;
+}
+
 .tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot:hover,
 .tiny_studiolms .slms-canvas-block-preview div.slms-grid-slot:focus-visible {
     border-color: var(--slms-brand, #0d47a1);

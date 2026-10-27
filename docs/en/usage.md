@@ -8,6 +8,12 @@
    edit its properties in the side panel; use the arrows to reorder and the × to remove it.
 4. Click **Insert** to place everything in the editor, then save the page as usual.
 
+**Blocks inside a grid:** click a column of a Grid Cards block to make it the place for the next blocks, then
+pick blocks from the library; each one is added to that column and selected. Click a block in a column to edit
+it like any other block: its own settings replace the grid's in the toolbar, its text is typed right on the canvas,
+and the arrows and the × on the block move it up or down in its column and remove it. **Grid settings** (at the
+start of the toolbar) or a click on the grid itself brings back the settings of the grid.
+
 To change a block later, click it inside the editor and open StudioLMS again — it reopens with that
 block's settings.
 
