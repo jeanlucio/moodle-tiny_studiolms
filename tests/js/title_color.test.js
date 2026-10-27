@@ -67,6 +67,43 @@ test('a style that looks like a replacement pattern is kept as it is', () => {
     assert.equal(apply('<h4 style="content: \'$&\'">T</h4>', '#abc'), '<h4 style="content: \'$&\'; color: #abc;">T</h4>');
 });
 
+// Regression tests (security audit of 2026-10-27, finding 1). The text reaches this function after it was cleaned of
+// event handlers, so what it writes must not make one: the value of another attribute is not a style attribute.
+test('a style written inside the value of another attribute is not taken for the style of the heading', () => {
+    const out = apply('<h2 title=" style=\'a\' onmouseover=alert(1) x">T</h2>', '#000');
+    assert.equal(out, '<h2 title=" style=\'a\' onmouseover=alert(1) x" style="color: #000;">T</h2>');
+});
+
+test('a ">" inside the value of an attribute does not end the tag', () => {
+    const out = apply('<h2 title="a>b" style=\'x\'>T</h2>', '#000');
+    assert.equal(out, '<h2 title="a>b" style="x; color: #000;">T</h2>');
+});
+
+test('a double quote in a style that was in single quotes cannot close the new one', () => {
+    const out = apply('<h2 style=\'font-family: "A" onmouseover=alert(1)\'>T</h2>', '#000');
+    assert.equal(out, '<h2 style="font-family: &quot;A&quot; onmouseover=alert(1); color: #000;">T</h2>');
+});
+
+test('of two style attributes the first one is the one that counts, as in the browser', () => {
+    const out = apply('<h2 style="a: b" style="color: red">T</h2>', '#000');
+    assert.equal(out, '<h2 style="a: b; color: #000;" style="color: red">T</h2>');
+});
+
+test('a style with no quotes is handled', () => {
+    assert.equal(apply('<h2 style=margin:0>T</h2>', '#000'), '<h2 style="margin:0; color: #000;">T</h2>');
+});
+
+test('a tag that cannot be read to its end is left as it is', () => {
+    assert.equal(apply('<h2 title="x>T</h2>', '#000'), '<h2 title="x>T</h2>');
+});
+
+test('a long text of unfinished tags is read in a short time', () => {
+    const started = Date.now();
+    apply(`${'<h2 a b="c" d '.repeat(20000)}`, '#000');
+    apply(`<h2 ${'a=b '.repeat(50000)}`, '#000');
+    assert.ok(Date.now() - started < 2000);
+});
+
 test('a colour that is not hexadecimal, or none, leaves the text as it is', () => {
     ['', 'red', 'rgb(1,2,3)', '#12', '#ff00zz', '#fff"><script>', null, undefined].forEach((colour) => {
         assert.equal(apply('<h4>T</h4>', colour), '<h4>T</h4>', String(colour));
