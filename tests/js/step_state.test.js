@@ -77,8 +77,9 @@ test('the block reads the field, draws a state class and a visible word in both 
     assert.match(block, /current: 0,/);
     assert.match(block, /import \{MAX_STEPS, normalizeCurrent, stepState\} from '\.\/step_state';/);
     assert.equal(block.match(/const current = normalizeCurrent\(data\.current, items\.length\);/g).length, 2);
-    assert.equal(block.match(/slms-steps-state-\$\{state\}/g).length, 2);
-    assert.equal(block.match(/\$\{stateHtml\(state, c\)\}<\/div>/g).length, 2);
+    assert.match(block, /const stateClass = \(state\) => \(state \? ` slms-steps-state-\$\{state\}` : ''\);/);
+    assert.equal(block.match(/\$\{stateClass\(state\)\}/g).length, 2);
+    assert.equal(block.match(/^\s+stateHtml\(state, c\),$/gm).length, 2);
     assert.match(block, /state === 'done'/);
     assert.match(block, /data\.current = normalizeCurrent\(ev\.target\.value, MAX_STEPS\);/);
 });

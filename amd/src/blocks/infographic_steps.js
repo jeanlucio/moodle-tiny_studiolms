@@ -49,9 +49,7 @@ const badgeHtml = (item, stepNum, c, state = '') => {
     if (state === 'done') {
         content = '<span aria-hidden="true">&#10003;</span>';
     }
-    return `<div class="slms-steps__badge" style="background:${c.iconBg};color:${c.iconColor};">`
-        + content
-        + `</div>`;
+    return `<div class="slms-steps__badge" style="background:${c.iconBg};color:${c.iconColor};">${content}</div>`;
 };
 
 /**
@@ -68,42 +66,71 @@ const stateHtml = (state, c) => {
 };
 
 /**
+ * The line under the title of a step, when it has one.
+ *
+ * @param {object} item Step item.
+ * @param {object} c Theme palette.
+ * @returns {string}
+ */
+const descriptionHtml = (item, c) => (item.description
+    ? `<div class="slms-steps__step-desc" style="color:${c.labelColor};">${esc(item.description)}</div>`
+    : '');
+
+/**
+ * The class that gives a step its state, with the space that goes before it.
+ *
+ * @param {string} state The state of the step.
+ * @returns {string}
+ */
+const stateClass = (state) => (state ? ` slms-steps-state-${state}` : '');
+
+/**
+ * The steps of a block, as the ones that have a title.
+ *
+ * @param {object} data Block data.
+ * @returns {object[]}
+ */
+const stepsOf = (data) => (Array.isArray(data.items) ? data.items.filter((item) => item.title) : []);
+
+/**
+ * The heading above the steps, when the block has one.
+ *
+ * @param {object} data Block data.
+ * @param {object} c Theme palette.
+ * @returns {string}
+ */
+const headingHtml = (data, c) => (data.title && data.title.trim()
+    ? `<div class="slms-steps__title" style="color:${c.titleColor};">${esc(data.title.trim())}</div>`
+    : '');
+
+/**
  * Builds the inner HTML for the vertical steps layout.
  * @param {object} data Block data.
  * @param {object} c Theme colour palette.
  * @returns {string}
  */
 const buildVerticalHtml = (data, c) => {
-    const items = Array.isArray(data.items) ? data.items.filter(i => i.title) : [];
+    const items = stepsOf(data);
     if (!items.length) {
         return '';
     }
-    const parts = [];
-    if (data.title && data.title.trim()) {
-        parts.push(`<div class="slms-steps__title" style="color:${c.titleColor};">${esc(data.title.trim())}</div>`);
-    }
     const current = normalizeCurrent(data.current, items.length);
-    parts.push(`<div class="slms-steps__list">`);
-    items.forEach((item, idx) => {
+    const steps = items.map((item, idx) => {
         const isLast = idx === items.length - 1;
         const state = stepState(idx + 1, current);
-        parts.push(
-            `<div class="slms-steps__item${state ? ` slms-steps-state-${state}` : ''}">`
-            + `<div class="slms-steps__left">`
-            + badgeHtml(item, idx + 1, c, state)
-            + (!isLast ? `<div class="slms-steps__connector" style="background:${c.borderColor};"></div>` : '')
-            + `</div>`
-            + `<div class="slms-steps__content" style="padding-bottom:${isLast ? '0' : '1.25rem'};">`
-            + `<div class="slms-steps__step-title" style="color:${c.valuColor};">${esc(item.title)}</div>`
-            + (item.description
-                ? `<div class="slms-steps__step-desc" style="color:${c.labelColor};">${esc(item.description)}</div>`
-                : '')
-            + `${stateHtml(state, c)}</div>`
-            + `</div>`
-        );
+        const connector = isLast ? '' : `<div class="slms-steps__connector" style="background:${c.borderColor};"></div>`;
+        return [
+            `<div class="slms-steps__item${stateClass(state)}">`,
+            `<div class="slms-steps__left">${badgeHtml(item, idx + 1, c, state)}${connector}</div>`,
+            `<div class="slms-steps__content" style="padding-bottom:${isLast ? '0' : '1.25rem'};">`,
+            `<div class="slms-steps__step-title" style="color:${c.valuColor};">${esc(item.title)}</div>`,
+            descriptionHtml(item, c),
+            stateHtml(state, c),
+            '</div>',
+            '</div>',
+        ].join('');
     });
-    parts.push(`</div>`);
-    return parts.join('');
+    return [headingHtml(data, c), '<div class="slms-steps__list">', ...steps, '</div>'].join('');
 };
 
 /**
@@ -113,34 +140,27 @@ const buildVerticalHtml = (data, c) => {
  * @returns {string}
  */
 const buildHorizontalHtml = (data, c) => {
-    const items = Array.isArray(data.items) ? data.items.filter(i => i.title) : [];
+    const items = stepsOf(data);
     if (!items.length) {
         return '';
     }
-    const parts = [];
-    if (data.title && data.title.trim()) {
-        parts.push(`<div class="slms-steps__title" style="color:${c.titleColor};">${esc(data.title.trim())}</div>`);
-    }
     const current = normalizeCurrent(data.current, items.length);
-    parts.push(`<div class="slms-steps__list--h">`);
-    items.forEach((item, idx) => {
-        const isLast = idx === items.length - 1;
+    const steps = items.map((item, idx) => {
         const state = stepState(idx + 1, current);
-        parts.push(
-            `<div class="slms-steps__item--h${state ? ` slms-steps-state-${state}` : ''}">`
-            + badgeHtml(item, idx + 1, c, state)
-            + `<div class="slms-steps__step-title--h" style="color:${c.valuColor};">${esc(item.title)}</div>`
-            + (item.description
-                ? `<div class="slms-steps__step-desc" style="color:${c.labelColor};">${esc(item.description)}</div>`
-                : '')
-            + `${stateHtml(state, c)}</div>`
-        );
-        if (!isLast) {
-            parts.push(`<div class="slms-steps__hconnector" style="background:${c.borderColor};"></div>`);
-        }
+        const connector = idx === items.length - 1
+            ? ''
+            : `<div class="slms-steps__hconnector" style="background:${c.borderColor};"></div>`;
+        return [
+            `<div class="slms-steps__item--h${stateClass(state)}">`,
+            badgeHtml(item, idx + 1, c, state),
+            `<div class="slms-steps__step-title--h" style="color:${c.valuColor};">${esc(item.title)}</div>`,
+            descriptionHtml(item, c),
+            stateHtml(state, c),
+            '</div>',
+            connector,
+        ].join('');
     });
-    parts.push(`</div>`);
-    return parts.join('');
+    return [headingHtml(data, c), '<div class="slms-steps__list--h">', ...steps, '</div>'].join('');
 };
 
 // ---------------------------------------------------------------------------
