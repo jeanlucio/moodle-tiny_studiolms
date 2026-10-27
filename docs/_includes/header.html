@@ -9,9 +9,17 @@
   </p>
   <p class="lang-switch">
     {% if page.lang == 'pt' %}
-      <a href="{{ '/' | relative_url }}">English</a> | <strong>Português</strong>
+      {% if page.url contains 'testing' %}
+        <a href="{{ '/testing.html' | relative_url }}">English</a> | <strong>Português</strong>
+      {% else %}
+        <a href="{{ '/' | relative_url }}">English</a> | <strong>Português</strong>
+      {% endif %}
     {% else %}
-      <strong>English</strong> | <a href="{{ '/pt.html' | relative_url }}">Português</a>
+      {% if page.url contains 'testing' %}
+        <strong>English</strong> | <a href="{{ '/testing-pt.html' | relative_url }}">Português</a>
+      {% else %}
+        <strong>English</strong> | <a href="{{ '/pt.html' | relative_url }}">Português</a>
+      {% endif %}
     {% endif %}
   </p>
   <a class="btn" href="https://github.com/{{ site.repository }}">View on GitHub</a>

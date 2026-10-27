@@ -1,6 +1,6 @@
 # 🧪 Automated Tests
 
-StudioLMS ships with **262 PHPUnit test cases**, **301 JavaScript tests** and a **83-scenario Behat suite**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
+StudioLMS ships with **262 PHPUnit test cases**, **301 JavaScript tests** and a **85-scenario Behat suite**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
 
 ### PHPUnit — Unit & Integration Tests
 
@@ -35,9 +35,9 @@ AI configured is used to exercise the "no AI" path.
 | Template lifecycle (`template_lifecycle`) | 10 |
 | Every block inserted (`insert_blocks`) | 30 |
 | Student view and read-only blocks (`student_view`, `text_blocks_view`) | 5 |
-| Editing safeguards (`clear_canvas`, `icon_picker`, `button_link_guard`, `toolbar_capability`, `ai_tabs_unavailable`) | 14 |
+| Editing safeguards (`clear_canvas`, `canvas_composition`, `icon_picker`, `button_link_guard`, `toolbar_capability`, `ai_tabs_unavailable`) | 16 |
 | Security regressions (7 files — see the full breakdown) | 8 |
-| **Total** | **83** |
+| **Total** | **85** |
 
 ```bash
 php admin/tool/behat/cli/init.php

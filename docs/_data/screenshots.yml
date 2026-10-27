@@ -17,5 +17,5 @@
   caption_en: "AI Block: a single plain-language request becomes one ready-to-insert block, which can still be configured by hand before inserting"
   caption_pt: "Bloco IA: um único pedido em linguagem natural vira um bloco pronto para inserir, que ainda pode ser ajustado manualmente antes da inserção"
 - file: ai-chat.png
-  caption_en: "AI Chat: paste a week's plan and the assistant proposes a complete page; nothing is applied until the teacher confirms the action card"
-  caption_pt: "Chat IA: cole o plano da semana e o assistente propõe uma página completa; nada é aplicado até o professor confirmar o cartão de ação"
+  caption_en: "AI Chat: paste a week's plan and the assistant proposes a complete page; nothing is applied until the teacher confirms the action card, and the page then lands on the canvas as ordinary blocks that can still be edited"
+  caption_pt: "Chat IA: cole o plano da semana e o assistente propõe uma página completa; nada é aplicado até o professor confirmar o cartão de ação, e a página chega ao canvas como blocos comuns, ainda editáveis"

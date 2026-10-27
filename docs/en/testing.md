@@ -1,6 +1,6 @@
 # 🧪 Automated Tests
 
-StudioLMS ships with **262 PHPUnit test cases** across **43 files**, **301 JavaScript tests** across **50 files**, plus a **83-scenario Behat suite** across **20 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
+StudioLMS ships with **262 PHPUnit test cases** across **43 files**, **301 JavaScript tests** across **50 files**, plus a **85-scenario Behat suite** across **21 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
 
 ### PHPUnit — Unit & Integration Tests
 
@@ -80,6 +80,7 @@ node --test tests/js/*.test.js
 | `block_payload_sanitization.feature` | 2 | Markup typed into the settings of any block never runs in the preview, and a hostile template of any block runs nothing when loaded |
 | `button_link_guard.feature` | 2 | Clicking the text of an action button in the editor does not follow its link, and the link tools do not remove it |
 | `clear_canvas.feature` | 3 | The Clear canvas button appears only with two or more blocks; confirming removes every block, cancelling keeps them |
+| `canvas_composition.feature` | 2 | The selected block moves up and down the canvas; every ready-made layout loads onto the canvas without running script or leaving an unsafe attribute |
 | `icon_picker.feature` | 1 | Escape closes the icon picker but keeps the composer and its blocks |
 | `insert_blocks.feature` | 30 | Every one of the 19 blocks can be added to the canvas, inserted into the page and read back; every block opens settings panels with editable fields; a new block shows its example texts in the site language |
 | `student_view.feature` | 4 | The blocks a teacher saved reach a student without editing attributes; a student can open and close an accordion and collapse and reopen the resources list |

@@ -21,9 +21,8 @@ experience directly into the course editor. Teachers open a native TinyMCE modal
 instructional design blocks — cards, accordions, infographics, charts and more — without writing a
 single line of HTML, with optional AI assistance for both single blocks and complete layouts.
 
-📚 **[Full documentation](https://jeanlucio.github.io/moodle-tiny_studiolms/)** — all 18 blocks,
-screenshots, AI features and where the AI comes from, the full test suite (142 PHPUnit cases + a
-22-scenario Behat suite), and security details.
+📚 **[Full documentation](https://jeanlucio.github.io/moodle-tiny_studiolms/)** — all 19 blocks,
+screenshots, AI features and where the AI comes from, the automated tests, and security details.
 
 ### 📦 Requirements
 
@@ -68,9 +67,8 @@ blocos ricos de design instrucional — cartões, accordions, infográficos, gr�
 escrever uma linha de HTML, com assistência opcional de IA tanto para blocos individuais quanto
 para layouts completos.
 
-📚 **[Documentação completa](https://jeanlucio.github.io/moodle-tiny_studiolms/pt.html)** — os 18
-blocos, capturas de tela, recursos de IA e de onde vem a IA, a suíte completa de testes (142 casos
-PHPUnit + suíte Behat com 22 cenários), e detalhes de segurança.
+📚 **[Documentação completa](https://jeanlucio.github.io/moodle-tiny_studiolms/pt.html)** — os 19
+blocos, capturas de tela, recursos de IA e de onde vem a IA, os testes automatizados, e detalhes de segurança.
 
 ### 📦 Requisitos
 

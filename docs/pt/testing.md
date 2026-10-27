@@ -1,7 +1,7 @@
 # 🧪 Testes Automatizados
 
 O StudioLMS inclui **262 casos de teste PHPUnit** em **43 arquivos**, **301 testes de JavaScript** em **50 arquivos**, mais uma suíte Behat com
-**83 cenários** em **20 arquivos de feature**, executados em todo push de CI na matriz completa
+**85 cenários** em **21 arquivos de feature**, executados em todo push de CI na matriz completa
 (Moodle 4.5 → 5.x, PostgreSQL e MariaDB).
 
 ### PHPUnit — Testes Unitários e de Integração
@@ -84,6 +84,7 @@ node --test tests/js/*.test.js
 | `block_payload_sanitization.feature` | 2 | Marcação digitada nas configurações de qualquer bloco nunca roda na pré-visualização, e um modelo hostil de qualquer bloco não executa nada ao ser carregado |
 | `button_link_guard.feature` | 2 | Clicar no texto de um botão de ação no editor não segue o link, e as ferramentas de link não o removem |
 | `clear_canvas.feature` | 3 | O botão Limpar canvas aparece só com dois ou mais blocos; confirmar remove todos, cancelar os mantém |
+| `canvas_composition.feature` | 2 | O bloco selecionado sobe e desce no canvas; cada um dos modelos prontos carrega no canvas sem executar script nem deixar atributo inseguro |
 | `icon_picker.feature` | 1 | Escape fecha o seletor de ícones, mas mantém o compositor e seus blocos |
 | `insert_blocks.feature` | 30 | Cada um dos 19 blocos pode ser adicionado ao canvas, inserido na página e lido de volta; todo bloco abre painéis de configurações com campos editáveis; um bloco novo mostra os textos de exemplo no idioma do site |
 | `student_view.feature` | 4 | Os blocos salvos pelo professor chegam ao estudante sem atributos de edição; o estudante pode abrir e fechar um acordeão e recolher e reabrir a lista de materiais |

@@ -1,6 +1,6 @@
 # 🧪 Testes Automatizados
 
-O StudioLMS inclui **262 casos de teste PHPUnit**, **301 testes de JavaScript** e uma suíte Behat com **83 cenários**, executados
+O StudioLMS inclui **262 casos de teste PHPUnit**, **301 testes de JavaScript** e uma suíte Behat com **85 cenários**, executados
 em todo push de CI na matriz completa (Moodle 4.5 → 5.x, PostgreSQL e MariaDB).
 
 ### PHPUnit — Testes Unitários e de Integração
@@ -36,13 +36,13 @@ stub, e um site sem nenhuma IA configurada é usado para exercitar o caminho "se
 | Ciclo de vida dos modelos (`template_lifecycle`) | 10 |
 | Todos os blocos inseridos (`insert_blocks`) | 30 |
 | Visão do estudante e blocos somente leitura (`student_view`, `text_blocks_view`) | 5 |
-| Salvaguardas de edição (`clear_canvas`, `icon_picker`, `button_link_guard`, `toolbar_capability`, `ai_tabs_unavailable`) | 14 |
+| Salvaguardas de edição (`clear_canvas`, `canvas_composition`, `icon_picker`, `button_link_guard`, `toolbar_capability`, `ai_tabs_unavailable`) | 16 |
 | Regressões de segurança (7 arquivos — veja o detalhamento) | 8 |
-| **Total** | **83** |
+| **Total** | **85** |
 
 ```bash
 php admin/tool/behat/cli/init.php
 vendor/bin/behat --tags=@tiny_studiolms --profile=chrome
 ```
 
-[Detalhamento completo teste por teste →]({{ '/testing.html' | relative_url }})
+[Detalhamento completo teste por teste →]({{ '/testing-pt.html' | relative_url }})
