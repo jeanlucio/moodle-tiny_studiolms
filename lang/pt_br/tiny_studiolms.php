@@ -430,6 +430,7 @@ $string['privacy:metadata:tiny_studiolms_templates'] = 'Armazena os modelos de l
 $string['privacy:metadata:tiny_studiolms_templates:content'] = 'O conteúdo HTML completo do modelo.';
 $string['privacy:metadata:tiny_studiolms_templates:name'] = 'O nome dado ao modelo pelo seu autor.';
 $string['privacy:metadata:tiny_studiolms_templates:timecreated'] = 'A data em que o modelo foi criado.';
+$string['privacy:metadata:tiny_studiolms_templates:timemodified'] = 'A data da última alteração do modelo.';
 $string['privacy:metadata:tiny_studiolms_templates:userid'] = 'O ID do usuário que criou o modelo.';
 $string['privacy:metadata:tiny_studiolms_templates:usermodified'] = 'O ID do usuário que fez a última modificação no modelo.';
 $string['privacy:metadata:userpreference:tiny_studiolms_presetnotice_seen'] = 'Se o aviso de que os layouts prontos estão em inglês e em português do Brasil já foi mostrado ao usuário.';

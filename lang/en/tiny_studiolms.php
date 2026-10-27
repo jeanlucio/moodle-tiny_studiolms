@@ -430,6 +430,7 @@ $string['privacy:metadata:tiny_studiolms_templates'] = 'Stores layout templates 
 $string['privacy:metadata:tiny_studiolms_templates:content'] = 'The full HTML content of the template.';
 $string['privacy:metadata:tiny_studiolms_templates:name'] = 'The name given to the template by its author.';
 $string['privacy:metadata:tiny_studiolms_templates:timecreated'] = 'The time the template was created.';
+$string['privacy:metadata:tiny_studiolms_templates:timemodified'] = 'The time the template was last changed.';
 $string['privacy:metadata:tiny_studiolms_templates:userid'] = 'The ID of the user who created the template.';
 $string['privacy:metadata:tiny_studiolms_templates:usermodified'] = 'The ID of the user who last modified the template.';
 $string['privacy:metadata:userpreference:tiny_studiolms_presetnotice_seen'] = 'Whether the notice that the ready-made layouts are in English and Brazilian Portuguese was already shown to the user.';

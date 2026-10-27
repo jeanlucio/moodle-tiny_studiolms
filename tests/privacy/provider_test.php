@@ -341,6 +341,38 @@ final class provider_test extends provider_testcase {
     }
 
     /**
+     * Every column of the two tables is declared, apart from the ones left out on purpose, and each declaration has a string.
+     *
+     * Regression test: timemodified was written by save_template and import_templates and never declared, so the record of
+     * data the administrator reads was shorter than the table. Comparing the declared fields with the real columns, instead
+     * of checking a few of them one by one, is what fails when a column is added and the provider is forgotten.
+     */
+    public function test_the_declared_fields_are_the_real_columns(): void {
+        global $DB;
+
+        // A visibility flag, with no information about a person (see the comment in get_metadata()).
+        $leftout = ['tiny_studiolms_templates' => ['isglobal'], 'tiny_studiolms_favourites' => []];
+        $collection = provider::get_metadata(new \core_privacy\local\metadata\collection('tiny_studiolms'));
+
+        $checked = 0;
+        foreach ($collection->get_collection() as $item) {
+            if (!($item instanceof \core_privacy\local\metadata\types\database_table)) {
+                continue;
+            }
+            $table = $item->get_name();
+            $columns = array_diff(array_keys($DB->get_columns($table)), ['id'], $leftout[$table]);
+            $declared = array_keys($item->get_privacy_fields());
+
+            $this->assertEqualsCanonicalizing($columns, $declared, $table);
+            foreach ($item->get_privacy_fields() as $field => $stringkey) {
+                $this->assertTrue(get_string_manager()->string_exists($stringkey, 'tiny_studiolms'), "$table.$field: $stringkey");
+            }
+            $checked++;
+        }
+        $this->assertSame(2, $checked);
+    }
+
+    /**
      * The preference that remembers the notice was shown is exported for the user who has it, and only for them.
      */
     public function test_the_notice_preference_is_exported(): void {

@@ -57,6 +57,8 @@ class provider implements
      * @return collection
      */
     public static function get_metadata(collection $collection): collection {
+        // The isglobal column is left out on purpose: it is a visibility flag (1 = shared with the whole site), with no
+        // information about a person.
         $collection->add_database_table(
             'tiny_studiolms_templates',
             [
@@ -64,6 +66,7 @@ class provider implements
                 'name'         => 'privacy:metadata:tiny_studiolms_templates:name',
                 'content'      => 'privacy:metadata:tiny_studiolms_templates:content',
                 'timecreated'  => 'privacy:metadata:tiny_studiolms_templates:timecreated',
+                'timemodified' => 'privacy:metadata:tiny_studiolms_templates:timemodified',
                 'usermodified' => 'privacy:metadata:tiny_studiolms_templates:usermodified',
             ],
             'privacy:metadata:tiny_studiolms_templates'
