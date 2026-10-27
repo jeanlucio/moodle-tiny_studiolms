@@ -25,6 +25,7 @@ Feature: Students see and use the StudioLMS blocks a teacher saved
     And I add the StudioLMS "accordion" block to the canvas
     And I add the StudioLMS "resources" block to the canvas
     And I add the StudioLMS "callout" block to the canvas
+    And I add the StudioLMS "tabs" block to the canvas
     And I insert the StudioLMS canvas into the editor
     And I press "Save and display"
     And I log out
@@ -35,6 +36,7 @@ Feature: Students see and use the StudioLMS blocks a teacher saved
     Then the StudioLMS "accordion" block is shown on the page
     And the StudioLMS "resources" block is shown on the page
     And the StudioLMS "callout" block is shown on the page
+    And the StudioLMS "tabs" block is shown on the page
     And the StudioLMS blocks on the page have no editor-only attributes
 
   Scenario: A student can open and close an accordion
@@ -54,3 +56,14 @@ Feature: Students see and use the StudioLMS blocks a teacher saved
     Then the StudioLMS "resources" block is collapsed
     And I toggle the StudioLMS "resources" block
     And the StudioLMS "resources" block is expanded
+
+  Scenario: A student can switch between the tabs, one panel at a time
+    Given I log in as "student1"
+    And I am on the "Test page" "page activity" page
+    And the StudioLMS tabs block shows 1 panel
+    And the "aria-selected" attribute of "Tab 1" "button" should contain "true"
+    And the "aria-selected" attribute of "Tab 2" "button" should contain "false"
+    When I click on "Tab 2" "button"
+    Then the "aria-selected" attribute of "Tab 2" "button" should contain "true"
+    And the "aria-selected" attribute of "Tab 1" "button" should contain "false"
+    And the StudioLMS tabs block shows 1 panel

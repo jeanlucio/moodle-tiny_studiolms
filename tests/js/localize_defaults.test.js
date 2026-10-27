@@ -39,6 +39,7 @@ const makeBlocks = () => ({
     chartBar: {defaultData: {items: [{label: '', value: 75}, {label: '', value: 15}, {label: '', value: 10}]}},
     gauge: {defaultData: {gauges: [{value: 75, label: ''}]}},
     infographic: {defaultData: {items: [{label: ''}, {label: ''}, {label: ''}]}},
+    tabs: {defaultData: {tabs: [{title: '', content: ''}, {title: '', content: ''}, {title: '', content: ''}]}},
     infographicSteps: {defaultData: {items: [{title: ''}, {title: ''}, {title: ''}]}},
     infographicTimeline: {defaultData: {items: [{date: '2020', title: ''}, {date: '2021', title: ''}, {date: '2022', title: ''}]}},
     infographicFeatures: {defaultData: {items: [{title: ''}, {title: ''}, {title: ''}]}},
@@ -55,6 +56,8 @@ test('every example label of every block is filled from a string', async() => {
         ['default_label_approved', 'default_label_inprogress', 'default_label_failed']);
     assert.deepEqual(blocks.chartBar.defaultData.items.map((s) => s.label),
         ['default_label_approved', 'default_label_inprogress', 'default_label_failed']);
+    assert.deepEqual(blocks.tabs.defaultData.tabs.map((t) => t.title),
+        ['default_tab_title:1', 'default_tab_title:2', 'default_tab_title:3']);
     assert.equal(blocks.gauge.defaultData.gauges[0].label, 'default_gauge_label');
     assert.deepEqual(blocks.infographic.defaultData.items.map((i) => i.label),
         ['default_stat_approval', 'default_stat_modules', 'default_stat_participants']);

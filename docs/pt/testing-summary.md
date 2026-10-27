@@ -1,6 +1,6 @@
 # 🧪 Testes Automatizados
 
-O StudioLMS inclui **256 casos de teste PHPUnit**, **282 testes de JavaScript** e uma suíte Behat com **80 cenários**, executados
+O StudioLMS inclui **258 casos de teste PHPUnit**, **295 testes de JavaScript** e uma suíte Behat com **83 cenários**, executados
 em todo push de CI na matriz completa (Moodle 4.5 → 5.x, PostgreSQL e MariaDB).
 
 ### PHPUnit — Testes Unitários e de Integração
@@ -13,9 +13,9 @@ em todo push de CI na matriz completa (Moodle 4.5 → 5.x, PostgreSQL e MariaDB)
 | Eventos | 3 | 10 |
 | Privacy API | 1 | 18 |
 | Integração com o editor (`plugininfo`, hook callbacks, folha de estilo do editor) | 3 | 21 |
-| Modelos e presets (cartão, gráficos, classes de hover, alinhamento dos blocos, layouts prontos, textos) | 8 | 37 |
+| Modelos e presets (cartão, gráficos, classes de hover, alinhamento dos blocos, layouts prontos, textos) | 9 | 39 |
 | Definições do banco, passo de upgrade e gerador de dados | 3 | 8 |
-| **Total** | **42** | **256** |
+| **Total** | **43** | **258** |
 
 ```bash
 vendor/bin/phpunit --testsuite tiny_studiolms_testsuite
@@ -26,7 +26,7 @@ stub, e um site sem nenhuma IA configurada é usado para exercitar o caminho "se
 
 ### JavaScript — Testes sem navegador
 
-**282 testes** em **48 arquivos** rodam com `node --test tests/js/*.test.js`, sem navegador nem Moodle: os modelos dos blocos, contraste e cores, escape e saneamento, a biblioteca de modelos e a janela do Studio.
+**295 testes** em **49 arquivos** rodam com `node --test tests/js/*.test.js`, sem navegador nem Moodle: os modelos dos blocos, contraste e cores, escape e saneamento, a biblioteca de modelos e a janela do Studio.
 
 ### Behat — Testes de Aceitação
 
@@ -34,11 +34,11 @@ stub, e um site sem nenhuma IA configurada é usado para exercitar o caminho "se
 |----------------------|---------:|
 | Biblioteca de modelos (`manage_templates`, `save_template`, `favourite_template`, `import_export`) | 16 |
 | Ciclo de vida dos modelos (`template_lifecycle`) | 10 |
-| Todos os blocos inseridos (`insert_blocks`) | 28 |
-| Visão do estudante e blocos somente leitura (`student_view`, `text_blocks_view`) | 4 |
+| Todos os blocos inseridos (`insert_blocks`) | 30 |
+| Visão do estudante e blocos somente leitura (`student_view`, `text_blocks_view`) | 5 |
 | Salvaguardas de edição (`clear_canvas`, `icon_picker`, `button_link_guard`, `toolbar_capability`, `ai_tabs_unavailable`) | 14 |
 | Regressões de segurança (7 arquivos — veja o detalhamento) | 8 |
-| **Total** | **80** |
+| **Total** | **83** |
 
 ```bash
 php admin/tool/behat/cli/init.php

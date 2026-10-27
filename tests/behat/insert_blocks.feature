@@ -33,6 +33,7 @@ Feature: Build content with every StudioLMS block
       | actionButton          |
       | advancedCard          |
       | accordion             |
+      | tabs                  |
       | resources             |
       | gridcards             |
       | callout               |
@@ -73,3 +74,4 @@ Feature: Build content with every StudioLMS block
       | infographicFeatures   | Feature 2            |
       | infographicComparison | Option B             |
       | textBox               | Type your text here. |
+      | tabs                  | Tab 2                |

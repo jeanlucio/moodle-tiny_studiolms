@@ -1,10 +1,11 @@
 # ✨ Funcionalidades
 
-* 🧱 **18 Blocos Instrucionais,** inseridos pela barra de ferramentas do editor e configurados por formulários — sem precisar de HTML:
+* 🧱 **19 Blocos Instrucionais,** inseridos pela barra de ferramentas do editor e configurados por formulários — sem precisar de HTML:
   * **Título Estilizado** — título `h3`/`h4` com ícone e cor de fundo.
   * **Botão de Ação** — botão de chamada para ação com URL, destino, cores, raio de borda e alinhamento configuráveis.
   * **Cartão Avançado** — cartão com imagem ou vídeo do YouTube ou do Vimeo, corpo rico editável e botão interno; a imagem pode ser um retângulo ou um círculo.
   * **Accordion** — tópico expansível com 4 estilos de ícone e estado inicial aberto/fechado.
+  * **Abas** — de 2 a 5 painéis no mesmo espaço, um de cada vez (as setas, Home e End trocam de aba); os painéis são guardados um depois do outro, cada um sob o seu título, então nada fica escondido onde o script do plugin não roda.
   * **Webteca** — biblioteca de recursos (PDF, vídeo, áudio, link) em lista ou grade, com a faixa de cada item colorida pelo tipo de mídia ou pela cor do bloco.
   * **Grid de Cards** — container multi-coluna com slots editáveis, título opcional e uma linha de descrição embaixo dele (dois campos de texto puro).
   * **Caixa de Destaque** — destaque com ícone e cor de borda personalizáveis.

@@ -41,6 +41,7 @@ const WANTED = [
     ['default_stat_modules', []],
     ['default_stat_participants', []],
     ['default_step_title', [1, 2, 3]],
+    ['default_tab_title', [1, 2, 3, 4, 5]],
     ['default_event_title', [1, 2, 3]],
     ['default_feature_title', [1, 2, 3]],
     ['default_option_label', ['A', 'B']],

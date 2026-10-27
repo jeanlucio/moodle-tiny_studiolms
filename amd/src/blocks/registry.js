@@ -25,6 +25,7 @@ import stylizedHeading from './heading';
 import actionButton from './button';
 import advancedCard from './card';
 import accordion from './accordion';
+import tabs from './tabs';
 import resources from './resources';
 import gridcards from './gridcards';
 import callout from './callout';
@@ -47,6 +48,7 @@ export const Blocks = {
     actionButton,
     advancedCard,
     accordion,
+    tabs,
     resources,
     gridcards,
     callout,

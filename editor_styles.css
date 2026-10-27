@@ -1471,6 +1471,81 @@ body.mce-content-body div.slms-grid-slot,
     margin-bottom: 0;
 }
 
+/*
+ * Tabs: the panels come one after the other, each under its title, in the editor, in the Studio and wherever the script
+ * of the plugin does not run. On the page the script adds the row of tabs and the class slms-tabs-js, and only then are
+ * the other panels put away, so nothing is ever hidden that cannot be reached.
+ */
+.studiolms-tabs-wrap {
+    margin-bottom: 1.5rem;
+}
+
+.studiolms-tab-panel + .studiolms-tab-panel {
+    margin-top: 1.25rem;
+}
+
+.slms-tab-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid currentColor;
+    outline: none;
+}
+
+.slms-tab-content {
+    min-height: 1.5em;
+    outline: none;
+}
+
+.slms-tab-content > :last-child {
+    margin-bottom: 0;
+}
+
+.slms-tabs-js .slms-tablist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+.slms-tab-btn {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    color: inherit;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.slms-tab-btn.slms-tab-active {
+    border-bottom-color: currentColor;
+    opacity: 1;
+}
+
+.slms-tab-btn:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+.slms-tabs-js .studiolms-tab-panel {
+    display: none;
+    margin-top: 0;
+}
+
+.slms-tabs-js .studiolms-tab-panel.slms-tab-active {
+    display: block;
+}
+
+.slms-tabs-js .slms-tab-title {
+    display: none;
+}
+
 /* Accordion */
 .studiolms-accordion {
     border: 1px solid var(--bs-border-color, #e2e8f0);

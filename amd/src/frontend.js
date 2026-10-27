@@ -32,6 +32,7 @@
 import {eventTypes as filterEventTypes} from 'core_filters/events';
 import {splitEmoji, hasTextBesidesEmoji} from './emoji_text';
 import {mutedTextOn} from './blocks/contrast';
+import {nextTabIndex} from './blocks/tabs_logic';
 
 const SELECTORS = {
     ACCORDION_SUMMARY: '.studiolms-accordion-summary',
@@ -50,6 +51,7 @@ const SELECTORS = {
         '.studiolms-resources-wrap',
         '.studiolms-grid-wrap',
         '.studiolms-callout-wrap',
+        '.studiolms-tabs-wrap',
         '.studiolms-textbox-wrap',
         '.studiolms-table-wrap',
         '.studiolms-profilecard',
@@ -224,6 +226,85 @@ const initToggles = (root) => {
     });
 };
 
+/** @var {number} Counter for the unique IDs of the tabs and the panels they show. */
+let tabsCounter = 0;
+
+/**
+ * Turn the panels of every tabs block into a row of tabs and one panel at a time.
+ *
+ * The block is stored as the panels one after the other, each under its title, so with no script that is how the page
+ * reads. The row is built here from the titles, and the roles and names a tab needs are set here too: Moodle's
+ * HTMLPurifier removes them from stored content, as it does from the accordions.
+ *
+ * @param {Element|Document} root The page, or a piece of content that has just entered it.
+ */
+const initTabs = (root) => {
+    within(root, '.studiolms-tabs').forEach((tabs) => {
+        // A block already wired must not get a second row of tabs.
+        if (tabs.dataset.slmsBound === '1') {
+            return;
+        }
+        tabs.dataset.slmsBound = '1';
+
+        const panels = [...tabs.querySelectorAll(':scope > .studiolms-tab-panel')];
+        if (panels.length < 2) {
+            return;
+        }
+
+        const uid = ++tabsCounter;
+        const list = document.createElement('div');
+        list.className = 'slms-tablist';
+        list.setAttribute('role', 'tablist');
+
+        const buttons = panels.map((panel, index) => {
+            const title = panel.querySelector('.slms-tab-title');
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'slms-tab-btn';
+            button.id = `slms-tab-${uid}-${index}`;
+            button.setAttribute('role', 'tab');
+            button.setAttribute('aria-controls', `slms-tabpanel-${uid}-${index}`);
+            button.textContent = title?.textContent.trim() || String(index + 1);
+            if (title?.style.color) {
+                button.style.color = title.style.color;
+            }
+            panel.id = `slms-tabpanel-${uid}-${index}`;
+            panel.setAttribute('role', 'tabpanel');
+            panel.setAttribute('aria-labelledby', button.id);
+            return button;
+        });
+
+        const select = (index, focus = false) => {
+            buttons.forEach((button, i) => {
+                const active = i === index;
+                button.classList.toggle('slms-tab-active', active);
+                button.setAttribute('aria-selected', String(active));
+                button.tabIndex = active ? 0 : -1;
+                panels[i].classList.toggle('slms-tab-active', active);
+            });
+            if (focus) {
+                buttons[index].focus();
+            }
+        };
+
+        buttons.forEach((button, index) => {
+            button.addEventListener('click', () => select(index));
+            button.addEventListener('keydown', (event) => {
+                const next = nextTabIndex(event.key, index, buttons.length, document.dir === 'rtl');
+                if (next !== null) {
+                    event.preventDefault();
+                    select(next, true);
+                }
+            });
+        });
+
+        list.append(...buttons);
+        tabs.prepend(list);
+        tabs.classList.add('slms-tabs-js');
+        select(0);
+    });
+};
+
 /**
  * Attach click-sound handlers to button <a> elements.
  * Only wires up elements whose class includes slms-snd-* with a non-"none" value.
@@ -360,6 +441,7 @@ const initIn = (root) => {
     }
     stripEditorAttributes(root);
     initToggles(root);
+    initTabs(root);
     fixLegacyButtons(root);
     initButtonSounds(root);
     hideDecorativeEmoji(root);

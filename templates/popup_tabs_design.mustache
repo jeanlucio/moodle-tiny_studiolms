@@ -1,0 +1,36 @@
+{{!
+	This file is part of Moodle - http://moodle.org/
+
+	Moodle is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Moodle is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_studiolms/popup_tabs_design
+    @copyright 2026 Jean Lúcio
+
+    Example context (json): {"accent": "#0d47a1", "count2": false, "count3": true, "count4": false, "count5": false}
+}}
+<div class="mb-3">
+    <label for="pop_tabs_count" class="form-label small fw-bold">{{#str}} tabs_count, tiny_studiolms {{/str}}</label>
+    <select class="form-select form-select-sm" id="pop_tabs_count">
+        <option value="2" {{#count2}}selected{{/count2}}>2</option>
+        <option value="3" {{#count3}}selected{{/count3}}>3</option>
+        <option value="4" {{#count4}}selected{{/count4}}>4</option>
+        <option value="5" {{#count5}}selected{{/count5}}>5</option>
+    </select>
+    <div class="form-text small">{{#str}} tabs_count_hint, tiny_studiolms {{/str}}</div>
+</div>
+<div class="d-flex justify-content-between align-items-center">
+    <label for="pop_tabs_accent" class="form-label m-0 small fw-bold">{{#str}} block_color, tiny_studiolms {{/str}}</label>
+    <input type="color" class="slms-color-picker" id="pop_tabs_accent" value="{{accent}}">
+</div>

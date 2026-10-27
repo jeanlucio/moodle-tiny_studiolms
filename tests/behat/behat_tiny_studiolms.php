@@ -948,6 +948,32 @@ class behat_tiny_studiolms extends behat_base {
     }
 
     /**
+     * Asserts how many panels of the StudioLMS tabs block can be seen on the page being viewed.
+     *
+     * The block is stored as all its panels one after the other and the front-end module puts the others away, so
+     * counting the visible ones also proves the module ran.
+     *
+     * @Then the StudioLMS tabs block shows :count panel
+     * @Then the StudioLMS tabs block shows :count panels
+     * @param int $count The number of panels that are visible.
+     */
+    public function the_studiolms_tabs_block_shows_panels(int $count): void {
+        $this->spin(function () use ($count) {
+            $shown = (int) $this->evaluate_script(
+                'return [].filter.call(document.querySelectorAll(".studiolms-tab-panel"), ' .
+                'function (panel) { return panel.offsetParent !== null; }).length;'
+            );
+            if ($shown !== $count) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    "{$shown} panel(s) of the StudioLMS tabs block are visible, not {$count}.",
+                    $this->getSession()
+                );
+            }
+            return true;
+        });
+    }
+
+    /**
      * Returns the CSS selector of the clickable header of a collapsible block.
      *
      * @param string $blocktype Either accordion or resources.

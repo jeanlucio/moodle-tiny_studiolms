@@ -1,0 +1,41 @@
+{{!
+	This file is part of Moodle - http://moodle.org/
+
+	Moodle is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Moodle is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_studiolms/block_tabs
+    @copyright 2026 Jean Lúcio
+
+    The panels come one after the other, each with its title, so the content is all there wherever the script of the
+    plugin does not run. On the course page the script builds the row of tabs from the titles.
+
+    Example context (json): {
+        "accent": "#0d47a1", "hoverEffect": "none",
+        "tabs": [{"title": "Tab 1", "content": "<p>Text</p>"}, {"title": "Tab 2", "content": "<p>More text</p>"}]
+    }
+}}
+<div class="studiolms-tabs-wrap w-100{{#hoverEffect}} slms-hov-{{hoverEffect}}{{/hoverEffect}}">
+    <div class="studiolms-tabs">
+        {{#tabs}}
+        <div class="studiolms-tab-panel">
+            <div class="slms-tab-title slms-single-line" style="color: {{accent}};" contenteditable="true">{{title}}</div>
+            <div class="slms-tab-content studiolms-editable-area" contenteditable="true">
+                {{{content}}}
+            </div>
+        </div>
+        {{/tabs}}
+    </div>
+</div>
+<p><br></p>

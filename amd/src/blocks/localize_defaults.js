@@ -64,6 +64,9 @@ export const applyDefaultTexts = (blocks, text) => {
             blocks.infographic.defaultData.items[index].label = text(name);
         });
     }
+    if (blocks.tabs) {
+        numbered(blocks.tabs.defaultData.tabs, 'title', 'default_tab_title');
+    }
     if (blocks.infographicSteps) {
         numbered(blocks.infographicSteps.defaultData.items, 'title', 'default_step_title');
     }

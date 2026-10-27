@@ -1,6 +1,6 @@
 # 🧪 Automated Tests
 
-StudioLMS ships with **256 PHPUnit test cases** across **42 files**, **282 JavaScript tests** across **48 files**, plus a **80-scenario Behat suite** across **20 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
+StudioLMS ships with **258 PHPUnit test cases** across **43 files**, **295 JavaScript tests** across **49 files**, plus a **83-scenario Behat suite** across **20 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
 
 ### PHPUnit — Unit & Integration Tests
 
@@ -38,6 +38,7 @@ StudioLMS ships with **256 PHPUnit test cases** across **42 files**, **282 JavaS
 | `templates_header_test.php` | 1 | Every template opens with the licence comment and then declares its `@template` name |
 | `textbox_test.php` | 2 | The Text Box block keeps its text, the class of its alignment and its hover class through Moodle's HTML cleaner, and is an editable island with no inline style |
 | `templates_text_test.php` | 2 | No title, aria-label, alt or placeholder in a template holds a literal word: they are lang strings, so every language gets them |
+| `tabs_test.php` | 2 | The Tabs block keeps every panel, its title and the colour of its titles through Moodle's HTML cleaner with nothing hidden by the markup, and escapes a title |
 
 ```bash
 vendor/bin/phpunit --testsuite tiny_studiolms_testsuite
@@ -49,11 +50,11 @@ AI tests never reach a real provider: `local_aihub`'s client is replaced by a st
 
 | Area | Test files | Cases | What is covered |
 |------|-----------:|------:|----------------|
-| Blocks | 25 | 178 | What the blocks draw and how they behave: the chart, bar and gauge models, the width cap of the blocks that hold little, the accordion and resources options, the card layout and shadow, the heading and description of the grid, blocks inside a grid column, text typed on the canvas, colours and contrast (WCAG ratios), icon pairs, grid columns, the hover effect on every block, the hidden decorative emoji |
+| Blocks | 26 | 191 | What the blocks draw and how they behave: the chart, bar and gauge models, the width cap of the blocks that hold little, the accordion and resources options, the card layout and shadow, the heading and description of the grid, blocks inside a grid column, text typed on the canvas, colours and contrast (WCAG ratios), icon pairs, grid columns, the hover effect on every block, the hidden decorative emoji |
 | Safety and cleaning | 10 | 41 | Safety and the HTML cleaner: escaping, URL and AI-config sanitising, video URLs, blocks found by class where Moodle strips attributes, frontend events, no literal visible text in the AMD sources, no Bootstrap-5-only utilities, the editor's inline CSS |
 | Templates and library | 9 | 33 | Templates and the library: the template cache, importing a file, loading a template into the canvas in one step, the export button reading Export all or Export selected (n), the stacked link fields of the profile card, example texts in the site language, preset matching and its language notice |
 | Studio window | 4 | 30 | The Studio window: the sidebar split and its geometry, the active tab, the AI use policy gate |
-| **Total** | **48** | **282** | |
+| **Total** | **49** | **295** | |
 
 These run without a browser or Moodle: modules imported by the tests import nothing, and a test that needs `app.js` or a template reads the source file instead.
 
@@ -80,8 +81,8 @@ node --test tests/js/*.test.js
 | `button_link_guard.feature` | 2 | Clicking the text of an action button in the editor does not follow its link, and the link tools do not remove it |
 | `clear_canvas.feature` | 3 | The Clear canvas button appears only with two or more blocks; confirming removes every block, cancelling keeps them |
 | `icon_picker.feature` | 1 | Escape closes the icon picker but keeps the composer and its blocks |
-| `insert_blocks.feature` | 28 | Every one of the 18 blocks can be added to the canvas, inserted into the page and read back; every block opens settings panels with editable fields; a new block shows its example texts in the site language |
-| `student_view.feature` | 3 | The blocks a teacher saved reach a student without editing attributes; a student can open and close an accordion and collapse and reopen the resources list |
+| `insert_blocks.feature` | 30 | Every one of the 19 blocks can be added to the canvas, inserted into the page and read back; every block opens settings panels with editable fields; a new block shows its example texts in the site language |
+| `student_view.feature` | 4 | The blocks a teacher saved reach a student without editing attributes; a student can open and close an accordion and collapse and reopen the resources list |
 | `template_lifecycle.feature` | 10 | Save a template and see it under My templates; save it as a site template; My templates lists only the teacher's own; site templates are listed for a teacher who cannot delete them; the ready-made layouts have a tab of their own, which an administrator can switch off; favourite and unfavourite; delete after confirmation; load onto the canvas and insert |
 | `text_blocks_view.feature` | 1 | A page with only a heading and a button carries no editing attributes |
 | `toolbar_capability.feature` | 4 | The StudioLMS button follows `tiny/studiolms:use` in the course: held, absent for a student, lost where denied, and not hidden in another course |

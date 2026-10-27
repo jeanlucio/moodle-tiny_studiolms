@@ -1,10 +1,11 @@
 # ✨ Features
 
-* 🧱 **18 Instructional Blocks,** inserted from the editor toolbar and configured through forms — no HTML required:
+* 🧱 **19 Instructional Blocks,** inserted from the editor toolbar and configured through forms — no HTML required:
   * **Stylised Heading** — `h3`/`h4` heading with icon and background colour.
   * **Action Button** — call-to-action button with configurable URL, target, colours, border radius and alignment.
   * **Advanced Card** — card with image or a YouTube or Vimeo video, a rich editable body and an internal button; the image can be a rectangle or a circle.
   * **Accordion** — expandable topic with 4 icon styles and an open/closed initial state.
+  * **Tabs** — 2 to 5 panels in the same space, one shown at a time (arrow keys, Home and End move between tabs); the panels are stored one after the other, each under its title, so nothing is hidden where the plugin's script does not run.
   * **Resources** — resource library (PDF, video, audio, link) in list or grid layout, with the stripe of each item coloured by media type or by the colour of the block.
   * **Grid Cards** — multi-column container with editable slots, an optional heading and a one-line description under it (two plain text fields).
   * **Callout** — highlight box with a customisable icon and border colour.

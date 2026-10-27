@@ -1,7 +1,7 @@
 # 🧪 Testes Automatizados
 
-O StudioLMS inclui **256 casos de teste PHPUnit** em **42 arquivos**, **282 testes de JavaScript** em **48 arquivos**, mais uma suíte Behat com
-**80 cenários** em **20 arquivos de feature**, executados em todo push de CI na matriz completa
+O StudioLMS inclui **258 casos de teste PHPUnit** em **43 arquivos**, **295 testes de JavaScript** em **49 arquivos**, mais uma suíte Behat com
+**83 cenários** em **20 arquivos de feature**, executados em todo push de CI na matriz completa
 (Moodle 4.5 → 5.x, PostgreSQL e MariaDB).
 
 ### PHPUnit — Testes Unitários e de Integração
@@ -40,6 +40,7 @@ O StudioLMS inclui **256 casos de teste PHPUnit** em **42 arquivos**, **282 test
 | `templates_header_test.php` | 1 | Todo template abre com o comentário de licença e depois declara o nome em `@template` |
 | `textbox_test.php` | 2 | O bloco Caixa de texto mantém o texto, a classe do alinhamento e a do hover pelo limpador de HTML do Moodle, e é uma ilha editável sem estilo inline |
 | `templates_text_test.php` | 2 | Nenhum title, aria-label, alt ou placeholder de um template tem uma palavra literal: são strings de idioma, então todo idioma as recebe |
+| `tabs_test.php` | 2 | O bloco Abas mantém todos os painéis, os títulos e a cor deles pelo limpador de HTML do Moodle, sem nada escondido pelo HTML, e escapa o título |
 
 ```bash
 vendor/bin/phpunit --testsuite tiny_studiolms_testsuite
@@ -53,11 +54,11 @@ IA e sem provedor `core_ai`, é usado para exercitar o caminho "sem IA disponív
 
 | Área | Arquivos | Casos | O que é coberto |
 |------|---------:|------:|------------------|
-| Blocos | 25 | 178 | O que os blocos desenham e como se comportam: os modelos de gráfico, barras e velocímetro, o limite de largura dos blocos que mostram pouco, as opções do acordeão e da webteca, o layout e a sombra do cartão, o título e a descrição do grid, os blocos dentro de uma coluna do grid, o texto digitado no canvas, cores e contraste (razões WCAG), pares de ícones, colunas do grid, o efeito de hover em todos os blocos, o emoji decorativo escondido |
+| Blocos | 26 | 191 | O que os blocos desenham e como se comportam: os modelos de gráfico, barras e velocímetro, o limite de largura dos blocos que mostram pouco, as opções do acordeão e da webteca, o layout e a sombra do cartão, o título e a descrição do grid, os blocos dentro de uma coluna do grid, o texto digitado no canvas, cores e contraste (razões WCAG), pares de ícones, colunas do grid, o efeito de hover em todos os blocos, o emoji decorativo escondido |
 | Segurança e limpeza | 10 | 41 | Segurança e limpeza de HTML: escape, saneamento de URLs e de configuração de IA, URLs de vídeo, blocos encontrados por classe onde o Moodle remove atributos, eventos do frontend, nenhum texto visível literal nas fontes AMD, nenhum utilitário exclusivo do Bootstrap 5, o CSS inline do editor |
 | Modelos e biblioteca | 9 | 33 | Modelos e biblioteca: o cache de modelos, a importação de arquivo, o carregamento de um modelo no canvas em uma só etapa, o botão de exportar mostrando Exportar tudo ou Exportar selecionados (n), os campos de link empilhados do cartão de perfil, os textos de exemplo no idioma do site, a correspondência de presets e o aviso de idioma |
 | Janela do Studio | 4 | 30 | A janela do Studio: a divisão da barra lateral e sua geometria, a aba ativa, o portão da política de uso de IA |
-| **Total** | **48** | **282** | |
+| **Total** | **49** | **295** | |
 
 Estes rodam sem navegador nem Moodle: os módulos importados pelos testes não importam nada, e um teste que precisa do `app.js` ou de um template lê o arquivo-fonte.
 
@@ -84,8 +85,8 @@ node --test tests/js/*.test.js
 | `button_link_guard.feature` | 2 | Clicar no texto de um botão de ação no editor não segue o link, e as ferramentas de link não o removem |
 | `clear_canvas.feature` | 3 | O botão Limpar canvas aparece só com dois ou mais blocos; confirmar remove todos, cancelar os mantém |
 | `icon_picker.feature` | 1 | Escape fecha o seletor de ícones, mas mantém o compositor e seus blocos |
-| `insert_blocks.feature` | 28 | Cada um dos 18 blocos pode ser adicionado ao canvas, inserido na página e lido de volta; todo bloco abre painéis de configurações com campos editáveis; um bloco novo mostra os textos de exemplo no idioma do site |
-| `student_view.feature` | 3 | Os blocos salvos pelo professor chegam ao estudante sem atributos de edição; o estudante pode abrir e fechar um acordeão e recolher e reabrir a lista de materiais |
+| `insert_blocks.feature` | 30 | Cada um dos 19 blocos pode ser adicionado ao canvas, inserido na página e lido de volta; todo bloco abre painéis de configurações com campos editáveis; um bloco novo mostra os textos de exemplo no idioma do site |
+| `student_view.feature` | 4 | Os blocos salvos pelo professor chegam ao estudante sem atributos de edição; o estudante pode abrir e fechar um acordeão e recolher e reabrir a lista de materiais |
 | `template_lifecycle.feature` | 10 | Salvar um modelo e vê-lo em Meus modelos; salvá-lo como modelo do site; Meus modelos lista só os do professor; os layouts prontos têm uma aba própria, que o administrador pode desligar; os modelos do site aparecem para um professor que não pode apagá-los; favoritar e desfavoritar; apagar após confirmação; carregar no canvas e inserir |
 | `text_blocks_view.feature` | 1 | Uma página com só um título e um botão não carrega atributos de edição |
 | `toolbar_capability.feature` | 4 | O botão do StudioLMS segue `tiny/studiolms:use` no curso: presente com a capability, ausente para estudante, perdido onde negada, e não escondido em outro curso |
