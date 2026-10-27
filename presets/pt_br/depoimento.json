@@ -1,0 +1,26 @@
+{
+    "name": "Depoimento",
+    "description": "Cartão com a foto circular de quem falou, a citação e, abaixo, o nome e a função.",
+    "blocks": [
+        {
+            "type": "advancedCard",
+            "config": {
+                "bg": "#ffffff",
+                "text": "#212529",
+                "border": "#0b5d63",
+                "radius": 8,
+                "shadow": "md",
+                "mediaType": "image",
+                "mediaUrl": "[URL_DA_FOTO]",
+                "mediaShape": "circle",
+                "layout": "horizontal",
+                "btnText": "",
+                "btnUrl": "#",
+                "btnBg": "#0b5d63",
+                "btnTextCol": "#ffffff",
+                "btnAlign": "left",
+                "content": "<blockquote><p><em>“Escreva aqui o depoimento ou a frase que quer destacar.”</em></p></blockquote><p><strong>Nome da pessoa</strong><br>Função ou curso</p>"
+            }
+        }
+    ]
+}

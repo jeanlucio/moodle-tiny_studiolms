@@ -1,0 +1,18 @@
+{
+    "name": "Quote",
+    "description": "Highlight box with a passage to read or a sentence by an author, and the source below it.",
+    "blocks": [
+        {
+            "type": "callout",
+            "config": {
+                "icon": "💬",
+                "backgroundColor": "#e6f2f2",
+                "textColor": "#083f44",
+                "borderColor": "#0b5d63",
+                "borderLeftWidth": 4,
+                "borderRadius": 6,
+                "contentHtml": "<p class=\"m-0\"><em>“Write the passage or the sentence by the author here.”</em></p><p class=\"m-0 mt-2\">— <strong>Author</strong>, <em>Work</em>, year</p>"
+            }
+        }
+    ]
+}

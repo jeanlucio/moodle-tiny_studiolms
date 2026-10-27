@@ -1,0 +1,26 @@
+{
+    "name": "Testimonial",
+    "description": "Card with the round photo of the person who spoke, the quotation and, below it, the name and role.",
+    "blocks": [
+        {
+            "type": "advancedCard",
+            "config": {
+                "bg": "#ffffff",
+                "text": "#212529",
+                "border": "#0b5d63",
+                "radius": 8,
+                "shadow": "md",
+                "mediaType": "image",
+                "mediaUrl": "[PHOTO_URL]",
+                "mediaShape": "circle",
+                "layout": "horizontal",
+                "btnText": "",
+                "btnUrl": "#",
+                "btnBg": "#0b5d63",
+                "btnTextCol": "#ffffff",
+                "btnAlign": "left",
+                "content": "<blockquote><p><em>“Write the testimonial or the sentence you want to highlight here.”</em></p></blockquote><p><strong>Name of the person</strong><br>Role or course</p>"
+            }
+        }
+    ]
+}

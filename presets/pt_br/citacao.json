@@ -1,0 +1,18 @@
+{
+    "name": "Citação",
+    "description": "Caixa de destaque com um trecho de leitura ou uma frase de um autor, e a fonte abaixo.",
+    "blocks": [
+        {
+            "type": "callout",
+            "config": {
+                "icon": "💬",
+                "backgroundColor": "#e6f2f2",
+                "textColor": "#083f44",
+                "borderColor": "#0b5d63",
+                "borderLeftWidth": 4,
+                "borderRadius": 6,
+                "contentHtml": "<p class=\"m-0\"><em>“Escreva aqui o trecho ou a frase do autor.”</em></p><p class=\"m-0 mt-2\">— <strong>Autor</strong>, <em>Obra</em>, ano</p>"
+            }
+        }
+    ]
+}
