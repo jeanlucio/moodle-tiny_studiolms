@@ -1,0 +1,40 @@
+{
+    "name": "Plano de Estudos Semanal",
+    "description": "Uma aba por semana, cada uma com a meta, as leituras e a entrega.",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Plano de Estudos",
+                "level": "h3",
+                "icon": "🗓️",
+                "bgColor": "#d3e9ea",
+                "textColor": "#0b5d63"
+            }
+        },
+        {
+            "type": "tabs",
+            "config": {
+                "accent": "#0b5d63",
+                "tabs": [
+                    {
+                        "title": "Semana 1",
+                        "content": "<p><strong>Meta da semana:</strong> [o que você deve ter feito ao final].</p><ul><li><strong>Ler:</strong> [texto ou capítulo]</li><li><strong>Assistir:</strong> [vídeo ou gravação]</li><li><strong>Entregar:</strong> [atividade e prazo]</li></ul>"
+                    },
+                    {
+                        "title": "Semana 2",
+                        "content": "<p><strong>Meta da semana:</strong> [o que você deve ter feito ao final].</p><ul><li><strong>Ler:</strong> [texto ou capítulo]</li><li><strong>Assistir:</strong> [vídeo ou gravação]</li><li><strong>Entregar:</strong> [atividade e prazo]</li></ul>"
+                    },
+                    {
+                        "title": "Semana 3",
+                        "content": "<p><strong>Meta da semana:</strong> [o que você deve ter feito ao final].</p><ul><li><strong>Ler:</strong> [texto ou capítulo]</li><li><strong>Assistir:</strong> [vídeo ou gravação]</li><li><strong>Entregar:</strong> [atividade e prazo]</li></ul>"
+                    },
+                    {
+                        "title": "Semana 4",
+                        "content": "<p><strong>Meta da semana:</strong> [o que você deve ter feito ao final].</p><ul><li><strong>Ler:</strong> [texto ou capítulo]</li><li><strong>Assistir:</strong> [vídeo ou gravação]</li><li><strong>Entregar:</strong> [atividade e prazo]</li></ul>"
+                    }
+                ]
+            }
+        }
+    ]
+}

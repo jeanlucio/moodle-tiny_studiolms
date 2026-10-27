@@ -26,7 +26,7 @@ com as configurações daquele bloco.
   `.json`. Marque os modelos a exportar: o botão passa a mostrar **Exportar selecionados (n)**. Sem nada
   marcado ele mostra **Exportar tudo** e leva todos os seus modelos; para um gestor do site isso inclui
   também os modelos do site, e a linha abaixo do botão avisa.
-* **Modelos prontos** reúne os layouts que acompanham o plugin; carregue um e altere como quiser.
+* **Modelos prontos** reúne os layouts que acompanham o plugin (mapa do curso, aula em abas, plano de estudos semanal, equipe do curso, boas-vindas, datas importantes, painel da turma, depoimento, citação e outros); carregue um e altere como quiser.
 * **Modelos do site** reúne os layouts compartilhados da instituição. Professores os aplicam;
   gestores do site também podem salvar e apagar.
 

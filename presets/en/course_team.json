@@ -1,0 +1,28 @@
+{
+    "name": "Course Team",
+    "description": "Three profile cards side by side: coordination, tutoring and technical support, each with their contacts.",
+    "blocks": [
+        {
+            "type": "gridcards",
+            "config": {
+                "columns": "3",
+                "gap": 20,
+                "containerTitle": "Course Team",
+                "containerDesc": "Who looks after you in this course and how to reach each person.",
+                "containerTitleSize": "24px",
+                "titleColor": "#0b5d63",
+                "background": "transparent",
+                "borderColor": "#e2e8f0",
+                "borderWidth": 0,
+                "borderRadius": 0,
+                "shadow": "none",
+                "padding": "none",
+                "slots": [
+                    "<div class=\"studiolms-profilecard slms-align-center slms-hov-none mceNonEditable\" style=\"background-color: #e6f2f2; --slms-pc-accent: #0b5d63;\" data-slms-block-type=\"profileCard\" data-slms-state=\"JTdCJTIyYWxpZ24lMjIlM0ElMjJjZW50ZXIlMjIlMkMlMjJwaG90b1VybCUyMiUzQSUyMiUyMiUyQyUyMmxpbmswbGFiZWwlMjIlM0ElMjJFLW1haWwlMjIlMkMlMjJsaW5rMHVybCUyMiUzQSUyMm1haWx0byUzQWNvb3JkaW5hdGlvbiU0MGluc3RpdHV0aW9uLmVkdSUyMiUyQyUyMmxpbmsxbGFiZWwlMjIlM0ElMjJQcm9maWxlJTIyJTJDJTIybGluazF1cmwlMjIlM0ElMjIlMjMlMjIlMkMlMjJsaW5rMmxhYmVsJTIyJTNBJTIyJTIyJTJDJTIybGluazJ1cmwlMjIlM0ElMjIlMjIlMkMlMjJsaW5rM2xhYmVsJTIyJTNBJTIyJTIyJTJDJTIybGluazN1cmwlMjIlM0ElMjIlMjIlMkMlMjJsaW5rNGxhYmVsJTIyJTNBJTIyJTIyJTJDJTIybGluazR1cmwlMjIlM0ElMjIlMjIlMkMlMjJsaW5rNWxhYmVsJTIyJTNBJTIyJTIyJTJDJTIybGluazV1cmwlMjIlM0ElMjIlMjIlMkMlMjJiZ0NvbG9yJTIyJTNBJTIyJTIzZTZmMmYyJTIyJTJDJTIyYWNjZW50Q29sb3IlMjIlM0ElMjIlMjMwYjVkNjMlMjIlMkMlMjJob3ZlckVmZmVjdCUyMiUzQSUyMm5vbmUlMjIlN0Q=\">\n    <div class=\"slms-pc-photo-placeholder\" aria-hidden=\"true\">👤</div>\n    <p class=\"slms-pc-name slms-single-line\" contenteditable=\"true\">[Name]</p>\n    <p class=\"slms-pc-role slms-single-line\" contenteditable=\"true\">Course coordination</p>\n    <p class=\"slms-pc-bio slms-single-line\" contenteditable=\"true\">Office hours: [days and times]</p>\n    <div class=\"slms-pc-links\">\n        <a href=\"mailto:coordination@institution.edu\" class=\"slms-pc-link\" target=\"_blank\" rel=\"noopener noreferrer\">E-mail</a>\n        <a href=\"#\" class=\"slms-pc-link\" target=\"_blank\" rel=\"noopener noreferrer\">Profile</a>\n    </div>\n</div>",
+                    "<div class=\"studiolms-profilecard slms-align-center slms-hov-none mceNonEditable\" style=\"background-color: #e6f2f2; --slms-pc-accent: #0b5d63;\" data-slms-block-type=\"profileCard\" data-slms-state=\"JTdCJTIyYWxpZ24lMjIlM0ElMjJjZW50ZXIlMjIlMkMlMjJwaG90b1VybCUyMiUzQSUyMiUyMiUyQyUyMmxpbmswbGFiZWwlMjIlM0ElMjJFLW1haWwlMjIlMkMlMjJsaW5rMHVybCUyMiUzQSUyMm1haWx0byUzQXR1dG9yaW5nJTQwaW5zdGl0dXRpb24uZWR1JTIyJTJDJTIybGluazFsYWJlbCUyMiUzQSUyMldoYXRzQXBwJTIyJTJDJTIybGluazF1cmwlMjIlM0ElMjIlMjMlMjIlMkMlMjJsaW5rMmxhYmVsJTIyJTNBJTIyJTIyJTJDJTIybGluazJ1cmwlMjIlM0ElMjIlMjIlMkMlMjJsaW5rM2xhYmVsJTIyJTNBJTIyJTIyJTJDJTIybGluazN1cmwlMjIlM0ElMjIlMjIlMkMlMjJsaW5rNGxhYmVsJTIyJTNBJTIyJTIyJTJDJTIybGluazR1cmwlMjIlM0ElMjIlMjIlMkMlMjJsaW5rNWxhYmVsJTIyJTNBJTIyJTIyJTJDJTIybGluazV1cmwlMjIlM0ElMjIlMjIlMkMlMjJiZ0NvbG9yJTIyJTNBJTIyJTIzZTZmMmYyJTIyJTJDJTIyYWNjZW50Q29sb3IlMjIlM0ElMjIlMjMwYjVkNjMlMjIlMkMlMjJob3ZlckVmZmVjdCUyMiUzQSUyMm5vbmUlMjIlN0Q=\">\n    <div class=\"slms-pc-photo-placeholder\" aria-hidden=\"true\">👤</div>\n    <p class=\"slms-pc-name slms-single-line\" contenteditable=\"true\">[Name]</p>\n    <p class=\"slms-pc-role slms-single-line\" contenteditable=\"true\">Tutoring</p>\n    <p class=\"slms-pc-bio slms-single-line\" contenteditable=\"true\">Office hours: [days and times]</p>\n    <div class=\"slms-pc-links\">\n        <a href=\"mailto:tutoring@institution.edu\" class=\"slms-pc-link\" target=\"_blank\" rel=\"noopener noreferrer\">E-mail</a>\n        <a href=\"#\" class=\"slms-pc-link\" target=\"_blank\" rel=\"noopener noreferrer\">WhatsApp</a>\n    </div>\n</div>",
+                    "<div class=\"studiolms-profilecard slms-align-center slms-hov-none mceNonEditable\" style=\"background-color: #e6f2f2; --slms-pc-accent: #0b5d63;\" data-slms-block-type=\"profileCard\" data-slms-state=\"JTdCJTIyYWxpZ24lMjIlM0ElMjJjZW50ZXIlMjIlMkMlMjJwaG90b1VybCUyMiUzQSUyMiUyMiUyQyUyMmxpbmswbGFiZWwlMjIlM0ElMjJFLW1haWwlMjIlMkMlMjJsaW5rMHVybCUyMiUzQSUyMm1haWx0byUzQXN1cHBvcnQlNDBpbnN0aXR1dGlvbi5lZHUlMjIlMkMlMjJsaW5rMWxhYmVsJTIyJTNBJTIySGVscCUyMGNlbnRlciUyMiUyQyUyMmxpbmsxdXJsJTIyJTNBJTIyJTIzJTIyJTJDJTIybGluazJsYWJlbCUyMiUzQSUyMiUyMiUyQyUyMmxpbmsydXJsJTIyJTNBJTIyJTIyJTJDJTIybGluazNsYWJlbCUyMiUzQSUyMiUyMiUyQyUyMmxpbmszdXJsJTIyJTNBJTIyJTIyJTJDJTIybGluazRsYWJlbCUyMiUzQSUyMiUyMiUyQyUyMmxpbms0dXJsJTIyJTNBJTIyJTIyJTJDJTIybGluazVsYWJlbCUyMiUzQSUyMiUyMiUyQyUyMmxpbms1dXJsJTIyJTNBJTIyJTIyJTJDJTIyYmdDb2xvciUyMiUzQSUyMiUyM2U2ZjJmMiUyMiUyQyUyMmFjY2VudENvbG9yJTIyJTNBJTIyJTIzMGI1ZDYzJTIyJTJDJTIyaG92ZXJFZmZlY3QlMjIlM0ElMjJub25lJTIyJTdE\">\n    <div class=\"slms-pc-photo-placeholder\" aria-hidden=\"true\">👤</div>\n    <p class=\"slms-pc-name slms-single-line\" contenteditable=\"true\">[Name]</p>\n    <p class=\"slms-pc-role slms-single-line\" contenteditable=\"true\">Technical support</p>\n    <p class=\"slms-pc-bio slms-single-line\" contenteditable=\"true\">Office hours: [days and times]</p>\n    <div class=\"slms-pc-links\">\n        <a href=\"mailto:support@institution.edu\" class=\"slms-pc-link\" target=\"_blank\" rel=\"noopener noreferrer\">E-mail</a>\n        <a href=\"#\" class=\"slms-pc-link\" target=\"_blank\" rel=\"noopener noreferrer\">Help center</a>\n    </div>\n</div>"
+                ]
+            }
+        }
+    ]
+}

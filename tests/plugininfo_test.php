@@ -270,7 +270,7 @@ final class plugininfo_test extends advanced_testcase {
         $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
 
         $names = array_column($config['presets'], 'name');
-        $this->assertCount(19, $names);
+        $this->assertCount(26, $names);
         $this->assertContains('Module Start', $names);
         $this->assertNotContains('Início de Módulo', $names);
     }

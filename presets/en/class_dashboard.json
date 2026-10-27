@@ -1,0 +1,106 @@
+{
+    "name": "Class Dashboard",
+    "description": "Numbers, indicators and a comparison by module for an end-of-module report. The values are typed and do not update by themselves.",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Class Dashboard - [Module]",
+                "level": "h3",
+                "icon": "📊",
+                "bgColor": "#d3e9ea",
+                "textColor": "#0b5d63"
+            }
+        },
+        {
+            "type": "infographic",
+            "config": {
+                "align": "center",
+                "layout": "stats",
+                "title": "",
+                "theme": "blue",
+                "items": [
+                    {
+                        "icon": "fa-solid fa-users",
+                        "value": "240",
+                        "label": "Students"
+                    },
+                    {
+                        "icon": "fa-solid fa-circle-check",
+                        "value": "72%",
+                        "label": "Activities handed in"
+                    },
+                    {
+                        "icon": "fa-solid fa-comments",
+                        "value": "138",
+                        "label": "Forum messages"
+                    },
+                    {
+                        "icon": "fa-solid fa-clock",
+                        "value": "4 h",
+                        "label": "Average time per week"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "gauge",
+            "config": {
+                "align": "center",
+                "title": "Class progress",
+                "gauges": [
+                    {
+                        "value": 85,
+                        "label": "Attendance at live sessions"
+                    },
+                    {
+                        "value": 72,
+                        "label": "Module completion"
+                    },
+                    {
+                        "value": 41,
+                        "label": "Forum participation"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "chartBar",
+            "config": {
+                "align": "center",
+                "type": "horizontal",
+                "title": "Hand-ins by module",
+                "items": [
+                    {
+                        "label": "Module 1",
+                        "value": 82
+                    },
+                    {
+                        "label": "Module 2",
+                        "value": 64
+                    },
+                    {
+                        "label": "Module 3",
+                        "value": 51
+                    },
+                    {
+                        "label": "Module 4",
+                        "value": 37
+                    }
+                ]
+            }
+        },
+        {
+            "type": "callout",
+            "config": {
+                "icon": "ℹ️",
+                "backgroundColor": "#eff6ff",
+                "textColor": "#1e3a8a",
+                "borderColor": "#3b82f6",
+                "borderLeftWidth": 4,
+                "borderRadius": 6,
+                "contentHtml": "<p class=\"m-0\"><strong>Example values.</strong> Replace them with the real numbers of your class; they are typed here and do not update by themselves.</p>"
+            }
+        }
+    ]
+}

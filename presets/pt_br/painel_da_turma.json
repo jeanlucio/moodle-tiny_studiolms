@@ -1,0 +1,106 @@
+{
+    "name": "Painel da Turma",
+    "description": "Números, indicadores e uma comparação por módulo para um relatório de fim de módulo. Os valores são digitados e não se atualizam sozinhos.",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Painel da Turma — [Módulo]",
+                "level": "h3",
+                "icon": "📊",
+                "bgColor": "#d3e9ea",
+                "textColor": "#0b5d63"
+            }
+        },
+        {
+            "type": "infographic",
+            "config": {
+                "align": "center",
+                "layout": "stats",
+                "title": "",
+                "theme": "blue",
+                "items": [
+                    {
+                        "icon": "fa-solid fa-users",
+                        "value": "240",
+                        "label": "Estudantes"
+                    },
+                    {
+                        "icon": "fa-solid fa-circle-check",
+                        "value": "72%",
+                        "label": "Atividades entregues"
+                    },
+                    {
+                        "icon": "fa-solid fa-comments",
+                        "value": "138",
+                        "label": "Mensagens nos fóruns"
+                    },
+                    {
+                        "icon": "fa-solid fa-clock",
+                        "value": "4 h",
+                        "label": "Tempo médio por semana"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "gauge",
+            "config": {
+                "align": "center",
+                "title": "Andamento da turma",
+                "gauges": [
+                    {
+                        "value": 85,
+                        "label": "Presença nos encontros"
+                    },
+                    {
+                        "value": 72,
+                        "label": "Conclusão do módulo"
+                    },
+                    {
+                        "value": 41,
+                        "label": "Participação nos fóruns"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "chartBar",
+            "config": {
+                "align": "center",
+                "type": "horizontal",
+                "title": "Entregas por módulo",
+                "items": [
+                    {
+                        "label": "Módulo 1",
+                        "value": 82
+                    },
+                    {
+                        "label": "Módulo 2",
+                        "value": 64
+                    },
+                    {
+                        "label": "Módulo 3",
+                        "value": 51
+                    },
+                    {
+                        "label": "Módulo 4",
+                        "value": 37
+                    }
+                ]
+            }
+        },
+        {
+            "type": "callout",
+            "config": {
+                "icon": "ℹ️",
+                "backgroundColor": "#eff6ff",
+                "textColor": "#1e3a8a",
+                "borderColor": "#3b82f6",
+                "borderLeftWidth": 4,
+                "borderRadius": 6,
+                "contentHtml": "<p class=\"m-0\"><strong>Valores de exemplo.</strong> Troque pelos números reais da sua turma; eles são digitados aqui e não se atualizam sozinhos.</p>"
+            }
+        }
+    ]
+}

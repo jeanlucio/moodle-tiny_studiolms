@@ -25,7 +25,7 @@ block's settings.
   templates to export: the button then reads **Export selected (n)**. With nothing ticked it reads
   **Export all** and takes all your templates; for a site manager that also includes the site templates, and
   the line under the button says so.
-* **Ready-made Layouts** holds the layouts that ship with the plugin; load one and change it as you like.
+* **Ready-made Layouts** holds the layouts that ship with the plugin (a course map, a lesson in tabs, a weekly study plan, the course team, a welcome page, key dates, a class dashboard, a testimonial, a quote and more); load one and change it as you like.
 * **Site Templates** holds the institution's shared layouts. Teachers apply them; site managers
   can also save and delete them.
 

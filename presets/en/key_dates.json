@@ -1,0 +1,51 @@
+{
+    "name": "Key Dates",
+    "description": "Timeline with the milestones of the module: start, live session, hand-in, forum and wrap-up.",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Key Dates",
+                "level": "h3",
+                "icon": "📅",
+                "bgColor": "#d3e9ea",
+                "textColor": "#0b5d63"
+            }
+        },
+        {
+            "type": "infographicTimeline",
+            "config": {
+                "align": "center",
+                "title": "",
+                "theme": "green",
+                "items": [
+                    {
+                        "date": "[DD/MM]",
+                        "title": "Module start",
+                        "description": "Material available on the platform."
+                    },
+                    {
+                        "date": "[DD/MM]",
+                        "title": "Live session",
+                        "description": "[Room link]"
+                    },
+                    {
+                        "date": "[DD/MM]",
+                        "title": "Product hand-in",
+                        "description": "Submit through the platform by 11:59 pm."
+                    },
+                    {
+                        "date": "[DD/MM]",
+                        "title": "Discussion forum",
+                        "description": "Take part with at least two messages."
+                    },
+                    {
+                        "date": "[DD/MM]",
+                        "title": "Wrap-up",
+                        "description": "Review and feedback."
+                    }
+                ]
+            }
+        }
+    ]
+}

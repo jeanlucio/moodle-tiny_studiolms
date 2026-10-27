@@ -1,0 +1,60 @@
+{
+    "name": "Course Map",
+    "description": "The course as a path of steps, with the current step marked (the ones before it show as done), and a short text about what the class is doing now.",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Course Map",
+                "level": "h3",
+                "icon": "🧭",
+                "bgColor": "#d3e9ea",
+                "textColor": "#0b5d63"
+            }
+        },
+        {
+            "type": "infographicSteps",
+            "config": {
+                "align": "center",
+                "title": "You are here",
+                "theme": "blue",
+                "layout": "horizontal",
+                "current": 2,
+                "items": [
+                    {
+                        "icon": "",
+                        "title": "Module 1",
+                        "description": "[Module topic]"
+                    },
+                    {
+                        "icon": "",
+                        "title": "Module 2",
+                        "description": "[Module topic]"
+                    },
+                    {
+                        "icon": "",
+                        "title": "Module 3",
+                        "description": "[Module topic]"
+                    },
+                    {
+                        "icon": "",
+                        "title": "Module 4",
+                        "description": "[Module topic]"
+                    },
+                    {
+                        "icon": "",
+                        "title": "Module 5",
+                        "description": "[Module topic]"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "textBox",
+            "config": {
+                "textAlign": "left",
+                "content": "<p>Right now the class is in <strong>Module 2</strong>. Write here what is expected of you at this step and what comes next.</p>"
+            }
+        }
+    ]
+}

@@ -1,0 +1,55 @@
+{
+    "name": "Course Welcome",
+    "description": "Title, opening text, a card with the round photo of the coordinator and a button to get started.",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Welcome to [Course name]",
+                "level": "h3",
+                "icon": "👋",
+                "bgColor": "#d3e9ea",
+                "textColor": "#0b5d63"
+            }
+        },
+        {
+            "type": "textBox",
+            "config": {
+                "textAlign": "left",
+                "content": "<p>Hello, <strong>[firstname]</strong>! We are glad to have you here.</p><p>In this course you will [what you will learn or produce]. Set aside a fixed time each week and use the forums to share experiences with the class.</p>"
+            }
+        },
+        {
+            "type": "advancedCard",
+            "config": {
+                "bg": "#ffffff",
+                "text": "#212529",
+                "border": "#0b5d63",
+                "radius": 8,
+                "shadow": "md",
+                "mediaType": "image",
+                "mediaUrl": "[PHOTO_URL]",
+                "mediaShape": "circle",
+                "layout": "horizontal",
+                "btnText": "",
+                "btnUrl": "#",
+                "btnBg": "#0b5d63",
+                "btnTextCol": "#ffffff",
+                "btnAlign": "left",
+                "content": "<blockquote><p><em>“Write a short welcome message here.”</em></p></blockquote><p><strong>[Name of the coordinator]</strong><br>Course coordination</p>"
+            }
+        },
+        {
+            "type": "actionButton",
+            "config": {
+                "btnText": "Start with Module 1",
+                "btnUrl": "#",
+                "btnBg": "#0b5d63",
+                "btnTextCol": "#ffffff",
+                "radius": 6,
+                "target": "_self",
+                "align": "left"
+            }
+        }
+    ]
+}

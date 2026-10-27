@@ -1,0 +1,40 @@
+{
+    "name": "Lesson in Tabs",
+    "description": "Lesson title and four tabs: overview, what to study, the activity and further reading.",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Lesson [N] - [Lesson title]",
+                "level": "h3",
+                "icon": "📖",
+                "bgColor": "#d3e9ea",
+                "textColor": "#0b5d63"
+            }
+        },
+        {
+            "type": "tabs",
+            "config": {
+                "accent": "#0b5d63",
+                "tabs": [
+                    {
+                        "title": "Overview",
+                        "content": "<p>In a few lines, what this lesson brings and why it matters for the module.</p>"
+                    },
+                    {
+                        "title": "To study",
+                        "content": "<ul><li>[Required reading]</li><li>[Video or recording]</li><li>[Notes you should take]</li></ul>"
+                    },
+                    {
+                        "title": "Activity",
+                        "content": "<p><strong>What to do:</strong> [describe the task].</p><p><strong>Deadline:</strong> [DATE].</p>"
+                    },
+                    {
+                        "title": "Going further",
+                        "content": "<ul><li>[Suggested further reading]</li><li>[Link or reference]</li></ul>"
+                    }
+                ]
+            }
+        }
+    ]
+}

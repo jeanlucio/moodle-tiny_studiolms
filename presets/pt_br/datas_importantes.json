@@ -1,0 +1,51 @@
+{
+    "name": "Datas Importantes",
+    "description": "Linha do tempo com os marcos do módulo: início, encontro ao vivo, entrega, fórum e encerramento.",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Datas Importantes",
+                "level": "h3",
+                "icon": "📅",
+                "bgColor": "#d3e9ea",
+                "textColor": "#0b5d63"
+            }
+        },
+        {
+            "type": "infographicTimeline",
+            "config": {
+                "align": "center",
+                "title": "",
+                "theme": "green",
+                "items": [
+                    {
+                        "date": "[DD/MM]",
+                        "title": "Início do módulo",
+                        "description": "Material liberado no AVA."
+                    },
+                    {
+                        "date": "[DD/MM]",
+                        "title": "Encontro ao vivo",
+                        "description": "[Link da sala]"
+                    },
+                    {
+                        "date": "[DD/MM]",
+                        "title": "Entrega do produto",
+                        "description": "Envie pelo AVA até as 23h59."
+                    },
+                    {
+                        "date": "[DD/MM]",
+                        "title": "Fórum de discussão",
+                        "description": "Participe com pelo menos duas mensagens."
+                    },
+                    {
+                        "date": "[DD/MM]",
+                        "title": "Encerramento",
+                        "description": "Revisão e devolutiva."
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,40 @@
+{
+    "name": "Aula em Abas",
+    "description": "Título da aula e quatro abas: visão geral, o que estudar, a atividade e leituras para ir além.",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Aula [N] — [Título da aula]",
+                "level": "h3",
+                "icon": "📖",
+                "bgColor": "#d3e9ea",
+                "textColor": "#0b5d63"
+            }
+        },
+        {
+            "type": "tabs",
+            "config": {
+                "accent": "#0b5d63",
+                "tabs": [
+                    {
+                        "title": "Visão geral",
+                        "content": "<p>Em poucas linhas, o que esta aula traz e por que ela importa para o módulo.</p>"
+                    },
+                    {
+                        "title": "Para estudar",
+                        "content": "<ul><li>[Leitura obrigatória]</li><li>[Vídeo ou gravação]</li><li>[Anotações que você deve fazer]</li></ul>"
+                    },
+                    {
+                        "title": "Atividade",
+                        "content": "<p><strong>O que fazer:</strong> [descreva a tarefa].</p><p><strong>Prazo:</strong> [DATA].</p>"
+                    },
+                    {
+                        "title": "Para ir além",
+                        "content": "<ul><li>[Indicação de leitura complementar]</li><li>[Link ou referência]</li></ul>"
+                    }
+                ]
+            }
+        }
+    ]
+}

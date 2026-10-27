@@ -1,0 +1,55 @@
+{
+    "name": "Boas-vindas ao Curso",
+    "description": "Título, texto de abertura, cartão com a foto circular de quem coordena e um botão para começar.",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Boas-vindas ao [Nome do curso]",
+                "level": "h3",
+                "icon": "👋",
+                "bgColor": "#d3e9ea",
+                "textColor": "#0b5d63"
+            }
+        },
+        {
+            "type": "textBox",
+            "config": {
+                "textAlign": "left",
+                "content": "<p>Olá, <strong>[firstname]</strong>! É uma alegria ter você aqui.</p><p>Neste curso você vai [o que vai aprender ou produzir]. Reserve um tempo fixo por semana e use os fóruns para trocar experiências com a turma.</p>"
+            }
+        },
+        {
+            "type": "advancedCard",
+            "config": {
+                "bg": "#ffffff",
+                "text": "#212529",
+                "border": "#0b5d63",
+                "radius": 8,
+                "shadow": "md",
+                "mediaType": "image",
+                "mediaUrl": "[URL_DA_FOTO]",
+                "mediaShape": "circle",
+                "layout": "horizontal",
+                "btnText": "",
+                "btnUrl": "#",
+                "btnBg": "#0b5d63",
+                "btnTextCol": "#ffffff",
+                "btnAlign": "left",
+                "content": "<blockquote><p><em>“Escreva aqui uma mensagem curta de boas-vindas.”</em></p></blockquote><p><strong>[Nome de quem coordena]</strong><br>Coordenação do curso</p>"
+            }
+        },
+        {
+            "type": "actionButton",
+            "config": {
+                "btnText": "Começar pelo Módulo 1",
+                "btnUrl": "#",
+                "btnBg": "#0b5d63",
+                "btnTextCol": "#ffffff",
+                "radius": 6,
+                "target": "_self",
+                "align": "left"
+            }
+        }
+    ]
+}

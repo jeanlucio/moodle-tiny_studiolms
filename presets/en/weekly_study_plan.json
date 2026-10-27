@@ -1,0 +1,40 @@
+{
+    "name": "Weekly Study Plan",
+    "description": "One tab per week, each with the goal, the readings and the hand-in.",
+    "blocks": [
+        {
+            "type": "stylizedHeading",
+            "config": {
+                "text": "Study Plan",
+                "level": "h3",
+                "icon": "🗓️",
+                "bgColor": "#d3e9ea",
+                "textColor": "#0b5d63"
+            }
+        },
+        {
+            "type": "tabs",
+            "config": {
+                "accent": "#0b5d63",
+                "tabs": [
+                    {
+                        "title": "Week 1",
+                        "content": "<p><strong>Goal of the week:</strong> [what you should have done by the end].</p><ul><li><strong>Read:</strong> [text or chapter]</li><li><strong>Watch:</strong> [video or recording]</li><li><strong>Hand in:</strong> [activity and deadline]</li></ul>"
+                    },
+                    {
+                        "title": "Week 2",
+                        "content": "<p><strong>Goal of the week:</strong> [what you should have done by the end].</p><ul><li><strong>Read:</strong> [text or chapter]</li><li><strong>Watch:</strong> [video or recording]</li><li><strong>Hand in:</strong> [activity and deadline]</li></ul>"
+                    },
+                    {
+                        "title": "Week 3",
+                        "content": "<p><strong>Goal of the week:</strong> [what you should have done by the end].</p><ul><li><strong>Read:</strong> [text or chapter]</li><li><strong>Watch:</strong> [video or recording]</li><li><strong>Hand in:</strong> [activity and deadline]</li></ul>"
+                    },
+                    {
+                        "title": "Week 4",
+                        "content": "<p><strong>Goal of the week:</strong> [what you should have done by the end].</p><ul><li><strong>Read:</strong> [text or chapter]</li><li><strong>Watch:</strong> [video or recording]</li><li><strong>Hand in:</strong> [activity and deadline]</li></ul>"
+                    }
+                ]
+            }
+        }
+    ]
+}
