@@ -21,8 +21,9 @@
 * 🎨 **Canvas Composer:** a full-screen modal where a page is assembled block by block, reordered, previewed and inserted into the editor in one step.
 * 📐 **Block alignment:** the blocks that stop short of the page width (Profile Card, Chart, Bar Chart, Steps, Timeline, Comparison, Advanced Card, Resources, Gauge and the Infographic of stat cards) and the Stylized Heading (icon and text together) have an **Alignment** field (left, centre or right) in their design popup. TinyMCE's own alignment buttons do not move a block, because a block is not editable text; the Action Button keeps its own alignment field.
 * 💾 **Round-trip editing:** each block keeps its configuration inside the content (`data-slms-state`), so any block already in a course can be reopened and edited later.
-* 📚 **Template Library** in four tabs:
+* 📚 **Template Library** in five tabs:
   * **Components** — the base blocks above.
+  * **Ready-made Layouts** — the layouts that ship with the plugin, in English and Brazilian Portuguese.
   * **Site Templates** — institution-wide layouts, managed by site managers and read-only for teachers.
   * **My Templates** — each teacher's personal layouts, with save, export and import.
   * **Favourites** — starred templates from every tab in one place.

@@ -251,6 +251,11 @@ export const initStudioApp = (
         targetEditNode = editData.node;
     }
 
+    // With no ready-made layouts to offer the tab would only be an empty page.
+    if (presets.length === 0) {
+        document.getElementById('slms-tab-presets')?.closest('li')?.remove();
+    }
+
     setupNavigation(canManageGlobal);
     setupZoomControls();
     setupGridTargeting();
@@ -2342,12 +2347,8 @@ const switchTab = async(tabName) => {
 
     try {
         if (!tabDataCache.has(tabName)) {
-            if (tabName === 'global') {
-                const [dbTemplates, presetTemplates] = await Promise.all([
-                    loadTemplates('global'),
-                    renderPresetsAsTemplates(presetsData),
-                ]);
-                tabDataCache.set('global', [...presetTemplates, ...dbTemplates]);
+            if (tabName === 'presets') {
+                tabDataCache.set('presets', await renderPresetsAsTemplates(presetsData));
             } else {
                 tabDataCache.set(tabName, await loadTemplates(tabName));
             }
@@ -2357,7 +2358,7 @@ const switchTab = async(tabName) => {
             onLoadToCanvas: loadTemplateToCanvas,
             onInvalidateCache: invalidateTabCache,
         });
-        if (tabName === 'global' && presetNoticePending && presetsData.length > 0) {
+        if (tabName === 'presets' && presetNoticePending && presetsData.length > 0) {
             await showPresetLanguageNotice(grid);
         }
     } catch (error) {
@@ -2722,6 +2723,7 @@ const setupImportExportButtons = (canManageGlobal = false) => {
  */
 const LIBRARY_HEADING_STRINGS = {
     'components': 'library_add_heading',
+    'presets': 'tab_presets',
     'global': 'tab_official',
     'mine': 'tab_mine',
     'favourites': 'tab_favourites',

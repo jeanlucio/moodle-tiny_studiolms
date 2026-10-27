@@ -1,6 +1,6 @@
 # 🧪 Testes Automatizados
 
-O StudioLMS inclui **251 casos de teste PHPUnit**, **252 testes de JavaScript** e uma suíte Behat com **76 cenários**, executados
+O StudioLMS inclui **251 casos de teste PHPUnit**, **257 testes de JavaScript** e uma suíte Behat com **77 cenários**, executados
 em todo push de CI na matriz completa (Moodle 4.5 → 5.x, PostgreSQL e MariaDB).
 
 ### PHPUnit — Testes Unitários e de Integração
@@ -26,19 +26,19 @@ stub, e um site sem nenhuma IA configurada é usado para exercitar o caminho "se
 
 ### JavaScript — Testes sem navegador
 
-**252 testes** em **44 arquivos** rodam com `node --test tests/js/*.test.js`, sem navegador nem Moodle: os modelos dos blocos, contraste e cores, escape e saneamento, a biblioteca de modelos e a janela do Studio.
+**257 testes** em **45 arquivos** rodam com `node --test tests/js/*.test.js`, sem navegador nem Moodle: os modelos dos blocos, contraste e cores, escape e saneamento, a biblioteca de modelos e a janela do Studio.
 
 ### Behat — Testes de Aceitação
 
 | Arquivos de feature | Cenários |
 |----------------------|---------:|
 | Biblioteca de modelos (`manage_templates`, `save_template`, `favourite_template`, `import_export`) | 16 |
-| Ciclo de vida dos modelos (`template_lifecycle`) | 8 |
+| Ciclo de vida dos modelos (`template_lifecycle`) | 9 |
 | Todos os blocos inseridos (`insert_blocks`) | 26 |
 | Visão do estudante e blocos somente leitura (`student_view`, `text_blocks_view`) | 4 |
 | Salvaguardas de edição (`clear_canvas`, `icon_picker`, `button_link_guard`, `toolbar_capability`, `ai_tabs_unavailable`) | 14 |
 | Regressões de segurança (7 arquivos — veja o detalhamento) | 8 |
-| **Total** | **76** |
+| **Total** | **77** |
 
 ```bash
 php admin/tool/behat/cli/init.php

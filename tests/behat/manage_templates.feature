@@ -47,11 +47,12 @@ Feature: Manage layout templates in StudioLMS
     When I click on the StudioLMS "components" tab
     Then the StudioLMS "components" tab is active
 
-  Scenario: All six tabs exist in the dialog
+  Scenario: All the tabs exist in the dialog
     Given I log in as "teacher1"
     And I am on the "Test page" "page activity editing" page
     And I open the StudioLMS dialog
     Then the StudioLMS dialog contains the "#slms-tab-components" element
+    And the StudioLMS dialog contains the "#slms-tab-presets" element
     And the StudioLMS dialog contains the "#slms-tab-official" element
     And the StudioLMS dialog contains the "#slms-tab-mine" element
     And the StudioLMS dialog contains the "#slms-tab-favourites" element

@@ -497,6 +497,7 @@ $string['tab_components'] = 'Componentes';
 $string['tab_favourites'] = 'Favoritos';
 $string['tab_mine'] = 'Meus modelos';
 $string['tab_official'] = 'Modelos do site';
+$string['tab_presets'] = 'Modelos prontos';
 $string['table_cols'] = 'Número de Colunas';
 $string['table_header_bg'] = 'Fundo do Cabeçalho';
 $string['table_header_text'] = 'Texto do Cabeçalho';

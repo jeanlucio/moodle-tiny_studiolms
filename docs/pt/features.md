@@ -21,8 +21,9 @@
 * 🎨 **Compositor em Canvas:** um modal em tela cheia onde a página é montada bloco a bloco, reordenada, pré-visualizada e inserida no editor em uma única etapa.
 * 📐 **Alinhamento do bloco:** os blocos que não ocupam a largura toda da página (Cartão de Perfil, Gráfico de Composição, Gráfico de Barras, Passos, Linha do Tempo, Comparativo, Cartão personalizável, Webteca, Velocímetro e o Infográfico de números) e o Título estilizado (ícone e texto juntos) têm o campo **Alinhamento** (esquerda, centro ou direita) no popup de design. Os botões de alinhamento do próprio TinyMCE não movem um bloco, porque ele não é texto editável; o Botão de Ação mantém o seu campo de alinhamento.
 * 💾 **Edição ida e volta:** cada bloco guarda sua configuração dentro do próprio conteúdo (`data-slms-state`), então qualquer bloco já inserido num curso pode ser reaberto e editado depois.
-* 📚 **Biblioteca de Modelos** em quatro abas:
+* 📚 **Biblioteca de Modelos** em cinco abas:
   * **Componentes** — os blocos base acima.
+  * **Modelos prontos** — os layouts que acompanham o plugin, em inglês e em português do Brasil.
   * **Modelos do site** — layouts da instituição, mantidos pelos gestores do site e somente leitura para professores.
   * **Meus modelos** — layouts pessoais de cada professor, com salvar, exportar e importar.
   * **Favoritos** — modelos favoritados de todas as abas, num só lugar.

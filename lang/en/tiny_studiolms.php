@@ -497,6 +497,7 @@ $string['tab_components'] = 'Components';
 $string['tab_favourites'] = 'Favourites';
 $string['tab_mine'] = 'My Templates';
 $string['tab_official'] = 'Site Templates';
+$string['tab_presets'] = 'Ready-made Layouts';
 $string['table_cols'] = 'Number of Columns';
 $string['table_header_bg'] = 'Header Background';
 $string['table_header_text'] = 'Header Text';

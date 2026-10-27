@@ -1,6 +1,6 @@
 # 🧪 Automated Tests
 
-StudioLMS ships with **251 PHPUnit test cases** across **41 files**, **252 JavaScript tests** across **44 files**, plus a **76-scenario Behat suite** across **20 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
+StudioLMS ships with **251 PHPUnit test cases** across **41 files**, **257 JavaScript tests** across **45 files**, plus a **77-scenario Behat suite** across **20 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
 
 ### PHPUnit — Unit & Integration Tests
 
@@ -50,9 +50,9 @@ AI tests never reach a real provider: `local_aihub`'s client is replaced by a st
 |------|-----------:|------:|----------------|
 | Blocks | 22 | 153 | What the blocks draw and how they behave: the chart, bar and gauge models, the width cap of the blocks that hold little, the accordion and resources options, the card layout and shadow, the heading and description of the grid, blocks inside a grid column, text typed on the canvas, colours and contrast (WCAG ratios), icon pairs, grid columns, the hover effect on every block, the hidden decorative emoji |
 | Safety and cleaning | 10 | 41 | Safety and the HTML cleaner: escaping, URL and AI-config sanitising, video URLs, blocks found by class where Moodle strips attributes, frontend events, no literal visible text in the AMD sources, no Bootstrap-5-only utilities, the editor's inline CSS |
-| Templates and library | 8 | 28 | Templates and the library: the template cache, importing a file, loading a template into the canvas in one step, the export button reading Export all or Export selected (n), the stacked link fields of the profile card, example texts in the site language, preset matching and its language notice |
+| Templates and library | 9 | 33 | Templates and the library: the template cache, importing a file, loading a template into the canvas in one step, the export button reading Export all or Export selected (n), the stacked link fields of the profile card, example texts in the site language, preset matching and its language notice |
 | Studio window | 4 | 30 | The Studio window: the sidebar split and its geometry, the active tab, the AI use policy gate |
-| **Total** | **44** | **252** | |
+| **Total** | **45** | **257** | |
 
 These run without a browser or Moodle: modules imported by the tests import nothing, and a test that needs `app.js` or a template reads the source file instead.
 
@@ -64,7 +64,7 @@ node --test tests/js/*.test.js
 
 | Feature file | Scenarios | What is covered |
 |--------------|----------:|----------------|
-| `manage_templates.feature` | 4 | The toolbar button is visible to a teacher and to a manager; switching between tabs works; all six tabs exist in the dialog |
+| `manage_templates.feature` | 4 | The toolbar button is visible to a teacher and to a manager; switching between tabs works; all the tabs exist in the dialog |
 | `save_template.feature` | 4 | Opening the dialog; all required tab buttons are present; clicking "My Templates" activates it; the library grid renders after clicking a tab |
 | `favourite_template.feature` | 4 | The Favourites tab button exists; clicking it activates the tab; the library grid renders; switching away and back to Components reactivates it correctly |
 | `import_export.feature` | 4 | The Export, Import and Save-as-template buttons are each present in "My Templates", and all three together |
@@ -81,7 +81,7 @@ node --test tests/js/*.test.js
 | `icon_picker.feature` | 1 | Escape closes the icon picker but keeps the composer and its blocks |
 | `insert_blocks.feature` | 26 | Every one of the 17 blocks can be added to the canvas, inserted into the page and read back; every block opens settings panels with editable fields; a new block shows its example texts in the site language |
 | `student_view.feature` | 3 | The blocks a teacher saved reach a student without editing attributes; a student can open and close an accordion and collapse and reopen the resources list |
-| `template_lifecycle.feature` | 8 | Save a template and see it under My templates; save it as a site template; My templates lists only the teacher's own; site templates are listed for a teacher who cannot delete them; favourite and unfavourite; delete after confirmation; load onto the canvas and insert |
+| `template_lifecycle.feature` | 9 | Save a template and see it under My templates; save it as a site template; My templates lists only the teacher's own; site templates are listed for a teacher who cannot delete them; the ready-made layouts have a tab of their own; favourite and unfavourite; delete after confirmation; load onto the canvas and insert |
 | `text_blocks_view.feature` | 1 | A page with only a heading and a button carries no editing attributes |
 | `toolbar_capability.feature` | 4 | The StudioLMS button follows `tiny/studiolms:use` in the course: held, absent for a student, lost where denied, and not hidden in another course |
 

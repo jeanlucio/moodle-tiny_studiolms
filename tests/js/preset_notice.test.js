@@ -17,7 +17,7 @@
  * Guard test for the one-time notice about the ready-made layouts, run via `node --test`.
  *
  * Regression test for the rules that make it a notice shown once: it is saved as seen the moment it is shown, only
- * the Official tab shows it, and only when the server says the layouts are a stand-in for the language. app.js
+ * the Ready-made Layouts tab shows it, and only when the server says the layouts are a stand-in for the language. app.js
  * needs the editor and the Moodle AMD loader, so it cannot run headless; the test checks those rules in the source.
  *
  * @package    tiny_studiolms
@@ -44,10 +44,10 @@ test('the notice is saved as seen the moment it is shown, and cannot be shown tw
     assert.ok(notice[0].indexOf('grid.prepend(notice)') < notice[0].indexOf('setUserPreference'));
 });
 
-test('only the Official tab shows it, and only when the server asked for it', () => {
+test('only the Ready-made Layouts tab shows it, and only when the server asked for it', () => {
     const app = read('amd/src/app.js');
 
-    assert.match(app, /if \(tabName === 'global' && presetNoticePending && presetsData\.length > 0\) \{/);
+    assert.match(app, /if \(tabName === 'presets' && presetNoticePending && presetsData\.length > 0\) \{/);
     assert.match(app, /presetsData\.length > 0\) \{\s*await showPresetLanguageNotice\(grid\);/);
 });
 

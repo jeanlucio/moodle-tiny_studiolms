@@ -61,6 +61,17 @@ Feature: Manage personal and site layout templates in StudioLMS
     Then the StudioLMS library shows the template "Official layout"
     And the StudioLMS dialog does not contain the ".slms-btn-tpl-delete" element
 
+  Scenario: The ready-made layouts have a tab of their own, apart from the site templates
+    Given I log in as "teacher1"
+    And I am on the "Test page" "page activity editing" page
+    And I click on the "StudioLMS" button for the "Page content" TinyMCE editor
+    When I click on the StudioLMS "presets" tab
+    Then the StudioLMS library shows the template "Module Start"
+    And the StudioLMS library does not show the template "Official layout"
+    And I click on the StudioLMS "global" tab
+    And the StudioLMS library shows the template "Official layout"
+    And the StudioLMS library does not show the template "Module Start"
+
   Scenario: Marking a template as a favourite lists it under Favourites
     Given I log in as "teacher1"
     And I am on the "Test page" "page activity editing" page
