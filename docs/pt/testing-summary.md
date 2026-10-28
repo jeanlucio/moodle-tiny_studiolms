@@ -1,6 +1,6 @@
 # 🧪 Testes Automatizados
 
-O StudioLMS inclui **274 casos de teste PHPUnit**, **334 testes de JavaScript** e uma suíte Behat com **85 cenários**, executados
+O StudioLMS inclui **279 casos de teste PHPUnit**, **339 testes de JavaScript** e uma suíte Behat com **85 cenários**, executados
 em todo push de CI na matriz completa (Moodle 4.5 → 5.x, PostgreSQL e MariaDB).
 
 ### PHPUnit — Testes Unitários e de Integração
@@ -13,9 +13,9 @@ em todo push de CI na matriz completa (Moodle 4.5 → 5.x, PostgreSQL e MariaDB)
 | Eventos | 3 | 10 |
 | Privacy API | 1 | 21 |
 | Integração com o editor (`plugininfo`, hook callbacks, folha de estilo do editor) | 3 | 21 |
-| Modelos e presets (cartão, gráficos, classes de hover, alinhamento e largura dos blocos, layouts prontos, textos) | 10 | 51 |
+| Modelos e presets (cartão, gráficos, classes de hover, alinhamento e largura dos blocos, layouts prontos, textos) | 10 | 56 |
 | Definições do banco, passo de upgrade e gerador de dados | 3 | 8 |
-| **Total** | **44** | **274** |
+| **Total** | **44** | **279** |
 
 ```bash
 vendor/bin/phpunit --testsuite tiny_studiolms_testsuite
@@ -26,7 +26,7 @@ stub, e um site sem nenhuma IA configurada é usado para exercitar o caminho "se
 
 ### JavaScript — Testes sem navegador
 
-**334 testes** em **53 arquivos** rodam com `node --test tests/js/*.test.js`, sem navegador nem Moodle: os modelos dos blocos, contraste e cores, escape e saneamento, a biblioteca de modelos e a janela do Studio.
+**339 testes** em **53 arquivos** rodam com `node --test tests/js/*.test.js`, sem navegador nem Moodle: os modelos dos blocos, contraste e cores, escape e saneamento, a biblioteca de modelos e a janela do Studio.
 
 ### Behat — Testes de Aceitação
 
