@@ -27,8 +27,8 @@
         "horizontal": true,
         "title": "Desempenho da Turma",
         "items": [
-            {"label": "Aprovados", "pct": 75, "size": 100, "color": 1},
-            {"label": "Em progresso", "pct": 15, "size": 20, "color": 2}
+            {"label": "Aprovados", "pct": 75, "shown": "75%", "size": 100, "color": 1},
+            {"label": "Em progresso", "pct": 15, "shown": "15%", "size": 20, "color": 2}
         ]
     }
 }}
@@ -41,7 +41,7 @@
         <div class="slms-bar-row__track">
             <div class="slms-bar-row__fill slms-bar-c{{color}}" style="width: {{size}}%"></div>
         </div>
-        <div class="slms-bar-row__pct">{{pct}}%</div>
+        <div class="slms-bar-row__pct">{{shown}}</div>
     </div>
     {{/items}}
     {{/horizontal}}
@@ -49,7 +49,7 @@
     <div class="slms-bar-cols">
         {{#items}}
         <div class="slms-bar-col">
-            <div class="slms-bar-col__pct">{{pct}}%</div>
+            <div class="slms-bar-col__pct">{{shown}}</div>
             <div class="slms-bar-col__plot">
                 <div class="slms-bar-col__fill slms-bar-c{{color}}" style="height: {{size}}%"></div>
             </div>

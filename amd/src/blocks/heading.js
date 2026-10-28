@@ -49,7 +49,7 @@ export default {
         state.text = textNode ? textNode.innerHTML : '';
         // The editor's own alignment buttons write a text-align on the heading; keep it as the field,
         // or the next redraw of the block would drop it.
-        const align = alignFromTextAlign(node.querySelector('h3, h4')?.style.textAlign);
+        const align = alignFromTextAlign(node.querySelector('h2, h3, h4')?.style.textAlign);
         if (align) {
             state.align = align;
         }
@@ -65,6 +65,7 @@ export default {
             if (btnConfig) {
                 btnConfig.addEventListener('click', () => {
                     const tplData = Object.assign({}, data);
+                    tplData.isH2 = data.level === 'h2';
                     tplData.isH3 = data.level === 'h3';
                     tplData.isH4 = data.level === 'h4';
                     Object.assign(tplData, alignVars(data.align, 'left'));
@@ -100,6 +101,7 @@ export default {
 
     renderHtml: async(data) => {
         const templateData = Object.assign({}, data);
+        templateData.isH2 = data.level === 'h2';
         templateData.isH3 = data.level === 'h3';
         templateData.isH4 = data.level === 'h4';
         templateData.align = normalizeAlign(data.align, 'left');

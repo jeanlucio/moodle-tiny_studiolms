@@ -431,6 +431,29 @@ const mendLegacySpacing = (root) => {
 };
 
 /**
+ * Let the keyboard reach a table that scrolls sideways.
+ *
+ * On a narrow screen the table scrolls inside its box, and a box that scrolls but cannot take focus leaves a keyboard
+ * user without a way to read the columns that are out of sight. The HTML cleaner of the course content drops
+ * tabindex, so it is set here, and only while the table really is wider than its box.
+ *
+ * @param {Element|Document} root The page, or a piece of content that has just entered it.
+ */
+const focusScrollableTables = (root) => {
+    const update = () => {
+        within(root, '.studiolms-table-wrap').forEach((wrap) => {
+            if (wrap.scrollWidth > wrap.clientWidth) {
+                wrap.setAttribute('tabindex', '0');
+            } else {
+                wrap.removeAttribute('tabindex');
+            }
+        });
+    };
+    update();
+    window.addEventListener('resize', update);
+};
+
+/**
  * Wire every StudioLMS block under a root.
  *
  * @param {Element|Document} root The page, or a piece of content that has just entered it.
@@ -447,6 +470,7 @@ const initIn = (root) => {
     hideDecorativeEmoji(root);
     fixResourceDescriptions(root);
     mendLegacySpacing(root);
+    focusScrollableTables(root);
 };
 
 /**

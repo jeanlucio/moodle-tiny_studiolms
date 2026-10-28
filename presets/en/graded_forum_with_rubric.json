@@ -15,7 +15,7 @@
                 "layout": "horizontal",
                 "btnText": "",
                 "btnUrl": "#",
-                "btnBg": "#e65100",
+                "btnBg": "#bf360c",
                 "btnTextCol": "#ffffff",
                 "btnAlign": "left",
                 "content": "<h3 style=\"color: #e65100; margin-top: 0;\"><span aria-hidden=\"true\">📢</span> <strong>Graded Forum [N]</strong></h3><p style=\"text-align: justify;\">Hello, [firstname]! How are you? This is graded activity <strong>#[N]</strong> of the course!</p><p style=\"text-align: justify;\">This is an <strong>individual forum</strong>. Each student must post their answer <strong>in the comments</strong>. <span aria-hidden=\"true\">💬</span></p>"
@@ -56,7 +56,7 @@
                 "cols": 3,
                 "rows": 7,
                 "style": "striped",
-                "headerBg": "#0288d1",
+                "headerBg": "#01579b",
                 "headerText": "#ffffff",
                 "cellData": [
                     [

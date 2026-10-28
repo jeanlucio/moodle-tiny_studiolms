@@ -61,6 +61,7 @@ const dataToPopupVars = (data) => {
         title: data.title || '',
         typeHorizontal: (data.type || 'horizontal') === 'horizontal',
         typeVertical: (data.type || 'horizontal') === 'vertical',
+        showValue: data.showValue === true,
     };
     for (let i = 0; i < MAX_ITEMS; i++) {
         const it = items[i] || {};
@@ -83,6 +84,7 @@ export default {
     defaultData: {
         align: 'center',
         type: 'horizontal',
+        showValue: false,
         title: '',
         items: [
             {label: '', value: 75},
@@ -117,6 +119,11 @@ export default {
                     };
 
                     titleEl?.addEventListener('input', applyChanges);
+
+                    popup.querySelector('#cb_show_value')?.addEventListener('change', (ev) => {
+                        data.showValue = ev.target.value === 'value';
+                        onUpdate(data);
+                    });
 
                     for (let i = 1; i <= MAX_ITEMS; i++) {
                         popup.querySelector(`#cb_label${i}`)?.addEventListener('input', applyChanges);
@@ -153,7 +160,7 @@ export default {
             type,
             horizontal: type === 'horizontal',
             title: data.title || '',
-            items: barModel(items),
+            items: barModel(items, data.showValue === true),
         });
     },
 };

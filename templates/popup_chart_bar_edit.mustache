@@ -26,6 +26,7 @@
         "title": "",
         "typeHorizontal": true,
         "typeVertical": false,
+        "showValue": false,
         "cb_color1": "#3b82f6",
         "cb_label1": "Aprovados",
         "cb_value1": "75",
@@ -207,6 +208,16 @@
                    aria-label="{{#str}}chart_bar_item_value, tiny_studiolms{{/str}} 6"/>
         </div>
 
+    </div>
+
+    <div class="mt-3">
+        <label for="cb_show_value" class="form-label small fw-semibold">
+            {{#str}}chart_bar_show, tiny_studiolms{{/str}}
+        </label>
+        <select id="cb_show_value" class="form-select form-select-sm">
+            <option value="share"{{^showValue}} selected{{/showValue}}>{{#str}}chart_bar_show_share, tiny_studiolms{{/str}}</option>
+            <option value="value"{{#showValue}} selected{{/showValue}}>{{#str}}chart_bar_show_value, tiny_studiolms{{/str}}</option>
+        </select>
     </div>
 
     <div class="form-text mt-1" style="font-size:11px;">

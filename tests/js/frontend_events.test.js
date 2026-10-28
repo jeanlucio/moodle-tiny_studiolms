@@ -60,3 +60,10 @@ test('the root itself is considered, not only what it contains', () => {
     // A node announced by the core can be a block itself, which querySelectorAll() on it would skip.
     assert.match(source, /root\.matches\?\.\(selector\) \? \[root, \.\.\.found\] : found/);
 });
+
+test('a table that scrolls sideways can take focus, and only while it scrolls', () => {
+    assert.match(source, /wrap\.scrollWidth > wrap\.clientWidth/);
+    assert.match(source, /wrap\.setAttribute\('tabindex', '0'\)/);
+    assert.match(source, /wrap\.removeAttribute\('tabindex'\)/);
+    assert.match(source, /focusScrollableTables\(root\);/);
+});

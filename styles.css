@@ -1519,7 +1519,7 @@ body.mce-content-body div.slms-grid-slot,
     padding: 0.5rem 1rem;
     font-weight: 600;
     color: inherit;
-    opacity: 0.7;
+    opacity: 0.85;
     cursor: pointer;
 }
 
@@ -2011,6 +2011,7 @@ a.studiolms-btn:focus-visible {
 }
 
 /* Heading */
+.studiolms-heading-h2,
 .studiolms-heading-h3 {
     background-color: var(--slms-bg, transparent);
     color: var(--slms-color, inherit);
@@ -2020,6 +2021,10 @@ a.studiolms-btn:focus-visible {
     font-size: 1.5rem;
     display: flex;
     align-items: center;
+}
+
+.studiolms-heading-h2 {
+    font-size: 1.75rem;
 }
 
 .studiolms-heading-h4 {
@@ -2033,7 +2038,12 @@ a.studiolms-btn:focus-visible {
     align-items: center;
 }
 
-/* Table */
+/* Table: on a narrow screen the table scrolls sideways inside its own box instead of being cut by the page. */
+.studiolms-table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
 .studiolms-table th {
     background-color: var(--slms-bg, #0f172a);
     color: var(--slms-color, #fff);
@@ -2700,8 +2710,13 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
 }
 
 /* Steps — where the class is: the ones before are done, the current one is ringed, the next ones are dimmed. */
+/* Dimmed, but not below the 4.5:1 contrast that text needs: the badge and the missing ring tell the step apart too. */
 .slms-infographic-steps-block .slms-steps-state-next {
-    opacity: 0.55;
+    opacity: 0.8;
+}
+
+.slms-infographic-steps-block .slms-steps-state-next .slms-steps__step-desc {
+    opacity: 1;
 }
 
 .slms-infographic-steps-block .slms-steps-state-current .slms-steps__badge {
@@ -4045,11 +4060,13 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
 }
 
 /* Heading: the icon and the text move together; the text stops growing so the pair can sit anywhere in the bar. */
+.studiolms-heading-wrap.slms-align-center .studiolms-heading-h2,
 .studiolms-heading-wrap.slms-align-center .studiolms-heading-h3,
 .studiolms-heading-wrap.slms-align-center .studiolms-heading-h4 {
     justify-content: center;
 }
 
+.studiolms-heading-wrap.slms-align-right .studiolms-heading-h2,
 .studiolms-heading-wrap.slms-align-right .studiolms-heading-h3,
 .studiolms-heading-wrap.slms-align-right .studiolms-heading-h4 {
     justify-content: flex-end;

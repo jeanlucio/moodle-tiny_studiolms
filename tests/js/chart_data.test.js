@@ -61,6 +61,14 @@ test('a bar is as long as its share of the largest value; the percentage is the 
     assert.equal(model[0].label, 'A');
 });
 
+test('a bar can print the value as it was typed instead of the share of the total', () => {
+    const items = [{label: 'A', value: 46}, {label: 'B', value: 41}];
+
+    assert.deepEqual(data.barModel(items).map((b) => b.shown), ['53%', '47%']);
+    assert.deepEqual(data.barModel(items, true).map((b) => b.shown), ['46', '41']);
+    assert.deepEqual(data.barModel([{label: 'C', value: 7.5}], true).map((b) => b.shown), ['7.5']);
+});
+
 test('a gauge is clamped to whole percents and given the zone of the traffic light', () => {
     assert.deepEqual(data.gaugeModel('150', 'x'), {value: 100, label: 'x', zone: 'ok'});
     assert.deepEqual(data.gaugeModel(-4, ''), {value: 0, label: '', zone: 'low'});

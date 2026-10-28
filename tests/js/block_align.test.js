@@ -137,11 +137,11 @@ test('heading: the field moves icon and text together and keeps what the editor 
     const template = read('templates/block_heading.mustache');
 
     assert.match(source, /defaultData: \{\n\s+align: 'left',/);
-    assert.match(source, /alignFromTextAlign\(node\.querySelector\('h3, h4'\)\?\.style\.textAlign\)/);
+    assert.match(source, /alignFromTextAlign\(node\.querySelector\('h2, h3, h4'\)\?\.style\.textAlign\)/);
     assert.match(source, /bindAlign\(popup, data, onUpdate\);/);
     assert.match(template, /class="studiolms-heading-wrap w-100 slms-align-\{\{align\}\}/);
     // Bootstrap's flex-grow-1 is !important, so the text only grows on the left, where it always did.
-    assert.equal(template.match(/slms-heading-text\{\{#alignLeft\}\} flex-grow-1\{\{\/alignLeft\}\}/g).length, 2);
+    assert.equal(template.match(/slms-heading-text\{\{#alignLeft\}\} flex-grow-1\{\{\/alignLeft\}\}/g).length, 3);
     assert.match(read('templates/popup_heading.mustache'), /\{\{> tiny_studiolms\/popup_block_align\}\}/);
 });
 
@@ -149,6 +149,7 @@ test('heading: the field moves icon and text together and keeps what the editor 
     test(`${file}: heading, gauge and stat cards have a rule for the ends of the row`, () => {
         const css = read(file);
 
+        assert.ok(css.includes('.studiolms-heading-wrap.slms-align-center .studiolms-heading-h2,'));
         assert.ok(css.includes('.studiolms-heading-wrap.slms-align-center .studiolms-heading-h3,'));
         assert.ok(css.includes('.studiolms-heading-wrap.slms-align-right .studiolms-heading-h4 {'));
         ['left', 'right'].forEach((value) => {

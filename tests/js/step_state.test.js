@@ -112,7 +112,7 @@ test('the popup has the field, with an option for none and one for each step', (
     test(`${file}: done is shown by a tick, current by a ring and the next ones are dimmed`, () => {
         const css = read(file);
 
-        assert.match(css, /\.slms-steps-state-next \{\s+opacity: 0\.55;/);
+        assert.match(css, /\.slms-steps-state-next \{\s+opacity: 0\.8;/);
         assert.match(css, /\.slms-steps-state-current \.slms-steps__badge \{\s+outline: 3px solid currentColor;/);
         assert.match(css, /\.slms-steps__state \{/);
     });

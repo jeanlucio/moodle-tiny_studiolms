@@ -57,8 +57,8 @@ final class chart_templates_test extends advanced_testcase {
             ['label' => 'Failed', 'pct' => 25, 'width' => 25, 'color' => 2],
         ];
         $items = [
-            ['label' => 'Passed', 'pct' => 75, 'size' => 100, 'color' => 1],
-            ['label' => 'Failed', 'pct' => 25, 'size' => 33.33, 'color' => 2],
+            ['label' => 'Passed', 'pct' => 75, 'shown' => '75%', 'size' => 100, 'color' => 1],
+            ['label' => 'Failed', 'pct' => 25, 'shown' => '25%', 'size' => 33.33, 'color' => 2],
         ];
         return [
             'chart' => ['block_chart', ['title' => 'T', 'slices' => $slices],

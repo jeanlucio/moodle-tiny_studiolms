@@ -17,7 +17,7 @@
             "type": "accordion",
             "config": {
                 "title": "Pontos-Chave do Módulo",
-                "color": "#16a34a",
+                "color": "#15803d",
                 "bg": "#ffffff",
                 "icon": "❯ / ❯",
                 "state": "closed",

@@ -76,7 +76,7 @@ class generator {
         $s = '1. stylizedHeading — A styled section heading with emoji icon.' . "\n";
         $s .= '   config keys:' . "\n";
         $s .= '   - text: string (heading text, plain text)' . "\n";
-        $s .= '   - level: "h3" or "h4"' . "\n";
+        $s .= '   - level: "h2", "h3" or "h4" (use "h2" only for the main title of a page, "h3" for sections)' . "\n";
         $s .= '   - icon: string (one emoji)' . "\n";
         $s .= '   - bgColor: string (hex background for the heading band)' . "\n";
         $s .= '   - textColor: string (hex text color)' . "\n\n";

@@ -65,11 +65,13 @@ export const sliceModel = (slices) => {
 
 /**
  * Model of the bar chart. A horizontal bar is as long as its share of the largest value, a vertical one as tall;
- * the percentage printed beside it is the share of the total.
+ * the percentage printed beside it is the share of the total, unless the block is set to print the value as it
+ * was typed.
  * @param {Array<{label: string, value: number}>} items Items with a value above zero.
- * @returns {Array<{label: string, pct: number, size: number, color: number}>} One entry per item.
+ * @param {boolean} [showValue] Print the typed value instead of the share of the total.
+ * @returns {Array<{label: string, pct: number, shown: string, size: number, color: number}>} One entry per item.
  */
-export const barModel = (items) => {
+export const barModel = (items, showValue = false) => {
     const total = items.reduce((sum, it) => sum + it.value, 0);
     const max = Math.max(...items.map((it) => it.value));
     if (total <= 0) {
@@ -78,6 +80,7 @@ export const barModel = (items) => {
     return items.map((it, i) => ({
         label: it.label || '',
         pct: Math.round((it.value / total) * 100),
+        shown: showValue ? String(it.value) : `${Math.round((it.value / total) * 100)}%`,
         size: two((it.value / max) * 100),
         color: colorOf(i),
     }));

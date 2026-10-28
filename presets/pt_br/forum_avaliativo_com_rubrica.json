@@ -15,7 +15,7 @@
                 "layout": "horizontal",
                 "btnText": "",
                 "btnUrl": "#",
-                "btnBg": "#e65100",
+                "btnBg": "#bf360c",
                 "btnTextCol": "#ffffff",
                 "btnAlign": "left",
                 "content": "<h3 style=\"color: #e65100; margin-top: 0;\"><span aria-hidden=\"true\">📢</span> <strong>Fórum Avaliativo [N]</strong></h3><p style=\"text-align: justify;\">Olá, [firstname]! Tudo bem? Esta é a <strong>[N]ª atividade avaliativa</strong> da disciplina!</p><p style=\"text-align: justify;\">Trata-se de um <strong>fórum individual</strong>. Cada estudante deverá postar sua resposta <strong>nos comentários</strong>. <span aria-hidden=\"true\">💬</span></p>"
@@ -56,7 +56,7 @@
                 "cols": 3,
                 "rows": 7,
                 "style": "striped",
-                "headerBg": "#0288d1",
+                "headerBg": "#01579b",
                 "headerText": "#ffffff",
                 "cellData": [
                     ["🎯 Critério", "📋 Descrição", "💯 Pontuação"],
