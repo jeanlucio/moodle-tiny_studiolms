@@ -117,3 +117,14 @@ test('the popup has the field, with an option for none and one for each step', (
         assert.match(css, /\.slms-steps__state \{/);
     });
 });
+
+['styles.css', 'editor_styles.css'].forEach((file) => {
+    test(`${file}: horizontal steps on a narrow screen put the badge in its own column`, () => {
+        const css = read(file);
+
+        // The badge, title, description and state are siblings, so a plain row would set them side by side.
+        assert.match(css, /\.slms-steps__item--h \{\s+display: grid;\s+grid-template-columns: 40px minmax\(0, 1fr\);/);
+        assert.match(css, /\.slms-steps__item--h > \.slms-steps__badge \{\s+grid-column: 1;/);
+        assert.match(css, /\.slms-steps__item--h > :not\(\.slms-steps__badge\) \{\s+grid-column: 2;/);
+    });
+});
