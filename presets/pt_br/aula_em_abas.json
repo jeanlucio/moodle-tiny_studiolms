@@ -6,7 +6,7 @@
             "type": "stylizedHeading",
             "config": {
                 "text": "Aula [N] — [Título da aula]",
-                "level": "h3",
+                "level": "h2",
                 "icon": "📖",
                 "bgColor": "#d3e9ea",
                 "textColor": "#0b5d63"

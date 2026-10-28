@@ -6,7 +6,7 @@
       "type": "stylizedHeading",
       "config": {
         "text": "Course Syllabus — [Course Name]",
-        "level": "h3",
+        "level": "h2",
         "icon": "📚",
         "bgColor": "#1F4E79",
         "textColor": "#ffffff"

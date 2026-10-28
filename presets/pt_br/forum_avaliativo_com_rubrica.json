@@ -19,7 +19,7 @@
                 "btnBg": "#bf360c",
                 "btnTextCol": "#ffffff",
                 "btnAlign": "left",
-                "content": "<h3 style=\"color: #e65100; margin-top: 0;\"><span aria-hidden=\"true\">📢</span> <strong>Fórum Avaliativo [N]</strong></h3><p style=\"text-align: justify;\">Olá, [firstname]! Tudo bem? Esta é a <strong>[N]ª atividade avaliativa</strong> da disciplina!</p><p style=\"text-align: justify;\">Trata-se de um <strong>fórum individual</strong>. Cada estudante deverá postar sua resposta <strong>nos comentários</strong>. <span aria-hidden=\"true\">💬</span></p>"
+                "content": "<h2 style=\"color: #e65100; margin-top: 0; font-size: 1.64rem;\"><span aria-hidden=\"true\">📢</span> <strong>Fórum Avaliativo [N]</strong></h2><p style=\"text-align: justify;\">Olá, [firstname]! Tudo bem? Esta é a <strong>[N]ª atividade avaliativa</strong> da disciplina!</p><p style=\"text-align: justify;\">Trata-se de um <strong>fórum individual</strong>. Cada estudante deverá postar sua resposta <strong>nos comentários</strong>. <span aria-hidden=\"true\">💬</span></p>"
             }
         },
         {
