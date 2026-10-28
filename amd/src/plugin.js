@@ -42,6 +42,8 @@ const policyAgreedOption = getPluginOptionName(pluginName, 'policyagreed');
 const presetNoticeOption = getPluginOptionName(pluginName, 'presetnotice');
 const contextIdOption = getPluginOptionName(pluginName, 'contextid');
 const aiHubKeysUrlOption = getPluginOptionName(pluginName, 'aihubkeysurl');
+const widgetsOption = getPluginOptionName(pluginName, 'widgets');
+const widgetsActiveOption = getPluginOptionName(pluginName, 'widgetsactive');
 
 
 export default Promise.all([
@@ -102,6 +104,17 @@ export default Promise.all([
         editor.options.register(aiHubKeysUrlOption, {
             processor: 'string',
             'default': '',
+        });
+
+        // The widgets the StudioLMS widgets filter offers here, and whether the filter is on in this context.
+        editor.options.register(widgetsOption, {
+            processor: 'array',
+            'default': [],
+        });
+
+        editor.options.register(widgetsActiveOption, {
+            processor: 'boolean',
+            'default': true,
         });
 
         // Tracks the last block clicked when the cursor cannot land inside it (e.g. SVG-based blocks).
@@ -238,9 +251,11 @@ export default Promise.all([
                 const aiHubKeysUrl = editor.options.get(aiHubKeysUrlOption);
                 const policyAgreed = editor.options.get(policyAgreedOption);
                 const presetNotice = editor.options.get(presetNoticeOption);
+                const widgets = editor.options.get(widgetsOption) || [];
+                const widgetsActive = editor.options.get(widgetsActiveOption);
                 initStudioApp(
                     editor, modal, editData, canManageGlobal, presets, hasAi, contextId, aiHubKeysUrl, policyAgreed,
-                    presetNotice
+                    presetNotice, widgets, widgetsActive
                 );
             } catch (error) {
                 Notification.exception(error);

@@ -56,7 +56,7 @@ test('the editor hands the server decision to the composer, and the preference i
     const lib = read('lib.php');
 
     assert.ok(plugin.includes("getPluginOptionName(pluginName, 'presetnotice')"));
-    assert.match(plugin, /aiHubKeysUrl, policyAgreed,\s*presetNotice\s*\)/);
+    assert.match(plugin, /aiHubKeysUrl, policyAgreed,\s*presetNotice(, widgets, widgetsActive)?\s*\)/);
     assert.ok(lib.includes("'tiny_studiolms_presetnotice_seen' => ["));
 });
 

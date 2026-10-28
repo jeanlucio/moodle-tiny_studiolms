@@ -39,7 +39,9 @@ const templatesDir = require('node:path').dirname(require.resolve('../../templat
 const OWN = ['block_button', 'block_card', 'block_callout', 'block_accordion', 'block_resources'];
 
 test('every block template carries the hover class, the shared ones on the root', () => {
-    const templates = fs.readdirSync(templatesDir).filter((name) => /^block_[a-z_]+\.mustache$/.test(name));
+    // The widget block is only the marker of a widget the filter draws: it has no look of its own to animate.
+    const templates = fs.readdirSync(templatesDir)
+        .filter((name) => /^block_[a-z_]+\.mustache$/.test(name) && name !== 'block_widget.mustache');
 
     templates.forEach((name) => {
         const source = read(`templates/${name}`).replace(/\{\{!.*?\}\}/gs, '');

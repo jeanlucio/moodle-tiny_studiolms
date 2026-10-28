@@ -83,6 +83,36 @@ final class plugininfo_test extends advanced_testcase {
     }
 
     /**
+     * The widgets of the filter are offered only when the filter is there, as the ones it has turned on, and the
+     * Studio is told whether the filter is on in the course.
+     */
+    public function test_configuration_offers_the_widgets_of_the_filter_when_it_is_there(): void {
+        $this->resetAfterTest();
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = \context_course::instance($course->id);
+        $teacher = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
+        $this->setUser($teacher);
+
+        $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+
+        if (!class_exists(\filter_studiolms\widgets::class)) {
+            $this->assertSame([], $config['widgets']);
+            return;
+        }
+        $this->assertSame(array_values(\filter_studiolms\widgets::enabled()), $config['widgets']);
+
+        set_config('enable_coursemap', 0, 'filter_studiolms');
+        $config = plugininfo::get_plugin_configuration_for_context($coursecontext, [], []);
+        $this->assertNotContains('coursemap', $config['widgets']);
+
+        // The filter is available but off in a course until a teacher turns it on there.
+        filter_set_global_state('studiolms', TEXTFILTER_OFF);
+        $this->assertFalse(plugininfo::get_plugin_configuration_for_context($coursecontext, [], [])['widgetsactive']);
+        filter_set_global_state('studiolms', TEXTFILTER_ON);
+        $this->assertTrue(plugininfo::get_plugin_configuration_for_context($coursecontext, [], [])['widgetsactive']);
+    }
+
+    /**
      * get_plugin_configuration_for_context() threads back the real context id.
      *
      * This is what lets every web service call re-check the capability in the same

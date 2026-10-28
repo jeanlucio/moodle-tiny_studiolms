@@ -21,7 +21,7 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {Blocks, blockForType, localizeBlockDefaults} from './blocks/registry';
+import {Blocks, blockForType, localizeBlockDefaults, widgetBlocks} from './blocks/registry';
 import {INVALID_IMPORT_FILE} from './template_import';
 import {exportTexts} from './export_label';
 import {getString} from 'core/str';
@@ -53,6 +53,8 @@ let presetsData = [];
 let aiState = {available: false, keysUrl: ''};
 let aiPolicyAgreed = false;
 let presetNoticePending = false;
+let widgetsEnabled = [];
+let widgetsActive = true;
 let currentTab = 'components';
 let tabsListenerAttached = false;
 
@@ -231,7 +233,9 @@ export const initStudioApp = (
     contextId = 0,
     aiKeysUrl = '',
     policyAgreed = false,
-    presetNotice = false
+    presetNotice = false,
+    widgets = [],
+    filterActive = true
 ) => {
     tinyEditorInstance = editor;
     moodleModalInstance = modal;
@@ -242,6 +246,8 @@ export const initStudioApp = (
     aiState = {available: hasAi, keysUrl: aiKeysUrl};
     aiPolicyAgreed = policyAgreed;
     presetNoticePending = presetNotice;
+    widgetsEnabled = widgets;
+    widgetsActive = filterActive;
     currentTab = 'components';
     canvasBlocks = [];
     canvasBlockCounter = 0;
@@ -254,6 +260,11 @@ export const initStudioApp = (
     // With no ready-made layouts to offer the tab would only be an empty page.
     if (presets.length === 0) {
         document.getElementById('slms-tab-presets')?.closest('li')?.remove();
+    }
+
+    // The widgets come from the filter: without it, or with every widget turned off, there is nothing to offer.
+    if (widgetBlocks(widgetsEnabled).length === 0) {
+        document.getElementById('slms-tab-widgets')?.closest('li')?.remove();
     }
 
     setupNavigation(canManageGlobal);
@@ -2260,6 +2271,24 @@ const ensureAiPolicy = async() => {
     });
 };
 
+/**
+ * Draws the tabs that offer blocks (the components and the widgets), which share the library grid.
+ *
+ * @param {string} tabName Value of the tab's data-slms-tab attribute.
+ * @returns {Promise<boolean>} True when the tab was one of them and has been drawn.
+ */
+const showBlockTab = async(tabName) => {
+    if (tabName === 'components') {
+        renderLibrary();
+        return true;
+    }
+    if (tabName === 'widgets') {
+        await renderWidgetsTab();
+        return true;
+    }
+    return false;
+};
+
 const switchTab = async(tabName) => {
     if (AI_TABS.includes(tabName) && !(await ensureAiPolicy())) {
         // Declined: the tab the user came from stays on the screen.
@@ -2287,8 +2316,7 @@ const switchTab = async(tabName) => {
         grid.style.gridTemplateColumns = '';
     }
 
-    if (tabName === 'components') {
-        renderLibrary();
+    if (await showBlockTab(tabName)) {
         return;
     }
 
@@ -2370,16 +2398,14 @@ const switchTab = async(tabName) => {
     }
 };
 
-const renderLibrary = () => {
-    const grid = document.getElementById('slms-library-grid');
-    if (!grid) {
-        return;
-    }
-
-    grid.innerHTML = '';
-    grid.style.gridTemplateColumns = '';
-
-    Object.values(Blocks).forEach(async(blockDef) => {
+/**
+ * Draws a card for each block definition into the library grid, as thumbnails that add the block when picked.
+ *
+ * @param {HTMLElement} grid The library grid.
+ * @param {object[]} blockDefs The block definitions to offer.
+ */
+const renderBlockCards = (grid, blockDefs) => {
+    blockDefs.forEach(async(blockDef) => {
         const card = document.createElement('div');
         card.className = 'slms-card';
         card.tabIndex = 0;
@@ -2445,6 +2471,44 @@ const renderLibrary = () => {
     });
 };
 
+const renderLibrary = () => {
+    const grid = document.getElementById('slms-library-grid');
+    if (!grid) {
+        return;
+    }
+
+    grid.innerHTML = '';
+    grid.style.gridTemplateColumns = '';
+    renderBlockCards(grid, Object.values(Blocks));
+};
+
+/**
+ * Draws the Widgets tab: a note on what the widgets are, a warning when the filter is not on in this course, and a card
+ * for each widget the filter offers. The cards are blocks that only write the marker of the widget.
+ */
+const renderWidgetsTab = async() => {
+    const grid = document.getElementById('slms-library-grid');
+    if (!grid) {
+        return;
+    }
+
+    grid.innerHTML = '';
+    grid.style.gridTemplateColumns = '';
+
+    const notes = [await getString('widgets_intro', 'tiny_studiolms')];
+    if (!widgetsActive) {
+        notes.push(await getString('widgets_inactive', 'tiny_studiolms'));
+    }
+    notes.forEach((text, index) => {
+        const note = document.createElement('p');
+        note.className = `slms-widgets-note small ${index === 0 ? 'text-body' : 'fw-bold'}`;
+        note.textContent = text;
+        grid.appendChild(note);
+    });
+
+    renderBlockCards(grid, widgetBlocks(widgetsEnabled));
+};
+
 // -----------------------------------------
 // SIDEBAR SEARCH
 // -----------------------------------------
@@ -2460,7 +2524,7 @@ const setupSidebarSearch = () => {
         const activeTabEl = document.querySelector('[data-slms-tab].active');
         const tabName = activeTabEl ? activeTabEl.getAttribute('data-slms-tab') : 'components';
 
-        if (tabName === 'components') {
+        if (tabName === 'components' || tabName === 'widgets') {
             document.querySelectorAll('#slms-library-grid .slms-card').forEach((card) => {
                 const lbl = (card.dataset.slmsLabel || '').toLowerCase();
                 card.style.display = (!query || lbl.includes(query)) ? '' : 'none';
@@ -2727,6 +2791,7 @@ const setupImportExportButtons = (canManageGlobal = false) => {
  */
 const LIBRARY_HEADING_STRINGS = {
     'components': 'library_add_heading',
+    'widgets': 'tab_widgets',
     'presets': 'tab_presets',
     'global': 'tab_official',
     'mine': 'tab_mine',

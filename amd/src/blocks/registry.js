@@ -40,6 +40,7 @@ import infographicFeatures from './infographic_features';
 import infographicSteps from './infographic_steps';
 import infographicTimeline from './infographic_timeline';
 import infographicComparison from './infographic_comparison';
+import {Widgets} from './widgets';
 import {applyDefaultTexts} from './localize_defaults';
 import {defaultText, loadDefaultTexts} from './default_texts';
 
@@ -91,8 +92,20 @@ const BLOCK_ALIASES = {webteca: 'resources'};
  */
 export const blockForType = (type) => {
     const id = Object.hasOwn(BLOCK_ALIASES, type) ? BLOCK_ALIASES[type] : type;
-    return Object.hasOwn(Blocks, id) ? Blocks[id] : undefined;
+    if (Object.hasOwn(Blocks, id)) {
+        return Blocks[id];
+    }
+    // A widget block already in a page opens for editing even if the filter was turned off since, so it can be removed.
+    return Object.hasOwn(Widgets, id) ? Widgets[id] : undefined;
 };
+
+/**
+ * The widget blocks the Widgets tab offers: the ones of the widgets the filter says are turned on.
+ *
+ * @param {string[]} enabled Identifiers from widgets::enabled() of the filter.
+ * @returns {object[]} The widget block definitions, in the order of the Widgets list.
+ */
+export const widgetBlocks = (enabled) => Object.values(Widgets).filter((block) => enabled.includes(block.widgetId));
 
 /** @var {boolean} Whether applyDefaultTexts() has already run on the blocks. */
 let localized = false;

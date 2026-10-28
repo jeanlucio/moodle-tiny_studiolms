@@ -1,0 +1,33 @@
+{{!
+	This file is part of Moodle - http://moodle.org/
+
+	Moodle is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Moodle is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_studiolms/toolbar_widget
+    @copyright 2026 Jean Lúcio
+
+    Toolbar of a widget block: what the widget shows and, for the ones that have them, the button of the options.
+
+    Example context (json): {"hasOptions": true, "note": "Shows the sections of the course as a path."}
+}}
+<div class="slms-toolbar-seg">
+    {{#hasOptions}}
+    <button type="button" class="slms-toolbar-btn" id="tb-widget-options">
+        <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+        {{#str}} toolbar_widget_options, tiny_studiolms {{/str}}
+    </button>
+    {{/hasOptions}}
+    <span class="slms-toolbar-note small">{{note}}</span>
+</div>

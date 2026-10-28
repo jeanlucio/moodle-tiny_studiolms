@@ -4368,3 +4368,56 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
 .slms-canvas-block-preview .object-fit-cover {
     object-fit: cover;
 }
+
+/*
+ * Widget blocks (the Widgets tab): the block only holds the marker that the StudioLMS widgets filter replaces when the
+ * page is shown. The marker is hidden on a page, so a marker the filter does not replace (it was turned off) shows
+ * nothing; the editor, the Studio canvas and the thumbnail of the card draw it as a dashed box with the name of the
+ * widget, which is the marker itself.
+ */
+.slms-widget-block {
+    margin: 0.5rem 0;
+}
+
+.slms-widget-marker {
+    display: none;
+}
+
+.mce-content-body .slms-widget-marker,
+.slms-canvas-block-preview .slms-widget-marker,
+.slms-card-thumb-content .slms-widget-marker {
+    display: block;
+    padding: 0.75rem 1rem;
+    border: 2px dashed var(--bs-primary, #0d47a1);
+    border-radius: 0.5rem;
+    background-color: var(--bs-primary-bg-subtle, #eff6ff);
+    color: var(--bs-primary-text-emphasis, #1e3a8a);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.slms-widget-forumstats .slms-widget-marker::before {
+    content: "📊 ";
+}
+
+.slms-widget-coursemap .slms-widget-marker::before {
+    content: "🧭 ";
+}
+
+.slms-widget-quizinfo .slms-widget-marker::before {
+    content: "✅ ";
+}
+
+/* The note above the cards of the Widgets tab takes the whole row of the grid. */
+.tiny_studiolms .slms-widgets-note {
+    grid-column: 1 / -1;
+    margin: 0;
+}
+
+.tiny_studiolms .slms-toolbar-note {
+    align-self: center;
+    padding-inline: 0.5rem;
+}
+

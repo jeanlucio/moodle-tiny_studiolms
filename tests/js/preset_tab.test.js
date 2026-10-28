@@ -38,7 +38,8 @@ test('the dialog has the tab of the layouts, right before the site templates', (
     const modal = read('templates/modal.mustache');
     const tabs = [...modal.matchAll(/data-slms-tab="([a-z-]+)"/g)].map((match) => match[1]);
 
-    assert.deepEqual(tabs.slice(0, 4), ['components', 'presets', 'global', 'mine']);
+    // The Widgets tab sits after the components: it is offered only when the widgets filter is there.
+    assert.deepEqual(tabs.slice(0, 5), ['components', 'widgets', 'presets', 'global', 'mine']);
     assert.match(modal, /id="slms-tab-presets"/);
     assert.match(modal, /tab_presets, tiny_studiolms/);
 });

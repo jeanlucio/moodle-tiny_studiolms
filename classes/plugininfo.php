@@ -39,6 +39,9 @@ use editor_tiny\plugin_with_menuitems;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class plugininfo extends plugin implements plugin_with_buttons, plugin_with_configuration, plugin_with_menuitems {
+    /** @var int The version of the marker syntax of the widgets filter that this plugin writes (widget_markers.js). */
+    private const WIDGETS_CONTRACT = 1;
+
     /**
      * Enable the plugin only for users who hold tiny/studiolms:use in the given context.
      *
@@ -92,11 +95,44 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
             'presetnotice'             => self::presets_enabled() && self::preset_notice_due(current_language()),
             'policyagreed'             => self::ai_policy_agreed(),
             'aihubkeysurl'             => self::aihub_keys_url($context),
+            'widgets'                  => self::get_widgets(),
+            'widgetsactive'            => self::widgets_filter_active($context),
             // Threaded back to every web service call so require_capability() there checks the
             // same real context this button's own visibility was gated on, instead of a
             // hardcoded context_system that an ordinary course-enrolled teacher never satisfies.
             'contextid'                => $context->id,
         ];
+    }
+
+    /**
+     * Returns the widgets the StudioLMS widgets filter offers, for the Widgets tab of the Studio.
+     *
+     * A soft integration, as with local_aihub: without the filter, or with one that speaks another version of the marker
+     * syntax, the list is empty and the tab does not appear, so the Studio works as before.
+     *
+     * @return string[] The identifiers of the widgets turned on in the site.
+     */
+    private static function get_widgets(): array {
+        if (!class_exists(\filter_studiolms\widgets::class)) {
+            return [];
+        }
+        if (\filter_studiolms\widgets::CONTRACT !== self::WIDGETS_CONTRACT) {
+            return [];
+        }
+        return array_values(\filter_studiolms\widgets::enabled());
+    }
+
+    /**
+     * Tells whether the widgets filter is on in the place the editor is used, so the tab can warn when it is not.
+     *
+     * @param \context $context Context the editor is used in.
+     * @return bool
+     */
+    private static function widgets_filter_active(\context $context): bool {
+        global $CFG;
+        require_once($CFG->libdir . '/filterlib.php');
+
+        return array_key_exists('studiolms', filter_get_active_in_context($context));
     }
 
     /**
