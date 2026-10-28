@@ -1,7 +1,7 @@
 # ✨ Features
 
 * 🧱 **19 Instructional Blocks,** inserted from the editor toolbar and configured through forms — no HTML required:
-  * **Stylised Heading** — `h2`, `h3` or `h4` heading with icon and background colour; use `h2` only for the page title so the heading order does not skip a level.
+  * **Stylised Heading** — page title, section title or subtitle (real `h2`, `h3` and `h4` headings, so the heading order is right for screen readers) with icon and background colour.
   * **Action Button** — call-to-action button with configurable URL, target, colours, border radius and alignment.
   * **Advanced Card** — card with image or a YouTube or Vimeo video, a rich editable body and an internal button; the image can be a rectangle or a circle.
   * **Accordion** — expandable topic with 4 icon styles and an open/closed initial state.

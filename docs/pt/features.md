@@ -1,7 +1,7 @@
 # ✨ Funcionalidades
 
 * 🧱 **19 Blocos Instrucionais,** inseridos pela barra de ferramentas do editor e configurados por formulários — sem precisar de HTML:
-  * **Título Estilizado** — título `h2`, `h3` ou `h4` com ícone e cor de fundo; use o `h2` só para o título da página, para que a ordem dos títulos não pule um nível.
+  * **Título Estilizado** — título da página, título de seção ou subtítulo (títulos `h2`, `h3` e `h4` de verdade, então a ordem fica certa para leitores de tela) com ícone e cor de fundo.
   * **Botão de Ação** — botão de chamada para ação com URL, destino, cores, raio de borda e alinhamento configuráveis.
   * **Cartão Avançado** — cartão com imagem ou vídeo do YouTube ou do Vimeo, corpo rico editável e botão interno; a imagem pode ser um retângulo ou um círculo.
   * **Accordion** — tópico expansível com 4 estilos de ícone e estado inicial aberto/fechado.
