@@ -18,6 +18,18 @@ configurações do grid.
 Para alterar um bloco depois, clique nele dentro do editor e abra o StudioLMS de novo — ele reabre
 com as configurações daquele bloco.
 
+**Escolhendo o nível de um título:** o bloco *Título* tem três níveis, e eles formam o esqueleto da página, a lista de
+títulos que um leitor de tela lê em voz alta e por onde a pessoa que o usa salta, como os capítulos de um livro. A página
+já mostra o próprio nome como título principal, então os níveis ficam assim:
+
+* **Título da página** — um por página, no topo. A faixa grande com uma linha embaixo.
+* **Título de seção** — cada parte grande da página. A faixa.
+* **Subtítulo** — um detalhe dentro de uma seção. A barra fina com uma linha ao lado.
+
+Desça um degrau de cada vez, sem pular: o subtítulo fica **dentro** de uma seção, que fica dentro do título da página.
+Um subtítulo colocado direto sob o título da página faz o leitor de tela anunciar um nível que não leva a lugar nenhum, e
+uma checagem de acessibilidade aponta isso. Se você quer o visual pequeno, coloque o subtítulo dentro de uma seção.
+
 **Reaproveitando layouts:**
 
 * **Salvar como modelo** guarda o canvas atual em **Meus modelos**; qualquer modelo pode ser

@@ -17,6 +17,18 @@ start of the toolbar) or a click on the grid itself brings back the settings of 
 To change a block later, click it inside the editor and open StudioLMS again — it reopens with that
 block's settings.
 
+**Choosing the level of a heading:** the *Heading* block has three levels, and they are the outline of the page, the
+list of titles that a screen reader reads out and that a person using one jumps through, much like the chapters of a
+book. The page already shows its own name as the main title, so the levels go like this:
+
+* **Page title** — one per page, at the top. The big banner with a rule under it.
+* **Section title** — each big part of the page. The banner.
+* **Subtitle** — a detail inside a section. The thin bar with a line at the side.
+
+Go down one step at a time and do not skip: a subtitle belongs **inside** a section, which belongs inside the page
+title. A subtitle placed straight under the page title makes a screen reader announce a level that leads nowhere, and
+an accessibility check flags it. If you want the small look, put the subtitle inside a section.
+
 **Reusing layouts:**
 
 * **Save as template** stores the current canvas in **My Templates**; each template can be starred
