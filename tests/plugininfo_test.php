@@ -113,6 +113,18 @@ final class plugininfo_test extends advanced_testcase {
     }
 
     /**
+     * A filter that speaks another version of the marker syntax is not offered: the Studio would write markers it
+     * cannot read.
+     */
+    public function test_widgets_of_another_version_of_the_syntax_are_not_offered(): void {
+        $this->resetAfterTest();
+
+        $method = new \ReflectionMethod(plugininfo::class, 'get_widgets');
+
+        $this->assertSame([], $method->invoke(null, 999));
+    }
+
+    /**
      * get_plugin_configuration_for_context() threads back the real context id.
      *
      * This is what lets every web service call re-check the capability in the same

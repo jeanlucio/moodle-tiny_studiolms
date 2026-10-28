@@ -110,13 +110,14 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
      * A soft integration, as with local_aihub: without the filter, or with one that speaks another version of the marker
      * syntax, the list is empty and the tab does not appear, so the Studio works as before.
      *
+     * @param int $supported The version of the marker syntax this plugin writes.
      * @return string[] The identifiers of the widgets turned on in the site.
      */
-    private static function get_widgets(): array {
+    private static function get_widgets(int $supported = self::WIDGETS_CONTRACT): array {
         if (!class_exists(\filter_studiolms\widgets::class)) {
             return [];
         }
-        if (\filter_studiolms\widgets::CONTRACT !== self::WIDGETS_CONTRACT) {
+        if (\filter_studiolms\widgets::CONTRACT !== $supported) {
             return [];
         }
         return array_values(\filter_studiolms\widgets::enabled());

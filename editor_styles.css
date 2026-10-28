@@ -4383,6 +4383,11 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
     display: none;
 }
 
+/* A widget the filter replaced with nothing (the marker is not for the place it is in) leaves no gap behind. */
+.slms-widget-block:empty {
+    display: none;
+}
+
 .mce-content-body .slms-widget-marker,
 .slms-canvas-block-preview .slms-widget-marker,
 .slms-card-thumb-content .slms-widget-marker {

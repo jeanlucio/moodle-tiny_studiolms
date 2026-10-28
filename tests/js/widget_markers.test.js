@@ -113,6 +113,7 @@ test('the marker is hidden on a page and drawn in the editor, the canvas and the
         const css = read(file);
 
         assert.match(css, /\.slms-widget-marker \{\s+display: none;/, file);
+        assert.match(css, /\.slms-widget-block:empty \{\s+display: none;/, file);
         assert.match(
             css,
             new RegExp('\\.mce-content-body \\.slms-widget-marker,\\s+\\.slms-canvas-block-preview \\.slms-widget-marker,'
