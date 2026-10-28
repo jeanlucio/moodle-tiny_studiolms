@@ -28,6 +28,7 @@ import {THEMES, esc, closePicker} from './infographic_shared';
 import {getContextId} from '../context';
 import {defaultText} from './default_texts';
 import {alignVars, bindAlign, normalizeAlign} from './block_align';
+import {bindWidth, normalizeWidth, widthVars} from './block_width';
 
 /**
  * Builds the inner HTML for the timeline.
@@ -136,6 +137,7 @@ export default {
 
     defaultData: {
         align: 'center',
+        width: 'reduced',
         title: '',
         theme: 'blue',
         items: [
@@ -162,6 +164,7 @@ export default {
 
                 const tplData = dataToPopupVars(data);
                 Object.assign(tplData, alignVars(data.align, 'center'));
+                Object.assign(tplData, widthVars(data.width, 'reduced'));
 
                 PopupManager.open(
                     btnEdit,
@@ -169,6 +172,7 @@ export default {
                     tplData,
                     (popup) => {
                         bindAlign(popup, data, onUpdate);
+                        bindWidth(popup, data, onUpdate);
                         const titleEl = popup.querySelector('#tl_title');
                         const themeButtons = popup.querySelectorAll('.slms-ig-theme-btn');
                         const aiBtnEl = popup.querySelector('#tl-ai-btn');
@@ -276,6 +280,7 @@ export default {
         return Templates.render('tiny_studiolms/block_infographic_timeline', {
             hoverEffect: data.hoverEffect,
             align: normalizeAlign(data.align, 'center'),
+            width: normalizeWidth(data.width, 'reduced'),
             theme,
             content,
         });

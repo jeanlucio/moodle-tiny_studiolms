@@ -28,6 +28,7 @@ import {THEMES, ICONS, esc, normaliseIcon, iconToSpan, openPicker, closePicker} 
 import {getContextId} from '../context';
 import {defaultText} from './default_texts';
 import {alignVars, bindAlign, normalizeAlign} from './block_align';
+import {bindWidth, normalizeWidth, widthVars} from './block_width';
 import {MAX_STEPS, normalizeCurrent, stepState} from './step_state';
 
 // HTML renderers — vertical (default) and horizontal.
@@ -228,6 +229,7 @@ export default {
 
     defaultData: {
         align: 'center',
+        width: 'reduced',
         title: '',
         theme: 'blue',
         layout: 'vertical',
@@ -255,9 +257,11 @@ export default {
 
                 const tplData = dataToPopupVars(data);
                 Object.assign(tplData, alignVars(data.align, 'center'));
+                Object.assign(tplData, widthVars(data.width, 'reduced'));
 
                 PopupManager.open(btnEdit, 'tiny_studiolms/popup_infographic_steps_edit', tplData, (popup) => {
                     bindAlign(popup, data, onUpdate);
+                    bindWidth(popup, data, onUpdate);
                     const titleEl = popup.querySelector('#st_title');
                     const themeButtons = popup.querySelectorAll('.slms-ig-theme-btn');
                     const aiBtnEl = popup.querySelector('#st-ai-btn');
@@ -414,6 +418,7 @@ export default {
         return Templates.render('tiny_studiolms/block_infographic_steps', {
             hoverEffect: data.hoverEffect,
             align: normalizeAlign(data.align, 'center'),
+            width: normalizeWidth(data.width, 'reduced'),
             theme,
             layout,
             content,

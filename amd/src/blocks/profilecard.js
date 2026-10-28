@@ -26,6 +26,7 @@ import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {profilePalette} from './contrast';
 import {alignVars, bindAlign, normalizeAlign} from './block_align';
+import {bindWidth, normalizeWidth, widthVars} from './block_width';
 
 // The contact links of the card, each a label and an address: e-mail, messaging apps, academic profiles.
 const LINK_SLOTS = [0, 1, 2, 3, 4, 5];
@@ -36,6 +37,7 @@ export default {
     icon: '👤',
     defaultData: {
         align: 'center',
+        width: 'reduced',
         photoUrl:   '',
         name:       '',
         role:       '',
@@ -78,9 +80,11 @@ export default {
                 btnContent.addEventListener('click', () => {
                     const tplData = Object.assign({}, data, {blockColorValue: data.accentColor},
                         alignVars(data.align, 'center'));
+                    Object.assign(tplData, widthVars(data.width, 'reduced'));
 
                     PopupManager.open(btnContent, 'tiny_studiolms/popup_profilecard_content', tplData, (popup) => {
                         bindAlign(popup, data, onUpdate);
+                        bindWidth(popup, data, onUpdate);
                         // One colour for the block fills the two below, which stay there to be fine tuned.
                         popup.querySelector('#pop_pc_block_color')?.addEventListener('input', (ev) => {
                             const palette = profilePalette(ev.target.value);
@@ -153,6 +157,7 @@ export default {
             accentColor: data.accentColor || '#0f6cbf',
             hoverEffect: data.hoverEffect,
             align: normalizeAlign(data.align, 'center'),
+            width: normalizeWidth(data.width, 'reduced'),
         };
 
         return Templates.render('tiny_studiolms/block_profilecard', tData);

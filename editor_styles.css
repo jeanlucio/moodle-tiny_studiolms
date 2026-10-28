@@ -1890,6 +1890,10 @@ a.studiolms-btn:focus-visible {
     margin-bottom: 1.5rem;
 }
 
+.studiolms-resources-wrap {
+    max-width: 900px;
+}
+
 /*
  * What opens a grid column starts at the top of the column, whatever its own margin: the blocks of a row of columns
  * then start at the same height. The card keeps its margin on the card inside its wrap.
@@ -4080,6 +4084,27 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
 .studiolms-heading-wrap.slms-align-center .slms-heading-text,
 .studiolms-heading-wrap.slms-align-right .slms-heading-text {
     min-width: 1ch;
+}
+
+/*
+ * Width option. The blocks that hold little are capped above; "full" lifts the cap, so the block takes the whole column.
+ * The table is the other way round: it takes the whole column, and "reduced" caps and centres it like the charts.
+ * Markup saved before the option has neither class, so it looks as it always did.
+ */
+.studiolms-profilecard.slms-width-full,
+.slms-chart-block.slms-width-full,
+.slms-chart-bar-block.slms-width-full,
+.slms-infographic-steps--vertical.slms-width-full,
+.slms-infographic-timeline-block.slms-width-full,
+.slms-infographic-comparison-block.slms-width-full,
+.studiolms-resources-wrap.slms-width-full,
+.studiolms-card-wrap.slms-width-full > .studiolms-card {
+    max-width: none;
+}
+
+.studiolms-table-wrap.slms-width-reduced {
+    max-width: 720px;
+    margin-inline: auto;
 }
 
 /* Gauges and stat cards: the row of cards sits at the start, the middle or the end of the block. */

@@ -29,6 +29,7 @@ import {getContextId} from '../context';
 import {parseVideoUrl} from './video_embed';
 import {applyTitleColor} from './title_color';
 import {alignVars, bindAlign, normalizeAlign} from './block_align';
+import {bindWidth, normalizeWidth, widthVars} from './block_width';
 
 export default {
     id: 'advancedCard',
@@ -36,6 +37,7 @@ export default {
     icon: '🃏',
     defaultData: {
         align: 'left',
+        width: 'reduced',
         bg: '#ffffff',
         text: '#212529',
         // Colour of the headings of the text. Empty is the colour of the text.
@@ -91,9 +93,11 @@ export default {
                     tplData.accent = data.accent !== false;
                     tplData.titleColorValue = data.titleColor || data.text;
                     Object.assign(tplData, alignVars(data.align, 'left'));
+                    Object.assign(tplData, widthVars(data.width, 'reduced'));
 
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_card_design', tplData, (popup) => {
                         bindAlign(popup, data, onUpdate);
+                        bindWidth(popup, data, onUpdate);
                         // Explicit property mapping.
                         const propMap = {
                             '#pop_card_bg': 'bg',
@@ -253,6 +257,7 @@ export default {
         const shadowClasses = {none: '', sm: 'slms-shadow-sm', md: 'slms-shadow-md', lg: 'slms-shadow-lg'};
         templateData.shadowClass = shadowClasses[data.shadow] ?? shadowClasses.md;
         templateData.align = normalizeAlign(data.align, 'left');
+        templateData.width = normalizeWidth(data.width, 'reduced');
 
         templateData.hasMedia = data.mediaType !== 'none' && data.mediaUrl.trim() !== '';
         // A preset leaves a marker such as [URL_DA_FOTO] for the author to replace. It is not an address, so a

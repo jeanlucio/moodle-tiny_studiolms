@@ -25,6 +25,7 @@ import Templates from 'core/templates';
 import Notification from 'core/notification';
 import {PALETTE, barModel} from './chart_data';
 import {alignVars, bindAlign, normalizeAlign} from './block_align';
+import {bindWidth, normalizeWidth, widthVars} from './block_width';
 
 const MAX_ITEMS = 6;
 
@@ -83,6 +84,7 @@ export default {
 
     defaultData: {
         align: 'center',
+        width: 'reduced',
         type: 'horizontal',
         showValue: false,
         title: '',
@@ -106,9 +108,11 @@ export default {
             btnEdit.addEventListener('click', () => {
                 const tplData = dataToPopupVars(data);
                 Object.assign(tplData, alignVars(data.align, 'center'));
+                Object.assign(tplData, widthVars(data.width, 'reduced'));
 
                 PopupManager.open(btnEdit, 'tiny_studiolms/popup_chart_bar_edit', tplData, (popup) => {
                     bindAlign(popup, data, onUpdate);
+                    bindWidth(popup, data, onUpdate);
                     const typeBtns = popup.querySelectorAll('.slms-cb-type-btn');
                     const titleEl = popup.querySelector('#cb_title');
 
@@ -157,6 +161,7 @@ export default {
         return Templates.render('tiny_studiolms/block_chart_bar', {
             hoverEffect: data.hoverEffect,
             align: normalizeAlign(data.align, 'center'),
+            width: normalizeWidth(data.width, 'reduced'),
             type,
             horizontal: type === 'horizontal',
             title: data.title || '',

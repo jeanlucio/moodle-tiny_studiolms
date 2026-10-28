@@ -24,6 +24,7 @@
 import Templates from 'core/templates';
 import Notification from 'core/notification';
 import {tablePalette} from './contrast';
+import {bindWidth, normalizeWidth, widthVars} from './block_width';
 
 export default {
     id: 'table',
@@ -35,6 +36,7 @@ export default {
         style: 'striped',
         headerBg: '#0f172a',
         headerText: '#ffffff',
+        width: 'full',
         cellData: []
     },
 
@@ -102,8 +104,10 @@ export default {
                     // Anything that is not striped is drawn bordered, so a stored "bordered" selects "default".
                     tplData.isDefault = data.style !== 'striped';
                     tplData.blockColorValue = data.headerBg;
+                    Object.assign(tplData, widthVars(data.width, 'full'));
 
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_table_design', tplData, (popup) => {
+                        bindWidth(popup, data, onUpdate);
                         // One colour for the block fills the two below, which stay there to be fine tuned.
                         popup.querySelector('#pop_table_block_color')?.addEventListener('input', (ev) => {
                             const palette = tablePalette(ev.target.value);
@@ -145,6 +149,7 @@ export default {
     renderHtml: (data) => {
         const tData = Object.assign({}, data);
         tData.isStriped = data.style === 'striped';
+        tData.width = normalizeWidth(data.width, 'full');
 
         const numRows = Math.max(2, parseInt(data.rows) || 4);
         const numCols = Math.max(1, parseInt(data.cols) || 3);
