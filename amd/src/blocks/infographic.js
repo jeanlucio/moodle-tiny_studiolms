@@ -34,6 +34,9 @@ import {alignVars, bindAlign, normalizeAlign} from './block_align';
 
 const DEFAULT_ICON = 'fa-solid fa-circle-info';
 
+// Rows of the edit popup. Five cards fit in a line on a wide page; for more, use a second block under the first.
+const ITEM_COUNT = 5;
+
 // ---------------------------------------------------------------------------
 // Layout renderers — add future layouts here.
 // ---------------------------------------------------------------------------
@@ -106,7 +109,7 @@ const dataToPopupVars = (data) => {
         themeRed: data.theme === 'red',
         themeBlack: data.theme === 'black',
     };
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < ITEM_COUNT; i++) {
         const item = items[i] || {};
         out[`item${i + 1}_icon`] = item.icon || DEFAULT_ICON;
         out[`item${i + 1}_value`] = item.value || '';
@@ -116,13 +119,13 @@ const dataToPopupVars = (data) => {
 };
 
 /**
- * Reads the 4 item rows from the popup DOM back into data.items.
+ * Reads the item rows from the popup DOM back into data.items.
  * @param {Element} popup
  * @param {object} data
  */
 const readItemsFromPopup = (popup, data) => {
     const items = [];
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= ITEM_COUNT; i++) {
         const icon = popup.querySelector(`#ig_item${i}_icon`)?.value?.trim() || DEFAULT_ICON;
         const value = popup.querySelector(`#ig_item${i}_value`)?.value?.trim() || '';
         const label = popup.querySelector(`#ig_item${i}_label`)?.value?.trim() || '';
@@ -193,7 +196,7 @@ export default {
                     }
 
                     // Value and label field listeners.
-                    for (let i = 1; i <= 4; i++) {
+                    for (let i = 1; i <= ITEM_COUNT; i++) {
                         ['value', 'label'].forEach(field => {
                             popup.querySelector(`#ig_item${i}_${field}`)
                                 ?.addEventListener('input', applyChanges);
@@ -201,7 +204,7 @@ export default {
                     }
 
                     // Icon picker buttons.
-                    for (let i = 1; i <= 4; i++) {
+                    for (let i = 1; i <= ITEM_COUNT; i++) {
                         const iconBtn = popup.querySelector(`.slms-ig-icon-btn[data-item="${i}"]`);
                         const iconInput = popup.querySelector(`#ig_item${i}_icon`);
                         if (iconBtn && iconInput) {
@@ -258,7 +261,7 @@ export default {
                                     titleEl.value = data.title;
                                 }
                                 const newVars = dataToPopupVars(data);
-                                for (let i = 1; i <= 4; i++) {
+                                for (let i = 1; i <= ITEM_COUNT; i++) {
                                     const iconInput = popup.querySelector(`#ig_item${i}_icon`);
                                     const iconBtn = popup.querySelector(`.slms-ig-icon-btn[data-item="${i}"]`);
                                     const valueEl = popup.querySelector(`#ig_item${i}_value`);

@@ -15,7 +15,7 @@
   * **Chart** — the share of each part in the whole as one stacked bar with a legend, up to 6 slices, custom labels.
   * **Bar Chart** — horizontal or vertical, up to 6 bars; the number printed on a bar can be its share of the total or the value as typed.
   * **Gauge** — semi-circle gauge with traffic-light colours (green ≥ 67 %, amber ≥ 34 %, red below); 1–3 gauges side by side.
-  * **Infographic — Stats** — up to 4 items combining an icon (from a 40-icon picker), a value and a label.
+  * **Infographic — Stats** — up to 5 items combining an icon (from a 40-icon picker), a value and a label.
   * **Infographic — Steps** — numbered flow with icon and description, vertical or horizontal, for methods, tutorials and workflows; a **Current step** can be marked (the ones before it show as done, the ones after it are dimmed).
   * **Infographic — Features** — icon + title + description grid, for competencies and course highlights.
   * **Infographic — Timeline** — vertical timeline with date/period, icon and description.

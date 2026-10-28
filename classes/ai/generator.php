@@ -545,7 +545,7 @@ class generator {
         $p .= 'Schema: {"title": "string", "items": [{"icon": "string", "value": "string",'
             . ' "label": "string"}, ...]}' . "\n\n";
         $p .= 'Rules:' . "\n";
-        $p .= '- Generate 3 or 4 items' . "\n";
+        $p .= '- Generate 3 to 5 items' . "\n";
         $p .= '- Each "icon" must be from this curated list (use ONLY these):'
             . ' ' . self::icon_list_hint() . "\n";
         $p .= '- "value" must be a short metric: number, percentage, time or short word (max 8 chars)' . "\n";
@@ -601,6 +601,9 @@ class generator {
         if (empty($safeitems)) {
             throw new \moodle_exception('infographic_ai_error', 'tiny_studiolms');
         }
+
+        // The edit popup has five rows, so more than that would be dropped there anyway.
+        $safeitems = array_slice($safeitems, 0, 5);
 
         return [
             'title'    => $safetitle,

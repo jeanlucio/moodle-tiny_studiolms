@@ -19,7 +19,7 @@
 
     Edit popup for the StudioLMS infographic block.
     Each item row has a visual icon-picker button instead of a text field,
-    plus a value input and a label input. Up to 4 items; blank rows are ignored on render.
+    plus a value input and a label input. Up to 5 items; blank rows are ignored on render.
 
     Example context (json):
     {
@@ -36,6 +36,9 @@
         "item4_icon": "fa-solid fa-circle-info",
         "item4_value": "",
         "item4_label": "",
+        "item5_icon": "fa-solid fa-circle-info",
+        "item5_value": "",
+        "item5_label": "",
         "themeBlue": true,
         "themeGreen": false,
         "themePurple": false,
@@ -158,6 +161,30 @@
                    value="{{item4_label}}"
                    placeholder="{{#str}}infographic_item_label_ph, tiny_studiolms{{/str}}"
                    aria-label="{{#str}}infographic_item_label, tiny_studiolms{{/str}} 4"/>
+        </div>
+
+        {{! Item 5 — optional }}
+        <div class="slms-ig-item-row d-flex align-items-center">
+            <button type="button"
+                    class="slms-ig-icon-btn"
+                    data-item="5"
+                    aria-label="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}"
+                    title="{{#str}}infographic_choose_icon, tiny_studiolms{{/str}}">
+                <i class="{{item5_icon}}" aria-hidden="true"></i>
+            </button>
+            <input type="hidden" id="ig_item5_icon" value="{{item5_icon}}"/>
+            <input type="text"
+                   id="ig_item5_value"
+                   class="form-control form-control-sm slms-ig-value-col"
+                   value="{{item5_value}}"
+                   placeholder="–"
+                   aria-label="{{#str}}infographic_item_value, tiny_studiolms{{/str}} 5"/>
+            <input type="text"
+                   id="ig_item5_label"
+                   class="form-control form-control-sm slms-ig-label-col"
+                   value="{{item5_label}}"
+                   placeholder="{{#str}}infographic_item_label_ph, tiny_studiolms{{/str}}"
+                   aria-label="{{#str}}infographic_item_label, tiny_studiolms{{/str}} 5"/>
         </div>
     </div>
 

@@ -15,7 +15,7 @@
   * **Gráfico de Composição** — a parte de cada fatia no todo, numa barra empilhada com legenda, até 6 fatias, rótulos personalizados.
   * **Gráfico de Barras** — horizontal ou vertical, até 6 barras; o número impresso na barra pode ser a parte do total ou o valor digitado.
   * **Velocímetro** — gauge semicircular com cores de semáforo (verde ≥ 67%, âmbar ≥ 34%, vermelho abaixo); 1–3 velocímetros lado a lado.
-  * **Infográfico — Estatísticas** — até 4 itens combinando ícone (de um seletor com 40 opções), valor e rótulo.
+  * **Infográfico — Estatísticas** — até 5 itens combinando ícone (de um seletor com 40 opções), valor e rótulo.
   * **Infográfico — Passos** — fluxo numerado com ícone e descrição, vertical ou horizontal, para metodologias, tutoriais e fluxos de trabalho; dá para marcar a **Etapa atual** (as anteriores aparecem como concluídas e as seguintes esmaecidas).
   * **Infográfico — Funcionalidades** — grade de ícone + título + descrição, para competências e destaques do curso.
   * **Infográfico — Linha do Tempo** — linha do tempo vertical com data/período, ícone e descrição.
