@@ -31,6 +31,9 @@ screenshots, AI features and where the AI comes from, the automated tests, and s
 | Moodle    | 4.5 – 5.3 |
 | PHP       | 8.1+    |
 
+Optional: the AI features use the AI Hub or a core AI provider, and four ready-made layouts greet the student with
+`[firstname]`, a shortcode of the third-party `filter_shortcodes` plugin (see the documentation). Nothing depends on them.
+
 ### 🛠️ Installation
 
 1. Download the `.zip` file or clone this repository.
@@ -76,6 +79,9 @@ blocos, capturas de tela, recursos de IA e de onde vem a IA, os testes automatiz
 |------------|--------|
 | Moodle     | 4.5 – 5.3 |
 | PHP        | 8.1+   |
+
+Opcional: os recursos de IA usam a Central de IA ou um provedor de IA do núcleo, e quatro modelos prontos cumprimentam o
+estudante com `[firstname]`, um atalho do plugin de terceiros `filter_shortcodes` (veja a documentação). Nada depende deles.
 
 ### 🛠️ Instalação
 
