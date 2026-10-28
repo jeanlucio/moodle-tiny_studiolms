@@ -14,6 +14,7 @@
         {
             "type": "resources",
             "config": {
+                "width": "full",
                 "title": "Materiais de Apoio",
                 "desc": "Recursos complementares para aprofundar seus estudos.",
                 "bg": "#ffffff",

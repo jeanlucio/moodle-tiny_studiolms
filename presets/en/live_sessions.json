@@ -27,6 +27,7 @@
     {
       "type": "resources",
       "config": {
+        "width": "full",
         "title": "Recordings and slides",
         "desc": "Material from each live session.",
         "bg": "#e6f2f2",

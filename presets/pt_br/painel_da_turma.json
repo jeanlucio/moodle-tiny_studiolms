@@ -67,6 +67,7 @@
         {
             "type": "chartBar",
             "config": {
+                "width": "full",
                 "align": "center",
                 "type": "horizontal",
                 "title": "Entregas por módulo",

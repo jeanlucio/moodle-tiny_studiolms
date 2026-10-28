@@ -4088,7 +4088,7 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
 
 /*
  * Width option. The blocks that hold little are capped above; "full" lifts the cap, so the block takes the whole column.
- * The table is the other way round: it takes the whole column, and "reduced" caps and centres it like the charts.
+ * The table, the heading and the callout are the other way round: they take the whole column, and "reduced" caps and centres them like the charts.
  * Markup saved before the option has neither class, so it looks as it always did.
  */
 .studiolms-profilecard.slms-width-full,
@@ -4102,7 +4102,9 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
     max-width: none;
 }
 
-.studiolms-table-wrap.slms-width-reduced {
+.studiolms-table-wrap.slms-width-reduced,
+.studiolms-heading-wrap.slms-width-reduced,
+.studiolms-callout-wrap.slms-width-reduced {
     max-width: 720px;
     margin-inline: auto;
 }

@@ -27,6 +27,7 @@
     {
       "type": "resources",
       "config": {
+        "width": "full",
         "title": "Gravações e slides",
         "desc": "Material de cada encontro síncrono.",
         "bg": "#e6f2f2",

@@ -27,6 +27,7 @@ import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {calloutPalette} from './contrast';
 import {getContextId} from '../context';
+import {bindWidth, normalizeWidth, widthVars} from './block_width';
 
 export default {
     id: 'callout',
@@ -34,6 +35,7 @@ export default {
     icon: '💡',
     defaultData: {
         icon: '💡',
+        width: 'full',
         backgroundColor: '#fef9c3',
         textColor: '#854d0e',
         borderColor: '#eab308',
@@ -67,8 +69,10 @@ export default {
                     const tplData = Object.assign({}, data);
                     tplData[`hover_${data.hoverEffect || 'none'}`] = true;
                     tplData.blockColorValue = data.borderColor;
+                    Object.assign(tplData, widthVars(data.width, 'full'));
 
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_callout_design', tplData, (popup) => {
+                        bindWidth(popup, data, onUpdate);
                         // One colour for the block fills the three below, which stay there to be fine tuned.
                         popup.querySelector('#pop_callout_block_color')?.addEventListener('input', (ev) => {
                             const palette = calloutPalette(ev.target.value);
@@ -166,6 +170,7 @@ export default {
 
     renderHtml: async(data) => {
         const tData = Object.assign({}, data);
+        tData.width = normalizeWidth(data.width, 'full');
 
         tData.hasIcon = data.icon && data.icon.trim() !== '';
 

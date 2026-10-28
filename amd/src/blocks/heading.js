@@ -25,6 +25,7 @@ import Templates from 'core/templates';
 import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {alignFromTextAlign, alignVars, bindAlign, normalizeAlign} from './block_align';
+import {bindWidth, normalizeWidth, widthVars} from './block_width';
 
 export default {
     id: 'stylizedHeading',
@@ -32,6 +33,7 @@ export default {
     icon: '🔠',
     defaultData: {
         align: 'left',
+        width: 'full',
         text: '',
         level: 'h3',
         icon: '🎯',
@@ -69,9 +71,11 @@ export default {
                     tplData.isH3 = data.level === 'h3';
                     tplData.isH4 = data.level === 'h4';
                     Object.assign(tplData, alignVars(data.align, 'left'));
+                    Object.assign(tplData, widthVars(data.width, 'full'));
 
                     PopupManager.open(btnConfig, 'tiny_studiolms/popup_heading', tplData, (popup) => {
                         bindAlign(popup, data, onUpdate);
+                        bindWidth(popup, data, onUpdate);
                         const propMap = {
                             '#pop_head_level': 'level',
                             '#pop_head_icon': 'icon',
@@ -106,6 +110,7 @@ export default {
         templateData.isH4 = data.level === 'h4';
         templateData.align = normalizeAlign(data.align, 'left');
         Object.assign(templateData, alignVars(data.align, 'left'));
+        templateData.width = normalizeWidth(data.width, 'full');
 
         if (!templateData.text || templateData.text.trim() === '') {
             const defaultText = await getString('default_heading_text', 'tiny_studiolms');

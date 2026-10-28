@@ -45,6 +45,8 @@ const BLOCKS = [
     ['card', 'block_card', 'popup_card_design', 'reduced'],
     ['resources', 'block_resources', 'popup_resources_general', 'reduced'],
     ['table', 'block_table', 'popup_table_design', 'full'],
+    ['heading', 'block_heading', 'popup_heading', 'full'],
+    ['callout', 'block_callout', 'popup_callout_design', 'full'],
 ];
 
 let width;
@@ -119,7 +121,10 @@ BLOCKS.forEach(([block, template, popup, fallback]) => {
             '.slms-infographic-timeline-block.slms-width-full', '.slms-infographic-comparison-block.slms-width-full',
             '.studiolms-resources-wrap.slms-width-full', '.studiolms-card-wrap.slms-width-full > .studiolms-card',
         ].forEach((selector) => assert.ok(selectors.includes(selector), selector));
-        assert.match(css, /\.studiolms-table-wrap\.slms-width-reduced \{\s+max-width: 720px;\s+margin-inline: auto;/);
+        ['table', 'heading', 'callout'].forEach((name) => {
+            assert.match(css, new RegExp(`\\.studiolms-${name}-wrap\\.slms-width-reduced[,\\s{]`), name);
+        });
+        assert.match(css, /\.studiolms-callout-wrap\.slms-width-reduced \{\s+max-width: 720px;\s+margin-inline: auto;/);
     });
 
     test(`${file}: the resources are capped by a class, not by a style attribute that nothing could lift`, () => {
