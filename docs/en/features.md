@@ -22,6 +22,7 @@
   * **Infographic — Comparison** — 2–3 columns with coloured headers and ✓/✗ item lists.
 * 🎨 **Canvas Composer:** a full-screen modal where a page is assembled block by block, reordered, previewed and inserted into the editor in one step.
 * 📐 **Block alignment:** the blocks that stop short of the page width (Profile Card, Chart, Bar Chart, Steps, Timeline, Comparison, Advanced Card, Resources, Gauge and the Infographic of stat cards) and the Stylized Heading (icon and text together) have an **Alignment** field (left, centre or right) in their design popup. TinyMCE's own alignment buttons do not move a block, because a block is not editable text; the Action Button keeps its own alignment field.
+* ↔️ **Block width:** the Profile Card, Chart, Bar Chart, Steps, Timeline, Comparison, Advanced Card and Resources are capped so they stay readable on a wide screen, and the Table takes the whole column. Each has a **Block width** field in its design popup, next to the alignment: *Reduced* (the cap; the table is capped at 720 px and centred) or *Whole column*. The default of each block is what it always did, so saved pages do not change.
 * 💾 **Round-trip editing:** each block keeps its configuration inside the content (`data-slms-state`), so any block already in a course can be reopened and edited later.
 * 📚 **Template Library** in five tabs:
   * **Components** — the base blocks above.
