@@ -128,3 +128,11 @@ test('the popup has the field, with an option for none and one for each step', (
         assert.match(css, /\.slms-steps__item--h > :not\(\.slms-steps__badge\) \{\s+grid-column: 2;/);
     });
 });
+
+['styles.css', 'editor_styles.css'].forEach((file) => {
+    test(`${file}: the steps block leaves room for the ring of the current step`, () => {
+        const css = read(file);
+
+        assert.match(css, /\.slms-infographic-steps-block \{\s+display: block;\s+margin: 1rem 0;\s+padding: 6px;/);
+    });
+});

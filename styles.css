@@ -2627,10 +2627,11 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
     opacity: 0.9;
 }
 
-/* Steps block */
+/* Steps block. The padding leaves room for the ring of the current step, which is drawn outside its badge and would be cut by the content area. */
 .slms-infographic-steps-block {
     display: block;
     margin: 1rem 0;
+    padding: 6px;
     font-family: system-ui, -apple-system, sans-serif;
 }
 
