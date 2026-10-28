@@ -1,6 +1,6 @@
 # 🧪 Automated Tests
 
-StudioLMS ships with **262 PHPUnit test cases** across **43 files**, **301 JavaScript tests** across **50 files**, plus a **85-scenario Behat suite** across **21 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
+StudioLMS ships with **262 PHPUnit test cases** across **43 files**, **304 JavaScript tests** across **51 files**, plus a **85-scenario Behat suite** across **21 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
 
 ### PHPUnit — Unit & Integration Tests
 
@@ -50,11 +50,11 @@ AI tests never reach a real provider: `local_aihub`'s client is replaced by a st
 
 | Area | Test files | Cases | What is covered |
 |------|-----------:|------:|----------------|
-| Blocks | 26 | 192 | What the blocks draw and how they behave: the chart, bar and gauge models, the width cap of the blocks that hold little, the accordion and resources options, the card layout and shadow, the heading and description of the grid, blocks inside a grid column, text typed on the canvas, colours and contrast (WCAG ratios), icon pairs, grid columns, the hover effect on every block, the hidden decorative emoji |
+| Blocks | 26 | 194 | What the blocks draw and how they behave: the chart, bar and gauge models, the width cap of the blocks that hold little, the accordion and resources options, the card layout and shadow, the heading and description of the grid, blocks inside a grid column, text typed on the canvas, colours and contrast (WCAG ratios), icon pairs, grid columns, the hover effect on every block, the hidden decorative emoji |
 | Safety and cleaning | 11 | 46 | Safety and the HTML cleaner: escaping, URL and AI-config sanitising, video URLs, blocks found by class where Moodle strips attributes, frontend events, no literal visible text in the AMD sources, no Bootstrap-5-only utilities, the editor's inline CSS |
-| Templates and library | 9 | 33 | Templates and the library: the template cache, importing a file, loading a template into the canvas in one step, the export button reading Export all or Export selected (n), the stacked link fields of the profile card, example texts in the site language, preset matching and its language notice |
+| Templates and library | 10 | 34 | Templates and the library: the template cache, importing a file, loading a template into the canvas in one step, the export button reading Export all or Export selected (n), the stacked link fields of the profile card, example texts in the site language, preset matching and its language notice |
 | Studio window | 4 | 30 | The Studio window: the sidebar split and its geometry, the active tab, the AI use policy gate |
-| **Total** | **50** | **301** | |
+| **Total** | **51** | **304** | |
 
 These run without a browser or Moodle: modules imported by the tests import nothing, and a test that needs `app.js` or a template reads the source file instead.
 

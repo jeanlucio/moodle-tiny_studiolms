@@ -1,7 +1,7 @@
 # ✨ Funcionalidades
 
 * 🧱 **19 Blocos Instrucionais,** inseridos pela barra de ferramentas do editor e configurados por formulários — sem precisar de HTML:
-  * **Título Estilizado** — título `h3`/`h4` com ícone e cor de fundo.
+  * **Título Estilizado** — título `h2`, `h3` ou `h4` com ícone e cor de fundo; use o `h2` só para o título da página, para que a ordem dos títulos não pule um nível.
   * **Botão de Ação** — botão de chamada para ação com URL, destino, cores, raio de borda e alinhamento configuráveis.
   * **Cartão Avançado** — cartão com imagem ou vídeo do YouTube ou do Vimeo, corpo rico editável e botão interno; a imagem pode ser um retângulo ou um círculo.
   * **Accordion** — tópico expansível com 4 estilos de ícone e estado inicial aberto/fechado.
@@ -13,7 +13,7 @@
   * **Tabela** — tabela listrada ou simples, compatível com as ferramentas de tabela do próprio TinyMCE.
   * **Cartão de Perfil** — cartão de apresentação com foto, nome, cargo, bio e até 6 links de contato (e-mail, WhatsApp, Telegram, Lattes…).
   * **Gráfico de Composição** — a parte de cada fatia no todo, numa barra empilhada com legenda, até 6 fatias, rótulos personalizados.
-  * **Gráfico de Barras** — horizontal ou vertical, até 6 barras.
+  * **Gráfico de Barras** — horizontal ou vertical, até 6 barras; o número impresso na barra pode ser a parte do total ou o valor digitado.
   * **Velocímetro** — gauge semicircular com cores de semáforo (verde ≥ 67%, âmbar ≥ 34%, vermelho abaixo); 1–3 velocímetros lado a lado.
   * **Infográfico — Estatísticas** — até 4 itens combinando ícone (de um seletor com 40 opções), valor e rótulo.
   * **Infográfico — Passos** — fluxo numerado com ícone e descrição, vertical ou horizontal, para metodologias, tutoriais e fluxos de trabalho; dá para marcar a **Etapa atual** (as anteriores aparecem como concluídas e as seguintes esmaecidas).

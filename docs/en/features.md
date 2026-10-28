@@ -1,7 +1,7 @@
 # ✨ Features
 
 * 🧱 **19 Instructional Blocks,** inserted from the editor toolbar and configured through forms — no HTML required:
-  * **Stylised Heading** — `h3`/`h4` heading with icon and background colour.
+  * **Stylised Heading** — `h2`, `h3` or `h4` heading with icon and background colour; use `h2` only for the page title so the heading order does not skip a level.
   * **Action Button** — call-to-action button with configurable URL, target, colours, border radius and alignment.
   * **Advanced Card** — card with image or a YouTube or Vimeo video, a rich editable body and an internal button; the image can be a rectangle or a circle.
   * **Accordion** — expandable topic with 4 icon styles and an open/closed initial state.
@@ -13,7 +13,7 @@
   * **Table** — striped or plain table that works with TinyMCE's own table tools.
   * **Profile Card** — presenter card with photo, name, role, bio and up to 6 contact links (e-mail, WhatsApp, Telegram, Lattes…).
   * **Chart** — the share of each part in the whole as one stacked bar with a legend, up to 6 slices, custom labels.
-  * **Bar Chart** — horizontal or vertical, up to 6 bars.
+  * **Bar Chart** — horizontal or vertical, up to 6 bars; the number printed on a bar can be its share of the total or the value as typed.
   * **Gauge** — semi-circle gauge with traffic-light colours (green ≥ 67 %, amber ≥ 34 %, red below); 1–3 gauges side by side.
   * **Infographic — Stats** — up to 4 items combining an icon (from a 40-icon picker), a value and a label.
   * **Infographic — Steps** — numbered flow with icon and description, vertical or horizontal, for methods, tutorials and workflows; a **Current step** can be marked (the ones before it show as done, the ones after it are dimmed).
