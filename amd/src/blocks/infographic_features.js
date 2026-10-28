@@ -28,6 +28,7 @@ import {THEMES, ICONS, esc, normaliseIcon, iconToSpan, openPicker, closePicker} 
 import {getContextId} from '../context';
 import {defaultText} from './default_texts';
 import {featureColumns} from './features_layout';
+import {bindWidth, normalizeWidth, widthVars} from './block_width';
 
 const DEFAULT_ICON = 'fa-solid fa-star';
 
@@ -124,6 +125,7 @@ export default {
     icon: '✨',
 
     defaultData: {
+        width: 'full',
         title: '',
         theme: 'blue',
         columns: 3,
@@ -148,8 +150,10 @@ export default {
                 closePicker();
 
                 const tplData = dataToPopupVars(data);
+                Object.assign(tplData, widthVars(data.width, 'full'));
 
                 PopupManager.open(btnEdit, 'tiny_studiolms/popup_infographic_features_edit', tplData, (popup) => {
+                    bindWidth(popup, data, onUpdate);
                     const titleEl = popup.querySelector('#ft_title');
                     const themeButtons = popup.querySelectorAll('.slms-ig-theme-btn');
                     const aiBtnEl = popup.querySelector('#ft-ai-btn');
@@ -295,6 +299,7 @@ export default {
 
         return Templates.render('tiny_studiolms/block_infographic_features', {
             hoverEffect: data.hoverEffect,
+            width: normalizeWidth(data.width, 'full'),
             theme,
             columns: cols,
             content,

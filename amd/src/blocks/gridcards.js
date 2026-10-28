@@ -25,12 +25,14 @@ import Templates from 'core/templates';
 import Notification from 'core/notification';
 import {sanitizeUntrustedHtml} from '../htmlsanitizer';
 import {borderThickness, gridGap, slotCount} from './grid_slots';
+import {bindWidth, normalizeWidth, widthVars} from './block_width';
 
 export default {
     id: 'gridcards',
     titleString: 'block_gridcards_title',
     icon: '🔲',
     defaultData: {
+        width: 'full',
         columns: '2',
         gap: 20,
         containerTitle: '',
@@ -95,8 +97,10 @@ export default {
                     const tplData = Object.assign({}, data);
                     const safeSize = data.containerTitleSize.replace('px', '');
                     tplData[`size${safeSize}`] = true;
+                    Object.assign(tplData, widthVars(data.width, 'full'));
 
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_gridcards_design', tplData, (popup) => {
+                        bindWidth(popup, data, onUpdate);
                         const propMap = {
                             '#pop_grid_title': 'containerTitle',
                             '#pop_grid_desc': 'containerDesc',
@@ -131,6 +135,7 @@ export default {
 
     renderHtml: (data) => {
         const tData = Object.assign({}, data);
+        tData.width = normalizeWidth(data.width, 'full');
         // The title is rendered unescaped (it is an editable heading), and the design popup feeds it
         // from a plain text input, so whatever is typed there must not reach the preview as live markup.
         tData.containerTitle = sanitizeUntrustedHtml(data.containerTitle);

@@ -29,12 +29,14 @@ import Templates from 'core/templates';
 import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {normalizeTextAlign} from './block_align';
+import {bindWidth, normalizeWidth, widthVars} from './block_width';
 
 export default {
     id: 'textBox',
     titleString: 'block_textbox_title',
     icon: '📝',
     defaultData: {
+        width: 'full',
         textAlign: 'left',
         content: ''
     },
@@ -69,7 +71,10 @@ export default {
                     alignJustify: align === 'justify',
                 };
 
+                Object.assign(tplData, widthVars(data.width, 'full'));
+
                 PopupManager.open(btnDesign, 'tiny_studiolms/popup_textbox_design', tplData, (popup) => {
+                    bindWidth(popup, data, onUpdate);
                     popup.querySelector('#pop_textbox_align')?.addEventListener('input', (ev) => {
                         data.textAlign = normalizeTextAlign(ev.target.value);
                         onUpdate(data);
@@ -88,6 +93,7 @@ export default {
     renderHtml: async(data) => {
         const templateData = Object.assign({}, data);
         templateData.textAlign = normalizeTextAlign(data.textAlign);
+        templateData.width = normalizeWidth(data.width, 'full');
 
         if (!templateData.content || templateData.content.trim() === '') {
             const defaultText = await getString('default_textbox_text', 'tiny_studiolms');

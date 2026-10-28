@@ -35,7 +35,8 @@ const path = require('node:path');
 
 const WITH_OPTION = [
     'profileCard', 'chart', 'chartBar', 'infographicSteps', 'infographicTimeline', 'infographicComparison',
-    'advancedCard', 'resources', 'table', 'stylizedHeading', 'callout',
+    'advancedCard', 'resources', 'table', 'stylizedHeading', 'callout', 'accordion', 'tabs', 'gridcards', 'textBox',
+    'infographicFeatures',
 ];
 
 // English file, Portuguese file, the block type that is widened.

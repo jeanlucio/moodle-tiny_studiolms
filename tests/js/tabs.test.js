@@ -96,7 +96,10 @@ test('the panels are stored one after the other, each under its own title, and n
 
     assert.match(
         template,
-        /<div class="studiolms-tabs-wrap w-100\{\{#hoverEffect\}\} slms-hov-\{\{hoverEffect\}\}\{\{\/hoverEffect\}\}">/
+        new RegExp(
+            '<div class="studiolms-tabs-wrap slms-width-\\{\\{width\\}\\} w-100'
+            + '\\{\\{#hoverEffect\\}\\} slms-hov-\\{\\{hoverEffect\\}\\}\\{\\{\\/hoverEffect\\}\\}">'
+        )
     );
     assert.match(template, /class="slms-tab-title slms-single-line" style="color: \{\{accent\}\};" contenteditable="true"/);
     assert.match(template, /class="slms-tab-content studiolms-editable-area" contenteditable="true"/);

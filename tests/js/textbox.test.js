@@ -65,7 +65,10 @@ test('the template is the text alone, with the class of the alignment and nothin
 
     assert.match(
         template,
-        /<div class="studiolms-textbox-wrap w-100\{\{#hoverEffect\}\} slms-hov-\{\{hoverEffect\}\}\{\{\/hoverEffect\}\}">/
+        new RegExp(
+            '<div class="studiolms-textbox-wrap slms-width-\\{\\{width\\}\\} w-100'
+            + '\\{\\{#hoverEffect\\}\\} slms-hov-\\{\\{hoverEffect\\}\\}\\{\\{\\/hoverEffect\\}\\}">'
+        )
     );
     assert.match(template, /class="slms-textbox-content slms-textalign-\{\{textAlign\}\} mceEditable" contenteditable="true"/);
     assert.ok(!/style=/.test(template), 'no inline style');

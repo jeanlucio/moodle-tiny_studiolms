@@ -30,12 +30,14 @@ import {getString} from 'core/str';
 import Notification from 'core/notification';
 import {defaultText} from './default_texts';
 import {MAX_TABS, MIN_TABS, normalizeAccent, normalizeTabCount} from './tabs_logic';
+import {bindWidth, normalizeWidth, widthVars} from './block_width';
 
 export default {
     id: 'tabs',
     titleString: 'block_tabs_title',
     icon: '🗂️',
     defaultData: {
+        width: 'full',
         accent: '#0d47a1',
         tabs: [
             {title: '', content: ''},
@@ -73,7 +75,10 @@ export default {
                     tplData[`count${i}`] = count === i;
                 }
 
+                Object.assign(tplData, widthVars(data.width, 'full'));
+
                 PopupManager.open(btnDesign, 'tiny_studiolms/popup_tabs_design', tplData, (popup) => {
+                    bindWidth(popup, data, onUpdate);
                     popup.querySelector('#pop_tabs_count')?.addEventListener('input', (ev) => {
                         const wanted = normalizeTabCount(ev.target.value, count);
                         const tabs = Array.isArray(data.tabs) ? data.tabs.slice(0, wanted) : [];
@@ -113,6 +118,7 @@ export default {
 
         return Templates.render('tiny_studiolms/block_tabs', {
             hoverEffect: data.hoverEffect,
+            width: normalizeWidth(data.width, 'full'),
             accent: normalizeAccent(data.accent),
             tabs,
         });

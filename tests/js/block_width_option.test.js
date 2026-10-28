@@ -47,6 +47,11 @@ const BLOCKS = [
     ['table', 'block_table', 'popup_table_design', 'full'],
     ['heading', 'block_heading', 'popup_heading', 'full'],
     ['callout', 'block_callout', 'popup_callout_design', 'full'],
+    ['accordion', 'block_accordion', 'popup_accordion_design', 'full'],
+    ['tabs', 'block_tabs', 'popup_tabs_design', 'full'],
+    ['gridcards', 'block_gridcards', 'popup_gridcards_design', 'full'],
+    ['textbox', 'block_textbox', 'popup_textbox_design', 'full'],
+    ['infographic_features', 'block_infographic_features', 'popup_infographic_features_edit', 'full'],
 ];
 
 let width;
@@ -121,10 +126,13 @@ BLOCKS.forEach(([block, template, popup, fallback]) => {
             '.slms-infographic-timeline-block.slms-width-full', '.slms-infographic-comparison-block.slms-width-full',
             '.studiolms-resources-wrap.slms-width-full', '.studiolms-card-wrap.slms-width-full > .studiolms-card',
         ].forEach((selector) => assert.ok(selectors.includes(selector), selector));
-        ['table', 'heading', 'callout'].forEach((name) => {
-            assert.match(css, new RegExp(`\\.studiolms-${name}-wrap\\.slms-width-reduced[,\\s{]`), name);
+        [
+            '.studiolms-table-wrap', '.studiolms-heading-wrap', '.studiolms-accordion-wrap', '.studiolms-tabs-wrap',
+            '.studiolms-grid-wrap', '.studiolms-textbox-wrap', '.slms-infographic-features-block',
+        ].forEach((selector) => {
+            assert.ok(css.includes(`${selector}.slms-width-reduced`), selector);
         });
-        assert.match(css, /\.studiolms-callout-wrap\.slms-width-reduced \{\s+max-width: 720px;\s+margin-inline: auto;/);
+        assert.match(css, /\.slms-infographic-features-block\.slms-width-reduced \{\s+max-width: 720px;\s+margin-inline: auto;/);
     });
 
     test(`${file}: the resources are capped by a class, not by a style attribute that nothing could lift`, () => {

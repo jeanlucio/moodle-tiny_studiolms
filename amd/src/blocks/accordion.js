@@ -28,12 +28,14 @@ import Notification from 'core/notification';
 import {getContextId} from '../context';
 import {iconPair, iconView} from './icon_pair';
 import {accordionPalette} from './contrast';
+import {bindWidth, normalizeWidth, widthVars} from './block_width';
 
 export default {
     id: 'accordion',
     titleString: 'block_accordion_title',
     icon: '📑',
     defaultData: {
+        width: 'full',
         title: '',
         // The blue of a title that reads on the light header (the previous, lighter one was 3.7 to 1 on white).
         color: '#0d47a1',
@@ -94,8 +96,10 @@ export default {
                     tplData.animate = data.animate !== false;
                     tplData.contentColorValue = data.contentColor || '#212529';
                     tplData.blockColorValue = data.headerBg || data.bg;
+                    Object.assign(tplData, widthVars(data.width, 'full'));
 
                     PopupManager.open(btnDesign, 'tiny_studiolms/popup_accordion_design', tplData, (popup) => {
+                        bindWidth(popup, data, onUpdate);
                         const propMap = {
                             '#pop_acc_color': 'color',
                             '#pop_acc_bg': 'bg',
@@ -201,6 +205,7 @@ export default {
 
     renderHtml: async(data) => {
         const templateData = Object.assign({}, data);
+        templateData.width = normalizeWidth(data.width, 'full');
         templateData.isOpen = data.state === 'open';
         templateData.animate = data.animate !== false;
         Object.assign(templateData, iconView(data.icon));
