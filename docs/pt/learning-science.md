@@ -12,7 +12,7 @@ Os 12 princípios de Mayer descrevem como o cérebro processa informação multi
 | Spatial contiguity — texto e visual lado a lado | `Infográfico`, `Passos` |
 | Coherence — eliminar material irrelevante | A estrutura visual força curadoria do conteúdo |
 | Redundancy — substituir texto descritivo por visual | Infográfico em lugar de parágrafos |
-| Pre-training — apresentar conceitos-chave antes do conteúdo denso | Use um `Callout` com os termos essenciais no início de cada seção; o modelo *Início de módulo* abre com os objetivos de aprendizagem antes de qualquer detalhe |
+| Pre-training — apresentar conceitos-chave antes do conteúdo denso | Use um `Callout` com os termos essenciais no início de cada seção; o modelo *Início de módulo* abre com os objetivos de aprendizagem antes de qualquer detalhe, e o [`local_studiolms`](https://github.com/jeanlucio/moodle-local_studiolms), o construtor de cursos com IA da mesma família, coloca um destaque de *Conceitos-chave* no topo de cada página que monta |
 | Personalization — linguagem conversacional retém mais que linguagem formal | O gerador de IA é instruído a escrever em tom conversacional, não acadêmico; os modelos de boas-vindas cumprimentam o estudante em primeira pessoa |
 
 **Teoria da Carga Cognitiva — John Sweller (1988)**

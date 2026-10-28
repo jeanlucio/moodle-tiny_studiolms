@@ -12,7 +12,7 @@ Mayer's 12 principles describe how the brain processes multimedia information. S
 | Spatial contiguity — text and visuals side by side | `Infographic`, `Steps` |
 | Coherence — remove irrelevant material | Visual structure forces content curation |
 | Redundancy — replace descriptive text with visuals | Infographic instead of plain paragraphs |
-| Pre-training — present key concepts before dense content | Place a `Callout` with key terms at the top of each section; the *Module Start* layout opens with the learning objectives before any detail |
+| Pre-training — present key concepts before dense content | Place a `Callout` with key terms at the top of each section; the *Module Start* layout opens with the learning objectives before any detail, and [`local_studiolms`](https://github.com/jeanlucio/moodle-local_studiolms), the AI course builder of the same family, puts a *Key concepts* callout at the top of every page it builds |
 | Personalization — conversational style improves retention over formal style | The AI generator is prompted to write in conversational, not academic, language; the welcome layouts greet the student in the first person |
 
 **Cognitive Load Theory — John Sweller (1988)**
