@@ -15,12 +15,12 @@ lang: pt
 [![Last Commit](https://img.shields.io/github/last-commit/jeanlucio/moodle-tiny_studiolms?style=flat)](https://github.com/jeanlucio/moodle-tiny_studiolms/commits)
 [![Open Issues](https://img.shields.io/github/issues/jeanlucio/moodle-tiny_studiolms?style=flat)](https://github.com/jeanlucio/moodle-tiny_studiolms/issues)
 
-O **StudioLMS** é um sub-plugin do TinyMCE para Moodle que traz uma experiência de criação estilo
-Canva/Notion direto para o editor do curso. O professor abre um modal nativo do TinyMCE e compõe
-blocos ricos de design instrucional — cartões, accordions, infográficos, gráficos e mais — sem
-escrever uma linha de HTML, com assistência opcional de IA tanto para blocos individuais quanto
-para layouts completos. É o editor da [família StudioLMS](https://jeanlucio.github.io/studiolms/), que tem também um
-construtor de cursos com IA e um filtro de widgets ao vivo.
+O **StudioLMS** é uma ferramenta de design de cursos para o Moodle, dentro do editor que o professor já usa. Em vez de
+escrever HTML, ele desenha as páginas do curso — aulas, boas-vindas, planos de estudo, roteiros de atividade — com blocos
+de design instrucional (cartões, accordions, abas, infográficos, gráficos e mais), a partir de um dos 26 modelos prontos ou
+de uma tela em branco, com assistência opcional de IA para blocos individuais e layouts completos. É um sub-plugin do
+TinyMCE, então funciona onde o editor do Moodle funciona, e é o editor da
+[família StudioLMS](https://jeanlucio.github.io/studiolms/), que tem também um construtor de cursos com IA e um filtro de widgets ao vivo.
 
 <p class="page-hint">👈 Use o menu lateral para ir direto a qualquer seção desta página.</p>
 

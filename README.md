@@ -17,10 +17,11 @@
 
 ## English
 
-**StudioLMS** is a TinyMCE sub-plugin for Moodle that brings a Canva/Notion-like authoring
-experience directly into the course editor. Teachers open a native TinyMCE modal and compose rich
-instructional design blocks — cards, accordions, infographics, charts and more — without writing a
-single line of HTML, with optional AI assistance for both single blocks and complete layouts. It is the editor of the
+**StudioLMS** is a course design tool for Moodle, built into the editor teachers already use. Instead of
+writing HTML, teachers design the pages of a course — lessons, welcomes, study plans, activity guides — from
+instructional design blocks (cards, accordions, tabs, infographics, charts and more), starting from one of 26
+ready-made layouts or from a blank canvas, with optional AI assistance for single blocks and complete layouts.
+It is a TinyMCE sub-plugin, so it works wherever the Moodle editor does, and it is the editor of the
 [StudioLMS family](https://jeanlucio.github.io/studiolms/), which also has a course builder with AI and a filter of live widgets.
 
 📚 **[Full documentation](https://jeanlucio.github.io/moodle-tiny_studiolms/)** — all 19 blocks,
@@ -72,12 +73,12 @@ Maintained by [Jean Lúcio](https://github.com/jeanlucio).
 
 ## Português
 
-O **StudioLMS** é um sub-plugin do TinyMCE para Moodle que traz uma experiência de criação estilo
-Canva/Notion direto para o editor do curso. O professor abre um modal nativo do TinyMCE e compõe
-blocos ricos de design instrucional — cartões, accordions, infográficos, gráficos e mais — sem
-escrever uma linha de HTML, com assistência opcional de IA tanto para blocos individuais quanto
-para layouts completos. É o editor da [família StudioLMS](https://jeanlucio.github.io/studiolms/), que tem também um
-construtor de cursos com IA e um filtro de widgets ao vivo.
+O **StudioLMS** é uma ferramenta de design de cursos para o Moodle, dentro do editor que o professor já usa. Em vez de
+escrever HTML, ele desenha as páginas do curso — aulas, boas-vindas, planos de estudo, roteiros de atividade — com blocos
+de design instrucional (cartões, accordions, abas, infográficos, gráficos e mais), a partir de um dos 26 modelos prontos ou
+de uma tela em branco, com assistência opcional de IA para blocos individuais e layouts completos. É um sub-plugin do
+TinyMCE, então funciona onde o editor do Moodle funciona, e é o editor da
+[família StudioLMS](https://jeanlucio.github.io/studiolms/), que tem também um construtor de cursos com IA e um filtro de widgets ao vivo.
 
 📚 **[Documentação completa](https://jeanlucio.github.io/moodle-tiny_studiolms/pt.html)** — os 19
 blocos, capturas de tela, recursos de IA e de onde vem a IA, as integrações com os outros plugins do StudioLMS, os testes automatizados, e detalhes de segurança.
