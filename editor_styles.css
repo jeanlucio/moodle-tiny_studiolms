@@ -2563,6 +2563,41 @@ body #region-main [data-slms-block-type] a.slms-pc-link.slms-pc-link:not(.btn):f
     box-shadow: 0 0 0 2px var(--bs-body-bg, #fff);
 }
 
+/* The colour of each theme button is the colour the theme gives the block. */
+.tiny_studiolms .slms-ig-theme-btn[data-theme="blue"] {
+    background: var(--slms-theme-blue, #1d4ed8);
+}
+
+.tiny_studiolms .slms-ig-theme-btn[data-theme="green"] {
+    background: var(--slms-theme-green, #15803d);
+}
+
+.tiny_studiolms .slms-ig-theme-btn[data-theme="purple"] {
+    background: var(--slms-theme-purple, #7c3aed);
+}
+
+.tiny_studiolms .slms-ig-theme-btn[data-theme="orange"] {
+    background: var(--slms-theme-orange, #c2410c);
+}
+
+.tiny_studiolms .slms-ig-theme-btn[data-theme="red"] {
+    background: var(--slms-theme-red, #be123c);
+}
+
+.tiny_studiolms .slms-ig-theme-btn[data-theme="black"] {
+    background: var(--slms-theme-black, #0f172a);
+}
+
+/* A column of a form row that takes the width the others leave. */
+.tiny_studiolms .slms-col-fill {
+    flex: 1;
+}
+
+/* The small help line under a field of a popup. */
+.tiny_studiolms .form-text.slms-hint-sm {
+    font-size: 11px;
+}
+
 /* ── Infographic block (rendered in content area) ──────────────────────── */
 .slms-infographic-block {
     display: block;
