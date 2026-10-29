@@ -45,6 +45,12 @@ Optional: the AI features use the AI Hub or a core AI provider, and four ready-m
    `your-moodle/lib/editor/tiny/plugins/studiolms/`
 4. Visit **Site administration > Notifications** to complete installation.
 
+### 🔎 Third-party service disclosure
+
+A card can show a **YouTube** or **Vimeo** video. The player is then loaded from that service by the browser of whoever views the page, so the service sees the viewer's IP address, under its own terms and privacy policy. Nothing is loaded from either unless a video is added.
+
+The optional AI features use the AI Hub or Moodle's `core_ai`: StudioLMS ships **no API key and has no key screen**. What the teacher types in an AI tab is sent to the provider the site resolved, under that provider's own terms. Nothing is sent unless a generation is started, and a course that has the AI tools turned off is never sent. **Do not type personal data into an AI request.**
+
 ### 🆘 Support
 
 Found a bug or have a question? Open an issue on the
@@ -94,6 +100,12 @@ estudante com `[firstname]`, um atalho do plugin de terceiros `filter_shortcodes
    Caminho final:
    `seu-moodle/lib/editor/tiny/plugins/studiolms/`
 4. Acesse **Administração do site > Notificações** para concluir a instalação.
+
+### 🔎 Divulgação de serviço de terceiros
+
+Um cartão pode mostrar um vídeo do **YouTube** ou do **Vimeo**. O player é então carregado desse serviço pelo navegador de quem vê a página, então o serviço vê o endereço IP de quem assiste, sob os próprios termos e a própria política de privacidade. Nada é carregado de nenhum dos dois a menos que um vídeo seja adicionado.
+
+Os recursos opcionais de IA usam o Hub de IA ou o `core_ai` do Moodle: o StudioLMS **não traz chave de API nem tem tela de chave**. O que o professor digita numa aba de IA é enviado ao provedor que o site resolveu, sob os termos desse provedor. Nada é enviado a menos que uma geração seja iniciada, e um curso com as ferramentas de IA desligadas nunca é enviado. **Não digite dados pessoais num pedido de IA.**
 
 ### 🆘 Suporte
 
