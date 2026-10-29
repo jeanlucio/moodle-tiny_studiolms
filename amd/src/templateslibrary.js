@@ -27,7 +27,7 @@ import Notification from 'core/notification';
 import {getString} from 'core/str';
 import {getContextId} from './context';
 import {parseTemplateImport} from './template_import';
-import {buildPreviewDocument, previewStylesheets} from './template_preview';
+import {buildPreviewDocument, collectBlockCss, previewStylesheets} from './template_preview';
 
 /**
  * Show a brief feedback message inside the modal's designated feedback area.
@@ -186,6 +186,28 @@ export const importTemplatesFromFile = () => {
     });
 };
 
+/** @type {object|null} The style rules of the blocks, read from the page once. */
+let cachedPreviewOptions = null;
+
+/**
+ * Get what the thumbnails need to look like the blocks: their style rules, read from the page the first time.
+ *
+ * @returns {{css: string, stylesheets: string[]}}
+ */
+const getPreviewOptions = () => {
+    if (cachedPreviewOptions === null) {
+        const css = collectBlockCss(document.styleSheets);
+        cachedPreviewOptions = {
+            css,
+            // Only when the rules could not be read does each frame link the theme sheet instead.
+            stylesheets: css === ''
+                ? previewStylesheets(Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map((link) => link.href))
+                : [],
+        };
+    }
+    return cachedPreviewOptions;
+};
+
 /**
  * Render the template grid inside a container element.
  *
@@ -211,15 +233,13 @@ export const renderTemplateGrid = async(container, templates, options = {}) => {
         return;
     }
 
-    // The thumbnail shows the template in a frame that loads the same stylesheets as the page, so it looks the way it
+    // The thumbnail shows the template in a frame that carries the style rules of the blocks, so it looks the way it
     // will once inserted. The template itself, which is what gets inserted, is left as it is.
-    const stylesheets = previewStylesheets(
-        Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map((link) => link.href)
-    );
+    const previewOptions = getPreviewOptions();
     const htmlParts = await Promise.all(
         templates.map((tpl) => Templates.render('tiny_studiolms/template_card', {
             ...tpl,
-            content: buildPreviewDocument(tpl.content || '', stylesheets),
+            content: buildPreviewDocument(tpl.content || '', previewOptions),
         }))
     );
 
