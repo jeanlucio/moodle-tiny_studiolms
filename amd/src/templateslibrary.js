@@ -27,6 +27,7 @@ import Notification from 'core/notification';
 import {getString} from 'core/str';
 import {getContextId} from './context';
 import {parseTemplateImport} from './template_import';
+import {buildPreviewDocument, previewStylesheets} from './template_preview';
 
 /**
  * Show a brief feedback message inside the modal's designated feedback area.
@@ -210,8 +211,16 @@ export const renderTemplateGrid = async(container, templates, options = {}) => {
         return;
     }
 
+    // The thumbnail shows the template in a frame that loads the same stylesheets as the page, so it looks the way it
+    // will once inserted. The template itself, which is what gets inserted, is left as it is.
+    const stylesheets = previewStylesheets(
+        Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map((link) => link.href)
+    );
     const htmlParts = await Promise.all(
-        templates.map((tpl) => Templates.render('tiny_studiolms/template_card', tpl))
+        templates.map((tpl) => Templates.render('tiny_studiolms/template_card', {
+            ...tpl,
+            content: buildPreviewDocument(tpl.content || '', stylesheets),
+        }))
     );
 
     for (let i = 0; i < templates.length; i++) {
