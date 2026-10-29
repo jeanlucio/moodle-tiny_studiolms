@@ -24,11 +24,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2026102622;
-$plugin->requires  = 2024100700; // Requires Moodle 4.5+ (Compatible with 5.x).
-$plugin->supported = [405, 503];
 $plugin->component = 'tiny_studiolms';
-$plugin->maturity = MATURITY_ALPHA;
+$plugin->version   = 2026102900;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->requires  = 2024100700;        // Requires Moodle 4.5+.
+$plugin->supported = [405, 503];
+$plugin->maturity  = MATURITY_ALPHA;
 $plugin->release   = '0.1.0';
 $plugin->dependencies = [
     'editor_tiny' => 2024100700,
