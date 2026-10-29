@@ -19,3 +19,6 @@
 - file: ai-chat.png
   caption_en: "AI Chat: paste a week's plan and the assistant proposes a complete page; nothing is applied until the teacher confirms the action card, and the page then lands on the canvas as ordinary blocks that can still be edited"
   caption_pt: "Chat IA: cole o plano da semana e o assistente propõe uma página completa; nada é aplicado até o professor confirmar o cartão de ação, e a página chega ao canvas como blocos comuns, ainda editáveis"
+- file: widgets-tab.png
+  caption_en: "The Widgets tab, shown when the StudioLMS widgets filter is installed: a card for each live widget (forum participation, course map and quiz rules), which writes only the marker; the filter draws the data when the page is shown"
+  caption_pt: "A aba Widgets, exibida quando o filtro Widgets do StudioLMS está instalado: um cartão para cada widget ao vivo (participação do fórum, mapa do curso e regras do questionário), que escreve só a marca; o filtro desenha os dados quando a página é exibida"

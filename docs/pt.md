@@ -6,7 +6,7 @@ lang: pt
 
 ![Moodle](https://img.shields.io/badge/Moodle-4.5%2B-orange?style=flat&logo=moodle&logoColor=white)
 ![License](https://img.shields.io/badge/License-GPLv3-blue?style=flat)
-![Status](https://img.shields.io/badge/Status-Stable-green?style=flat)
+![Status](https://img.shields.io/badge/Status-Alpha-yellow?style=flat)
 [![Latest Release](https://img.shields.io/github/v/release/jeanlucio/moodle-tiny_studiolms?style=flat)](https://github.com/jeanlucio/moodle-tiny_studiolms/releases)
 [![Author](https://img.shields.io/badge/by-Jean_Lucio-6f42c1?style=flat)](https://marketplace.moodle.com/user/984)
 [![StudioLMS Ecosystem](https://img.shields.io/badge/StudioLMS-Ecosystem-1d4ed8?style=flat)](https://jeanlucio.github.io/studiolms/)
@@ -19,7 +19,8 @@ O **StudioLMS** é um sub-plugin do TinyMCE para Moodle que traz uma experiênci
 Canva/Notion direto para o editor do curso. O professor abre um modal nativo do TinyMCE e compõe
 blocos ricos de design instrucional — cartões, accordions, infográficos, gráficos e mais — sem
 escrever uma linha de HTML, com assistência opcional de IA tanto para blocos individuais quanto
-para layouts completos.
+para layouts completos. É o editor da [família StudioLMS](https://jeanlucio.github.io/studiolms/), que tem também um
+construtor de cursos com IA e um filtro de widgets ao vivo.
 
 <p class="page-hint">👈 Use o menu lateral para ir direto a qualquer seção desta página.</p>
 
@@ -48,6 +49,9 @@ para layouts completos.
 
 <span id="ai"></span>
 {% include_relative pt/ai.md %}
+
+<span id="integrations"></span>
+{% include_relative pt/integrations.md %}
 
 <span id="testing"></span>
 {% include_relative pt/testing-summary.md %}

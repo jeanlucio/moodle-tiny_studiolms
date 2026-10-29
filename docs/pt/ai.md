@@ -28,6 +28,10 @@ Central de IA**, ou na página **Minhas chaves de IA** de cada professor) ou em 
 site → IA → Provedores de IA** para o `core_ai`. Os serviços externos seguem seus próprios termos de
 uso e políticas de privacidade.
 
+### Política de uso de IA
+
+Na primeira vez que o professor abre uma aba de IA, a política de uso de IA do próprio Moodle é exibida (quando o site tem uma ligada) e a resposta fica guardada pelo núcleo. Se o professor não aceitar, a aba não abre. O StudioLMS só consulta o núcleo; não guarda registro nenhum por conta própria.
+
 ### Transmissão de dados
 
 Quando a IA é usada, o prompt ou mensagem de chat do professor é entregue à Central de IA ou ao

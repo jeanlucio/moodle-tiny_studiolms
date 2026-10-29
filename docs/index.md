@@ -6,7 +6,7 @@ lang: en
 
 ![Moodle](https://img.shields.io/badge/Moodle-4.5%2B-orange?style=flat&logo=moodle&logoColor=white)
 ![License](https://img.shields.io/badge/License-GPLv3-blue?style=flat)
-![Status](https://img.shields.io/badge/Status-Stable-green?style=flat)
+![Status](https://img.shields.io/badge/Status-Alpha-yellow?style=flat)
 [![Latest Release](https://img.shields.io/github/v/release/jeanlucio/moodle-tiny_studiolms?style=flat)](https://github.com/jeanlucio/moodle-tiny_studiolms/releases)
 [![Author](https://img.shields.io/badge/by-Jean_Lucio-6f42c1?style=flat)](https://marketplace.moodle.com/user/984)
 [![StudioLMS Ecosystem](https://img.shields.io/badge/StudioLMS-Ecosystem-1d4ed8?style=flat)](https://jeanlucio.github.io/studiolms/)
@@ -18,7 +18,8 @@ lang: en
 **StudioLMS** is a TinyMCE sub-plugin for Moodle that brings a Canva/Notion-like authoring
 experience directly into the course editor. Teachers open a native TinyMCE modal and compose rich
 instructional design blocks — cards, accordions, infographics, charts and more — without writing a
-single line of HTML, with optional AI assistance for both single blocks and complete layouts.
+single line of HTML, with optional AI assistance for both single blocks and complete layouts. It is the editor of the
+[StudioLMS family](https://jeanlucio.github.io/studiolms/), which also has a course builder with AI and a filter of live widgets.
 
 <p class="page-hint">👈 Use the sidebar to jump to any section on this page.</p>
 
@@ -47,6 +48,9 @@ single line of HTML, with optional AI assistance for both single blocks and comp
 
 <span id="ai"></span>
 {% include_relative en/ai.md %}
+
+<span id="integrations"></span>
+{% include_relative en/integrations.md %}
 
 <span id="testing"></span>
 {% include_relative en/testing-summary.md %}

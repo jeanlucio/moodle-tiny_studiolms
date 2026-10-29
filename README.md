@@ -20,10 +20,11 @@
 **StudioLMS** is a TinyMCE sub-plugin for Moodle that brings a Canva/Notion-like authoring
 experience directly into the course editor. Teachers open a native TinyMCE modal and compose rich
 instructional design blocks — cards, accordions, infographics, charts and more — without writing a
-single line of HTML, with optional AI assistance for both single blocks and complete layouts.
+single line of HTML, with optional AI assistance for both single blocks and complete layouts. It is the editor of the
+[StudioLMS family](https://jeanlucio.github.io/studiolms/), which also has a course builder with AI and a filter of live widgets.
 
 📚 **[Full documentation](https://jeanlucio.github.io/moodle-tiny_studiolms/)** — all 19 blocks,
-screenshots, AI features and where the AI comes from, the automated tests, and security details.
+screenshots, AI features and where the AI comes from, the integrations with the other StudioLMS plugins, the automated tests, and security details.
 
 ### 📦 Requirements
 
@@ -69,10 +70,11 @@ O **StudioLMS** é um sub-plugin do TinyMCE para Moodle que traz uma experiênci
 Canva/Notion direto para o editor do curso. O professor abre um modal nativo do TinyMCE e compõe
 blocos ricos de design instrucional — cartões, accordions, infográficos, gráficos e mais — sem
 escrever uma linha de HTML, com assistência opcional de IA tanto para blocos individuais quanto
-para layouts completos.
+para layouts completos. É o editor da [família StudioLMS](https://jeanlucio.github.io/studiolms/), que tem também um
+construtor de cursos com IA e um filtro de widgets ao vivo.
 
 📚 **[Documentação completa](https://jeanlucio.github.io/moodle-tiny_studiolms/pt.html)** — os 19
-blocos, capturas de tela, recursos de IA e de onde vem a IA, os testes automatizados, e detalhes de segurança.
+blocos, capturas de tela, recursos de IA e de onde vem a IA, as integrações com os outros plugins do StudioLMS, os testes automatizados, e detalhes de segurança.
 
 ### 📦 Requisitos
 

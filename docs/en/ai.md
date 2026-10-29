@@ -26,6 +26,10 @@ Keys are configured in the AI Hub (**Site administration → Plugins → Local p
 each teacher's **My AI keys** page) or under **Site administration → AI → AI providers** for
 `core_ai`. External services operate under their own terms of service and privacy policies.
 
+### AI usage policy
+
+The first time a teacher opens an AI tab, Moodle's own AI usage policy is shown (when the site has one turned on) and the answer is kept by the core. If the teacher does not accept it, the tab does not open. StudioLMS only asks the core; it keeps no record of its own.
+
 ### Data transmission
 
 When the AI is used, the teacher's prompt or chat message is handed to the AI Hub or `core_ai`,
