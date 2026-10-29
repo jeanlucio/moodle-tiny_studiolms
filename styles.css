@@ -1038,10 +1038,10 @@
 /*
  * Block header — visible on hover / active.
  *
- * It sits in the gap above the block, out of the layout flow. It used to be display: none and then
- * display: flex, which pushed the block's content down by the header height every time the pointer
- * entered or left; the pointer then ended up over a different block, which switched the highlight
- * again, so the blocks "pulsed" and clicking a button inside one made it jump.
+ * It sits in the gap above the block, out of the layout flow. A header that switched from display: none
+ * to display: flex would push the block's content down by its height every time the pointer entered or
+ * left; the pointer would then end up over a different block, which switches the highlight again, so the
+ * blocks would "pulse" and clicking a button inside one would make it jump.
  */
 .tiny_studiolms .slms-canvas-block-header {
     visibility: hidden;

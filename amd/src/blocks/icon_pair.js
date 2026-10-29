@@ -43,8 +43,8 @@ export const textGlyph = (icon) => icon.replace(
     `${RIGHT_TRIANGLE}${TEXT_PRESENTATION}`
 );
 
-// The arrows pair (down, up) is no longer offered: it was shown as the triangles pair (right, down) in the pages,
-// since the first icon used to be turned a quarter when closed, so a block that has it keeps looking that way.
+// The arrows pair (down, up) is not among the options: a block that carries it is shown with the triangles pair
+// (right, down), since its first icon is turned a quarter when the block is closed.
 const DROPPED_ARROWS = '\u25BC / \u25B2';
 const TRIANGLES = '\u25B6 / \u25BC';
 

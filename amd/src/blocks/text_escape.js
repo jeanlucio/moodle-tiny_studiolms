@@ -19,10 +19,9 @@
  * These blocks build their SVG/HTML markup by string concatenation rather than through a
  * Mustache template — moving that markup into .mustache files, where escaping is automatic,
  * was judged not worth the risk of regressing already-published blocks. Every value they
- * interpolate — label, value, description, title — must go through this function first; it
- * used to be five separate, independently copy-pasted definitions (chart.js, chart_bar.js,
- * gauge.js, the mind map block as `svgEsc`, and infographic_shared.js). Nothing catches a future
- * block, or a copy edited in one place, that forgets to call it — so there is only one copy now.
+ * interpolate — label, value, description, title — must go through this function first.
+ * Nothing catches a future block, or a copy edited in one place, that forgets to call it —
+ * so there is a single copy, shared by every block that builds its own markup.
  *
  * Plain, dependency-free ES module (no `core/*` import) on purpose, so it doubles as the subject
  * of the headless tests in tests/js/text_escape.test.js, run via `node --test` with no browser,
