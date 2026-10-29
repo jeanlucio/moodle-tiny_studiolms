@@ -1,6 +1,6 @@
 # 🧪 Testes Automatizados
 
-O StudioLMS inclui **279 casos de teste PHPUnit** em **44 arquivos**, **342 testes de JavaScript** em **54 arquivos**, mais uma suíte Behat com
+O StudioLMS inclui **276 casos de teste PHPUnit** em **43 arquivos**, **342 testes de JavaScript** em **54 arquivos**, mais uma suíte Behat com
 **85 cenários** em **21 arquivos de feature**, executados em todo push de CI na matriz completa
 (Moodle 4.5 → 5.x, PostgreSQL e MariaDB).
 
@@ -31,7 +31,6 @@ O StudioLMS inclui **279 casos de teste PHPUnit** em **44 arquivos**, **342 test
 | `card_template_test.php` | 9 | O template do cartão: o quadro de vídeo é nomeado por uma string de idioma (sem palavra fixa que o leitor de tela anunciaria em qualquer idioma); a posição da mídia e o detalhe lateral são classes, e não estilos inline que o limpador de HTML descartaria |
 | `chart_templates_test.php` | 5 | Os templates de gráfico, de barras e de velocímetro não desenham SVG e sobrevivem ao limpador de HTML do Moodle (`clean_text()`) com todas as classes e larguras ou alturas; um rótulo é escapado uma vez |
 | `db_definitions_test.php` | 3 | Os arquivos de definição de serviços web, cache e capabilities carregam e declaram o que o código usa |
-| `db_upgrade_test.php` | 3 | O passo de upgrade que remove um índice que repete uma chave: dois índices iguais viram um, uma coluna sem nenhum recebe o índice da chave, um único índice é mantido |
 | `editor_styles_test.php` | 2 | O tema serve a folha de estilo do editor do plugin, e `editor_styles.css` é uma cópia exata de `styles.css` |
 | `event/event_mappings_test.php` | 1 | Todo evento que registra um objeto declara o próprio mapeamento de objectid para a restauração do curso |
 | `external/generate_endpoints_test.php` | 5 | O que os serviços web de IA devolvem quando um provedor é alcançado: cada um devolve a estrutura declarada, uma exceção inesperada vira erro genérico, o chat devolve uma ação só quando há uma, descarta entradas de histórico com outros papéis e envia só o histórico mais recente |

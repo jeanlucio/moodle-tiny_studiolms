@@ -1,6 +1,6 @@
 # 🧪 Testes Automatizados
 
-O StudioLMS inclui **279 casos de teste PHPUnit**, **342 testes de JavaScript** e uma suíte Behat com **85 cenários**, executados
+O StudioLMS inclui **276 casos de teste PHPUnit**, **342 testes de JavaScript** e uma suíte Behat com **85 cenários**, executados
 em todo push de CI na matriz completa (Moodle 4.5 → 5.x, PostgreSQL e MariaDB).
 
 ### PHPUnit — Testes Unitários e de Integração
@@ -14,8 +14,8 @@ em todo push de CI na matriz completa (Moodle 4.5 → 5.x, PostgreSQL e MariaDB)
 | Privacy API | 1 | 21 |
 | Integração com o editor (`plugininfo`, hook callbacks, folha de estilo do editor) | 3 | 21 |
 | Modelos e presets (cartão, gráficos, classes de hover, alinhamento e largura dos blocos, layouts prontos, textos) | 10 | 56 |
-| Definições do banco, passo de upgrade e gerador de dados | 3 | 8 |
-| **Total** | **44** | **279** |
+| Definições do banco e gerador de dados | 2 | 5 |
+| **Total** | **43** | **276** |
 
 ```bash
 vendor/bin/phpunit --testsuite tiny_studiolms_testsuite

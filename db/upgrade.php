@@ -25,37 +25,12 @@
 /**
  * Execute upgrade steps for the plugin.
  *
+ * The first public version has none: the schema in install.xml is the whole schema. The file must exist, so a
+ * step is added here with the first change after that release.
+ *
  * @param int $oldversion The old version of the plugin.
  * @return bool True on success.
  */
 function xmldb_tiny_studiolms_upgrade(int $oldversion): bool {
-    global $DB;
-
-    $dbman = $DB->get_manager();
-
-    if ($oldversion < 2026101501) {
-        // Each of these columns had a second index identical to the one Moodle creates for its
-        // foreign key. drop_index() removes every index on the field, the key's own included, so
-        // the key is added back afterwards; add_key() only creates its index when the column has
-        // none, which also leaves a column with a single index as it was.
-        $redundant = [
-            'tiny_studiolms_templates' => ['fk_userid', 'userid', 'user'],
-            'tiny_studiolms_favourites' => ['fk_userid', 'userid', 'user'],
-        ];
-        foreach ($redundant as $tablename => [$keyname, $field, $reftable]) {
-            $table = new xmldb_table($tablename);
-            $sameindexes = array_filter(
-                $DB->get_indexes($tablename),
-                fn(array $index): bool => !$index['unique'] && $index['columns'] === [$field]
-            );
-            if (count($sameindexes) > 1) {
-                $dbman->drop_index($table, new xmldb_index($keyname, XMLDB_INDEX_NOTUNIQUE, [$field]));
-            }
-            $dbman->add_key($table, new xmldb_key($keyname, XMLDB_KEY_FOREIGN, [$field], $reftable, ['id']));
-        }
-
-        upgrade_plugin_savepoint(true, 2026101501, 'tiny', 'studiolms');
-    }
-
     return true;
 }

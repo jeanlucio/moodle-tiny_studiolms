@@ -1,6 +1,6 @@
 # 🧪 Automated Tests
 
-StudioLMS ships with **279 PHPUnit test cases** across **44 files**, **342 JavaScript tests** across **54 files**, plus a **85-scenario Behat suite** across **21 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
+StudioLMS ships with **276 PHPUnit test cases** across **43 files**, **342 JavaScript tests** across **54 files**, plus a **85-scenario Behat suite** across **21 feature files**, run on every CI push across the full matrix (Moodle 4.5 → 5.x, PostgreSQL & MariaDB).
 
 ### PHPUnit — Unit & Integration Tests
 
@@ -29,7 +29,6 @@ StudioLMS ships with **279 PHPUnit test cases** across **44 files**, **342 JavaS
 | `card_template_test.php` | 9 | The card template: the video frame is named by a lang string (no literal word a screen reader would announce in every language); media position and the side accent are classes, not inline styles the HTML cleaner would drop |
 | `chart_templates_test.php` | 5 | The chart, bar chart and gauge templates draw no SVG and survive Moodle's HTML cleaner (`clean_text()`) with every class and width or height intact; a label is escaped once |
 | `db_definitions_test.php` | 3 | The web service, cache and capability definition files load and declare what the code uses |
-| `db_upgrade_test.php` | 3 | The upgrade step that removes an index duplicating a key: two identical indexes become one, a column with none gets the key's index, a single index is left alone |
 | `editor_styles_test.php` | 2 | The theme serves the plugin's editor stylesheet, and `editor_styles.css` is an exact copy of `styles.css` |
 | `event/event_mappings_test.php` | 1 | Every event that logs an object declares its own objectid mapping for course restore |
 | `external/generate_endpoints_test.php` | 5 | What the AI web services return once a provider is reached: each returns its declared structure, an unexpected exception becomes a generic error, the chat returns an action only when there is one, drops history entries with other roles and sends only the latest history |
