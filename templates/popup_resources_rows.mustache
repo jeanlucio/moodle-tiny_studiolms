@@ -1,0 +1,56 @@
+{{!
+	This file is part of Moodle - http://moodle.org/
+
+	Moodle is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Moodle is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_studiolms/popup_resources_rows
+    @copyright 2026 Jean Lúcio
+
+    The editable rows of the resources block, one per resource. The title and URL are stored
+    state, so they are printed with the escaping double mustache.
+
+    Example context (json):
+    {
+        "resources": [
+            {"isLink": true, "isPdf": false, "isVideo": false, "isAudio": false,
+                "title": "Course syllabus", "url": "https://example.com/syllabus"},
+            {"isLink": false, "isPdf": true, "isVideo": false, "isAudio": false,
+                "title": "Reading list", "url": "https://example.com/reading.pdf"}
+        ]
+    }
+}}
+{{#resources}}
+<div class="slms-res-row mb-2 p-1 border rounded bg-light">
+    <div class="d-flex gap-1 align-items-center mb-1">
+        <select class="form-select form-select-sm res-type slms-resources-select"
+            aria-label="{{#str}} resources_res_type_aria, tiny_studiolms {{/str}}">
+            <option value="link" {{#isLink}}selected{{/isLink}}>{{#str}} resources_res_type_link, tiny_studiolms {{/str}}</option>
+            <option value="pdf" {{#isPdf}}selected{{/isPdf}}>{{#str}} resources_res_type_pdf, tiny_studiolms {{/str}}</option>
+            <option value="video" {{#isVideo}}selected{{/isVideo}}>{{#str}} resources_res_type_video, tiny_studiolms {{/str}}</option>
+            <option value="audio" {{#isAudio}}selected{{/isAudio}}>{{#str}} resources_res_type_audio, tiny_studiolms {{/str}}</option>
+        </select>
+        <input type="text" class="form-control form-control-sm res-title flex-grow-1" value="{{title}}"
+            placeholder="{{#str}} resources_res_title_placeholder, tiny_studiolms {{/str}}"
+            aria-label="{{#str}} resources_res_title_aria, tiny_studiolms {{/str}}">
+        <button type="button" class="btn btn-sm btn-link text-danger res-del p-1"
+            aria-label="{{#str}} resources_res_remove_aria, tiny_studiolms {{/str}}">
+            <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+        </button>
+    </div>
+    <input type="text" class="form-control form-control-sm res-url" value="{{url}}"
+        placeholder="{{#str}} resources_res_url_placeholder, tiny_studiolms {{/str}}"
+        aria-label="{{#str}} resources_res_url_aria, tiny_studiolms {{/str}}">
+</div>
+{{/resources}}

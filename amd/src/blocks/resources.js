@@ -196,68 +196,25 @@ export default {
 
             if (btnResources) {
                 btnResources.addEventListener('click', async() => {
-                    const [
-                        typeAria, typeLinkLabel, typePdfLabel, typeVideoLabel, typeAudioLabel,
-                        titlePlaceholder, titleAria, urlPlaceholder, urlAria, removeAria,
-                    ] = await Promise.all([
-                        getString('resources_res_type_aria', 'tiny_studiolms'),
-                        getString('resources_res_type_link', 'tiny_studiolms'),
-                        getString('resources_res_type_pdf', 'tiny_studiolms'),
-                        getString('resources_res_type_video', 'tiny_studiolms'),
-                        getString('resources_res_type_audio', 'tiny_studiolms'),
-                        getString('resources_res_title_placeholder', 'tiny_studiolms'),
-                        getString('resources_res_title_aria', 'tiny_studiolms'),
-                        getString('resources_res_url_placeholder', 'tiny_studiolms'),
-                        getString('resources_res_url_aria', 'tiny_studiolms'),
-                        getString('resources_res_remove_aria', 'tiny_studiolms'),
-                    ]);
-
                     PopupManager.open(btnResources, 'tiny_studiolms/popup_resources_items', {}, (popup) => {
                         const listContainer = popup.querySelector('#slms-resources-list');
                         const btnAdd = popup.querySelector('#pop_res_add_btn');
 
-                        const renderList = () => {
-                            listContainer.innerHTML = '';
-                            data.resources.forEach((res, index) => {
-                                const row = document.createElement('div');
-                                row.className = 'mb-2 p-1 border rounded bg-light';
+                        const renderList = async() => {
+                            const rows = data.resources.map((res) => ({
+                                isLink: res.type === 'link',
+                                isPdf: res.type === 'pdf',
+                                isVideo: res.type === 'video',
+                                isAudio: res.type === 'audio',
+                                title: res.title,
+                                url: res.url,
+                            }));
+                            const {html, js} = await Templates.renderForPromise(
+                                'tiny_studiolms/popup_resources_rows', {resources: rows}
+                            );
+                            Templates.replaceNodeContents(listContainer, html, js);
 
-                                // The title/url values come from attacker-controllable state (see
-                                // StateManager.restore) and must never be interpolated into an
-                                // HTML string: set them as DOM properties below instead, which
-                                // cannot be broken out of. The label/placeholder strings above
-                                // come from core/str, not user input, so interpolating them here
-                                // is safe.
-                                row.innerHTML = `
-                                <div class="d-flex gap-1 align-items-center mb-1">
-                                    <select class="form-select form-select-sm res-type slms-resources-select"
-                                        aria-label="${typeAria}">
-                                        <option value="link" ${res.type === 'link' ? 'selected' : ''}>
-                                            ${typeLinkLabel}
-                                        </option>
-                                        <option value="pdf" ${res.type === 'pdf' ? 'selected' : ''}>
-                                            ${typePdfLabel}
-                                        </option>
-                                        <option value="video" ${res.type === 'video' ? 'selected' : ''}>
-                                            ${typeVideoLabel}
-                                        </option>
-                                        <option value="audio" ${res.type === 'audio' ? 'selected' : ''}>
-                                            ${typeAudioLabel}
-                                        </option>
-                                    </select>
-                                    <input type="text" class="form-control form-control-sm res-title flex-grow-1"
-                                        placeholder="${titlePlaceholder}" aria-label="${titleAria}">
-                                    <button type="button" class="btn btn-sm btn-link text-danger res-del p-1"
-                                        aria-label="${removeAria}">
-                                        <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                                <input type="text" class="form-control form-control-sm res-url"
-                                    placeholder="${urlPlaceholder}" aria-label="${urlAria}">
-                                `;
-                                row.querySelector('.res-title').value = res.title;
-                                row.querySelector('.res-url').value = res.url;
-
+                            listContainer.querySelectorAll('.slms-res-row').forEach((row, index) => {
                                 row.querySelector('.res-type').addEventListener('change', (e) => {
                                     data.resources[index].type = e.target.value;
                                     onUpdate(data);
@@ -270,12 +227,11 @@ export default {
                                     data.resources[index].url = e.target.value;
                                     onUpdate(data);
                                 });
-                                row.querySelector('.res-del').addEventListener('click', () => {
+                                row.querySelector('.res-del').addEventListener('click', async() => {
                                     data.resources.splice(index, 1);
-                                    renderList();
+                                    await renderList();
                                     onUpdate(data);
                                 });
-                                listContainer.appendChild(row);
                             });
                         };
 
@@ -287,7 +243,7 @@ export default {
                                     'resources_default_item_title', 'tiny_studiolms'
                                 );
                                 data.resources.push({type: 'link', title: defaultTitle, url: '#'});
-                                renderList();
+                                await renderList();
                                 onUpdate(data);
                                 listContainer.scrollTop = listContainer.scrollHeight;
                             });

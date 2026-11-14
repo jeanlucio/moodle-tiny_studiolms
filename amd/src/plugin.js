@@ -369,9 +369,10 @@ export default Promise.all([
         const tableProbe = document.createElement('table');
         tableProbe.className = 'table';
         tableProbe.style.cssText = 'position: absolute; visibility: hidden;';
-        tableProbe.innerHTML = '<tbody><tr><td>x</td></tr></tbody>';
+        const probeCell = tableProbe.insertRow().insertCell();
+        probeCell.textContent = 'x';
         document.body.appendChild(tableProbe);
-        const cellPadding = window.getComputedStyle(tableProbe.querySelector('td')).padding;
+        const cellPadding = window.getComputedStyle(probeCell).padding;
         tableProbe.remove();
         const utilityClassCss = Object.entries(utilities)
             .map(([name, rule]) => `${blockRoot}.${name}, ${blockRoot} .${name} { ${rule}; }`)
