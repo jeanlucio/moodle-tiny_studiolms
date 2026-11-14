@@ -4,6 +4,15 @@ All notable changes to this plugin are documented here.
 
 ---
 
+## [v1.0.1] — 2026-11-14
+
+### Changed
+- The rows of the resources block popup are now rendered from a Mustache template instead of an HTML string
+  built in JavaScript, and the editor measures the table cell padding through the DOM instead of an HTML
+  string. The blocks look and work as before.
+
+---
+
 ## [v1.0.0] — 2026-10-29
 
 First public release.
