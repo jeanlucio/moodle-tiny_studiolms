@@ -16,6 +16,8 @@
 /**
  * Guard test for the rows of the items popup of the resources block, run via `node --test`.
  *
+ * The rows come from the popup_resources_rows template.
+ *
  * Regression test: each row spent a bordered delete button beside the two text boxes, which left the web address a
  * narrow box in a narrow popup. The type, the title and a small remove button share the first line, and the address
  * has the second line to itself.
@@ -35,8 +37,8 @@ const fs = require('node:fs');
 const read = (file) => fs.readFileSync(require.resolve(`../../${file}`), 'utf8');
 
 test('the remove button sits on the line of the title and the address has a line of its own', () => {
-    const source = read('amd/src/blocks/resources.js');
-    const row = source.slice(source.indexOf('row.innerHTML = `'), source.indexOf("row.querySelector('.res-title').value"));
+    const template = read('templates/popup_resources_rows.mustache');
+    const row = template.slice(template.indexOf('<div class="slms-res-row'));
     const firstLine = row.slice(row.indexOf('<div class="d-flex'), row.indexOf('</div>'));
 
     assert.ok(firstLine.includes('res-type'), 'type');
@@ -47,11 +49,21 @@ test('the remove button sits on the line of the title and the address has a line
 });
 
 test('the remove button is a small icon with a name for screen readers, not an emoji', () => {
+    const template = read('templates/popup_resources_rows.mustache');
+
+    assert.match(
+        template,
+        /class="btn btn-sm btn-link text-danger res-del p-1"\s+aria-label="\{\{#str\}\} resources_res_remove_aria/
+    );
+    assert.match(template, /<i class="fa-solid fa-trash-can" aria-hidden="true"><\/i>/);
+    assert.ok(!template.includes('🗑'), 'no emoji');
+});
+
+test('the rows are rendered from the template, not built as an HTML string in the module', () => {
     const source = read('amd/src/blocks/resources.js');
 
-    assert.match(source, /class="btn btn-sm btn-link text-danger res-del p-1"\s+aria-label="\$\{removeAria\}">/);
-    assert.match(source, /<i class="fa-solid fa-trash-can" aria-hidden="true"><\/i>/);
-    assert.ok(!source.includes('🗑'), 'no emoji');
+    assert.ok(source.includes("'tiny_studiolms/popup_resources_rows'"), 'template used');
+    assert.ok(!source.includes('row.innerHTML'), 'no row built as a string');
 });
 
 ['styles.css', 'editor_styles.css'].forEach((file) => {
