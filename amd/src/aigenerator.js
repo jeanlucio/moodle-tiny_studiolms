@@ -408,7 +408,9 @@ const showError = async(errorArea, stringKey, err) => {
     try {
         msg = await getString(stringKey, 'tiny_studiolms');
     } catch (strErr) {
-        msg = 'Error. Please try again.';
+        // The string itself could not be loaded, so there is no text of ours to show: let the core dialog report it.
+        Notification.exception(err);
+        return;
     }
     if (err && err.debuginfo) {
         msg += ' [' + err.debuginfo + ']';

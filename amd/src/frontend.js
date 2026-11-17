@@ -440,17 +440,13 @@ const mendLegacySpacing = (root) => {
  * @param {Element|Document} root The page, or a piece of content that has just entered it.
  */
 const focusScrollableTables = (root) => {
-    const update = () => {
-        within(root, '.studiolms-table-wrap').forEach((wrap) => {
-            if (wrap.scrollWidth > wrap.clientWidth) {
-                wrap.setAttribute('tabindex', '0');
-            } else {
-                wrap.removeAttribute('tabindex');
-            }
-        });
-    };
-    update();
-    window.addEventListener('resize', update);
+    within(root, '.studiolms-table-wrap').forEach((wrap) => {
+        if (wrap.scrollWidth > wrap.clientWidth) {
+            wrap.setAttribute('tabindex', '0');
+        } else {
+            wrap.removeAttribute('tabindex');
+        }
+    });
 };
 
 /**
@@ -483,6 +479,9 @@ const initIn = (root) => {
  */
 export const init = () => {
     initIn(document);
+    // One listener for the whole page, not one per piece of content: the content announced later is already in the
+    // document when the window is resized, and a listener per piece would pile up and keep each replaced piece alive.
+    window.addEventListener('resize', () => focusScrollableTables(document));
     document.addEventListener(filterEventTypes.filterContentUpdated, (event) => {
         Array.from(event.detail?.nodes ?? []).forEach(initIn);
     });

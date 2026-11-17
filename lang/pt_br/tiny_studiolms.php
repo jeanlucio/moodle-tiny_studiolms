@@ -458,6 +458,7 @@ $string['profilecard_name'] = 'Nome';
 $string['profilecard_photo_url'] = 'URL da foto';
 $string['profilecard_role'] = 'Cargo / Função';
 $string['properties_panel'] = 'Propriedades';
+$string['provider_coreai'] = 'IA do Moodle';
 $string['remove'] = 'Remover';
 $string['resources_ai_error'] = 'Falha ao gerar conteúdo. Verifique a configuração de IA e tente novamente.';
 $string['resources_ai_generate'] = 'Gerar com IA';

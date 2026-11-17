@@ -25,6 +25,7 @@ import Templates from 'core/templates';
 import Notification from 'core/notification';
 import {tablePalette} from './contrast';
 import {bindWidth, normalizeWidth, widthVars} from './block_width';
+import {MAX_COLS, MAX_ROWS, MIN_COLS, MIN_ROWS, normalizeTableSize} from './table_logic';
 
 export default {
     id: 'table',
@@ -151,8 +152,8 @@ export default {
         tData.isStriped = data.style === 'striped';
         tData.width = normalizeWidth(data.width, 'full');
 
-        const numRows = Math.max(2, parseInt(data.rows) || 4);
-        const numCols = Math.max(1, parseInt(data.cols) || 3);
+        const numRows = normalizeTableSize(data.rows, MIN_ROWS, MAX_ROWS, 4);
+        const numCols = normalizeTableSize(data.cols, MIN_COLS, MAX_COLS, 3);
 
         tData.headerCells = [];
         tData.bodyRows = [];

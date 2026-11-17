@@ -67,3 +67,15 @@ test('a table that scrolls sideways can take focus, and only while it scrolls', 
     assert.match(source, /wrap\.removeAttribute\('tabindex'\)/);
     assert.match(source, /focusScrollableTables\(root\);/);
 });
+
+test('the window is watched once for the whole page, not once per piece of content', () => {
+    const scrollable = source.match(/const focusScrollableTables = \(root\) => \{[\s\S]*?\n\};/);
+    const init = source.match(/export const init = \(\) => \{[\s\S]*?\n\};/);
+
+    // Regression test: the function registered a resize listener on every call and never removed it, and it runs for
+    // every node of every filterContentUpdated event, so the listeners piled up on a page the course editor reloads.
+    assert.ok(scrollable, 'focusScrollableTables() exists');
+    assert.ok(!/addEventListener/.test(scrollable[0]), 'the function that runs per piece adds no listener');
+    assert.equal((source.match(/addEventListener\('resize'/g) ?? []).length, 1);
+    assert.match(init[0], /addEventListener\('resize', \(\) => focusScrollableTables\(document\)\)/);
+});

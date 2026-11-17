@@ -458,6 +458,7 @@ $string['profilecard_name'] = 'Name';
 $string['profilecard_photo_url'] = 'Photo URL';
 $string['profilecard_role'] = 'Role / Title';
 $string['properties_panel'] = 'Properties';
+$string['provider_coreai'] = 'Moodle AI';
 $string['remove'] = 'Remove';
 $string['resources_ai_error'] = 'Failed to generate content. Please check your AI configuration and try again.';
 $string['resources_ai_generate'] = 'Generate with AI';

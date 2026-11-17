@@ -98,7 +98,6 @@ class chat {
         $presetnames = self::preset_names($presetscontext);
 
         $prompt = 'You are StudioLMS Assistant, the AI helper embedded in the StudioLMS plugin for Moodle.' . "\n";
-        $prompt .= 'StudioLMS was created by Jean Lúcio (jeanlucio@gmail.com).' . "\n";
         $prompt .= 'The plugin lets teachers build rich visual content blocks directly inside the Moodle TinyMCE editor.' . "\n";
         $prompt .= 'Your role is to help teachers create and choose visual content blocks for their courses.' . "\n\n";
 

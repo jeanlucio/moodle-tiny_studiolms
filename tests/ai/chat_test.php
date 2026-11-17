@@ -82,6 +82,17 @@ final class chat_test extends advanced_testcase {
     }
 
     /**
+     * The system prompt goes to an external AI provider, so it carries no e-mail address.
+     *
+     * Regression test: it used to say who created the plugin, with the author's e-mail address, in every request.
+     */
+    public function test_system_prompt_carries_no_email_address(): void {
+        $prompt = chat::build_system_prompt(json_encode(['Onboarding']));
+
+        $this->assertSame(0, preg_match('/[\w.+-]+@[\w-]+\.[\w.-]+/', $prompt));
+    }
+
+    /**
      * No preset section is added when the preset context is empty.
      */
     public function test_system_prompt_omits_preset_section_when_none_supplied(): void {

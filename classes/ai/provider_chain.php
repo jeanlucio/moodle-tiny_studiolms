@@ -162,7 +162,8 @@ class provider_chain {
     private static function call_core_ai(string $system, string $user, \context $context): array {
         global $USER;
 
-        $failure = ['success' => false, 'data' => '', 'provider' => 'Moodle AI', 'message' => '', 'attempted' => true];
+        $label = get_string('provider_coreai', 'tiny_studiolms');
+        $failure = ['success' => false, 'data' => '', 'provider' => $label, 'message' => '', 'attempted' => true];
 
         try {
             $manager = \core\di::get(\core_ai\manager::class);
@@ -181,7 +182,7 @@ class provider_chain {
                 $failure['message'] = 'core_ai: empty response';
                 return $failure;
             }
-            return ['success' => true, 'data' => $content, 'provider' => 'Moodle AI', 'message' => '', 'attempted' => true];
+            return ['success' => true, 'data' => $content, 'provider' => $label, 'message' => '', 'attempted' => true];
         } catch (\Throwable $e) {
             $failure['message'] = 'core_ai: ' . $e->getMessage();
             return $failure;
