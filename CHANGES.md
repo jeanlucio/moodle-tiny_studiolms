@@ -4,6 +4,22 @@ All notable changes to this plugin are documented here.
 
 ---
 
+## [v1.0.2] — 2026-11-17
+
+### Fixed
+- A table block whose saved size was absurdly large, such as content that was edited by hand or generated
+  wrongly, could freeze the browser tab when it was opened in the composer. The table is now limited to 50
+  rows and 10 columns, the same limits as the setup popup.
+- The page script no longer adds a window resize listener every time content is moved, shown or hidden in
+  the course editor, so long editing sessions stay light.
+- The name of Moodle's own AI shown under an AI Chat reply is now translated, and the AI tabs no longer fall
+  back to a fixed English message when their own text cannot be loaded.
+
+### Changed
+- The AI Chat no longer sends the author's name and e-mail address to the AI provider with every message.
+
+---
+
 ## [v1.0.1] — 2026-11-14
 
 ### Changed
